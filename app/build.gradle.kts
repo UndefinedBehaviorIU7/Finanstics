@@ -1,3 +1,7 @@
+private val compileSdkV = 35
+private val minSdkV = 24
+private val targetSdkV = 35
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.example.finanstics"
-    compileSdk = 35
+    compileSdk = compileSdkV
 
     defaultConfig {
         applicationId = "com.example.finanstics"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = minSdkV
+        targetSdk = targetSdkV
         versionCode = 1
         versionName = "1.0"
 

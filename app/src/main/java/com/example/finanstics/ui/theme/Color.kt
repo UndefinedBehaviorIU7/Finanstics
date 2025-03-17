@@ -2,10 +2,18 @@ package com.example.finanstics.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val PurpleLight = Color(0xFFD0BCFF)
-val PurpleGreyLight = Color(0xFFCCC2DC)
-val PinkLight = Color(0xFFEFB8C8)
+private const val PURPLE_LIGHT_HEX = 0xFFD0BCFF
+private const val PURPLE_GREY_LIGHT_HEX = 0xFFCCC2DC
+private const val PINK_LIGHT_HEX = 0xFFEFB8C8
 
-val PurpleDark = Color(0xFF6650a4)
-val PurpleGreyDark = Color(0xFF625b71)
-val PinkDark = Color(0xFF7D5260)
+private const val PURPLE_DARK_HEX = 0xFF6650a4
+private const val PURPLE_GREY_DARK_HEX = 0xFF625b71
+private const val PINK_DARK_HEX = 0xFF7D5260
+
+val PurpleLight = Color(PURPLE_LIGHT_HEX)
+val PurpleGreyLight = Color(PURPLE_GREY_LIGHT_HEX)
+val PinkLight = Color(PINK_LIGHT_HEX)
+
+val PurpleDark = Color(PURPLE_DARK_HEX)
+val PurpleGreyDark = Color(PURPLE_GREY_DARK_HEX)
+val PinkDark = Color(PINK_DARK_HEX)

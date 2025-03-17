@@ -6,14 +6,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+private val FONT_SIZE = 16.sp
+private val LINE_HEIGHT = 24.sp
+private val LETTER_HEIGHT = 0.5.sp
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontSize = FONT_SIZE,
+        lineHeight = LINE_HEIGHT,
+        letterSpacing = LETTER_HEIGHT
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
