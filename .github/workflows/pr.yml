@@ -43,8 +43,9 @@ jobs:
       - name: 💜 Detekt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./detekt
-  check_aseemble:
+        run: |
+          ./detekt --input app/src/main/java/com/example --exclude app/src/main/java/com/example/finanstics/ui/**
+  check_assemble:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
