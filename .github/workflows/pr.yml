@@ -44,7 +44,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./detekt --input app/src/main/java/com/example --exclude app/src/main/java/com/example/finanstics/ui/**
+          ./detekt --exclude app/src/main/java/com/example/finanstics/ui
   check_assemble:
     runs-on: ubuntu-latest
     steps:
