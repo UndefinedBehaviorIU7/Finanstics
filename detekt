@@ -19,14 +19,14 @@ fi
 
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $DETEKT_BIN --config .github/workflows/assets/detekt.yml --input "$SCAN_DIR" --exclude "$EXCLUDE_DIR" --report xml:detekt_report.xml
+  $DETEKT_BIN --config .github/workflows/assets/detekt.yml --input "$SCAN_DIR" --excludes "$EXCLUDE_DIR" --report xml:detekt_report.xml
 
   reviewdog -f=checkstyle \
       -name="detekt" \
       -reporter="github-pr-review" \
       -fail-on-error="true" <detekt_report.xml
 else
-  $DETEKT_BIN --config .github/workflows/assets/detekt.yml --input "$SCAN_DIR" --exclude "$EXCLUDE_DIR" "$@"
+  $DETEKT_BIN --config .github/workflows/assets/detekt.yml --input "$SCAN_DIR" --excludes "$EXCLUDE_DIR" "$@"
 fi
 
 echo "Done!"
