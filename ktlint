@@ -19,13 +19,15 @@ fi
 
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $KTLINT_BIN --android --reporter=checkstyle --editorconfig=/.editorconfig --include="$SCAN_DIR" --exclude="$EXCLUDE_DIR" |
+  # Используем SCAN_DIR для указания директории для проверки
+  $KTLINT_BIN --android --reporter=checkstyle --editorconfig=/.editorconfig "$SCAN_DIR" |
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
       -fail-on-error="true"
 else
-  $KTLINT_BIN --android --editorconfig=/.editorconfig --include="$SCAN_DIR" --exclude="$EXCLUDE_DIR" "$@"
+  # В локальном режиме просто передаем аргументы
+  $KTLINT_BIN --android --editorconfig=/.editorconfig "$SCAN_DIR" "$@"
 fi
 
 echo "Done!"
