@@ -6,7 +6,6 @@ ROOT_FOLDER=build/bin
 VERSION=0.38.1
 KTLINT_BIN=$ROOT_FOLDER/ktlint-$VERSION
 SCAN_DIR="app/src/main/java/com/example/finanstics"
-EXCLUDE_DIR="app/src/main/java/com/example/finanstics/ui/**"
 
 mkdir -p $ROOT_FOLDER
 
@@ -19,14 +18,12 @@ fi
 
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  # Используем SCAN_DIR для указания директории для проверки
   $KTLINT_BIN --android --reporter=checkstyle --editorconfig=/.editorconfig "$SCAN_DIR" |
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
-      -fail-on-error="true"
+      -fail-level=error
 else
-  # В локальном режиме просто передаем аргументы
   $KTLINT_BIN --android --editorconfig=/.editorconfig "$SCAN_DIR" "$@"
 fi
 
