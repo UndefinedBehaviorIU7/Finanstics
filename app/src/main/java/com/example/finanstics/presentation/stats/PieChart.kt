@@ -262,8 +262,10 @@ fun PieChartExample() {
         }
 
         item {
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
                     modifier = Modifier.padding(start = 15.dp),
                     text = "Доходы",
@@ -272,8 +274,10 @@ fun PieChartExample() {
                     color = Color.Black
                 )
             }
-            DetailsPieChart(data = incomes,
-                colors = ColorsIncomes)
+            DetailsPieChart(
+                data = incomes,
+                colors = ColorsIncomes
+            )
         }
 
         item {
@@ -286,8 +290,10 @@ fun PieChartExample() {
             Spacer(modifier = Modifier.height(10.dp))
         }
         item {
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
                     modifier = Modifier.padding(start = 15.dp),
                     text = "Расходы",
@@ -296,8 +302,10 @@ fun PieChartExample() {
                     color = Color.Black
                 )
             }
-            DetailsPieChart(data = expenses,
-                colors = ColorsExpenses)
+            DetailsPieChart(
+                data = expenses,
+                colors = ColorsExpenses
+            )
         }
     }
 }
