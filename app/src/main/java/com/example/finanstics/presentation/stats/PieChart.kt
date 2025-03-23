@@ -64,7 +64,6 @@ fun statsLabel(expenses: Boolean): String {
     return INCOMES
 }
 
-
 @Composable
 fun PieChart(
     data: List<Pair<String, Int>>,
