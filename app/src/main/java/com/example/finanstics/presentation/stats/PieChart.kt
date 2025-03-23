@@ -41,6 +41,29 @@ import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.Blue
 import com.example.finanstics.ui.theme.ColorsExpenses
 import com.example.finanstics.ui.theme.ColorsIncomes
+import com.example.finanstics.ui.theme.EXPENSES
+import com.example.finanstics.ui.theme.INCOMES
+
+fun statsColors(expenses: Boolean): List<Color> {
+    if (expenses) return ColorsExpenses
+    return ColorsIncomes
+}
+
+fun sumToSignText(sum: Int, expense: Boolean): String {
+    val textSum = sum.toString()
+    val textSumSign = if (expense) {
+        "-$textSum"
+    } else {
+        "+$textSum"
+    }
+    return textSumSign
+}
+
+fun statsLabel(expenses: Boolean): String {
+    if (expenses) return EXPENSES
+    return INCOMES
+}
+
 
 @Composable
 fun PieChart(
@@ -49,7 +72,6 @@ fun PieChart(
     radiusOuter: Dp = 50.dp,
     chartBarWidth: Dp = 35.dp,
     animDuration: Int = 1000,
-    colors: List<Color> = ColorsExpenses
 ) {
     val totalSum = data.sumOf { it.second }
     val floatValue = mutableListOf<Float>()
@@ -59,8 +81,8 @@ fun PieChart(
     }
 
     var animationPlayed by remember { mutableStateOf(false) }
-
     var lastValue = 0f
+    val colors = statsColors(expenses)
 
     val animateSize by animateFloatAsState(
         targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
@@ -70,7 +92,6 @@ fun PieChart(
             easing = LinearOutSlowInEasing
         )
     )
-
     val animateRotation by animateFloatAsState(
         targetValue = if (animationPlayed) 90f * 11f else 0f,
         animationSpec = tween(
@@ -79,7 +100,6 @@ fun PieChart(
             easing = LinearOutSlowInEasing
         )
     )
-
     val animateTextSize by animateFloatAsState(
         targetValue = if (animationPlayed) 24f else 0f,
         animationSpec = tween(
@@ -88,7 +108,6 @@ fun PieChart(
             easing = LinearOutSlowInEasing
         )
     )
-
     LaunchedEffect(key1 = true) {
         animationPlayed = true
     }
@@ -121,16 +140,8 @@ fun PieChart(
                     lastValue += value
                 }
             }
-
-            val textSum = totalSum.toString()
-            val textSumSign = if (expenses) {
-                "-$textSum"
-            } else {
-                "+$textSum"
-            }
-
             Text(
-                text = textSumSign,
+                text = sumToSignText(totalSum, expenses),
                 fontSize = animateTextSize.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color.Black
@@ -142,11 +153,24 @@ fun PieChart(
 @Composable
 fun DetailsPieChart(
     data: List<Pair<String, Int>>,
-    colors: List<Color>
+    expenses: Boolean
 ) {
+    val colors = statsColors(expenses)
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier.padding(start = 15.dp),
+                text = statsLabel(expenses),
+                fontWeight = FontWeight.Normal,
+                fontSize = 26.sp,
+                color = Color.Black
+            )
+        }
         data.forEachIndexed { index, (_, value) ->
             DetailsPieChartItem(
                 data = Pair(data[index].first, value),
@@ -171,7 +195,6 @@ fun DetailsPieChartItem(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Column(modifier = Modifier.weight(3f)) {
                 Text(
                     modifier = Modifier.padding(end = 15.dp),
@@ -207,23 +230,23 @@ fun DetailsPieChartItem(
     }
 }
 
+private val incomes = listOf(
+    "Зарплата" to 10000,
+    "Стипендия" to 5500,
+    "Переводы" to 2000,
+)
+
+private val expenses = listOf(
+    "Покупки" to 16500,
+    "Налоги/штрафы" to 7400,
+    "Еда" to 4000,
+    "Развлечения" to 2200,
+    "Транспорт" to 1900
+)
+
 @Preview
 @Composable
 fun PieChartExample() {
-    val incomes = listOf(
-        "Зарплата" to 10000,
-        "Стипендия" to 5500,
-        "Переводы" to 2000,
-    )
-
-    val expenses = listOf(
-        "Покупки" to 16500,
-        "Налоги/штрафы" to 7400,
-        "Еда" to 4000,
-        "Развлечения" to 2200,
-        "Транспорт" to 1900
-    )
-
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,7 +260,6 @@ fun PieChartExample() {
                         radiusOuter = 90.dp,
                         expenses = false,
                         chartBarWidth = 26.dp,
-                        colors = ColorsIncomes
                     )
                 }
                 Column(modifier = Modifier.weight(1f)) {
@@ -246,7 +268,6 @@ fun PieChartExample() {
                         radiusOuter = 90.dp,
                         expenses = true,
                         chartBarWidth = 26.dp,
-                        colors = ColorsExpenses
                     )
                 }
             }
@@ -262,21 +283,9 @@ fun PieChartExample() {
         }
 
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 15.dp),
-                    text = "Доходы",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 26.sp,
-                    color = Color.Black
-                )
-            }
             DetailsPieChart(
                 data = incomes,
-                colors = ColorsIncomes
+                expenses = false
             )
         }
 
@@ -290,21 +299,9 @@ fun PieChartExample() {
             Spacer(modifier = Modifier.height(10.dp))
         }
         item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 15.dp),
-                    text = "Расходы",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 26.sp,
-                    color = Color.Black
-                )
-            }
             DetailsPieChart(
                 data = expenses,
-                colors = ColorsExpenses
+                expenses = true
             )
         }
     }
