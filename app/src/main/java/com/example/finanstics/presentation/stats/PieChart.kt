@@ -276,7 +276,6 @@ fun PieChartExample() {
     }
 }
 
-
 @Composable
 private fun rememberAnimationPlayed(): Boolean {
     var animationPlayed by remember { mutableStateOf(false) }
