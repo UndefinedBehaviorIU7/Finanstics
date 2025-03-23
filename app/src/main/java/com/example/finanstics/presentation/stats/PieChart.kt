@@ -63,20 +63,29 @@ fun PieChart(
     var lastValue = 0f
 
     val animateSize by animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f, animationSpec = tween(
-            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            delayMillis = 0,
+            easing = LinearOutSlowInEasing
         )
     )
 
     val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f, animationSpec = tween(
-            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) 90f * 11f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            delayMillis = 0,
+            easing = LinearOutSlowInEasing
         )
     )
 
     val animateTextSize by animateFloatAsState(
-        targetValue = if (animationPlayed) 24f else 0f, animationSpec = tween(
-            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) 24f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            delayMillis = 0,
+            easing = LinearOutSlowInEasing
         )
     )
 
@@ -132,7 +141,8 @@ fun PieChart(
 
 @Composable
 fun DetailsPieChart(
-    data: List<Pair<String, Int>>, colors: List<Color>
+    data: List<Pair<String, Int>>,
+    colors: List<Color>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -144,21 +154,22 @@ fun DetailsPieChart(
                 color = colors[index]
             )
         }
-
     }
 }
 
 @Composable
 fun DetailsPieChartItem(
-    data: Pair<String, Int>, widthSize: Float, color: Color = Blue
+    data: Pair<String, Int>,
+    widthSize: Float,
+    color: Color = Blue
 ) {
-
     Surface(
-        modifier = Modifier.padding(vertical = 10.dp), color = Color.Transparent
+        modifier = Modifier.padding(vertical = 10.dp),
+        color = Color.Transparent
     ) {
-
         Row(
-            modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Column(modifier = Modifier.weight(3f)) {
@@ -175,7 +186,8 @@ fun DetailsPieChartItem(
                 Box(
                     modifier = Modifier
                         .background(
-                            color = color, shape = RoundedCornerShape(10.dp)
+                            color = color,
+                            shape = RoundedCornerShape(10.dp)
                         )
                         .height(10.dp)
                         .width(maxWidth / widthSize)
@@ -242,13 +254,16 @@ fun PieChartExample() {
         item {
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(), thickness = 2.dp, color = Color.Black
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 2.dp,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
 
         item {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center) {
                 Text(
                     modifier = Modifier.padding(start = 15.dp),
                     text = "Доходы",
@@ -257,18 +272,22 @@ fun PieChartExample() {
                     color = Color.Black
                 )
             }
-            DetailsPieChart(data = incomes, colors = ColorsIncomes)
+            DetailsPieChart(data = incomes,
+                colors = ColorsIncomes)
         }
 
         item {
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(), thickness = 2.dp, color = Color.Black
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 2.dp,
+                color = Color.Black
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
         item {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center) {
                 Text(
                     modifier = Modifier.padding(start = 15.dp),
                     text = "Расходы",
@@ -277,7 +296,8 @@ fun PieChartExample() {
                     color = Color.Black
                 )
             }
-            DetailsPieChart(data = expenses, colors = ColorsExpenses)
+            DetailsPieChart(data = expenses,
+                colors = ColorsExpenses)
         }
     }
 }
