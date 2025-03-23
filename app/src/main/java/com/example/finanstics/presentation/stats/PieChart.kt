@@ -68,48 +68,18 @@ fun statsLabel(expenses: Boolean): String {
 fun PieChart(
     data: List<Pair<String, Int>>,
     expenses: Boolean = true,
-    radiusOuter: Dp = 50.dp,
-    chartBarWidth: Dp = 35.dp,
+    radiusOuter: Dp = 100.dp,
+    chartBarWidth: Dp = 25.dp,
     animDuration: Int = 1000,
 ) {
     val totalSum = data.sumOf { it.second }
-    val floatValue = mutableListOf<Float>()
-
-    data.forEachIndexed { index, (_, values) ->
-        floatValue.add(index, 360 * values / totalSum.toFloat())
-    }
-
-    var animationPlayed by remember { mutableStateOf(false) }
-    var lastValue = 0f
+    val floatValue = calculateFloatValues(data, totalSum)
     val colors = statsColors(expenses)
-
-    val animateSize by animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            delayMillis = 0,
-            easing = LinearOutSlowInEasing
-        )
-    )
-    val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            delayMillis = 0,
-            easing = LinearOutSlowInEasing
-        )
-    )
-    val animateTextSize by animateFloatAsState(
-        targetValue = if (animationPlayed) 24f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            delayMillis = 0,
-            easing = LinearOutSlowInEasing
-        )
-    )
-    LaunchedEffect(key1 = true) {
-        animationPlayed = true
-    }
+    val animationPlayed = rememberAnimationPlayed()
+    val animateSize = animateChartSize(animationPlayed, radiusOuter, animDuration)
+    val animateRotation = animateChartRotation(animationPlayed, animDuration)
+    val animateTextSize = animateTextSize(animationPlayed, animDuration)
+    var lastValue = 0f
 
     Column(
         modifier = Modifier
@@ -304,4 +274,64 @@ fun PieChartExample() {
             )
         }
     }
+}
+
+
+@Composable
+private fun rememberAnimationPlayed(): Boolean {
+    var animationPlayed by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = true) {
+        animationPlayed = true
+    }
+    return animationPlayed
+}
+
+@Composable
+private fun animateChartSize(
+    animationPlayed: Boolean,
+    radiusOuter: Dp,
+    animDuration: Int
+): Float {
+    return animateFloatAsState(
+        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            easing = LinearOutSlowInEasing
+        )
+    ).value
+}
+
+@Composable
+private fun animateChartRotation(
+    animationPlayed: Boolean,
+    animDuration: Int
+): Float {
+    return animateFloatAsState(
+        targetValue = if (animationPlayed) 90f * 11f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            easing = LinearOutSlowInEasing
+        )
+    ).value
+}
+
+@Composable
+private fun animateTextSize(
+    animationPlayed: Boolean,
+    animDuration: Int
+): Float {
+    return animateFloatAsState(
+        targetValue = if (animationPlayed) 24f else 0f,
+        animationSpec = tween(
+            durationMillis = animDuration,
+            easing = LinearOutSlowInEasing
+        )
+    ).value
+}
+
+private fun calculateFloatValues(
+    data: List<Pair<String, Int>>,
+    totalSum: Int
+): List<Float> {
+    return data.map { (_, value) -> 360 * value / totalSum.toFloat() }
 }
