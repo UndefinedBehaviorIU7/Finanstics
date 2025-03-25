@@ -14,6 +14,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,12 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.Blue
+import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
+import kotlin.time.Duration
 
 @Suppress("MagicNumber")
 @Composable
 fun DetailsPieChart(
     data: List<Pair<String, Int>>,
-    expenses: Boolean
+    expenses: Boolean,
+    animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
     val colors = statsColors(expenses)
     Column(
@@ -48,7 +56,8 @@ fun DetailsPieChart(
             DetailsPieChartItem(
                 data = Pair(data[index].first, value),
                 widthSize = ((data.sumOf { it.second }) / data[index].second).toFloat(),
-                color = colors[index]
+                color = colors[index],
+                animateDuration = animateDuration
             )
         }
     }
@@ -59,8 +68,15 @@ fun DetailsPieChart(
 fun DetailsPieChartItem(
     data: Pair<String, Int>,
     widthSize: Float,
-    color: Color = Blue
+    color: Color = Blue,
+    animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
+    var isAnimationPlayed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isAnimationPlayed = true
+    }
+
     Surface(
         modifier = Modifier.padding(vertical = 10.dp),
         color = Color.Transparent
@@ -74,12 +90,18 @@ fun DetailsPieChartItem(
                     modifier = Modifier.padding(end = 15.dp),
                     text = data.first,
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = Color.Black
                 )
             }
 
             BoxWithConstraints(modifier = Modifier.weight(4f)) {
+                val barLen = animateDp(
+                    animationPlayed = isAnimationPlayed,
+                    start = 0.dp,
+                    end = maxWidth / widthSize,
+                    animDuration = 1000
+                )
                 Box(
                     modifier = Modifier
                         .background(
@@ -87,7 +109,7 @@ fun DetailsPieChartItem(
                             shape = RoundedCornerShape(10.dp)
                         )
                         .height(10.dp)
-                        .width(maxWidth / widthSize)
+                        .width(barLen)
                 )
             }
 
@@ -96,7 +118,7 @@ fun DetailsPieChartItem(
                     modifier = Modifier.padding(start = 15.dp),
                     text = data.second.toString(),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = color
                 )
             }
