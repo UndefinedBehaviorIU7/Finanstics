@@ -2,6 +2,7 @@ package com.example.finanstics.ui.theme
 
 const val EXPENSES = "Расходы"
 const val INCOMES = "Доходы"
+const val DEGREES_MAX = 360
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,

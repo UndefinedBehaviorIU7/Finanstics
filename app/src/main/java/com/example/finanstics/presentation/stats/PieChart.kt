@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.ColorsExpenses
 import com.example.finanstics.ui.theme.ColorsIncomes
+import com.example.finanstics.ui.theme.DEGREES_MAX
 import com.example.finanstics.ui.theme.EXPENSES
 import com.example.finanstics.ui.theme.INCOMES
 
@@ -168,5 +169,5 @@ private fun calculateFloatValues(
     data: List<Pair<String, Int>>,
     totalSum: Int
 ): List<Float> {
-    return data.map { (_, value) -> 360 * value / totalSum.toFloat() }
+    return data.map { (_, value) -> DEGREES_MAX * value / totalSum.toFloat() }
 }
