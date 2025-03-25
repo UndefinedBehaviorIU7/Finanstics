@@ -1,8 +1,8 @@
-package com.example.assignly.api
+package com.example.finanstics.api
 
-import com.example.assignly.models.CreateActionResponse
-import com.example.assignly.models.CreateCategoryResponse
-import com.example.assignly.models.User
+import com.example.finanstics.api.models.CreateActionResponse
+import com.example.finanstics.api.models.CreateCategoryResponse
+import com.example.finanstics.api.models.User
 import retrofit2.Response
 
 class ApiRepository {
@@ -10,7 +10,11 @@ class ApiRepository {
         return RetrofitInstance.api.getUser(userId)
     }
 
-    suspend fun addCategory(userId: Int, token: String, categoryName: String): Response<CreateCategoryResponse> {
+    suspend fun addCategory(
+        userId: Int,
+        token: String,
+        categoryName: String
+    ): Response<CreateCategoryResponse> {
         return RetrofitInstance.api.addCategory(userId, token, categoryName)
     }
 
@@ -25,6 +29,16 @@ class ApiRepository {
         description: String,
         groupId: Int?
     ): Response<CreateActionResponse> {
-        return RetrofitInstance.api.addAction(userId, token, actionName, actionType, value, date, categoryId, description, groupId)
+        return RetrofitInstance.api.addAction(
+            userId,
+            token,
+            actionName,
+            actionType,
+            value,
+            date,
+            categoryId,
+            description,
+            groupId
+        )
     }
 }
