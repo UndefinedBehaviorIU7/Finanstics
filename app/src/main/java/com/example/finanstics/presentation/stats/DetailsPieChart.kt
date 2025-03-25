@@ -37,6 +37,8 @@ fun DetailsPieChart(
     animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
     val colors = statsColors(expenses)
+    val sumTotal = data.sumOf { it.second }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -55,7 +57,7 @@ fun DetailsPieChart(
         data.forEachIndexed { index, (_, value) ->
             DetailsPieChartItem(
                 data = Pair(data[index].first, value),
-                widthSize = ((data.sumOf { it.second }) / data[index].second).toFloat(),
+                widthSize = (sumTotal / data[index].second.toFloat()),
                 color = colors[index],
                 animateDuration = animateDuration
             )
@@ -76,6 +78,7 @@ fun DetailsPieChartItem(
     LaunchedEffect(Unit) {
         isAnimationPlayed = true
     }
+    println(widthSize)
 
     Surface(
         modifier = Modifier.padding(vertical = 10.dp),
