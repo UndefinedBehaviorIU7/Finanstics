@@ -111,7 +111,8 @@ fun BarItem(
             Icon(
                 imageVector = screen.icon,
                 contentDescription = "",
-                tint = if (selected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary,
+                tint = if (selected) MaterialTheme.colorScheme.tertiary
+                else MaterialTheme.colorScheme.primary,
             )
         }
     }
