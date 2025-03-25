@@ -22,6 +22,7 @@ interface NetworkService {
     ): Response<CategoryResponse>
 
     @FormUrlEncoded
+    @Suppress("LongParameterList")
     @POST("users/{user_id}/add_action")
     suspend fun addAction(
         @Path("user_id") userId: Int,

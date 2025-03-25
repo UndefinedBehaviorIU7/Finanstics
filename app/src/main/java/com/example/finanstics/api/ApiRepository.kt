@@ -1,5 +1,6 @@
 package com.example.finanstics.api
 
+import com.example.finanstics.api.models.Action
 import com.example.finanstics.api.models.ActionResponse
 import com.example.finanstics.api.models.CategoryResponse
 import com.example.finanstics.api.models.User
@@ -21,24 +22,18 @@ class ApiRepository {
     suspend fun addAction(
         userId: Int,
         token: String,
-        actionName: String,
-        actionType: Int,
-        value: Int,
-        date: String,
-        categoryId: Int,
-        description: String,
-        groupId: Int?
+        action: Action
     ): Response<ActionResponse> {
         return RetrofitInstance.api.addAction(
-            userId,
-            token,
-            actionName,
-            actionType,
-            value,
-            date,
-            categoryId,
-            description,
-            groupId
+            userId = userId,
+            token = token,
+            actionName = action.name!!,
+            actionType = action.type!!,
+            value = action.value!!,
+            date = action.date!!,
+            categoryId = action.categoryId!!,
+            description = action.description!!,
+            groupId = action.groupId!!
         )
     }
 }
