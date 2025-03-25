@@ -47,8 +47,8 @@ val ColorsExpenses = listOf(
 val GreyDark = Color(0xFF303030)
 val GreyLight = Color(0xFFB9B9B9)
 
-val WhiteSoft = Color(0xFFEDEDED)
+val WhiteSoft = Color(0xFFF7F7F7)
 val BlackSoft = Color(0xFF121212)
 
-val YellowSoftLight = Color(0xFFD27300)
+val YellowSoftLight = Color(0xFFFF8A00)
 val YellowSoftDark = Color(0xFFFEE06B)
