@@ -8,12 +8,12 @@ import com.example.finanstics.ui.theme.FinansticsTheme
 import com.example.finanstics.ui.theme.INCOMES_DATA
 
 @Suppress("MagicNumber")
-@Preview (
+@Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun StatsPreview() {
-    FinansticsTheme (
+    FinansticsTheme(
         dynamicColor = false
     ) {
         StatsView(
