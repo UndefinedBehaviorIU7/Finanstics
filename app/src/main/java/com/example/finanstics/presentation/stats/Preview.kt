@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.finanstics.ui.theme.EXPENSES_DATA
 import com.example.finanstics.ui.theme.INCOMES_DATA
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun PieChartPreview() {

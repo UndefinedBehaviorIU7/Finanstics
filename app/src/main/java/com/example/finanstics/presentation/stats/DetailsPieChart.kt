@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.Blue
 
+@Suppress("MagicNumber")
 @Composable
 fun DetailsPieChart(
     data: List<Pair<String, Int>>,
@@ -53,6 +54,7 @@ fun DetailsPieChart(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun DetailsPieChartItem(
     data: Pair<String, Int>,

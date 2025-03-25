@@ -52,6 +52,7 @@ fun statsLabel(expenses: Boolean): String {
     return INCOMES
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun PieChart(
     data: List<Pair<String, Int>>,
@@ -107,6 +108,7 @@ fun PieChart(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun rememberAnimationPlayed(): Boolean {
     var animationPlayed by remember { mutableStateOf(false) }
@@ -116,6 +118,7 @@ private fun rememberAnimationPlayed(): Boolean {
     return animationPlayed
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun animateChartSize(
     animationPlayed: Boolean,
@@ -131,6 +134,7 @@ private fun animateChartSize(
     ).value
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun animateChartRotation(
     animationPlayed: Boolean,
@@ -145,6 +149,7 @@ private fun animateChartRotation(
     ).value
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun animateTextSize(
     animationPlayed: Boolean,
