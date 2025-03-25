@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +49,7 @@ fun DetailsPieChart(
                 text = statsLabel(expenses),
                 fontWeight = FontWeight.Normal,
                 fontSize = 26.sp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.primary
             )
         }
         data.forEachIndexed { index, (_, value) ->
@@ -90,7 +91,7 @@ fun DetailsPieChartItem(
                     text = data.first,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -118,7 +119,7 @@ fun DetailsPieChartItem(
                     text = data.second.toString(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
-                    color = color
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }

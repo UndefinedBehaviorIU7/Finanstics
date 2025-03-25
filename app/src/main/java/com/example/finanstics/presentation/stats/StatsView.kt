@@ -1,5 +1,6 @@
 package com.example.finanstics.presentation.stats
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +37,9 @@ fun Stats(
     val uiState = vm.uiState.collectAsState().value
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(
+            color = MaterialTheme.colorScheme.background
+        )
     ) {
         when (uiState) {
             is StatsUiState.Done -> StatsView(
@@ -84,7 +88,7 @@ fun StatsView(
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 2.dp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -101,7 +105,7 @@ fun StatsView(
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 2.dp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.secondary
             )
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -123,6 +127,6 @@ fun StatsErrorView(
         text = message,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
-        color = Color.Black
+        color = MaterialTheme.colorScheme.primary
     )
 }
