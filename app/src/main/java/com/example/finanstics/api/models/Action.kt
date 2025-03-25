@@ -1,4 +1,4 @@
-package com.example.assignly.models
+package com.example.finanstics.api.models
 
 data class Action(
     val id: Int,
@@ -7,8 +7,8 @@ data class Action(
     val name: String?,
     val value: Int?,
     val date: String?,
-    val category_id: Int?,
+    val categoryId: Int?,
     val description: String?,
-    val group_id: Int?,
-    val created_at: String?
+    val groupId: Int?,
+    val createdAt: String?
 )

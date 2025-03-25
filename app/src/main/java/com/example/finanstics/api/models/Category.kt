@@ -1,4 +1,4 @@
-package com.example.assignly.models
+package com.example.finanstics.api.models
 
 data class Category(
     val id: Int,
