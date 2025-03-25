@@ -117,7 +117,7 @@ fun StatsView(
 @Composable
 fun StatsErrorView(
     message: String
-){
+) {
     Text(
         text = message,
         fontWeight = FontWeight.Normal,
