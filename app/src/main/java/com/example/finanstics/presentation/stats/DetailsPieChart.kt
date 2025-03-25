@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.Blue
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
-import kotlin.time.Duration
 
 @Suppress("MagicNumber")
 @Composable
