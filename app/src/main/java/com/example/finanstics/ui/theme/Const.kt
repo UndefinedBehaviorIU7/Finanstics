@@ -18,4 +18,4 @@ val EXPENSES_DATA = listOf(
     "Транспорт" to 1900
 )
 
-const val STATS_ANIMATE_DURATION = 1600
+const val STATS_ANIMATE_DURATION = 1000

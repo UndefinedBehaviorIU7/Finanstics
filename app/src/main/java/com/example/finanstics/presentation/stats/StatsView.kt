@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,15 +37,18 @@ fun Stats(
     val uiState = vm.uiState.collectAsState().value
 
     Box(
-        modifier = Modifier.fillMaxSize().background(
-            color = MaterialTheme.colorScheme.background
-        )
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                color = MaterialTheme.colorScheme.background
+            )
     ) {
         when (uiState) {
             is StatsUiState.Done -> StatsView(
                 uiState.incomes,
                 uiState.expenses
             )
+
             is StatsUiState.Error -> StatsErrorView(uiState.message)
             StatsUiState.Loading -> {}
         }
@@ -57,62 +61,60 @@ fun StatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>
 ) {
-    LazyColumn(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
+            .fillMaxSize()
+            .padding(
+                top = 40.dp,
+                start = 20.dp,
+                end = 20.dp,
+            )
     ) {
-        item {
-            Row() {
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = incomes,
-                        radiusOuter = 90.dp,
-                        expenses = false,
-                        chartBarWidth = 26.dp,
-                    )
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = expenses,
-                        radiusOuter = 90.dp,
-                        expenses = true,
-                        chartBarWidth = 26.dp,
-                    )
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            item {
+                Row() {
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = incomes,
+                            radiusOuter = 90.dp,
+                            expenses = false,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = expenses,
+                            radiusOuter = 90.dp,
+                            expenses = true,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
                 }
             }
-        }
-        item {
-            Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-
-        item {
-            DetailsPieChart(
-                data = incomes,
-                expenses = false
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(10.dp))
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-        item {
-            DetailsPieChart(
-                data = expenses,
-                expenses = true
-            )
+            item {
+                Divider(
+                    space = 10.dp,
+                    stroke = 2.dp
+                )
+            }
+            item {
+                DetailsPieChart(
+                    data = incomes,
+                    expenses = false
+                )
+            }
+            item {
+                Divider(
+                    space = 10.dp,
+                    stroke = 2.dp
+                )
+            }
+            item {
+                DetailsPieChart(
+                    data = expenses,
+                    expenses = true
+                )
+            }
         }
     }
 }
@@ -128,4 +130,19 @@ fun StatsErrorView(
         fontSize = 18.sp,
         color = MaterialTheme.colorScheme.primary
     )
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun Divider(
+    space: Dp,
+    stroke: Dp
+) {
+    Spacer(modifier = Modifier.height(space))
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        thickness = stroke,
+        color = MaterialTheme.colorScheme.secondary
+    )
+    Spacer(modifier = Modifier.height(10.dp))
 }

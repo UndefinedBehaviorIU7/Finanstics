@@ -80,6 +80,7 @@ fun PieChart(
             Canvas(
                 modifier = Modifier
                     .size(radiusOuter * 2f)
+                    .rotate(-floatValue[0])
                     .rotate(animateRotation)
             ) {
                 floatValue.forEachIndexed { index, value ->

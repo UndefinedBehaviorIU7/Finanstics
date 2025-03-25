@@ -68,4 +68,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.accompanist.pager)
     implementation(libs.accompanist.pager.indicators)
+    implementation(libs.accompanist.systemuicontroller)
 }
