@@ -1,8 +1,5 @@
 package com.example.finanstics.presentation.stats
 
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,11 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,6 +24,7 @@ import com.example.finanstics.ui.theme.ColorsIncomes
 import com.example.finanstics.ui.theme.DEGREES_MAX
 import com.example.finanstics.ui.theme.EXPENSES
 import com.example.finanstics.ui.theme.INCOMES
+import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 
 fun statsColors(expenses: Boolean): List<Color> {
     if (expenses) return ColorsExpenses
@@ -60,7 +53,7 @@ fun PieChart(
     expenses: Boolean = true,
     radiusOuter: Dp = 100.dp,
     chartBarWidth: Dp = 25.dp,
-    animDuration: Int = 1000,
+    animDuration: Int = STATS_ANIMATE_DURATION,
 ) {
     val totalSum = data.sumOf { it.second }
     val floatValue = calculateFloatValues(data, totalSum)
@@ -107,62 +100,6 @@ fun PieChart(
             )
         }
     }
-}
-
-@Suppress("MagicNumber")
-@Composable
-private fun rememberAnimationPlayed(): Boolean {
-    var animationPlayed by remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = true) {
-        animationPlayed = true
-    }
-    return animationPlayed
-}
-
-@Suppress("MagicNumber")
-@Composable
-private fun animateChartSize(
-    animationPlayed: Boolean,
-    radiusOuter: Dp,
-    animDuration: Int
-): Float {
-    return animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            easing = LinearOutSlowInEasing
-        )
-    ).value
-}
-
-@Suppress("MagicNumber")
-@Composable
-private fun animateChartRotation(
-    animationPlayed: Boolean,
-    animDuration: Int
-): Float {
-    return animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            easing = LinearOutSlowInEasing
-        )
-    ).value
-}
-
-@Suppress("MagicNumber")
-@Composable
-private fun animateTextSize(
-    animationPlayed: Boolean,
-    animDuration: Int
-): Float {
-    return animateFloatAsState(
-        targetValue = if (animationPlayed) 24f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            easing = LinearOutSlowInEasing
-        )
-    ).value
 }
 
 private fun calculateFloatValues(

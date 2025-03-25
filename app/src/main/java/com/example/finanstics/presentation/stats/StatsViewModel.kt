@@ -1,9 +1,7 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
-import android.net.http.HttpException
-import android.os.Build
-import androidx.annotation.RequiresExtension
+import retrofit2.HttpException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +14,6 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = StatsRepository()
 
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun fetchData() {
         _uiState.value = StatsUiState.Loading
         viewModelScope.launch {

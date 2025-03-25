@@ -20,10 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Suppress("MagicNumber")
 @Composable
 fun Stats(
+    navController: NavController,
     vm: StatsViewModel = viewModel(),
 ) {
     LaunchedEffect(Unit) {
@@ -40,9 +42,8 @@ fun Stats(
                 uiState.incomes,
                 uiState.expenses
             )
-
             is StatsUiState.Error -> StatsErrorView(uiState.message)
-            StatsUiState.Loading -> TODO()
+            StatsUiState.Loading -> {}
         }
     }
 }

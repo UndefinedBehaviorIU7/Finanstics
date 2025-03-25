@@ -17,3 +17,5 @@ val EXPENSES_DATA = listOf(
     "Развлечения" to 2200,
     "Транспорт" to 1900
 )
+
+const val STATS_ANIMATE_DURATION = 1600
