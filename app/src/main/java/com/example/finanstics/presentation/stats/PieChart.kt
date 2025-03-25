@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -80,6 +81,7 @@ fun PieChart(
             Canvas(
                 modifier = Modifier
                     .size(radiusOuter * 2f)
+                    .rotate(-floatValue[0])
                     .rotate(animateRotation)
             ) {
                 floatValue.forEachIndexed { index, value ->

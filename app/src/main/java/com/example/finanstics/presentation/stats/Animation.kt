@@ -45,7 +45,7 @@ fun animateChartRotation(
     animDuration: Int
 ): Float {
     return animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,
+        targetValue = if (animationPlayed) 270f else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
             easing = LinearOutSlowInEasing
