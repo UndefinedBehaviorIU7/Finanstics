@@ -27,6 +27,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.launch
 
+@Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
@@ -55,6 +56,7 @@ fun MainScreen(
     }
 }
 
+@Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun BottomBar(
@@ -78,6 +80,7 @@ fun BottomBar(
     }
 }
 
+@Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun BarItem(
