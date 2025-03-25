@@ -1,7 +1,7 @@
 package com.example.finanstics.api
 
 import com.example.finanstics.api.models.CreateActionResponse
-import com.example.finanstics.api.models.CreateCategoryResponse
+import com.example.finanstics.api.models.CategoryResponse
 import com.example.finanstics.api.models.User
 import retrofit2.Response
 
@@ -14,7 +14,7 @@ class ApiRepository {
         userId: Int,
         token: String,
         categoryName: String
-    ): Response<CreateCategoryResponse> {
+    ): Response<CategoryResponse> {
         return RetrofitInstance.api.addCategory(userId, token, categoryName)
     }
 

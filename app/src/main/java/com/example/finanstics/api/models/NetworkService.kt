@@ -19,7 +19,7 @@ interface NetworkService {
         @Path("user_id") userId: Int,
         @Field("token") token: String,
         @Field("category_name") categoryName: String
-    ): Response<CreateCategoryResponse>
+    ): Response<CategoryResponse>
 
     @FormUrlEncoded
     @POST("users/{user_id}/add_action")
@@ -33,5 +33,5 @@ interface NetworkService {
         @Field("category_id") categoryId: Int,
         @Field("description") description: String,
         @Field("group_id") groupId: Int?
-    ): Response<CreateActionResponse>
+    ): Response<ActionResponse>
 }
