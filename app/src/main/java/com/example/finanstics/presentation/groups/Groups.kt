@@ -1,6 +1,7 @@
 package com.example.finanstics.presentation.groups
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.finanstics.presentation.Navigation
 
 @Suppress("MagicNumber")
 @Composable
@@ -26,7 +28,11 @@ fun Groups(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Groups",
+            modifier = Modifier.clickable {
+                navController.popBackStack()
+                navController.navigate(Navigation.CAL.toString())
+            },
+            text = "Group",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

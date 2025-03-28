@@ -6,6 +6,7 @@ sealed class StatsUiState {
     data class Done(
         val incomes: List<Pair<String, Int>>,
         val expenses: List<Pair<String, Int>>,
+        val month: Int
     ) : StatsUiState()
 
     data class Error(

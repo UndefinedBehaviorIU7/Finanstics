@@ -40,12 +40,25 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
+fun isIn(
+    state: Int,
+    history: MutableList<Int>
+): Boolean {
+    for (i in 0..<history.size) {
+        if (history[i] == state) {
+            return true
+        }
+    }
+    return false
+}
+
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    initialPage: Int = 0
 ) {
     val systemUiController = rememberSystemUiController()
     val isDarkTheme = isSystemInDarkTheme()
@@ -70,8 +83,23 @@ fun MainScreen(
     val pagerState = remember { PagerState(pageCount = screens.size) }
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(Unit) {
+        val targetPage = initialPage.coerceIn(0, screens.size - 1)
+        if (pagerState.currentPage != targetPage) {
+            pagerState.animateScrollToPage(targetPage)
+        }
+        if (pageHistory.isEmpty()) {
+            pageHistory.add(targetPage)
+        }
+    }
+
     LaunchedEffect(pagerState.currentPage) {
-        if (pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) {
+        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) &&
+            !isIn(
+                state = pagerState.currentPage,
+                history = pageHistory
+            )
+        ) {
             pageHistory.add(pagerState.currentPage)
         }
     }
