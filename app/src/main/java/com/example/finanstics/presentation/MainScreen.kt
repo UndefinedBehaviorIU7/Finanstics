@@ -1,5 +1,8 @@
 package com.example.finanstics.presentation
 
+import android.os.Build
+import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -22,6 +25,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -36,15 +40,31 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
+fun isIn(
+    state: Int,
+    history: MutableList<Int>
+): Boolean {
+    for (i in 0..<history.size) {
+        if (history[i] == state) {
+            return true
+        }
+    }
+    return false
+}
+
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    initialPage: Int = 0
 ) {
     val systemUiController = rememberSystemUiController()
     val isDarkTheme = isSystemInDarkTheme()
     val navigationBarColor = MaterialTheme.colorScheme.background
+
+    val pageHistory = remember { mutableStateListOf<Int>() }
 
     LaunchedEffect(isDarkTheme) {
         systemUiController.setNavigationBarColor(
@@ -61,6 +81,36 @@ fun MainScreen(
     )
 
     val pagerState = remember { PagerState(pageCount = screens.size) }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        val targetPage = initialPage.coerceIn(0, screens.size - 1)
+        if (pagerState.currentPage != targetPage) {
+            pagerState.animateScrollToPage(targetPage)
+        }
+        if (pageHistory.isEmpty()) {
+            pageHistory.add(targetPage)
+        }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) &&
+            !isIn(
+                state = pagerState.currentPage,
+                history = pageHistory
+            )
+        ) {
+            pageHistory.add(pagerState.currentPage)
+        }
+    }
+
+    BackHandler(enabled = pageHistory.size > 1) {
+        coroutineScope.launch {
+            pageHistory.removeLast()
+            val prevPage = pageHistory.last()
+            pagerState.animateScrollToPage(prevPage)
+        }
+    }
 
     Scaffold(
         bottomBar = { BottomBar(pagerState = pagerState, screens = screens) }

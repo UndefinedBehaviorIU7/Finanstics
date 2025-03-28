@@ -20,7 +20,12 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val incomes = repository.getIncomes()
                 val expenses = repository.getExpenses()
-                _uiState.value = StatsUiState.Done(incomes = incomes, expenses = expenses)
+                val calendar = java.util.Calendar.getInstance()
+                val month = calendar.get(java.util.Calendar.MONTH) + 1
+                _uiState.value = StatsUiState.Done(
+                    incomes = incomes,
+                    expenses = expenses,
+                    month = month)
             } catch (e: HttpException) {
                 _uiState.value = StatsUiState.Error(" ${e.localizedMessage}")
             }

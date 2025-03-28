@@ -46,7 +46,8 @@ fun Stats(
         when (uiState) {
             is StatsUiState.Done -> StatsView(
                 uiState.incomes,
-                uiState.expenses
+                uiState.expenses,
+                uiState.month
             )
 
             is StatsUiState.Error -> StatsErrorView(uiState.message)
@@ -59,7 +60,8 @@ fun Stats(
 @Composable
 fun StatsView(
     incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>
+    expenses: List<Pair<String, Int>>,
+    month: Int
 ) {
     Box(
         modifier = Modifier
@@ -70,6 +72,7 @@ fun StatsView(
                 end = 20.dp,
             )
     ) {
+        Text(text = month.toString())
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             item {
                 Row() {
