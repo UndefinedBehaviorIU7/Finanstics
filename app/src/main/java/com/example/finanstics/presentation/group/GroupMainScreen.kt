@@ -66,8 +66,8 @@ fun GroupMainScreen(
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) &&
-            !isIn(
+        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage)
+            && !isIn(
                 state = pagerState.currentPage,
                 history = pageHistory
             )
