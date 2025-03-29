@@ -1,12 +1,12 @@
 package com.example.finanstics.presentation.group.stats
 
 import android.app.Application
-import retrofit2.HttpException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class GroupStatsViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<GroupStatsUiState>(GroupStatsUiState.Loading)
@@ -25,7 +25,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                 _uiState.value = GroupStatsUiState.Done(
                     incomes = incomes,
                     expenses = expenses,
-                    month = month)
+                    month = month
+                )
             } catch (e: HttpException) {
                 _uiState.value = GroupStatsUiState.Error(" ${e.localizedMessage}")
             }

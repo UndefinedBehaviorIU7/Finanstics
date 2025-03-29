@@ -25,7 +25,8 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.value = StatsUiState.Done(
                     incomes = incomes,
                     expenses = expenses,
-                    month = month)
+                    month = month
+                )
             } catch (e: HttpException) {
                 _uiState.value = StatsUiState.Error(" ${e.localizedMessage}")
             }

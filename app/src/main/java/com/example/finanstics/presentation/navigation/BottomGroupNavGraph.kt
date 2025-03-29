@@ -23,7 +23,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 
-
 @Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
