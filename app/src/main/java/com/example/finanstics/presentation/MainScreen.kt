@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
@@ -36,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.navigation.BottomBarScreen
 import com.example.finanstics.presentation.navigation.BottomNavGraph
-import com.example.finanstics.ui.theme.icons.GroupsIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -46,7 +44,7 @@ fun isIn(
     state: Int,
     history: MutableList<Int>
 ): Boolean {
-    for (i in 0.. history.size - 1) {
+    for (i in 0..history.size - 1) {
         if (history[i] == state) {
             return true
         }
