@@ -46,7 +46,7 @@ fun isIn(
     state: Int,
     history: MutableList<Int>
 ): Boolean {
-    for (i in 0..<history.size) {
+    for (i in 0.. history.size - 1) {
         if (history[i] == state) {
             return true
         }
