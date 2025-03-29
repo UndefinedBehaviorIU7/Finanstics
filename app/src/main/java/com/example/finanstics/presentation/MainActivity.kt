@@ -17,6 +17,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.finanstics.presentation.group.GroupMainScreen
+import com.example.finanstics.presentation.groups.Groups
 import com.example.finanstics.ui.theme.FinansticsTheme
 
 enum class Navigation(val route: String) {
@@ -24,7 +26,9 @@ enum class Navigation(val route: String) {
     GROUPS("groups"),
     CALENDAR("calendar"),
     SETTINGS("settings"),
-    CAL("cal");
+    GROUP_STATS("group_stats"),
+    GROUP_CALENDAR("group_calendar"),
+    GROUP_SETTINGS("group_settings")
 }
 
 class MainActivity : ComponentActivity() {
@@ -49,47 +53,42 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(Navigation.GROUPS.toString()) {
-                        MainScreen(
+                        Groups(
                             navController = navController,
-                            initialPage = 1
                         )
                     }
                     composable(Navigation.CALENDAR.toString()) {
                         MainScreen(
                             navController = navController,
-                            initialPage = 2
+                            initialPage = 1
                         )
                     }
                     composable(Navigation.SETTINGS.toString()) {
                         MainScreen(
                             navController = navController,
-                            initialPage = 3
+                            initialPage = 2
                         )
                     }
-                    composable(Navigation.CAL.toString()) {
-                        CalScreen(
+                    composable(Navigation.GROUP_STATS.toString()) {
+                        GroupMainScreen(
                             navController = navController,
-                            modifier = Modifier.fillMaxSize()
+                            initialPage = 0
+                        )
+                    }
+                    composable(Navigation.GROUP_CALENDAR.toString()) {
+                        GroupMainScreen(
+                            navController = navController,
+                            initialPage = 1
+                        )
+                    }
+                    composable(Navigation.GROUP_SETTINGS.toString()) {
+                        GroupMainScreen(
+                            navController = navController,
+                            initialPage = 2
                         )
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun CalScreen(
-    navController: NavController,
-    modifier: Modifier
-) {
-    Box(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.tertiary)
-    ) {
-        BackHandler() {
-            navController.popBackStack()
-            navController.navigate(Navigation.GROUPS.toString())
         }
     }
 }

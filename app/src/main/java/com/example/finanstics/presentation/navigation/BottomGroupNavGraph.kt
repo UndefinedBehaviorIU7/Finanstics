@@ -15,18 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
-import com.example.finanstics.presentation.calendar.Calendar
-import com.example.finanstics.presentation.settings.Settings
-import com.example.finanstics.presentation.stats.Stats
-import com.example.finanstics.ui.theme.icons.GroupsIcon
+import com.example.finanstics.presentation.group.calendar.GroupCalendar
+import com.example.finanstics.presentation.group.settings.GroupSettings
+import com.example.finanstics.presentation.group.stats.GroupStats
+import com.example.finanstics.ui.theme.icons.PersonIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 
+
 @Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun BottomNavGraph(
+fun BottomGroupNavGraph(
     pagerState: PagerState,
     navController: NavController
 ) {
@@ -37,9 +38,9 @@ fun BottomNavGraph(
             state = pagerState
         ) { page ->
             when (page) {
-                0 -> Stats(navController)
-                1 -> Calendar(navController)
-                2 -> Settings(navController)
+                0 -> GroupStats(navController)
+                1 -> GroupCalendar(navController)
+                2 -> GroupSettings(navController)
             }
         }
         Row(
@@ -53,13 +54,13 @@ fun BottomNavGraph(
             horizontalArrangement = Arrangement.End,
         ) {
             Icon(
-                imageVector = GroupsIcon,
+                imageVector = PersonIcon,
                 contentDescription = "",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(30.dp)
                     .clickable {
-                        navController.navigate(Navigation.GROUPS.toString())
+                        navController.navigate(Navigation.STATS.toString())
                     }
             )
         }

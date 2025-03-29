@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.stats
+package com.example.finanstics.presentation.group.stats
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,12 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.presentation.stats.DetailsPieChart
+import com.example.finanstics.presentation.stats.PieChart
 
 @Suppress("MagicNumber")
 @Composable
-fun Stats(
+fun GroupStats(
     navController: NavController,
-    vm: StatsViewModel = viewModel(),
+    vm: GroupStatsViewModel = viewModel(),
 ) {
     LaunchedEffect(Unit) {
         vm.fetchData()
@@ -50,14 +52,14 @@ fun Stats(
     ) {
         Row() {
             when (uiState) {
-                is StatsUiState.Done -> StatsView(
+                is GroupStatsUiState.Done -> GroupStatsView(
                     uiState.incomes,
                     uiState.expenses,
                     uiState.month
                 )
 
-                is StatsUiState.Error -> StatsErrorView(uiState.message)
-                StatsUiState.Loading -> {}
+                is GroupStatsUiState.Error -> GroupStatsErrorView(uiState.message)
+                GroupStatsUiState.Loading -> {}
             }
         }
     }
@@ -65,7 +67,7 @@ fun Stats(
 
 @Suppress("MagicNumber")
 @Composable
-fun StatsView(
+fun GroupStatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
     month: Int
@@ -125,7 +127,7 @@ fun StatsView(
 
 @Suppress("MagicNumber")
 @Composable
-fun StatsErrorView(
+fun GroupStatsErrorView(
     message: String
 ) {
     Text(
