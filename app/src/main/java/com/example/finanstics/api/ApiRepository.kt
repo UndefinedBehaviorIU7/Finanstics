@@ -1,8 +1,9 @@
-package com.example.assignly.api
+package com.example.finanstics.api
 
-import com.example.assignly.models.CreateActionResponse
-import com.example.assignly.models.CreateCategoryResponse
-import com.example.assignly.models.User
+import com.example.finanstics.api.models.Action
+import com.example.finanstics.api.models.ActionResponse
+import com.example.finanstics.api.models.CategoryResponse
+import com.example.finanstics.api.models.User
 import retrofit2.Response
 
 class ApiRepository {
@@ -10,21 +11,29 @@ class ApiRepository {
         return RetrofitInstance.api.getUser(userId)
     }
 
-    suspend fun addCategory(userId: Int, token: String, categoryName: String): Response<CreateCategoryResponse> {
+    suspend fun addCategory(
+        userId: Int,
+        token: String,
+        categoryName: String
+    ): Response<CategoryResponse> {
         return RetrofitInstance.api.addCategory(userId, token, categoryName)
     }
 
     suspend fun addAction(
         userId: Int,
         token: String,
-        actionName: String,
-        actionType: Int,
-        value: Int,
-        date: String,
-        categoryId: Int,
-        description: String,
-        groupId: Int?
-    ): Response<CreateActionResponse> {
-        return RetrofitInstance.api.addAction(userId, token, actionName, actionType, value, date, categoryId, description, groupId)
+        action: Action
+    ): Response<ActionResponse> {
+        return RetrofitInstance.api.addAction(
+            userId = userId,
+            token = token,
+            actionName = action.name!!,
+            actionType = action.type!!,
+            value = action.value!!,
+            date = action.date!!,
+            categoryId = action.categoryId!!,
+            description = action.description!!,
+            groupId = action.groupId!!
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.assignly.models
+package com.example.finanstics.api.models
 
 data class User(
     val id: Int,
@@ -7,8 +7,8 @@ data class User(
     val password: String?,
     val username: String?,
     val image: String?,
-    val user_data: String?,
-    val created_at: String?,
+    val userData: String?,
+    val createdAt: String?,
     val groups: List<Int>?,
-    val user_to_categories: List<Int>?
+    val userToCategories: List<Int>?
 )

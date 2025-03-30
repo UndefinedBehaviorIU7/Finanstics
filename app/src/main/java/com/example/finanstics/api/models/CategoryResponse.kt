@@ -1,5 +1,5 @@
-package com.example.assignly.models
+package com.example.finanstics.api.models
 
-data class CreateCategoryResponse(
+data class CategoryResponse(
     val id: Int
 )

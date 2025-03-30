@@ -1,5 +1,6 @@
-package com.example.assignly.api
+package com.example.finanstics.api
 
+import com.example.finanstics.api.models.NetworkService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
