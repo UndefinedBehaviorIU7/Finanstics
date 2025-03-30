@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
 fun CalendarDay(days: Array<DayClass?>, vm: CalendarViewModel) {
@@ -270,7 +271,7 @@ fun ActionsDraw(actions: Array<Action?>) {
 }
 
 @Composable
-fun Calendar() {
+fun Calendar(navController: NavController) {
     val context = LocalContext.current
     val vm: CalendarViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
