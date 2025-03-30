@@ -90,9 +90,9 @@ enum class DayWeekClass(val number: Int) {
 
 
 class DataClass(
-    private var day : Int,
-    private var month : MonthNameClass,
-    private var year : Int,
+    private var day: Int,
+    private var month: MonthNameClass,
+    private var year: Int,
 ) {
 
 //    fun initData (day : Int, month: MonthNameClass, year : Int) {
@@ -157,27 +157,27 @@ class DataClass(
 }
 
 class Action(
-    private var userName : String,
-    private var actionName : String,
-    private var actionType : Int,
-    private var actionMoney : Int,
+    private var userName: String,
+    private var actionName: String,
+    private var actionType: Int,
+    private var actionMoney: Int,
     private  var actionCategory: String,
     private var data : DataClass) {
 
 
-    fun getMoney() : Int {
+    fun getMoney(): Int {
         return actionMoney
     }
 
-    fun getUserName() : String {
+    fun getUserName(): String {
         return userName
     }
 
-    fun getActionName() : String {
+    fun getActionName(): String {
         return actionName
     }
 
-    fun getActionType() : Int {
+    fun getActionType(): Int {
         return actionType
     }
 
@@ -186,7 +186,7 @@ class Action(
 //    }
 }
 
-class DayClass(private val data : DataClass) {
+class DayClass(private val data: DataClass) {
     private val dayOfWeek: DayWeekClass = DayWeekClass.fromInt(dayOfWeekInit(data))
     private val money = 100
     private var actions: Array<Action?>
@@ -220,11 +220,11 @@ class DayClass(private val data : DataClass) {
         }
     }
 
-    fun getActions() : Array<Action?> {
+    fun getActions(): Array<Action?> {
         return actions
     }
 
-    fun getDayData() : Int {
+    fun getDayData(): Int {
         return data.getDay()
     }
 
@@ -232,11 +232,11 @@ class DayClass(private val data : DataClass) {
 //        return data
 //    }
 
-    fun getDayMoney() : Int {
+    fun getDayMoney(): Int {
         return money
     }
 
-    fun getDayOfWeek() : DayWeekClass {
+    fun getDayOfWeek(): DayWeekClass {
         return dayOfWeek
     }
 }
@@ -253,7 +253,7 @@ class MountClass(private var data: DataClass)
         days = daysInit()
     }
 
-    private fun daysInit() : Array<DayClass?>{
+    private fun daysInit(): Array<DayClass?> {
         val days = Array<DayClass?>(countDays) { null }
         for (i in 0..<countDays)
             days[i] = DayClass(DataClass(i + 1, data.getMonth(), data.getYear()))
@@ -264,7 +264,7 @@ class MountClass(private var data: DataClass)
         return (data.getYear() % 4 == 0 && data.getYear() % 100 != 0) || (data.getYear() % 400 == 0)
     }
 
-    private fun countDaysInit () : Int {
+    private fun countDaysInit (): Int {
         if (data.getMonth() == FEBRUARY) {
             return if (isLeapYear())
                 29
@@ -277,14 +277,13 @@ class MountClass(private var data: DataClass)
 
     }
 
-    fun getAllDays() : Array<DayClass?> {
+    fun getAllDays(): Array<DayClass?> {
         return days
     }
 
-    fun getFirstWeek() : Array<DayClass?> {
+    fun getFirstWeek(): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
-        for (day in this.days)
-        {
+        for (day in this.days) {
             days.add(day!!)
             if (day.getDayOfWeek() == DayWeekClass.SUNDAY)
                 break
@@ -292,7 +291,7 @@ class MountClass(private var data: DataClass)
         return days.toTypedArray()
     }
 
-    fun getLastWeek() : Array<DayClass?> {
+    fun getLastWeek(): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
         for (day in this.days.reversed())
         {
@@ -309,14 +308,14 @@ class MountClass(private var data: DataClass)
 //    }
 }
 
-class GridDatas (data : DataClass) {
+class GridDatas (data: DataClass) {
     private var days : Array<DayClass?>
 
     init {
         days = initDays(data)
     }
 
-    private fun initDays(data: DataClass) : Array<DayClass?> {
+    private fun initDays(data: DataClass): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
         val dataLast = data.getMonthLast()
         val dataNext = data.getMonthNext()
@@ -337,7 +336,7 @@ class GridDatas (data : DataClass) {
         days = initDays(data)
     }
 
-    fun getDays() : Array<DayClass?> {
+    fun getDays(): Array<DayClass?> {
         return  days
     }
 
@@ -351,7 +350,7 @@ class GridDatas (data : DataClass) {
 }
 
 class CalendarClass {
-    private var data : DataClass
+    private var data: DataClass
     private var gridDatas: GridDatas
 
     init {
@@ -363,40 +362,30 @@ class CalendarClass {
         gridDatas = GridDatas(data)
     }
 
-    fun getDays() : Array<DayClass?> {
+    fun getDays(): Array<DayClass?> {
         return gridDatas.getDays()
     }
 
-    private fun getGrid() : GridDatas {
+    private fun getGrid(): GridDatas {
         return gridDatas
     }
 
-    fun getData() : DataClass {
+    fun getData(): DataClass {
         return data
     }
 
-    fun nextMount()
-    {
+    fun nextMount() {
         data.dataMonthNext()
         gridDatas.newDays(data)
     }
 
-    fun lastMount()
-    {
+    fun lastMount() {
         data.dataMonthLast()
         gridDatas.newDays(data)
     }
 
-    fun copy(calendar : CalendarClass) {
+    fun copy(calendar: CalendarClass) {
         data = calendar.getData()
         gridDatas =calendar.getGrid()
     }
-
-//    private fun getDays(data : DataClass): DayClass {
-//        return gridDatas.getDay(data)
-//    }
-
-//    fun getAction(data : DataClass) : Array<Action?> {
-//        return this.getDays(data).getActions()
-//    }
 }
