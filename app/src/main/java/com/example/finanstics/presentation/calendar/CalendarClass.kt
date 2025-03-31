@@ -1,14 +1,13 @@
 package com.example.finanstics.presentation.calendar
 
-
 import android.util.Log
 import com.example.finanstics.presentation.calendar.MonthNameClass.APRIL
 import com.example.finanstics.presentation.calendar.MonthNameClass.DECEMBER
 import com.example.finanstics.presentation.calendar.MonthNameClass.FEBRUARY
+import com.example.finanstics.presentation.calendar.MonthNameClass.JANUARY
 import com.example.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.example.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.example.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
-import com.example.finanstics.presentation.calendar.MonthNameClass.JANUARY
 
 enum class MonthNameClass(val number: Int) {
     JANUARY(1),
@@ -95,12 +94,6 @@ class DataClass(
     private var year: Int,
 ) {
 
-//    fun initData (day : Int, month: MonthNameClass, year : Int) {
-//        this.day = day
-//        this.month = month
-//        this.year = year
-//    }
-
     fun getDay() : Int {
         return day
     }
@@ -162,8 +155,8 @@ class Action(
     private var actionType: Int,
     private var actionMoney: Int,
     private  var actionCategory: String,
-    private var data : DataClass) {
-
+    private var data: DataClass
+) {
 
     fun getMoney(): Int {
         return actionMoney
@@ -180,13 +173,11 @@ class Action(
     fun getActionType(): Int {
         return actionType
     }
-
-//    fun getActionCategory() : String {
-//        return actionCategory
-//    }
 }
 
-class DayClass(private val data: DataClass) {
+class DayClass(
+    private val data: DataClass
+) {
     private val dayOfWeek: DayWeekClass = DayWeekClass.fromInt(dayOfWeekInit(data))
     private val money = 100
     private var actions: Array<Action?>
@@ -203,7 +194,9 @@ class DayClass(private val data: DataClass) {
     }
 
     companion object {
-        fun dayOfWeekInit(data: DataClass): Int {
+        fun dayOfWeekInit(
+            data: DataClass
+        ): Int {
             val d = data.getDay()
             var m = data.getMonth().number
             var y = data.getYear()
@@ -243,8 +236,9 @@ class DayClass(private val data: DataClass) {
 
 
 
-class MountClass(private var data: DataClass)
-{
+class MountClass(
+    private var data: DataClass
+) {
     private val countDays: Int
     private val days: Array<DayClass?>
 
@@ -307,14 +301,18 @@ class MountClass(private var data: DataClass)
     }
 }
 
-class GridDatas (data: DataClass) {
-    private var days : Array<DayClass?>
+class GridDatas (
+    data: DataClass
+) {
+    private var days: Array<DayClass?>
 
     init {
         days = initDays(data)
     }
 
-    private fun initDays(data: DataClass): Array<DayClass?> {
+    private fun initDays(
+        data: DataClass
+    ): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
         val dataLast = data.getMonthLast()
         val dataNext = data.getMonthNext()
@@ -331,7 +329,9 @@ class GridDatas (data: DataClass) {
         return days.toTypedArray()
     }
 
-    fun newDays(data: DataClass) {
+    fun newDays(
+        data: DataClass
+    ) {
         days = initDays(data)
     }
 
@@ -375,8 +375,10 @@ class CalendarClass {
         gridDatas.newDays(data)
     }
 
-    fun copy(calendar: CalendarClass) {
+    fun copy(
+        calendar: CalendarClass
+    ) {
         data = calendar.getData()
-        gridDatas =calendar.getGrid()
+        gridDatas = calendar.getGrid()
     }
 }

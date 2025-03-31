@@ -2,7 +2,6 @@
 
 package com.example.finanstics.presentation.calendar
 
-
 import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -126,7 +125,8 @@ fun CalendarHeading(
             modifier = Modifier
                 .weight(0.15f),
             colors = ButtonDefaults.buttonColors(
-                Color.White, Color.Black
+                Color.White,
+                Color.Black
             )
         ) {
             Text(text = "<")
@@ -136,7 +136,8 @@ fun CalendarHeading(
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
-                Color.White, Color.Black
+                Color.White,
+                Color.Black
             )
         ) {
             Text(text = MonthNameClass.str(month))
@@ -146,7 +147,8 @@ fun CalendarHeading(
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(
-                Color.White, Color.Black
+                Color.White,
+                Color.Black
             )
         ) {
             Text(text = year.toString())
@@ -156,7 +158,8 @@ fun CalendarHeading(
             modifier = Modifier
                 .weight(0.15f),
             colors = ButtonDefaults.buttonColors(
-                Color.White, Color.Black
+                Color.White,
+                Color.Black
             )
         ) {
             Text(text = ">")
@@ -171,7 +174,6 @@ fun CalendarHeading(
         color = Color.Black
     )
 }
-
 
 @Composable
 fun CalendarDraw(
