@@ -252,7 +252,7 @@ class MountClass(
             data.getMonth() == JUNE ||
             data.getMonth() == SEPTEMBER ||
             data.getMonth() == NOVEMBER
-            )
+        )
             return 30
         return 31
     }
