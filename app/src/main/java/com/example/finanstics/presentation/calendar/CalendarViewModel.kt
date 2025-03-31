@@ -23,8 +23,12 @@ class CalendarViewModel(
         try {
             _uiState.value = CalendarUiState.Loading
             _uiState.value = CalendarUiState.Default(calendar)
+        } catch (e: NullPointerException) {
+            _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
+        } catch (e: IllegalStateException) {
+            _uiState.value = CalendarUiState.Error("Ошибка: некорректное состояние календаря")
         } catch (e: Exception) {
-            _uiState.value = CalendarUiState.Error("Ошибка при загрузке календаря: ${e.message}")
+            _uiState.value = CalendarUiState.Error("Неизвестная ошибка: ${e.message}")
         }
     }
 

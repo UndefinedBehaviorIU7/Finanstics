@@ -194,6 +194,7 @@ fun CalendarDraw(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun DrawAction(
     action: Action

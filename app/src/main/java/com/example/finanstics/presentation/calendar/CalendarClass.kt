@@ -9,6 +9,22 @@ import com.example.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.example.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.example.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
 
+private const val DAYS_IN_MONTH_28 = 28
+private const val DAYS_IN_MONTH_29 = 29
+private const val DAYS_IN_MONTH_30 = 30
+private const val DAYS_IN_MONTH_31 = 31
+
+private const val NUM_4 = 4
+private const val NUM_100 = 100
+private const val NUM_400 = 400
+
+private const val ZERO = 0
+
+private const val COUNT_ACTION = 20
+private const val COUNT_MONEY = 100
+
+
+@Suppress("MagicNumber")
 enum class MonthNameClass(val number: Int) {
     JANUARY(1),
     FEBRUARY(2),
@@ -48,6 +64,7 @@ enum class MonthNameClass(val number: Int) {
     }
 }
 
+@Suppress("MagicNumber")
 enum class DayWeekClass(val number: Int) {
     MONDAY(1),
     TUESDAY(2),
@@ -164,13 +181,13 @@ class DayClass(
     private val data: DataClass
 ) {
     private val dayOfWeek: DayWeekClass = DayWeekClass.fromInt(dayOfWeekInit(data))
-    private val money = 100
+    private val money = COUNT_MONEY
     private var actions: Array<Action?>
 
     private fun initActions(): Array<Action?> {
         val action = mutableListOf<Action>()
-        for (i in 1..20)
-            action.add(Action("user $i", "action $i", 0, (i + 1) * 100, "категория", data))
+        for (i in ZERO..COUNT_ACTION)
+            action.add(Action("user $i", "action $i", ZERO, (i + 1) * NUM_100, "категория", data))
         return action.toTypedArray()
     }
 
@@ -179,6 +196,7 @@ class DayClass(
     }
 
     companion object {
+        @Suppress("MagicNumber")
         fun dayOfWeekInit(
             data: DataClass
         ): Int {
@@ -232,29 +250,26 @@ class MountClass(
 
     private fun daysInit(): Array<DayClass?> {
         val days = Array<DayClass?>(countDays) { null }
-        for (i in 0 until countDays)
+        for (i in ZERO until countDays)
             days[i] = DayClass(DataClass(i + 1, data.getMonth(), data.getYear()))
         return days
     }
 
     private fun isLeapYear(): Boolean {
-        return (data.getYear() % 4 == 0 && data.getYear() % 100 != 0) || (data.getYear() % 400 == 0)
+        return (data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO) || (data.getYear() % NUM_400 == ZERO)
     }
 
     private fun countDaysInit(): Int {
+        val monthsWith30Days = setOf(APRIL, JUNE, SEPTEMBER, NOVEMBER)
         if (data.getMonth() == FEBRUARY) {
             return if (isLeapYear())
-                29
+                DAYS_IN_MONTH_29
             else
-                28
+                DAYS_IN_MONTH_28
         }
-        if (data.getMonth() == APRIL ||
-            data.getMonth() == JUNE ||
-            data.getMonth() == SEPTEMBER ||
-            data.getMonth() == NOVEMBER
-        )
-            return 30
-        return 31
+        if (data.getMonth() in monthsWith30Days)
+            return DAYS_IN_MONTH_30
+        return DAYS_IN_MONTH_31
     }
 
     fun getAllDays(): Array<DayClass?> {
