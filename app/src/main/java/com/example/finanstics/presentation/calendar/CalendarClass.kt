@@ -23,7 +23,6 @@ private const val ZERO = 0
 private const val COUNT_ACTION = 20
 private const val COUNT_MONEY = 100
 
-
 @Suppress("MagicNumber")
 enum class MonthNameClass(val number: Int) {
     JANUARY(1),
@@ -256,7 +255,8 @@ class MountClass(
     }
 
     private fun isLeapYear(): Boolean {
-        return (data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO) || (data.getYear() % NUM_400 == ZERO)
+        return (data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO) ||
+                (data.getYear() % NUM_400 == ZERO)
     }
 
     private fun countDaysInit(): Int {
