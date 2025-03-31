@@ -178,6 +178,7 @@ fun CalendarHeading(
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun CalendarDraw(
     calendar: CalendarClass,
