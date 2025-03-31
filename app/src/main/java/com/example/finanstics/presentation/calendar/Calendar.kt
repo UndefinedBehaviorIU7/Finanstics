@@ -36,7 +36,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
 @Composable
-fun CalendarDay(days: Array<DayClass?>, vm: CalendarViewModel) {
+fun CalendarDay(
+    days: Array<DayClass?>,
+    vm: CalendarViewModel
+) {
     val columns = 7
 
     Column(
@@ -67,8 +70,7 @@ fun CalendarDay(days: Array<DayClass?>, vm: CalendarViewModel) {
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.spacedBy(1.dp)
-                                )
-                                {
+                                ) {
                                     Text(
                                         text = "${day.getDayData()}",
                                         color = Color.Black,
@@ -90,8 +92,7 @@ fun CalendarDay(days: Array<DayClass?>, vm: CalendarViewModel) {
 }
 
 @Composable
-fun WeekDraw()
-{
+fun WeekDraw() {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -109,7 +110,11 @@ fun WeekDraw()
 }
 
 @Composable
-fun CalendarHeading(month: MonthNameClass, year: Int, vm : CalendarViewModel) {
+fun CalendarHeading(
+    month: MonthNameClass,
+    year: Int,
+    vm: CalendarViewModel
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -169,8 +174,10 @@ fun CalendarHeading(month: MonthNameClass, year: Int, vm : CalendarViewModel) {
 
 
 @Composable
-fun CalendarDraw(calendar: CalendarClass, vm : CalendarViewModel)
-{
+fun CalendarDraw(
+    calendar: CalendarClass,
+    vm: CalendarViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -186,7 +193,9 @@ fun CalendarDraw(calendar: CalendarClass, vm : CalendarViewModel)
 }
 
 @Composable
-fun DrawAction(action : Action) {
+fun DrawAction(
+    action: Action
+) {
     Button(
         onClick = { },
         modifier = Modifier
@@ -248,7 +257,9 @@ fun DrawAction(action : Action) {
 }
 
 @Composable
-fun ActionsDraw(actions: Array<Action?>) {
+fun ActionsDraw(
+    actions: Array<Action?>
+) {
     LazyColumn(
         modifier = Modifier
             .padding(12.dp)
@@ -271,7 +282,9 @@ fun ActionsDraw(actions: Array<Action?>) {
 }
 
 @Composable
-fun Calendar(navController: NavController) {
+fun Calendar(
+    navController: NavController
+) {
     val context = LocalContext.current
     val vm: CalendarViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {

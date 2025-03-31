@@ -255,7 +255,7 @@ class MountClass(private var data: DataClass)
 
     private fun daysInit(): Array<DayClass?> {
         val days = Array<DayClass?>(countDays) { null }
-        for (i in 0..<countDays)
+        for (i in 0 until countDays)
             days[i] = DayClass(DataClass(i + 1, data.getMonth(), data.getYear()))
         return days
     }
@@ -271,7 +271,10 @@ class MountClass(private var data: DataClass)
             else
                 28
         }
-        if (data.getMonth() == APRIL || data.getMonth() == JUNE || data.getMonth() == SEPTEMBER || data.getMonth() == NOVEMBER)
+        if (data.getMonth() == APRIL ||
+            data.getMonth() == JUNE ||
+            data.getMonth() == SEPTEMBER ||
+            data.getMonth() == NOVEMBER)
             return 30
         return 31
 
@@ -302,10 +305,6 @@ class MountClass(private var data: DataClass)
         }
         return days.reversed().toTypedArray()
     }
-
-//    fun getLastDay(): DayClass? {
-//        return days[countDays - 1]
-//    }
 }
 
 class GridDatas (data: DataClass) {
@@ -339,14 +338,6 @@ class GridDatas (data: DataClass) {
     fun getDays(): Array<DayClass?> {
         return  days
     }
-
-//    fun getDay(data : DataClass) : DayClass {
-//        for (day in days)
-//            if (day!!.getData() == data)
-//                return day
-//
-//        return TODO("Provide the return value")
-//    }
 }
 
 class CalendarClass {

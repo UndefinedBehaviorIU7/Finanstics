@@ -6,7 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class CalendarViewModel(application: Application) : AndroidViewModel(application) {
+class CalendarViewModel(
+    application: Application
+) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -50,7 +52,9 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun actions(action : Array<Action?>) {
+    fun actions(
+        action: Array<Action?>
+    ) {
         if (_uiState.value is CalendarUiState.Default ||
             _uiState.value is CalendarUiState.DrawActions
         ) {
