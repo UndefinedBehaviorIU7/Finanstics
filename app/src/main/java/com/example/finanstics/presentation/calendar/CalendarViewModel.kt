@@ -19,6 +19,7 @@ class CalendarViewModel(
         loadCalendar()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun loadCalendar() {
         try {
             _uiState.value = CalendarUiState.Loading

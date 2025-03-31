@@ -261,15 +261,19 @@ class MountClass(
 
     private fun countDaysInit(): Int {
         val monthsWith30Days = setOf(APRIL, JUNE, SEPTEMBER, NOVEMBER)
-        if (data.getMonth() == FEBRUARY) {
-            return if (isLeapYear())
-                DAYS_IN_MONTH_29
-            else
-                DAYS_IN_MONTH_28
+        val month = data.getMonth()
+
+        return when {
+            month == FEBRUARY -> {
+                if (isLeapYear()) DAYS_IN_MONTH_29 else DAYS_IN_MONTH_28
+            }
+            month in monthsWith30Days -> {
+                DAYS_IN_MONTH_30
+            }
+            else -> {
+                DAYS_IN_MONTH_31
+            }
         }
-        if (data.getMonth() in monthsWith30Days)
-            return DAYS_IN_MONTH_30
-        return DAYS_IN_MONTH_31
     }
 
     fun getAllDays(): Array<DayClass?> {

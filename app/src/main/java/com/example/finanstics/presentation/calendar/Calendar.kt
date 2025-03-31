@@ -34,6 +34,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
+@Suppress("MagicNumber")
 @Composable
 fun CalendarDay(
     days: Array<DayClass?>,
@@ -90,6 +91,7 @@ fun CalendarDay(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun WeekDraw() {
     Row(
@@ -108,6 +110,7 @@ fun WeekDraw() {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun CalendarHeading(
     month: MonthNameClass,
@@ -194,7 +197,7 @@ fun CalendarDraw(
     }
 }
 
-@Suppress("LongMethod")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun DrawAction(
     action: Action
@@ -259,6 +262,7 @@ fun DrawAction(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun ActionsDraw(
     actions: Array<Action?>
@@ -284,6 +288,7 @@ fun ActionsDraw(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun Calendar(
     navController: NavController
