@@ -241,7 +241,7 @@ class MountClass(
         return (data.getYear() % 4 == 0 && data.getYear() % 100 != 0) || (data.getYear() % 400 == 0)
     }
 
-    private fun countDaysInit (): Int {
+    private fun countDaysInit(): Int {
         if (data.getMonth() == FEBRUARY) {
             return if (isLeapYear())
                 29
@@ -251,10 +251,10 @@ class MountClass(
         if (data.getMonth() == APRIL ||
             data.getMonth() == JUNE ||
             data.getMonth() == SEPTEMBER ||
-            data.getMonth() == NOVEMBER)
+            data.getMonth() == NOVEMBER
+            )
             return 30
         return 31
-
     }
 
     fun getAllDays(): Array<DayClass?> {
@@ -283,7 +283,7 @@ class MountClass(
     }
 }
 
-class GridDatas (
+class GridDatas(
     data: DataClass
 ) {
     private var days: Array<DayClass?>
@@ -303,7 +303,6 @@ class GridDatas (
         val mountThis = MountClass(data)
         val mountNext = MountClass(dataNext)
 
-
         days.addAll(mountLast.getLastWeek().filterNotNull())
         days.addAll(mountThis.getAllDays().filterNotNull())
         days.addAll(mountNext.getFirstWeek().filterNotNull())
@@ -318,7 +317,7 @@ class GridDatas (
     }
 
     fun getDays(): Array<DayClass?> {
-        return  days
+        return days
     }
 }
 
@@ -331,7 +330,8 @@ class CalendarClass {
         data = DataClass(
             calendar.get(java.util.Calendar.DAY_OF_MONTH),
             MonthNameClass.fromInt(calendar.get(java.util.Calendar.MONTH) + 1),
-            calendar.get(java.util.Calendar.YEAR))
+            calendar.get(java.util.Calendar.YEAR)
+        )
         gridDatas = GridDatas(data)
     }
 

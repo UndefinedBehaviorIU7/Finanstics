@@ -309,10 +309,8 @@ fun Calendar(
 
         when (val uiState = vm.uiState.collectAsState().value) {
             is CalendarUiState.Idle -> {
-
             }
             is CalendarUiState.Loading -> {
-
             }
             is CalendarUiState.Error -> {
                 Text("Error: ${uiState.message}")
