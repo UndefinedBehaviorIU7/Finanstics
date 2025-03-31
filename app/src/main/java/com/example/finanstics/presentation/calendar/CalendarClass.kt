@@ -73,40 +73,25 @@ enum class DayWeekClass(val number: Int) {
     }
 }
 
-//enum class ActionTypeName(val number: Int) {
-//    WASTE(0),
-//    CREDITING(1);
-//
-//    companion object {
-//        fun fromInt(number: Int): ActionTypeName {
-//            return ActionTypeName.entries.find { it.number == number }
-//                ?: throw IllegalArgumentException("Некорректное число")
-//        }
-//
-//    }
-//}
-
-
-
 class DataClass(
     private var day: Int,
     private var month: MonthNameClass,
     private var year: Int,
 ) {
 
-    fun getDay() : Int {
+    fun getDay(): Int {
         return day
     }
 
-    fun getMonth() : MonthNameClass {
+    fun getMonth(): MonthNameClass {
         return month
     }
 
-    fun getYear() : Int {
+    fun getYear(): Int {
         return year
     }
 
-    fun getMonthLast() : DataClass {
+    fun getMonthLast(): DataClass {
         val monthLast = if (month == JANUARY)
             DECEMBER
         else
@@ -120,7 +105,7 @@ class DataClass(
         return DataClass(day, monthLast, yearLast)
     }
 
-    fun getMonthNext() : DataClass {
+    fun getMonthNext(): DataClass {
         val monthNext = if (month == DECEMBER)
             JANUARY
         else
@@ -154,7 +139,7 @@ class Action(
     private var actionName: String,
     private var actionType: Int,
     private var actionMoney: Int,
-    private  var actionCategory: String,
+    private var actionCategory: String,
     private var data: DataClass
 ) {
 
@@ -182,7 +167,7 @@ class DayClass(
     private val money = 100
     private var actions: Array<Action?>
 
-    private fun initActions() : Array<Action?> {
+    private fun initActions(): Array<Action?> {
         val action = mutableListOf<Action>()
         for (i in 1..20)
             action.add(Action("user $i", "action $i", 0, (i + 1) * 100, "категория", data))
@@ -233,8 +218,6 @@ class DayClass(
         return dayOfWeek
     }
 }
-
-
 
 class MountClass(
     private var data: DataClass
@@ -290,8 +273,7 @@ class MountClass(
 
     fun getLastWeek(): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
-        for (day in this.days.reversed())
-        {
+        for (day in this.days.reversed()) {
             Log.d("Calendar", day?.getDayOfWeek()?.number.toString())
             days.add(day!!)
             if (day.getDayOfWeek() == DayWeekClass.MONDAY)
