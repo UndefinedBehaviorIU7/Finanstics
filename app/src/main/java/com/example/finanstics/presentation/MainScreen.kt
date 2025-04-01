@@ -93,14 +93,12 @@ fun MainScreen(
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage)) {
-            if (!isIn(
-                    state = pagerState.currentPage,
-                    history = pageHistory
-                )
-            ) {
-                pageHistory.add(pagerState.currentPage)
-            }
+        val newPage = !isIn(
+            state = pagerState.currentPage,
+            history = pageHistory
+        )
+        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) && newPage) {
+            pageHistory.add(pagerState.currentPage)
         }
     }
 
