@@ -255,8 +255,8 @@ class MountClass(
     }
 
     private fun isLeapYear(): Boolean {
-        return (data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO) ||
-                (data.getYear() % NUM_400 == ZERO)
+        val isLeap = data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO
+        return (isLeap || data.getYear() % NUM_400 == ZERO)
     }
 
     private fun countDaysInit(): Int {
