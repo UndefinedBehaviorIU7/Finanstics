@@ -52,3 +52,6 @@ val BlackSoft = Color(0xFF121212)
 
 val YellowSoftLight = Color(0xFFFF8A00)
 val YellowSoftDark = Color(0xFFFEE06B)
+
+val BackLight = Color(0xFFAFAFAF)
+val BackDark = Color(0xFF212121)
