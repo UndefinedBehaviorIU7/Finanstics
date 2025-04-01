@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
@@ -92,30 +93,9 @@ fun BottomNavGraph(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    Box() {
-                        Icon(
-                            imageVector = CircleIcon,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    TODO()
-                                }
-                        )
-
-                        Icon(
-                            imageVector = GroupsIcon,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.background,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .padding(12.dp)
-                                .clickable {
-                                    navController.navigate(Navigation.GROUPS.toString())
-                                }
-                        )
-                    }
+                    GroupsButton(
+                        navController = navController
+                    )
                 }
                 Row(
                     modifier = Modifier
@@ -126,28 +106,69 @@ fun BottomNavGraph(
                         .height(60.dp),
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    Box(
-                        modifier = Modifier.offset(x = offsetX)
-                    ) {
-                        Icon(
-                            imageVector = CircleIcon,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.tertiary,
-                            modifier = Modifier.size(50.dp)
-                        )
-                        Icon(
-                            imageVector = PlusCircleIcon,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.background,
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    // TODO: обработка клика
-                                }
-                        )
-                    }
+                    PlusActionButton(
+                        navController = navController,
+                        offsetX = offsetX
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+fun PlusActionButton(
+    navController: NavController,
+    offsetX: Dp
+) {
+    Box(
+        modifier = Modifier.offset(x = offsetX)
+    ) {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.size(50.dp)
+        )
+        Icon(
+            imageVector = PlusCircleIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    // TODO: обработка клика
+                }
+        )
+    }
+}
+
+@Composable
+fun GroupsButton(
+    navController: NavController
+) {
+    Box() {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    TODO()
+                }
+        )
+
+        Icon(
+            imageVector = GroupsIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(50.dp)
+                .padding(12.dp)
+                .clickable {
+                    navController.navigate(Navigation.GROUPS.toString())
+                }
+        )
     }
 }
