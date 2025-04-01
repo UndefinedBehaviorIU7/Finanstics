@@ -9,11 +9,12 @@ sealed class CalendarUiState {
     ) : CalendarUiState()
 
     data class Default(
-        val calendar: CalendarClass
+        val calendar: CalendarClass,
     ) : CalendarUiState()
 
     data class DrawActions(
         val calendar: CalendarClass,
-        val actions: List<Action?>
+        val actions: List<Action?>,
+        val day: DayClass?
     ) : CalendarUiState()
 }

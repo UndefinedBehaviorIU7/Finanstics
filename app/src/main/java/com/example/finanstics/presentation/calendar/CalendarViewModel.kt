@@ -12,7 +12,7 @@ class CalendarViewModel(
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-//    private val calendardata = java.util.Calendar.getInstance()
+    //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
     init {
@@ -58,14 +58,24 @@ class CalendarViewModel(
     }
 
     fun actions(
-        action: Array<Action?>
+        action: Array<Action?>,
+        day: DayClass
     ) {
         if (_uiState.value is CalendarUiState.Default ||
             _uiState.value is CalendarUiState.DrawActions
         ) {
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
-            _uiState.value = CalendarUiState.DrawActions(newCalendar, action.toList())
+            _uiState.value = CalendarUiState.DrawActions(newCalendar, action.toList(), day)
+        }
+    }
+
+    fun toDefault() {
+        if (_uiState.value is CalendarUiState.DrawActions
+        ) {
+            val newCalendar = CalendarClass()
+            newCalendar.copy(calendar)
+            _uiState.value = CalendarUiState.Default(newCalendar)
         }
     }
 }
