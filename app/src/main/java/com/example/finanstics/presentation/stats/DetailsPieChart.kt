@@ -36,7 +36,10 @@ fun DetailsPieChart(
     expenses: Boolean,
     animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
-    val colors = statsColors(expenses)
+    val colors = statsColors(
+        expenses,
+        data.size
+    )
     val sumTotal = data.sumOf { it.second }
 
     Column(
@@ -50,7 +53,7 @@ fun DetailsPieChart(
                 modifier = Modifier.padding(start = 15.dp),
                 text = statsLabel(expenses),
                 fontWeight = FontWeight.Normal,
-                fontSize = 26.sp,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
         }

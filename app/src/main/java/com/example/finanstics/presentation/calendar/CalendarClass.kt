@@ -256,7 +256,7 @@ class MountClass(
 
     private fun isLeapYear(): Boolean {
         return (data.getYear() % NUM_4 == ZERO && data.getYear() % NUM_100 != ZERO) ||
-            (data.getYear() % NUM_400 == ZERO)
+                (data.getYear() % NUM_400 == ZERO)
     }
 
     private fun countDaysInit(): Int {
@@ -267,9 +267,11 @@ class MountClass(
             month == FEBRUARY -> {
                 if (isLeapYear()) DAYS_IN_MONTH_29 else DAYS_IN_MONTH_28
             }
+
             month in monthsWith30Days -> {
                 DAYS_IN_MONTH_30
             }
+
             else -> {
                 DAYS_IN_MONTH_31
             }
@@ -366,12 +368,12 @@ class CalendarClass {
         return data
     }
 
-    fun nextMount() {
+    fun nextMonth() {
         data.dataMonthNext()
         gridDatas.newDays(data)
     }
 
-    fun lastMount() {
+    fun lastMonth() {
         data.dataMonthLast()
         gridDatas.newDays(data)
     }
@@ -381,5 +383,12 @@ class CalendarClass {
     ) {
         data = calendar.getData()
         gridDatas = calendar.getGrid()
+    }
+
+    fun deepCopy(): CalendarClass {
+        val newInstance = CalendarClass()
+        newInstance.data = this.data
+        newInstance.gridDatas = this.gridDatas
+        return newInstance
     }
 }

@@ -26,9 +26,17 @@ import com.example.finanstics.ui.theme.DEGREES_MAX
 import com.example.finanstics.ui.theme.EXPENSES
 import com.example.finanstics.ui.theme.INCOMES
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
+import com.example.finanstics.ui.theme.generateColdColor
+import com.example.finanstics.ui.theme.generateWarmColor
 
-fun statsColors(expenses: Boolean): List<Color> {
-    if (expenses) return ColorsExpenses
+fun statsColors(expenses: Boolean, cnt: Int): List<Color> {
+    if (expenses) {
+        while (cnt > ColorsExpenses.size)
+            ColorsExpenses.add(generateWarmColor())
+        return ColorsExpenses
+    }
+    while (cnt > ColorsIncomes.size)
+        ColorsIncomes.add(generateColdColor())
     return ColorsIncomes
 }
 
@@ -58,7 +66,10 @@ fun PieChart(
 ) {
     val totalSum = data.sumOf { it.second }
     val floatValue = calculateFloatValues(data, totalSum)
-    val colors = statsColors(expenses)
+    val colors = statsColors(
+        expenses,
+        data.size
+    )
     val animationPlayed = rememberAnimationPlayed()
     val animateSize = animateChartSize(animationPlayed, radiusOuter, animDuration)
     val animateRotation = animateChartRotation(animationPlayed, animDuration)

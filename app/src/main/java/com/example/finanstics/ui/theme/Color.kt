@@ -1,6 +1,7 @@
 package com.example.finanstics.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import kotlin.random.Random
 
 private const val PURPLE_LIGHT_HEX = 0xFFD0BCFF
 private const val PURPLE_GREY_LIGHT_HEX = 0xFFCCC2DC
@@ -23,7 +24,7 @@ val LightBlue = Color(0xFF2DB8F6)
 val LightGreen = Color(0xFF7EF698)
 val Green = Color(0xFF42BA5E)
 
-val ColorsIncomes = listOf(
+val ColorsIncomes = mutableListOf(
     Blue,
     Green,
     LightGreen,
@@ -36,7 +37,7 @@ val Red = Color(0xFFF22B2B)
 val Purple = Color(0xFF912EFA)
 val Pink = Color(0xFFF149E9)
 
-val ColorsExpenses = listOf(
+val ColorsExpenses = mutableListOf(
     Red,
     Yellow,
     Orange,
@@ -50,8 +51,24 @@ val GreyLight = Color(0xFFB9B9B9)
 val WhiteSoft = Color(0xFFF7F7F7)
 val BlackSoft = Color(0xFF121212)
 
-val YellowSoftLight = Color(0xFFFF8A00)
+val YellowSoftLight = Color(0xFFFFC934)
 val YellowSoftDark = Color(0xFFFEE06B)
 
-val BackLight = Color(0xFFAFAFAF)
+val BackLight = Color(0xFFEAEAEA)
 val BackDark = Color(0xFF212121)
+
+fun generateWarmColor(): Color {
+    val red = Random.nextInt(200, 255)
+    val green = Random.nextInt(50, 200)
+    val blue = Random.nextInt(0, 120)
+
+    return Color(red, green, blue)
+}
+
+fun generateColdColor(): Color {
+    val red = Random.nextInt(0, 100)
+    val green = Random.nextInt(100, 200)
+    val blue = Random.nextInt(200, 255)
+
+    return Color(red, green, blue)
+}

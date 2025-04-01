@@ -38,7 +38,7 @@ class CalendarViewModel(
         if (_uiState.value is CalendarUiState.Default ||
             _uiState.value is CalendarUiState.DrawActions
         ) {
-            calendar.nextMount()
+            calendar.nextMonth()
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
             _uiState.value = CalendarUiState.Default(newCalendar)
@@ -50,7 +50,7 @@ class CalendarViewModel(
         if (_uiState.value is CalendarUiState.Default ||
             _uiState.value is CalendarUiState.DrawActions
         ) {
-            calendar.lastMount()
+            calendar.lastMonth()
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
             _uiState.value = CalendarUiState.Default(newCalendar)

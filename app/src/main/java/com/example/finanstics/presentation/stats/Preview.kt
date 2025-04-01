@@ -18,8 +18,7 @@ fun StatsPreview() {
     ) {
         StatsView(
             incomes = INCOMES_DATA,
-            expenses = EXPENSES_DATA,
-            month = 1
+            expenses = EXPENSES_DATA
         )
     }
 }
