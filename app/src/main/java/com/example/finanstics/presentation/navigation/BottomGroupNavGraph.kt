@@ -94,8 +94,7 @@ fun BottomGroupNavGraph(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    Box()
-                    {
+                    Box() {
                         Icon(
                             imageVector = CircleIcon,
                             contentDescription = "",

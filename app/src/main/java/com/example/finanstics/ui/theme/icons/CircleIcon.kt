@@ -20,8 +20,24 @@ val CircleIcon: ImageVector
         ).apply {
             path(fill = SolidColor(Color(0xFFD9D9D9))) {
                 moveTo(0f, 19f)
-                arcToRelative(19.965f, 19f, 0f, isMoreThanHalf = true, isPositiveArc = false, 39.929f, 0f)
-                arcToRelative(19.965f, 19f, 0f, isMoreThanHalf = true, isPositiveArc = false, -39.929f, 0f)
+                arcToRelative(
+                    19.965f,
+                    19f,
+                    0f,
+                    isMoreThanHalf = true,
+                    isPositiveArc = false,
+                    39.929f,
+                    0f
+                )
+                arcToRelative(
+                    19.965f,
+                    19f,
+                    0f,
+                    isMoreThanHalf = true,
+                    isPositiveArc = false,
+                    -39.929f,
+                    0f
+                )
                 close()
             }
         }.build()
