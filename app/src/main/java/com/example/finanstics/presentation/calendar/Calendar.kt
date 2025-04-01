@@ -111,7 +111,7 @@ fun WeekDraw() {
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun CalendarHeading(
     month: MonthNameClass,
