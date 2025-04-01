@@ -66,12 +66,11 @@ fun GroupMainScreen(
     }
 
     LaunchedEffect(pagerState.currentPage) {
-        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage)
-            && !isIn(
-                state = pagerState.currentPage,
-                history = pageHistory
-            )
-        ) {
+        val newPage = !isIn(
+            state = pagerState.currentPage,
+            history = pageHistory
+        )
+        if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) && newPage) {
             pageHistory.add(pagerState.currentPage)
         }
     }
