@@ -1,6 +1,7 @@
 package com.example.finanstics.presentation.stats
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -23,18 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.ui.theme.USER_NAME
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Stats(
-    navController: NavController,
-    vm: StatsViewModel = viewModel(),
+    navController: NavController
 ) {
-    LaunchedEffect(Unit) {
-        vm.fetchData()
-    }
-
-    val uiState = vm.uiState.collectAsState().value
+    val vm: StatsViewModel = viewModel()
 
     Box(
         modifier = Modifier
@@ -49,15 +46,83 @@ fun Stats(
             )
     ) {
         Row() {
-            when (uiState) {
-                is StatsUiState.Done -> StatsView(
-                    uiState.incomes,
-                    uiState.expenses,
-                    uiState.month
-                )
+            when (val uiState = vm.uiState.collectAsState().value) {
+                StatsUiState.Loading -> {
+                    Loader(
+                        modifier = Modifier
+                    )
+                }
 
+                is StatsUiState.Calendar -> {
+                    val calendar = uiState.calendar
+                    Column() {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = USER_NAME,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        CalendarSwitch(
+                            calendar = calendar,
+                            vm = vm
+                        )
+                    }
+                }
+
+                is StatsUiState.LoadingData -> {
+                    val calendar = uiState.calendar
+                    Column() {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = USER_NAME,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        CalendarSwitch(
+                            calendar = calendar,
+                            vm = vm
+                        )
+                        Loader(
+                            modifier = Modifier
+                        )
+                    }
+                }
+
+                is StatsUiState.Done -> {
+                    val calendar = uiState.calendar
+                    Column(modifier = Modifier) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = USER_NAME,
+                                fontSize = 20.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(5.dp))
+                        CalendarSwitch(
+                            calendar = calendar,
+                            vm = vm
+                        )
+                        StatsView(
+                            uiState.incomes,
+                            uiState.expenses
+                        )
+                    }
+                }
                 is StatsUiState.Error -> StatsErrorView(uiState.message)
-                StatsUiState.Loading -> {}
             }
         }
     }
@@ -68,13 +133,15 @@ fun Stats(
 fun StatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    month: Int
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = month.toString())
-        LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp)
+        ) {
             item {
                 Row() {
                     Column(modifier = Modifier.weight(1f)) {
@@ -119,6 +186,9 @@ fun StatsView(
                     expenses = true
                 )
             }
+            item {
+                Spacer(modifier = Modifier.height(50.dp))
+            }
         }
     }
 }
@@ -150,4 +220,9 @@ fun Divider(
         color = MaterialTheme.colorScheme.secondary
     )
     Spacer(modifier = Modifier.height(after))
+}
+
+@Composable
+fun Loader(modifier: Modifier) {
+    CircularProgressIndicator(modifier)
 }

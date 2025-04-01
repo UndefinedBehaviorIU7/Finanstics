@@ -2,7 +2,6 @@
 
 package com.example.finanstics.presentation.calendar
 
-import android.app.Application
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,8 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.stats.Divider
@@ -164,7 +161,7 @@ fun WeekDraw() {
 fun CalendarHeading(
     month: MonthNameClass,
     year: Int,
-    vm: CalendarViewModel
+    vm: CalendarViewModel = viewModel()
 ) {
     Row(
         modifier = Modifier
@@ -216,7 +213,7 @@ fun CalendarHeading(
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .size(30.dp)
-                .clickable { vm.lastMonth() }
+                .clickable { vm.nextMonth() }
         )
     }
 
@@ -351,15 +348,7 @@ fun Calendar(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val vm: CalendarViewModel = viewModel(
-        factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return CalendarViewModel(
-                    application = context.applicationContext as Application
-                ) as T
-            }
-        }
-    )
+    val vm: CalendarViewModel = viewModel()
 
     Column(
         modifier = Modifier
