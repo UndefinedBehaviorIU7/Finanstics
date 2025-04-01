@@ -139,7 +139,8 @@ fun BottomBar(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
             .height(60.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+        ,
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {

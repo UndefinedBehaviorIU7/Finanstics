@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val PlusCircle: ImageVector
+val PlusCircleIcon: ImageVector
     get() {
         if (_PlusCircle != null) {
             return _PlusCircle!!

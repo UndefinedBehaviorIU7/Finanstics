@@ -22,7 +22,7 @@ val PersonIcon: ImageVector
         ).apply {
             path(
                 stroke = SolidColor(Color(0xFFFFFFFF)),
-                strokeLineWidth = 2f,
+                strokeLineWidth = 1.7f,
                 strokeLineCap = StrokeCap.Round,
                 strokeLineJoin = StrokeJoin.Round
             ) {
