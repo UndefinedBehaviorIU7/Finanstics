@@ -94,10 +94,9 @@ fun MainScreen(
 
     LaunchedEffect(pagerState.currentPage) {
         if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) && !isIn(
-                state = pagerState.currentPage,
-                history = pageHistory
-            )
-        ) {
+            state = pagerState.currentPage,
+            history = pageHistory
+        )) {
             pageHistory.add(pagerState.currentPage)
         }
     }
