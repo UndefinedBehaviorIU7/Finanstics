@@ -138,7 +138,7 @@ fun PlusActionButton(
             modifier = Modifier
                 .size(50.dp)
                 .clickable {
-                    // TODO: обработка клика
+                    TODO()
                 }
         )
     }
