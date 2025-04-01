@@ -95,9 +95,9 @@ fun MainScreen(
     LaunchedEffect(pagerState.currentPage) {
         if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) &&
             !isIn(
-                state = pagerState.currentPage,
-                history = pageHistory
-            )
+                    state = pagerState.currentPage,
+                    history = pageHistory
+                )
         ) {
             pageHistory.add(pagerState.currentPage)
         }
@@ -139,8 +139,7 @@ fun BottomBar(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
             .height(60.dp)
-            .fillMaxWidth()
-        ,
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
