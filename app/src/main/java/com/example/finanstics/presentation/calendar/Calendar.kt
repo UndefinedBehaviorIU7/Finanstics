@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,8 +64,8 @@ fun CalendarDay(
                                     .fillMaxSize()
                                     .wrapContentWidth(align = Alignment.CenterHorizontally),
                                 colors = ButtonDefaults.buttonColors(
-                                    Color.White,
-                                    Color.Black
+                                    MaterialTheme.colorScheme.background,
+                                    MaterialTheme.colorScheme.primary
                                 ),
                                 contentPadding = PaddingValues(0.dp)
                             ) {
@@ -73,12 +74,12 @@ fun CalendarDay(
                                 ) {
                                     Text(
                                         text = "${day.getDayData()}",
-                                        color = Color.Black,
+                                        color = MaterialTheme.colorScheme.primary,
                                         textAlign = TextAlign.Center,
                                     )
                                     Text(
                                         text = "${day.getDayMoney()}",
-                                        color = Color.Black,
+                                        color = MaterialTheme.colorScheme.primary,
                                         textAlign = TextAlign.Center,
                                     )
                                 }
@@ -102,6 +103,7 @@ fun WeekDraw() {
     ) {
         listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach { day ->
             Text(
+                color = MaterialTheme.colorScheme.primary,
                 text = day,
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center
@@ -128,44 +130,56 @@ fun CalendarHeading(
             modifier = Modifier
                 .weight(0.15f),
             colors = ButtonDefaults.buttonColors(
-                Color.White,
-                Color.Black
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.primary
             )
         ) {
-            Text(text = "<")
+            Text(
+                color = MaterialTheme.colorScheme.primary,
+                text = "<"
+            )
         }
         Button(
             onClick = { /* Действие при нажатии */ },
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
-                Color.White,
-                Color.Black
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.primary
             )
         ) {
-            Text(text = MonthNameClass.str(month))
+            Text(
+                color = MaterialTheme.colorScheme.primary,
+                text = MonthNameClass.str(month)
+            )
         }
         Button(
             onClick = { /* Действие при нажатии */ },
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(
-                Color.White,
-                Color.Black
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.primary
             )
         ) {
-            Text(text = year.toString())
+            Text(
+                color = MaterialTheme.colorScheme.primary,
+                text = year.toString()
+            )
         }
         Button(
             onClick = { vm.nextMonth() },
             modifier = Modifier
                 .weight(0.15f),
             colors = ButtonDefaults.buttonColors(
-                Color.White,
-                Color.Black
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.primary
             )
         ) {
-            Text(text = ">")
+            Text(
+                color = MaterialTheme.colorScheme.primary,
+                text = ">"
+            )
         }
     }
 
@@ -174,7 +188,7 @@ fun CalendarHeading(
     HorizontalDivider(
         modifier = Modifier.fillMaxWidth(),
         thickness = 2.dp,
-        color = Color.Black
+        color = MaterialTheme.colorScheme.secondary,
     )
 }
 
@@ -186,9 +200,9 @@ fun CalendarDraw(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFF1F0ED)),
+            .background(MaterialTheme.colorScheme.onBackground)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -206,10 +220,11 @@ fun DrawAction(
     Button(
         onClick = { },
         modifier = Modifier
-            .fillMaxWidth(0.9f),
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
         colors = ButtonDefaults.buttonColors(
-            Color(0xFFF1F0ED),
-            Color.Black
+            MaterialTheme.colorScheme.onBackground,
+            MaterialTheme.colorScheme.primary
         ),
         contentPadding = PaddingValues(8.dp)
     ) {
@@ -228,13 +243,13 @@ fun DrawAction(
             ) {
                 Text(
                     text = action.getActionName(),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
                     text = action.getUserName(),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -248,13 +263,13 @@ fun DrawAction(
             ) {
                 Text(
                     text = "${action.getActionType()}",
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.End,
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(
                     text = "${action.getMoney()}",
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.End,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -307,6 +322,7 @@ fun Calendar(
 
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(12.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
