@@ -140,7 +140,8 @@ fun StatsErrorView(
 @Composable
 fun Divider(
     space: Dp,
-    stroke: Dp
+    stroke: Dp,
+    after: Dp = 10.dp
 ) {
     Spacer(modifier = Modifier.height(space))
     HorizontalDivider(
@@ -148,5 +149,5 @@ fun Divider(
         thickness = stroke,
         color = MaterialTheme.colorScheme.secondary
     )
-    Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(after))
 }

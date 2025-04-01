@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.stats.DetailsPieChart
+import com.example.finanstics.presentation.stats.Divider
 import com.example.finanstics.presentation.stats.PieChart
 
 @Suppress("MagicNumber")
@@ -136,19 +137,4 @@ fun GroupStatsErrorView(
         fontSize = 18.sp,
         color = MaterialTheme.colorScheme.primary
     )
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun Divider(
-    space: Dp,
-    stroke: Dp
-) {
-    Spacer(modifier = Modifier.height(space))
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        thickness = stroke,
-        color = MaterialTheme.colorScheme.secondary
-    )
-    Spacer(modifier = Modifier.height(10.dp))
 }
