@@ -116,6 +116,7 @@ fun BottomNavGraph(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun PlusActionButton(
     navController: NavController,
@@ -143,6 +144,7 @@ fun PlusActionButton(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun GroupsButton(
     navController: NavController

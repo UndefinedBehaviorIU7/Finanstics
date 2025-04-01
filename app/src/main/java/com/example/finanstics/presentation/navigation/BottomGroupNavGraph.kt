@@ -79,6 +79,7 @@ fun BottomGroupNavGraph(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun Panel(
     navController: NavController,
@@ -122,6 +123,7 @@ fun Panel(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun PersonButton(
     navController: NavController
