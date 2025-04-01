@@ -74,7 +74,7 @@ fun StatsView(
         modifier = Modifier.fillMaxSize()
     ) {
         Text(text = month.toString())
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 20.dp)) {
             item {
                 Row() {
                     Column(modifier = Modifier.weight(1f)) {

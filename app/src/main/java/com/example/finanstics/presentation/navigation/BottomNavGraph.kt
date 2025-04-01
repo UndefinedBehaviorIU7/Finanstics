@@ -3,7 +3,10 @@ package com.example.finanstics.presentation.navigation
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,7 +21,9 @@ import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.Calendar
 import com.example.finanstics.presentation.settings.Settings
 import com.example.finanstics.presentation.stats.Stats
+import com.example.finanstics.ui.theme.icons.Circle
 import com.example.finanstics.ui.theme.icons.GroupsIcon
+import com.example.finanstics.ui.theme.icons.PlusCircle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -52,16 +57,70 @@ fun BottomNavGraph(
                 .height(60.dp),
             horizontalArrangement = Arrangement.End,
         ) {
-            Icon(
-                imageVector = GroupsIcon,
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable {
-                        navController.navigate(Navigation.GROUPS.toString())
-                    }
-            )
+            Box()
+            {
+                Icon(
+                    imageVector = Circle,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable {
+                            TODO()
+                        }
+                )
+
+                Icon(
+                    imageVector = GroupsIcon,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.background,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(5.dp)
+                        .clickable {
+                            navController.navigate(Navigation.GROUPS.toString())
+                        }
+                )
+            }
         }
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ){
+            Row( modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = 40.dp,
+                    horizontal = 20.dp
+                )
+                .height(60.dp),
+                horizontalArrangement = Arrangement.End) {
+                Box(){
+                    Icon(
+                        imageVector = Circle,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable {
+                                TODO()
+                            }
+                    )
+
+                    Icon(
+                        imageVector = PlusCircle,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.background,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable {
+                                TODO()
+                            }
+                    )
+                }
+            }
+        }
+
     }
 }
