@@ -1,15 +1,15 @@
-package com.example.finanstics.presentation.stats
+package com.example.finanstics.presentation.group.stats
 
-sealed class StatsUiState {
-    object Loading : StatsUiState()
+sealed class GroupStatsUiState {
+    object Loading : GroupStatsUiState()
 
     data class Done(
         val incomes: List<Pair<String, Int>>,
         val expenses: List<Pair<String, Int>>,
         val month: Int
-    ) : StatsUiState()
+    ) : GroupStatsUiState()
 
     data class Error(
         val message: String
-    ) : StatsUiState()
+    ) : GroupStatsUiState()
 }

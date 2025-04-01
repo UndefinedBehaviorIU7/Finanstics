@@ -22,7 +22,7 @@ val GroupsIcon: ImageVector
         ).apply {
             path(
                 stroke = SolidColor(Color(0xFF000000)),
-                strokeLineWidth = 2f,
+                strokeLineWidth = 2.7f,
                 strokeLineCap = StrokeCap.Round,
                 strokeLineJoin = StrokeJoin.Round
             ) {

@@ -3,7 +3,6 @@ package com.example.finanstics.presentation.navigation
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.finanstics.ui.theme.icons.CalendarIcon
 import com.example.finanstics.ui.theme.icons.ChartIcon
-import com.example.finanstics.ui.theme.icons.GroupsIcon
 import com.example.finanstics.ui.theme.icons.SettingsIcon
 
 sealed class BottomBarScreen(
@@ -15,18 +14,13 @@ sealed class BottomBarScreen(
         page = 0
     )
 
-    object Groups : BottomBarScreen(
-        icon = GroupsIcon,
-        page = 1
-    )
-
     object Calendar : BottomBarScreen(
         icon = CalendarIcon,
-        page = 2
+        page = 1
     )
 
     object Settings : BottomBarScreen(
         icon = SettingsIcon,
-        page = 3
+        page = 2
     )
 }

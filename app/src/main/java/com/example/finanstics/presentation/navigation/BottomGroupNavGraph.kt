@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -20,26 +19,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
-import com.example.finanstics.presentation.calendar.Calendar
-import com.example.finanstics.presentation.settings.Settings
-import com.example.finanstics.presentation.stats.Stats
+import com.example.finanstics.presentation.group.calendar.GroupCalendar
+import com.example.finanstics.presentation.group.settings.GroupSettings
+import com.example.finanstics.presentation.group.stats.GroupStats
 import com.example.finanstics.ui.theme.icons.CircleIcon
-import com.example.finanstics.ui.theme.icons.GroupsIcon
-import com.example.finanstics.ui.theme.icons.PlusCircleIcon
+import com.example.finanstics.ui.theme.icons.PersonIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlin.math.abs
 
-@Suppress("MagicNumber", "LongMethod")
+@Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun BottomNavGraph(
+fun BottomGroupNavGraph(
     pagerState: PagerState,
     navController: NavController
 ) {
@@ -50,9 +47,9 @@ fun BottomNavGraph(
             state = pagerState
         ) { page ->
             when (page) {
-                0 -> Stats(navController)
-                1 -> Calendar(navController)
-                2 -> Settings(navController)
+                0 -> GroupStats(navController)
+                1 -> GroupCalendar(navController)
+                2 -> GroupSettings(navController)
             }
         }
 
@@ -66,51 +63,61 @@ fun BottomNavGraph(
         }
 
         val (currentPage, targetPage, offset) = pageInfo
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-
         val offsetX by animateDpAsState(
             targetValue = when {
                 currentPage == 0 -> 0.dp
                 currentPage == 1 && targetPage == 0 -> 0.dp
-                currentPage == 1 && targetPage == 2 -> (-100).dp * abs(offset)
-                else -> (-100).dp
+                currentPage == 1 && targetPage == 2 -> -100.dp * abs(offset)
+                else -> -100.dp
             }
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Box {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 20.dp
-                        )
-                        .height(60.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    GroupsButton(
-                        navController = navController
+        Panel(
+            navController = navController,
+            offsetX = offsetX
+        )
+    }
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun Panel(
+    navController: NavController,
+    offsetX: Dp
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Box {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 20.dp
                     )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 20.dp
-                        )
-                        .height(60.dp),
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    PlusActionButton(
-                        navController = navController,
-                        offsetX = offsetX
+                    .height(60.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                PersonButton(
+                    navController = navController
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 20.dp
                     )
-                }
+                    .height(60.dp),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                PlusActionButton(
+                    navController = navController,
+                    offsetX = offsetX
+                )
             }
         }
     }
@@ -118,35 +125,7 @@ fun BottomNavGraph(
 
 @Suppress("MagicNumber")
 @Composable
-fun PlusActionButton(
-    navController: NavController,
-    offsetX: Dp
-) {
-    Box(
-        modifier = Modifier.offset(x = offsetX)
-    ) {
-        Icon(
-            imageVector = CircleIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.size(50.dp)
-        )
-        Icon(
-            imageVector = PlusCircleIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.background,
-            modifier = Modifier
-                .size(50.dp)
-                .clickable {
-                    TODO()
-                }
-        )
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun GroupsButton(
+fun PersonButton(
     navController: NavController
 ) {
     Box() {
@@ -162,14 +141,14 @@ fun GroupsButton(
         )
 
         Icon(
-            imageVector = GroupsIcon,
+            imageVector = PersonIcon,
             contentDescription = "",
             tint = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .size(50.dp)
                 .padding(12.dp)
                 .clickable {
-                    navController.navigate(Navigation.GROUPS.toString())
+                    navController.navigate(Navigation.STATS.toString())
                 }
         )
     }

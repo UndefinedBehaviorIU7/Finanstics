@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.stats
+package com.example.finanstics.presentation.group.stats
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
@@ -16,7 +16,7 @@ fun StatsPreview() {
     FinansticsTheme(
         dynamicColor = false
     ) {
-        StatsView(
+        GroupStatsView(
             incomes = INCOMES_DATA,
             expenses = EXPENSES_DATA,
             month = 1
