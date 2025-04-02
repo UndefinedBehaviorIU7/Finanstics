@@ -369,8 +369,7 @@ fun DrawCalendarWithAction(
                 ActionsDraw(actions)
             }
         }
-    }
-    else {
+    } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Календарь финансов",
@@ -414,11 +413,9 @@ fun DrawCalendarWithoutAction(
                 modifier = Modifier
                     .weight(1f)
             ) {
-
             }
         }
-    }
-    else {
+    } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "Календарь финансов",
@@ -427,10 +424,7 @@ fun DrawCalendarWithoutAction(
         )
         CalendarDraw(calendar, vm)
     }
-
 }
-
-
 
 @Suppress("MagicNumber")
 @Composable

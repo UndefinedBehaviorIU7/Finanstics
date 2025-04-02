@@ -223,7 +223,7 @@ data class DayClass(
         return data.getDay()
     }
 
-    fun getData() : DataClass {
+    fun getData(): DataClass {
         return data
     }
 
@@ -363,11 +363,11 @@ class CalendarClass {
                 calendar.get(java.util.Calendar.YEAR)
             )
         }
-        fun getNowDay() : DayClass {
+
+        fun getNowDay(): DayClass {
             return DayClass(getNowData())
         }
     }
-
 
     fun getDays(): Array<DayClass?> {
         return gridDatas.getDays()
