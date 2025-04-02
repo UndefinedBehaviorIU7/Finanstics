@@ -32,7 +32,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 fun isIn(
-    state: Int, history: MutableList<Int>
+    state: Int,
+    history: MutableList<Int>
 ): Boolean {
     for (i in 0..history.size - 1) {
         if (history[i] == state) {
@@ -47,7 +48,8 @@ fun isIn(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    navController: NavController, initialPage: Int = 0
+    navController: NavController,
+    initialPage: Int = 0
 ) {
     val systemUiController = rememberSystemUiController()
     val isDarkTheme = isSystemInDarkTheme()
@@ -57,12 +59,15 @@ fun MainScreen(
 
     LaunchedEffect(isDarkTheme) {
         systemUiController.setNavigationBarColor(
-            color = navigationBarColor, darkIcons = !isDarkTheme
+            color = navigationBarColor,
+            darkIcons = !isDarkTheme
         )
     }
 
     val screens = listOf(
-        BottomBarScreen.Stats, BottomBarScreen.Calendar, BottomBarScreen.Settings
+        BottomBarScreen.Stats,
+        BottomBarScreen.Calendar,
+        BottomBarScreen.Settings
     )
 
     val pagerState = remember { PagerState(pageCount = screens.size) }
@@ -80,7 +85,8 @@ fun MainScreen(
 
     LaunchedEffect(pagerState.currentPage) {
         val newPage = !isIn(
-            state = pagerState.currentPage, history = pageHistory
+            state = pagerState.currentPage,
+            history = pageHistory
         )
         if ((pageHistory.isEmpty() || pageHistory.last() != pagerState.currentPage) && newPage) {
             pageHistory.add(pagerState.currentPage)
@@ -98,7 +104,8 @@ fun MainScreen(
     val vm: BottomBarViewModel = viewModel()
 
     Scaffold(
-        bottomBar = {}) { innerPaddingValues ->
+        bottomBar = {}
+    ) { innerPaddingValues ->
         Box(
             modifier = Modifier
                 .padding(innerPaddingValues)
@@ -112,10 +119,13 @@ fun MainScreen(
             )
 
             Box(
-                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
             ) {
                 BottomBar(
-                    pagerState = pagerState, screens = screens, vm = vm
+                    pagerState = pagerState,
+                    screens = screens,
+                    vm = vm
                 )
             }
         }
