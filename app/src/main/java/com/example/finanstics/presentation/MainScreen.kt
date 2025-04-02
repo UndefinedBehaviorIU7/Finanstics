@@ -44,7 +44,7 @@ fun isIn(
 }
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
