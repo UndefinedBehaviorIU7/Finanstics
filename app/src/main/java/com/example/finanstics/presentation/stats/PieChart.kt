@@ -71,7 +71,6 @@ fun PieChart(
         data.size
     )
     val backColor = MaterialTheme.colorScheme.onBackground
-
     val animationPlayed = rememberAnimationPlayed()
     val animateSize = animateChartSize(animationPlayed, radiusOuter, animDuration)
     val animateRotation = animateChartRotation(animationPlayed, animDuration)
