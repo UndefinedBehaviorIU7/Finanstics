@@ -1,11 +1,13 @@
 package com.example.finanstics.presentation.stats
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -122,6 +126,7 @@ fun Stats(
                         )
                     }
                 }
+
                 is StatsUiState.Error -> StatsErrorView(uiState.message)
             }
         }
@@ -137,57 +142,141 @@ fun StatsView(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 5.dp)
-        ) {
-            item {
-                Row() {
-                    Column(modifier = Modifier.weight(1f)) {
-                        PieChart(
-                            data = incomes,
-                            radiusOuter = 90.dp,
-                            expenses = false,
-                            chartBarWidth = 26.dp,
-                        )
-                    }
-                    Column(modifier = Modifier.weight(1f)) {
-                        PieChart(
-                            data = expenses,
-                            radiusOuter = 90.dp,
-                            expenses = true,
-                            chartBarWidth = 26.dp,
-                        )
-                    }
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        if (!isLandscape) {
+            StatsViewVertical(
+                incomes = incomes,
+                expenses = expenses
+            )
+        } else {
+            StatsViewHorizontal(
+                incomes = incomes,
+                expenses = expenses
+            )
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun StatsViewVertical(
+    incomes: List<Pair<String, Int>>,
+    expenses: List<Pair<String, Int>>
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp)
+    ) {
+        item {
+            Row() {
+                Column(modifier = Modifier.weight(1f)) {
+                    PieChart(
+                        data = incomes,
+                        radiusOuter = 90.dp,
+                        expenses = false,
+                        chartBarWidth = 26.dp,
+                    )
+                }
+                Column(modifier = Modifier.weight(1f)) {
+                    PieChart(
+                        data = expenses,
+                        radiusOuter = 90.dp,
+                        expenses = true,
+                        chartBarWidth = 26.dp,
+                    )
                 }
             }
-            item {
-                Divider(
-                    space = 10.dp,
-                    stroke = 2.dp
-                )
+        }
+        item {
+            Divider(
+                space = 10.dp,
+                stroke = 2.dp
+            )
+        }
+        item {
+            DetailsPieChart(
+                data = incomes,
+                expenses = false
+            )
+        }
+        item {
+            Divider(
+                space = 10.dp,
+                stroke = 2.dp
+            )
+        }
+        item {
+            DetailsPieChart(
+                data = expenses,
+                expenses = true
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.height(50.dp))
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun StatsViewHorizontal(
+    incomes: List<Pair<String, Int>>,
+    expenses: List<Pair<String, Int>>
+) {
+    Row() {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(0.5f)) {
+                    PieChart(
+                        data = incomes,
+                        radiusOuter = 90.dp,
+                        expenses = false,
+                        chartBarWidth = 26.dp,
+                    )
+                }
+                Column(modifier = Modifier.weight(0.5f)) {
+                    PieChart(
+                        data = expenses,
+                        radiusOuter = 90.dp,
+                        expenses = true,
+                        chartBarWidth = 26.dp,
+                    )
+                }
             }
-            item {
-                DetailsPieChart(
-                    data = incomes,
-                    expenses = false
-                )
-            }
-            item {
-                Divider(
-                    space = 10.dp,
-                    stroke = 2.dp
-                )
-            }
-            item {
-                DetailsPieChart(
-                    data = expenses,
-                    expenses = true
-                )
-            }
-            item {
-                Spacer(modifier = Modifier.height(50.dp))
+        }
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            LazyColumn {
+                item {
+                    DetailsPieChart(
+                        data = incomes,
+                        expenses = false
+                    )
+                }
+                item {
+                    Divider(
+                        space = 10.dp,
+                        stroke = 2.dp
+                    )
+                }
+                item {
+                    DetailsPieChart(
+                        data = expenses,
+                        expenses = true
+                    )
+                }
+                item {
+                    Spacer(modifier = Modifier.height(50.dp))
+                }
             }
         }
     }
