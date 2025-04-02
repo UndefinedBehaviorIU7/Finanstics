@@ -74,7 +74,7 @@ fun BarPanel(
 ) {
     Row(
         modifier = Modifier
-            .background(Color.Transparent)
+            .background(MaterialTheme.colorScheme.background)
             .clickable {
                 vm.hide()
             }
@@ -145,7 +145,7 @@ fun VisiblePanel(
 ) {
     Row(
         modifier = Modifier
-            .background(Color.Transparent)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
