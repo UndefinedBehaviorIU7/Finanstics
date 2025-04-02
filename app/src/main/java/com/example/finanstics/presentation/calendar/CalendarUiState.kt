@@ -14,7 +14,7 @@ sealed class CalendarUiState {
 
     data class DrawActions(
         val calendar: CalendarClass,
-        val actions: List<Action?>,
         val day: DayClass?
     ) : CalendarUiState()
 }
+

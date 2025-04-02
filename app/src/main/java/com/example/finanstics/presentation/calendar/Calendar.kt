@@ -2,6 +2,7 @@
 
 package com.example.finanstics.presentation.calendar
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -95,7 +96,6 @@ private fun CalendarDayItem(
                     vm.toDefault()
                 } else {
                     vm.actions(
-                        action = day.getActions(),
                         day = day
                     )
                 }
@@ -161,7 +161,7 @@ fun WeekDraw() {
 fun CalendarHeading(
     month: MonthNameClass,
     year: Int,
-    vm: CalendarViewModel = viewModel()
+    vm: CalendarViewModel
 ) {
     Row(
         modifier = Modifier
@@ -174,7 +174,7 @@ fun CalendarHeading(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .size(30.dp)
+                .size(20.dp)
                 .clickable { vm.lastMonth() }
         )
 
@@ -212,7 +212,7 @@ fun CalendarHeading(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .size(30.dp)
+                .size(20.dp)
                 .clickable { vm.nextMonth() }
         )
     }
@@ -317,11 +317,7 @@ fun DrawAction(
 fun ActionsDraw(
     actions: Array<Action?>
 ) {
-    Divider(
-        stroke = 2.dp,
-        space = 20.dp,
-        after = 0.dp
-    )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -344,30 +340,119 @@ fun ActionsDraw(
 
 @Suppress("MagicNumber")
 @Composable
+fun DrawCalendarWithAction(
+    calendar: CalendarClass,
+    actions: Array<Action?>,
+    isLandscape: Boolean,
+    vm: CalendarViewModel,
+) {
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                CalendarDraw(calendar, vm)
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                ActionsDraw(actions)
+            }
+        }
+    }
+    else {
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Календарь финансов",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 26.sp
+        )
+        CalendarDraw(calendar, vm)
+        Divider(
+            stroke = 2.dp,
+            space = 20.dp,
+            after = 0.dp
+        )
+        ActionsDraw(actions)
+    }
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun DrawCalendarWithoutAction(
+    calendar: CalendarClass,
+    isLandscape: Boolean,
+    vm: CalendarViewModel,
+) {
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                CalendarDraw(calendar, vm)
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+
+            }
+        }
+    }
+    else {
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Календарь финансов",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 26.sp
+        )
+        CalendarDraw(calendar, vm)
+    }
+
+}
+
+
+
+@Suppress("MagicNumber")
+@Composable
 fun Calendar(
     navController: NavController
 ) {
-    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
 
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .padding(
-                top = 50.dp,
+                top = 20.dp,
                 start = 20.dp,
                 end = 20.dp
             )
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Календарь финансов",
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 26.sp
-        )
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         when (val uiState = vm.uiState.collectAsState().value) {
             is CalendarUiState.Idle -> {
@@ -381,12 +466,14 @@ fun Calendar(
             }
 
             is CalendarUiState.Default -> {
-                CalendarDraw(uiState.calendar, vm)
+                DrawCalendarWithoutAction(uiState.calendar, isLandscape, vm)
             }
 
             is CalendarUiState.DrawActions -> {
-                CalendarDraw(uiState.calendar, vm)
-                ActionsDraw(uiState.actions.toTypedArray())
+                val action = uiState.day?.getActions()
+                if (action != null) {
+                    DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
+                }
             }
         }
     }

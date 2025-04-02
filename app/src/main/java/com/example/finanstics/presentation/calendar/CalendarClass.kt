@@ -89,7 +89,7 @@ enum class DayWeekClass(val number: Int) {
     }
 }
 
-class DataClass(
+data class DataClass(
     private var day: Int,
     private var month: MonthNameClass,
     private var year: Int,
@@ -150,7 +150,7 @@ class DataClass(
     }
 }
 
-class Action(
+data class Action(
     private var userName: String,
     private var actionName: String,
     private var actionType: Int,
@@ -176,7 +176,7 @@ class Action(
     }
 }
 
-class DayClass(
+data class DayClass(
     private val data: DataClass
 ) {
     private val dayOfWeek: DayWeekClass = DayWeekClass.fromInt(dayOfWeekInit(data))
@@ -223,9 +223,9 @@ class DayClass(
         return data.getDay()
     }
 
-//    fun getData() : DataClass {
-//        return data
-//    }
+    fun getData() : DataClass {
+        return data
+    }
 
     fun getDayMoney(): Int {
         return money
@@ -263,15 +263,13 @@ class MountClass(
         val monthsWith30Days = setOf(APRIL, JUNE, SEPTEMBER, NOVEMBER)
         val month = data.getMonth()
 
-        return when {
-            month == FEBRUARY -> {
+        return when (month) {
+            FEBRUARY -> {
                 if (isLeapYear()) DAYS_IN_MONTH_29 else DAYS_IN_MONTH_28
             }
-
-            month in monthsWith30Days -> {
+            in monthsWith30Days -> {
                 DAYS_IN_MONTH_30
             }
-
             else -> {
                 DAYS_IN_MONTH_31
             }
@@ -355,6 +353,21 @@ class CalendarClass {
         )
         gridDatas = GridDatas(data)
     }
+
+    companion object {
+        private fun getNowData(): DataClass {
+            val calendar = java.util.Calendar.getInstance()
+            return DataClass(
+                calendar.get(java.util.Calendar.DAY_OF_MONTH),
+                MonthNameClass.fromInt(calendar.get(java.util.Calendar.MONTH) + 1),
+                calendar.get(java.util.Calendar.YEAR)
+            )
+        }
+        fun getNowDay() : DayClass {
+            return DayClass(getNowData())
+        }
+    }
+
 
     fun getDays(): Array<DayClass?> {
         return gridDatas.getDays()
