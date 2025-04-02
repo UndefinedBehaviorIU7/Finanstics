@@ -70,6 +70,8 @@ fun PieChart(
         expenses,
         data.size
     )
+    val backColor = MaterialTheme.colorScheme.onBackground
+
     val animationPlayed = rememberAnimationPlayed()
     val animateSize = animateChartSize(animationPlayed, radiusOuter, animDuration)
     val animateRotation = animateChartRotation(animationPlayed, animDuration)
@@ -91,18 +93,28 @@ fun PieChart(
             Canvas(
                 modifier = Modifier
                     .size(radiusOuter * 2f)
-                    .rotate(-floatValue[0])
+                    .rotate(if (floatValue.isNotEmpty()) -floatValue[0] else 0f)
                     .rotate(animateRotation)
             ) {
-                floatValue.forEachIndexed { index, value ->
+                if (floatValue.isEmpty()) {
                     drawArc(
-                        color = colors[index],
-                        lastValue,
-                        value,
+                        color = backColor,
+                        0f,
+                        360f,
                         useCenter = false,
                         style = Stroke(chartBarWidth.toPx(), cap = StrokeCap.Butt)
                     )
-                    lastValue += value
+                } else {
+                    floatValue.forEachIndexed { index, value ->
+                        drawArc(
+                            color = colors[index],
+                            lastValue,
+                            value,
+                            useCenter = false,
+                            style = Stroke(chartBarWidth.toPx(), cap = StrokeCap.Butt)
+                        )
+                        lastValue += value
+                    }
                 }
             }
             Text(
