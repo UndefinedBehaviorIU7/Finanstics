@@ -55,7 +55,7 @@ fun statsLabel(expenses: Boolean): String {
     return INCOMES
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun PieChart(
     data: List<Pair<String, Int>>,
@@ -76,7 +76,6 @@ fun PieChart(
     val animateRotation = animateChartRotation(animationPlayed, animDuration)
     val animateTextSize = animateTextSize(animationPlayed, animDuration)
     var lastValue = 0f
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
