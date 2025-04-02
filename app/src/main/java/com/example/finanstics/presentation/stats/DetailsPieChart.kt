@@ -50,20 +50,33 @@ fun DetailsPieChart(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.padding(start = 15.dp),
                 text = statsLabel(expenses),
                 fontWeight = FontWeight.Normal,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        data.forEachIndexed { index, (_, value) ->
-            DetailsPieChartItem(
-                data = Pair(data[index].first, value),
-                widthSize = (sumTotal / data[index].second.toFloat()),
-                color = colors[index],
-                animateDuration = animateDuration
-            )
+        if (data.isNotEmpty()) {
+            data.forEachIndexed { index, (_, value) ->
+                DetailsPieChartItem(
+                    data = Pair(data[index].first, value),
+                    widthSize = (sumTotal / data[index].second.toFloat()),
+                    color = colors[index],
+                    animateDuration = animateDuration
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "Отстуствуют",
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

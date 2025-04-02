@@ -9,13 +9,15 @@ class StatsRepository {
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return INCOMES_DATA_MONTHS[month.number % 2].sortedByDescending { it.second }
+        return INCOMES_DATA_MONTHS[month.number % INCOMES_DATA_MONTHS.size]
+            .sortedByDescending { it.second }
     }
 
     suspend fun getExpenses(
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return EXPENSES_DATA_MONTHS[month.number % 2].sortedByDescending { it.second }
+        return EXPENSES_DATA_MONTHS[month.number % EXPENSES_DATA_MONTHS.size]
+            .sortedByDescending { it.second }
     }
 }

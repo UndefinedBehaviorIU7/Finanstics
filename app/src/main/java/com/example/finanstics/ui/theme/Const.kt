@@ -35,12 +35,18 @@ val EXPENSES_DATA1 = listOf(
 
 val INCOMES_DATA_MONTHS = listOf(
     INCOMES_DATA,
+    INCOMES_DATA1,
+    listOf(),
+    listOf(),
     INCOMES_DATA1
 )
 
 val EXPENSES_DATA_MONTHS = listOf(
+    listOf(),
     EXPENSES_DATA,
-    EXPENSES_DATA1
+    listOf(),
+    EXPENSES_DATA,
+    EXPENSES_DATA1,
 )
 
 const val STATS_ANIMATE_DURATION = 1000
