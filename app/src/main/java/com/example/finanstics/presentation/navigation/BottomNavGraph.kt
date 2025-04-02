@@ -41,7 +41,8 @@ import kotlin.math.abs
 @Composable
 fun BottomNavGraph(
     pagerState: PagerState,
-    navController: NavController
+    navController: NavController,
+    offsetIcons: Dp
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -79,7 +80,8 @@ fun BottomNavGraph(
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(bottom = offsetIcons),
             verticalArrangement = Arrangement.Bottom
         ) {
             Box {
