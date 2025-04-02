@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.finanstics.presentation.BottomBar
+import com.example.finanstics.presentation.navigation.BottomBar
 import com.example.finanstics.presentation.isIn
 import com.example.finanstics.presentation.navigation.BottomBarScreen
 import com.example.finanstics.presentation.navigation.BottomGroupNavGraph
