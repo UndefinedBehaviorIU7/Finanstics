@@ -13,7 +13,7 @@ class BottomBarViewModel(
     val uiState = _uiState.asStateFlow()
 
     fun hide() {
-        if (uiState.value is BottomBarUiState.Visible){
+        if (uiState.value is BottomBarUiState.Visible) {
             _uiState.value = BottomBarUiState.Hidden
         }
     }
@@ -21,7 +21,7 @@ class BottomBarViewModel(
     fun show(
         offset: Dp
     ) {
-        if (uiState.value is BottomBarUiState.Hidden){
+        if (uiState.value is BottomBarUiState.Hidden) {
             _uiState.value = BottomBarUiState.Visible(offset)
         }
     }
