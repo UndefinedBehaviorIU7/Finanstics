@@ -2,6 +2,7 @@ package com.example.finanstics.presentation.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.ui.theme.OFFSET_BAR
@@ -79,7 +82,14 @@ fun BarPanel(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
             .height(60.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .pointerInput(Unit) {
+                detectVerticalDragGestures { change, dragAmount ->
+                    if (dragAmount > 20f) {
+                        vm.hide()
+                    }
+                }
+            },
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -99,7 +109,7 @@ fun HiddenPanel(
 ) {
     Row(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Transparent)
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
