@@ -23,7 +23,7 @@ class CalendarViewModel(
     private fun loadCalendar() {
         try {
             _uiState.value = CalendarUiState.Loading
-            _uiState.value = CalendarUiState.Default(calendar)
+            _uiState.value = CalendarUiState.DrawActions(calendar, CalendarClass.getNowDay())
         } catch (e: NullPointerException) {
             _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
         } catch (e: IllegalStateException) {
@@ -53,12 +53,15 @@ class CalendarViewModel(
             calendar.lastMonth()
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
-            _uiState.value = CalendarUiState.Default(newCalendar)
+            val day = CalendarClass.getNowDay()
+            if (day.getData().getMonth() == calendar.getData().getMonth())
+                _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+            else
+                _uiState.value = CalendarUiState.Default(newCalendar)
         }
     }
 
     fun actions(
-        action: Array<Action?>,
         day: DayClass
     ) {
         if (_uiState.value is CalendarUiState.Default ||
@@ -66,7 +69,7 @@ class CalendarViewModel(
         ) {
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
-            _uiState.value = CalendarUiState.DrawActions(newCalendar, action.toList(), day)
+            _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
         }
     }
 
