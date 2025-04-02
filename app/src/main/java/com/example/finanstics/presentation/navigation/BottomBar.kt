@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -28,12 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.ui.theme.OFFSET_BAR
+import com.example.finanstics.ui.theme.icons.DownIcon
+import com.example.finanstics.ui.theme.icons.UpIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.launch
-import com.example.finanstics.ui.theme.icons.ChartIcon
-import com.example.finanstics.ui.theme.icons.UpIcon
-import com.example.finanstics.ui.theme.icons.DownIcon
 
 @Suppress("MagicNumber")
 @OptIn(ExperimentalPagerApi::class)
@@ -153,9 +151,7 @@ fun VisiblePanel(
             imageVector = DownIcon,
             modifier = Modifier
                 .clickable {
-                    vm.show(
-                        offset = OFFSET_BAR
-                    )
+                    vm.hide()
                 },
             contentDescription = "",
             tint = MaterialTheme.colorScheme.secondary,
