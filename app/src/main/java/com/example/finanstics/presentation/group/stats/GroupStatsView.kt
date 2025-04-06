@@ -40,7 +40,7 @@ import com.example.finanstics.ui.theme.GROUP_NAME
 import com.example.finanstics.ui.theme.icons.LeftIcon
 import com.example.finanstics.ui.theme.icons.RightIcon
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStats(
     navController: NavController

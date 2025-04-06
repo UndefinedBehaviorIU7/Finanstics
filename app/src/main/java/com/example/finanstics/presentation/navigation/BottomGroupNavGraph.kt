@@ -34,7 +34,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlin.math.abs
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun BottomGroupNavGraph(

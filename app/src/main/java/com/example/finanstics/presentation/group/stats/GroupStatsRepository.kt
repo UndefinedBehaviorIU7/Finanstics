@@ -4,6 +4,13 @@ import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.ui.theme.EXPENSES_DATA_MONTHS
 import com.example.finanstics.ui.theme.INCOMES_DATA_MONTHS
 
+private fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
+    return list.groupBy { it.first }
+        .mapValues { (_, pairs) -> pairs.sumOf { it.second } }
+        .toList()
+        .sortedByDescending { it.second }
+}
+
 class GroupStatsRepository {
     suspend fun getIncomes(
         month: MonthNameClass,
@@ -22,12 +29,10 @@ class GroupStatsRepository {
     }
 
     suspend fun getAllIncomes(): List<Pair<String, Int>> {
-        return (INCOMES_DATA_MONTHS[0] + INCOMES_DATA_MONTHS[1] + INCOMES_DATA_MONTHS[3])
-            .sortedByDescending { it.second }
+        return sumPairs(INCOMES_DATA_MONTHS.flatten())
     }
 
     suspend fun getAllExpenses(): List<Pair<String, Int>> {
-        return (EXPENSES_DATA_MONTHS[0] + EXPENSES_DATA_MONTHS[1] + EXPENSES_DATA_MONTHS[3])
-            .sortedByDescending { it.second }
+        return sumPairs(EXPENSES_DATA_MONTHS.flatten())
     }
 }
