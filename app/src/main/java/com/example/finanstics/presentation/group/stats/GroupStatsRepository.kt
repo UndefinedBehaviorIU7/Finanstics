@@ -40,6 +40,6 @@ class GroupStatsRepository {
         incomes: List<Pair<String, Int>>,
         expenses: List<Pair<String, Int>>
     ): Int {
-        return incomes.sumOf{ it.second } - expenses.sumOf { it.second }
+        return incomes.sumOf { it.second } - expenses.sumOf { it.second }
     }
 }
