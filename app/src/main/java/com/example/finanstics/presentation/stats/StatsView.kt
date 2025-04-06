@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.ui.theme.USER_NAME
 
 @Suppress("MagicNumber", "LongMethod")
@@ -95,7 +96,8 @@ fun Stats(
                         )
                         StatsView(
                             uiState.incomes,
-                            uiState.expenses
+                            uiState.expenses,
+                            vm
                         )
                     }
                 }
@@ -111,6 +113,7 @@ fun Stats(
 fun StatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
+    vm: StatsViewModel = viewModel()
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -121,134 +124,143 @@ fun StatsView(
         if (!isLandscape) {
             StatsViewVertical(
                 incomes = incomes,
-                expenses = expenses
+                expenses = expenses,
+                vm = vm
             )
         } else {
             StatsViewHorizontal(
                 incomes = incomes,
-                expenses = expenses
+                expenses = expenses,
+                vm = vm
             )
         }
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewVertical(
     incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>
+    expenses: List<Pair<String, Int>>,
+    vm: StatsViewModel
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp)
-    ) {
-        item {
-            Row() {
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = incomes,
-                        radiusOuter = 90.dp,
-                        expenses = false,
-                        chartBarWidth = 26.dp,
-                    )
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = expenses,
-                        radiusOuter = 90.dp,
-                        expenses = true,
-                        chartBarWidth = 26.dp,
-                    )
+    val uiState = vm.uiState.collectAsState().value
+    if (uiState is StatsUiState.Done) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp)
+        ) {
+            item {
+                Row() {
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = incomes,
+                            radiusOuter = 90.dp,
+                            expenses = false,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = expenses,
+                            radiusOuter = 90.dp,
+                            expenses = true,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
                 }
             }
-        }
-        item {
-            Divider(
-                space = 10.dp,
-                stroke = 2.dp
-            )
-        }
-        item {
-            DetailsPieChart(
-                data = incomes,
-                expenses = false
-            )
-        }
-        item {
-            Divider(
-                space = 10.dp,
-                stroke = 2.dp
-            )
-        }
-        item {
-            DetailsPieChart(
-                data = expenses,
-                expenses = true
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.height(50.dp))
+            item { Divider(10.dp, 2.dp) }
+            item {
+                Balance(
+                    vm.balance(incomes, expenses),
+                    MonthNameClass.str(uiState.calendar.getData().getMonth()),
+                    uiState.totalBalance
+                )
+            }
+            item { Divider(10.dp, 2.dp) }
+            item {
+                DetailsPieChart(
+                    data = incomes,
+                    expenses = false
+                )
+            }
+            item { Divider(10.dp, 2.dp) }
+            item {
+                DetailsPieChart(
+                    data = expenses,
+                    expenses = true
+                )
+            }
+            item { Spacer(modifier = Modifier.height(50.dp)) }
         }
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewHorizontal(
     incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>
+    expenses: List<Pair<String, Int>>,
+    vm: StatsViewModel
 ) {
-    Row() {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
+    val uiState = vm.uiState.collectAsState().value
+    if (uiState is StatsUiState.Done) {
+        Row() {
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Column(modifier = Modifier.weight(0.5f)) {
-                    PieChart(
-                        data = incomes,
-                        radiusOuter = 90.dp,
-                        expenses = false,
-                        chartBarWidth = 26.dp,
-                    )
-                }
-                Column(modifier = Modifier.weight(0.5f)) {
-                    PieChart(
-                        data = expenses,
-                        radiusOuter = 90.dp,
-                        expenses = true,
-                        chartBarWidth = 26.dp,
-                    )
+                Row(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(0.5f)) {
+                        PieChart(
+                            data = incomes,
+                            radiusOuter = 90.dp,
+                            expenses = false,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
+                    Column(modifier = Modifier.weight(0.5f)) {
+                        PieChart(
+                            data = expenses,
+                            radiusOuter = 90.dp,
+                            expenses = true,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
                 }
             }
-        }
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            LazyColumn {
-                item {
-                    DetailsPieChart(
-                        data = incomes,
-                        expenses = false
-                    )
-                }
-                item {
-                    Divider(
-                        space = 10.dp,
-                        stroke = 2.dp
-                    )
-                }
-                item {
-                    DetailsPieChart(
-                        data = expenses,
-                        expenses = true
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                LazyColumn {
+                    item {
+                        DetailsPieChart(
+                            data = incomes,
+                            expenses = false
+                        )
+                    }
+                    item { Divider(10.dp, 2.dp) }
+
+                    item {
+                        Balance(
+                            vm.balance(incomes, expenses),
+                            MonthNameClass.str(uiState.calendar.getData().getMonth()),
+                            uiState.totalBalance
+                        )
+                    }
+
+                    item { Divider(10.dp, 2.dp) }
+                    item {
+                        DetailsPieChart(
+                            data = expenses,
+                            expenses = true
+                        )
+                    }
+                    item { Spacer(modifier = Modifier.height(50.dp)) }
                 }
             }
         }

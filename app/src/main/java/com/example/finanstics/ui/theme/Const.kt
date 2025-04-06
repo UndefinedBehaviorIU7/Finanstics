@@ -6,6 +6,7 @@ const val EXPENSES = "Расходы"
 const val INCOMES = "Доходы"
 const val DEGREES_MAX = 360
 val OFFSET_BAR = 60.dp
+const val ALL_TIME = "всё время"
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,
@@ -52,4 +53,5 @@ val EXPENSES_DATA_MONTHS = listOf(
 const val STATS_ANIMATE_DURATION = 1000
 
 const val USER_NAME = "Райан Гослинг"
+const val MONTH_PREVIEW = "ноябрь"
 const val GROUP_NAME = "Undefined Behavior"

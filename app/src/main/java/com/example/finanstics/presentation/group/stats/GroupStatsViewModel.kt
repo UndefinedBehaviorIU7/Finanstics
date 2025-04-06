@@ -16,6 +16,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     private val repository = GroupStatsRepository()
     private var calendar = CalendarClass()
     private var all = false
+    private var totalBalance: Int = 0
 
     init {
         loadCalendar()
@@ -26,7 +27,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     fun loadCalendar() {
         try {
             _uiState.value = GroupStatsUiState.Loading
-            _uiState.value = GroupStatsUiState.Calendar(calendar, all)
+            _uiState.value = GroupStatsUiState.Calendar(calendar, all, 0)
         } catch (e: NullPointerException) {
             _uiState.value = GroupStatsUiState.Error("Ошибка: данные календаря отсутствуют")
         } catch (e: IllegalStateException) {
@@ -37,9 +38,13 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun fetchData() {
-        _uiState.value = GroupStatsUiState.LoadingData(calendar, all)
+        _uiState.value = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
             try {
+                totalBalance = repository.balance(
+                    repository.getAllIncomes(),
+                    repository.getAllExpenses()
+                )
                 if (all) {
                     val incomes = repository.getAllIncomes()
                     val expenses = repository.getAllExpenses()
@@ -48,7 +53,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                         incomes = incomes,
                         expenses = expenses,
                         calendar = calendar,
-                        all = all
+                        all = all,
+                        totalBalance = totalBalance
                     )
                 } else {
                     val incomes = repository.getIncomes(
@@ -64,7 +70,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                         incomes = incomes,
                         expenses = expenses,
                         calendar = calendar,
-                        all = all
+                        all = all,
+                        totalBalance = totalBalance
                     )
                 }
             } catch (e: HttpException) {
@@ -83,7 +90,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         }
         println("month ${newCalendar.getData().getMonth()}")
         all = false
-        _uiState.value = GroupStatsUiState.Calendar(newCalendar, all)
+        _uiState.value = GroupStatsUiState.Calendar(newCalendar, all, totalBalance)
     }
 
     fun nextMonth() {
@@ -95,11 +102,18 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
             else -> return
         }
         all = false
-        _uiState.value = GroupStatsUiState.Calendar(newCalendar, all)
+        _uiState.value = GroupStatsUiState.Calendar(newCalendar, all, totalBalance)
     }
 
     fun switchAll() {
         all = !all
-        _uiState.value = GroupStatsUiState.Calendar(calendar, all)
+        _uiState.value = GroupStatsUiState.Calendar(calendar, all, totalBalance)
+    }
+
+    fun balance(
+        incomes: List<Pair<String, Int>>,
+        expenses: List<Pair<String, Int>>
+    ): Int {
+        return repository.balance(incomes, expenses)
     }
 }

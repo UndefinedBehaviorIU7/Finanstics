@@ -2,7 +2,6 @@ package com.example.finanstics.presentation.group.stats
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,15 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.presentation.stats.DetailsPieChart
 import com.example.finanstics.presentation.stats.Divider
 import com.example.finanstics.presentation.stats.Loader
 import com.example.finanstics.presentation.stats.PieChart
+import com.example.finanstics.ui.theme.ALL_TIME
 import com.example.finanstics.ui.theme.GROUP_NAME
-import com.example.finanstics.ui.theme.icons.LeftIcon
-import com.example.finanstics.ui.theme.icons.RightIcon
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -117,7 +112,8 @@ fun GroupStats(
                         )
                         GroupStatsView(
                             uiState.incomes,
-                            uiState.expenses
+                            uiState.expenses,
+                            vm
                         )
                     }
                 }
@@ -179,6 +175,7 @@ fun Header(
 fun GroupStatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
+    vm: GroupStatsViewModel = viewModel()
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -189,134 +186,148 @@ fun GroupStatsView(
         if (!isLandscape) {
             GroupStatsViewVertical(
                 incomes = incomes,
-                expenses = expenses
+                expenses = expenses,
+                vm = vm
             )
         } else {
             GroupStatsViewHorizontal(
                 incomes = incomes,
-                expenses = expenses
+                expenses = expenses,
+                vm = vm
             )
         }
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewVertical(
     incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>
+    expenses: List<Pair<String, Int>>,
+    vm: GroupStatsViewModel
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp)
-    ) {
-        item {
-            Row() {
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = incomes,
-                        radiusOuter = 90.dp,
-                        expenses = false,
-                        chartBarWidth = 26.dp,
-                    )
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    PieChart(
-                        data = expenses,
-                        radiusOuter = 90.dp,
-                        expenses = true,
-                        chartBarWidth = 26.dp,
-                    )
+    val uiState = vm.uiState.collectAsState().value
+    if (uiState is GroupStatsUiState.Done) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 5.dp)
+        ) {
+            item {
+                Row() {
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = incomes,
+                            radiusOuter = 90.dp,
+                            expenses = false,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        PieChart(
+                            data = expenses,
+                            radiusOuter = 90.dp,
+                            expenses = true,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
                 }
             }
-        }
-        item {
-            Divider(
-                space = 10.dp,
-                stroke = 2.dp
-            )
-        }
-        item {
-            DetailsPieChart(
-                data = incomes,
-                expenses = false
-            )
-        }
-        item {
-            Divider(
-                space = 10.dp,
-                stroke = 2.dp
-            )
-        }
-        item {
-            DetailsPieChart(
-                data = expenses,
-                expenses = true
-            )
-        }
-        item {
-            Spacer(modifier = Modifier.height(50.dp))
+            item { Divider(10.dp, 2.dp) }
+
+            item {
+                GroupBalance(
+                    currentBalance = vm.balance(incomes, expenses),
+                    period = if (uiState.all) ALL_TIME
+                    else MonthNameClass.str(uiState.calendar.getData().getMonth()),
+                    uiState.totalBalance
+                )
+            }
+
+            item { Divider(10.dp, 2.dp) }
+
+            item {
+                DetailsPieChart(
+                    data = incomes,
+                    expenses = false
+                )
+            }
+            item { Divider(10.dp, 2.dp) }
+            item {
+                DetailsPieChart(
+                    data = expenses,
+                    expenses = true
+                )
+            }
+            item { Spacer(modifier = Modifier.height(50.dp)) }
         }
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewHorizontal(
     incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>
+    expenses: List<Pair<String, Int>>,
+    vm: GroupStatsViewModel
 ) {
-    Row() {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.CenterVertically
+    val uiState = vm.uiState.collectAsState().value
+    if (uiState is GroupStatsUiState.Done) {
+        Row() {
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Column(modifier = Modifier.weight(0.5f)) {
-                    PieChart(
-                        data = incomes,
-                        radiusOuter = 90.dp,
-                        expenses = false,
-                        chartBarWidth = 26.dp,
-                    )
-                }
-                Column(modifier = Modifier.weight(0.5f)) {
-                    PieChart(
-                        data = expenses,
-                        radiusOuter = 90.dp,
-                        expenses = true,
-                        chartBarWidth = 26.dp,
-                    )
+                Row(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(0.5f)) {
+                        PieChart(
+                            data = incomes,
+                            radiusOuter = 90.dp,
+                            expenses = false,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
+                    Column(modifier = Modifier.weight(0.5f)) {
+                        PieChart(
+                            data = expenses,
+                            radiusOuter = 90.dp,
+                            expenses = true,
+                            chartBarWidth = 26.dp,
+                        )
+                    }
                 }
             }
-        }
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            LazyColumn {
-                item {
-                    DetailsPieChart(
-                        data = incomes,
-                        expenses = false
-                    )
-                }
-                item {
-                    Divider(
-                        space = 10.dp,
-                        stroke = 2.dp
-                    )
-                }
-                item {
-                    DetailsPieChart(
-                        data = expenses,
-                        expenses = true
-                    )
-                }
-                item {
-                    Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                LazyColumn {
+                    item {
+                        DetailsPieChart(
+                            data = incomes,
+                            expenses = false
+                        )
+                    }
+                    item { Divider(10.dp, 2.dp) }
+
+                    item {
+                        GroupBalance(
+                            currentBalance = vm.balance(incomes, expenses),
+                            period = if (uiState.all) ALL_TIME
+                            else MonthNameClass.str(uiState.calendar.getData().getMonth()),
+                            uiState.totalBalance
+                        )
+                    }
+
+                    item { Divider(10.dp, 2.dp) }
+                    item {
+                        DetailsPieChart(
+                            data = expenses,
+                            expenses = true
+                        )
+                    }
+                    item { Spacer(modifier = Modifier.height(50.dp)) }
                 }
             }
         }
@@ -334,74 +345,4 @@ fun GroupStatsErrorView(
         fontSize = 18.sp,
         color = MaterialTheme.colorScheme.primary
     )
-}
-
-@Suppress("MagicNumber", "LongMethod")
-@Composable
-fun GroupCalendarSwitch(
-    calendar: CalendarClass,
-    vm: GroupStatsViewModel = viewModel()
-) {
-    val data = calendar.getData()
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = LeftIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .size(30.dp)
-                .clickable {
-                    vm.lastMonth()
-                    vm.fetchData()
-                }
-        )
-
-        Button(
-            onClick = { /* Действие при нажатии */ },
-            modifier = Modifier
-                .weight(0.45f),
-            colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.onBackground,
-                MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = MonthNameClass.str(data.getMonth())
-            )
-        }
-        Button(
-            onClick = { /* Действие при нажатии */ },
-            modifier = Modifier
-                .weight(0.25f),
-            colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.onBackground,
-                MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = data.getYear().toString()
-            )
-        }
-
-        Icon(
-            imageVector = RightIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier
-                .size(30.dp)
-                .clickable {
-                    vm.nextMonth()
-                    vm.fetchData()
-                }
-        )
-    }
 }
