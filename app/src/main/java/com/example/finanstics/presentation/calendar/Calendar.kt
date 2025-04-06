@@ -317,21 +317,29 @@ fun DrawAction(
 fun ActionsDraw(
     actions: Array<Action?>
 ) {
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(actions.size) { index ->
-            val action = actions[index]
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                if (action != null) {
-                    DrawAction(action)
+    if (actions.isEmpty()) {
+        Text(
+            text = "В этот день ничего\nне запланировано",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 26.sp
+        )
+    }
+    else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(actions.size) { index ->
+                val action = actions[index]
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    if (action != null) {
+                        DrawAction(action)
+                    }
                 }
             }
         }
@@ -446,8 +454,6 @@ fun Calendar(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         when (val uiState = vm.uiState.collectAsState().value) {
             is CalendarUiState.Idle -> {
             }

@@ -185,8 +185,8 @@ data class DayClass(
 
     private fun initActions(): Array<Action?> {
         val action = mutableListOf<Action>()
-        for (i in ZERO..COUNT_ACTION)
-            action.add(Action("user $i", "action $i", ZERO, (i + 1) * NUM_100, "категория", data))
+    for (i in ZERO..COUNT_ACTION)
+        action.add(Action("user $i", "action $i", ZERO, (i + 1) * NUM_100, "категория", data))
         return action.toTypedArray()
     }
 
