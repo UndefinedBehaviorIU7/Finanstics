@@ -7,19 +7,22 @@ sealed class GroupStatsUiState {
 
     data class Calendar(
         val calendar: CalendarClass,
-        val all: Boolean
+        val all: Boolean,
+        val totalBalance: Int
     ) : GroupStatsUiState()
 
     data class LoadingData(
         val calendar: CalendarClass,
-        val all: Boolean
+        val all: Boolean,
+        val totalBalance: Int
     ) : GroupStatsUiState()
 
     data class Done(
         val incomes: List<Pair<String, Int>>,
         val expenses: List<Pair<String, Int>>,
         val calendar: CalendarClass,
-        val all: Boolean
+        val all: Boolean,
+        val totalBalance: Int
     ) : GroupStatsUiState()
 
     data class Error(

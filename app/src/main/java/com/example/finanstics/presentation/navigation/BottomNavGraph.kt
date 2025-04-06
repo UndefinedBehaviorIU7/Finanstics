@@ -158,9 +158,6 @@ fun GroupsButton(
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
                 .size(50.dp)
-                .clickable {
-                    TODO()
-                }
         )
 
         Icon(
