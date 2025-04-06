@@ -26,7 +26,7 @@ fun GroupSettings(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Settings",
+            text = "Group Settings",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

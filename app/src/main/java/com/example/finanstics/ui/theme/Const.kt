@@ -52,3 +52,4 @@ val EXPENSES_DATA_MONTHS = listOf(
 const val STATS_ANIMATE_DURATION = 1000
 
 const val USER_NAME = "Райан Гослинг"
+const val GROUP_NAME = "Undefined Behavior"

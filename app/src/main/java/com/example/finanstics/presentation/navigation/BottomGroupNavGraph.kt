@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,7 +39,8 @@ import kotlin.math.abs
 @Composable
 fun BottomGroupNavGraph(
     pagerState: PagerState,
-    navController: NavController
+    navController: NavController,
+    offsetIcons: Dp
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -63,61 +65,52 @@ fun BottomGroupNavGraph(
         }
 
         val (currentPage, targetPage, offset) = pageInfo
+        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
         val offsetX by animateDpAsState(
             targetValue = when {
                 currentPage == 0 -> 0.dp
                 currentPage == 1 && targetPage == 0 -> 0.dp
-                currentPage == 1 && targetPage == 2 -> -100.dp * abs(offset)
-                else -> -100.dp
+                currentPage == 1 && targetPage == 2 -> (-100).dp * abs(offset)
+                else -> (-100).dp
             }
         )
 
-        Panel(
-            navController = navController,
-            offsetX = offsetX
-        )
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun Panel(
-    navController: NavController,
-    offsetX: Dp
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Box {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 20.dp
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = offsetIcons),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Box {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = 20.dp
+                        )
+                        .height(60.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    PersonButton(
+                        navController = navController
                     )
-                    .height(60.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                PersonButton(
-                    navController = navController
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 20.dp
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = 20.dp
+                        )
+                        .height(60.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    PlusActionButton(
+                        navController = navController,
+                        offsetX = offsetX
                     )
-                    .height(60.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                PlusActionButton(
-                    navController = navController,
-                    offsetX = offsetX
-                )
+                }
             }
         }
     }
