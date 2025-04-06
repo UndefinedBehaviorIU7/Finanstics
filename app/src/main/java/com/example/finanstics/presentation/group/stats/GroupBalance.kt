@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.finanstics.ui.theme.ALL_TIME
 
+@Suppress("MagicNumber")
 @Composable
 fun GroupBalance(
     currentBalance: Int,

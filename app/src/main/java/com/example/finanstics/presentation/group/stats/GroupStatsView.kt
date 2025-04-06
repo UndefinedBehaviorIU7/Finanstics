@@ -199,7 +199,7 @@ fun GroupStatsView(
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewVertical(
     incomes: List<Pair<String, Int>>,
@@ -264,7 +264,7 @@ fun GroupStatsViewVertical(
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewHorizontal(
     incomes: List<Pair<String, Int>>,

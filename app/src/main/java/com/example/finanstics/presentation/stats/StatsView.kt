@@ -137,7 +137,7 @@ fun StatsView(
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewVertical(
     incomes: List<Pair<String, Int>>,
@@ -193,14 +193,12 @@ fun StatsViewVertical(
                     expenses = true
                 )
             }
-            item {
-                Spacer(modifier = Modifier.height(50.dp))
-            }
+            item { Spacer(modifier = Modifier.height(50.dp)) }
         }
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewHorizontal(
     incomes: List<Pair<String, Int>>,
@@ -262,9 +260,7 @@ fun StatsViewHorizontal(
                             expenses = true
                         )
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
-                    }
+                    item { Spacer(modifier = Modifier.height(50.dp)) }
                 }
             }
         }
