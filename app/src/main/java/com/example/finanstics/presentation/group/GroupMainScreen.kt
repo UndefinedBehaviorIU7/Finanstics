@@ -5,28 +5,35 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.navigation.BottomBar
 import com.example.finanstics.presentation.isIn
 import com.example.finanstics.presentation.navigation.BottomBarScreen
+import com.example.finanstics.presentation.navigation.BottomBarUiState
+import com.example.finanstics.presentation.navigation.BottomBarViewModel
 import com.example.finanstics.presentation.navigation.BottomGroupNavGraph
+import com.example.finanstics.ui.theme.OFFSET_BAR
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun GroupMainScreen(
@@ -83,16 +90,33 @@ fun GroupMainScreen(
         }
     }
 
+    val vm: BottomBarViewModel = viewModel()
+
     Scaffold(
-        bottomBar = { BottomBar(pagerState = pagerState, screens = screens) }
+        bottomBar = {}
     ) { innerPaddingValues ->
         Box(
-            modifier = Modifier.padding(innerPaddingValues)
+            modifier = Modifier
+                .padding(innerPaddingValues)
+                .fillMaxSize()
         ) {
             BottomGroupNavGraph(
                 pagerState = pagerState,
-                navController = navController
+                navController = navController,
+                offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
+                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2
             )
+
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                BottomBar(
+                    pagerState = pagerState,
+                    screens = screens,
+                    vm = vm
+                )
+            }
         }
     }
 }

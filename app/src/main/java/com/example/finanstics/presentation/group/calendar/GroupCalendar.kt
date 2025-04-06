@@ -26,7 +26,7 @@ fun GroupCalendar(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Calendar",
+            text = "Group Calendar",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,

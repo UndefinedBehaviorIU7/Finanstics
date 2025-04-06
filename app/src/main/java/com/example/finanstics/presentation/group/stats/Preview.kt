@@ -19,7 +19,6 @@ fun StatsPreview() {
         GroupStatsView(
             incomes = INCOMES_DATA,
             expenses = EXPENSES_DATA,
-            month = 1
         )
     }
 }

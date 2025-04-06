@@ -60,16 +60,7 @@ fun Stats(
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = USER_NAME,
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Header(USER_NAME)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -81,16 +72,7 @@ fun Stats(
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = USER_NAME,
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Header(USER_NAME)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -105,16 +87,7 @@ fun Stats(
                 is StatsUiState.Done -> {
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = USER_NAME,
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        Header(USER_NAME)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -293,6 +266,23 @@ fun StatsErrorView(
         fontSize = 18.sp,
         color = MaterialTheme.colorScheme.primary
     )
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun Header(
+    userName: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = userName,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 @Suppress("MagicNumber")
