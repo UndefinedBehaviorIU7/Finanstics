@@ -53,12 +53,15 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                         Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
 
-                            Form(value = uiState.login,
+                            Form(
+                                value = uiState.login,
                                 label = stringResource(R.string.login),
-                                isError = false, lambda = { vm.loginChange(it) }
+                                isError = false,
+                                lambda = { vm.loginChange(it) }
                             )
 
-                            Form(value = uiState.password,
+                            Form(
+                                value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
                                 lambda = { vm.passwordChange(it) }
@@ -79,14 +82,15 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                     ) {
 
                         Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
-                            Form (
+                            Form(
                                 value = uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = true,
                                 lambda = { vm.loginChange(it) }
                             )
 
-                            Form (value = uiState.password,
+                            Form(
+                                value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = true,
                                 lambda = { vm.passwordChange(it) }

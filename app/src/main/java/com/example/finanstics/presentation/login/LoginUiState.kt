@@ -1,25 +1,25 @@
 package com.example.finanstics.presentation.login
 
 sealed class LoginUiState {
-    data class Idle (
+    data class Idle(
         val login: String = "",
         val password: String = ""
-    ): LoginUiState()
+    ) : LoginUiState()
 
-    data class Loading (
+    data class Loading(
         val login: String,
         val password: String
-    ): LoginUiState()
+    ) : LoginUiState()
 
-    data class Error (
+    data class Error(
         val login: String,
         val password: String,
         val errorMsg: String
-    ): LoginUiState()
+    ) : LoginUiState()
 
-    data class Success (
+    data class Success(
         val id: Int,
         val token: String,
         val successMsg: String
-    ): LoginUiState()
+    ) : LoginUiState()
 }

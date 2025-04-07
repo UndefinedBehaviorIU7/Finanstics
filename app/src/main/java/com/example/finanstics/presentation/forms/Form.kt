@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 
 @Suppress("MagicNumber")
 @Composable
-fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
+fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
     OutlinedTextField(
         value = value,
         onValueChange = lambda,
@@ -39,10 +39,16 @@ fun Form (value: String, label: String, isError: Boolean, lambda: (String) -> Un
 
 @Suppress("MagicNumber")
 @Composable
-fun ButtonForm(modifier: Modifier, buttonText: String, navText: String,
-               navigate: () -> Unit, action: () -> Unit) {
-    Column (horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier) {
+fun ButtonForm(modifier: Modifier,
+               buttonText: String,
+               navText: String,
+               navigate: () -> Unit,
+               action: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
         Button(
             onClick = action,
             contentPadding = PaddingValues(
@@ -56,7 +62,7 @@ fun ButtonForm(modifier: Modifier, buttonText: String, navText: String,
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text (
+            Text(
                 text = buttonText,
                 fontSize = 25.sp,
                 color = MaterialTheme.colorScheme.secondary

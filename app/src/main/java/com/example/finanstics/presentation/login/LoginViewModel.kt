@@ -3,13 +3,13 @@ package com.example.finanstics.presentation.login
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import com.example.finanstics.R
 
-class LoginViewModel(application: Application): AndroidViewModel(application) {
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
@@ -88,7 +88,6 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
 //                        token = token,
 //                        successMsg = getApplication<Application>().getString(R.string.login_success)
 //                    )
-
                 } catch (e: HttpException) {
                     TODO("Server exceptions")
                 } catch (e: Exception) {
