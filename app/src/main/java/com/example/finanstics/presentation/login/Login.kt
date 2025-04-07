@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import com.example.finanstics.R
 import com.example.finanstics.presentation.forms.Form
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     val uiState = vm.uiState.collectAsState().value

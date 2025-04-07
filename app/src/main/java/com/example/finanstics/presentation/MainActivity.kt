@@ -25,6 +25,7 @@ enum class Navigation(val route: String) {
     GROUP_SETTINGS("group_settings")
 }
 
+@Suppress("LongMethod")
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {

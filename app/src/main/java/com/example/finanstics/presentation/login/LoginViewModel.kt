@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
+@Suppress("TooGenericExceptionCaught")
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
