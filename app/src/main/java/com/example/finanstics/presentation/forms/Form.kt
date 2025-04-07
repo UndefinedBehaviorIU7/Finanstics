@@ -39,11 +39,12 @@ fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Uni
 
 @Suppress("MagicNumber")
 @Composable
-fun ButtonForm(modifier: Modifier,
-               buttonText: String,
-               navText: String,
-               navigate: () -> Unit,
-               action: () -> Unit
+fun ButtonForm(
+    modifier: Modifier,
+    buttonText: String,
+    navText: String,
+    navigate: () -> Unit,
+    action: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
