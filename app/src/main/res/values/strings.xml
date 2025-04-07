@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Finanstics</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="login_success">Вход выполнен</string>
 </resources>
