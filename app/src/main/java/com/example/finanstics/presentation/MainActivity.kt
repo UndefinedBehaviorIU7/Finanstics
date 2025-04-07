@@ -11,18 +11,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.finanstics.presentation.group.GroupMainScreen
 import com.example.finanstics.presentation.groups.Groups
+import com.example.finanstics.presentation.login.Login
 import com.example.finanstics.ui.theme.FinansticsTheme
 
 enum class Navigation(val route: String) {
     STATS("stats"),
     GROUPS("groups"),
     CALENDAR("calendar"),
+    LOGIN("login"),
     SETTINGS("settings"),
     GROUP_STATS("group_stats"),
     GROUP_CALENDAR("group_calendar"),
     GROUP_SETTINGS("group_settings")
 }
 
+@Suppress("LongMethod")
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +46,9 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             initialPage = 0
                         )
+                    }
+                    composable(Navigation.LOGIN.toString()) {
+                        Login(navController)
                     }
                     composable(Navigation.GROUPS.toString()) {
                         Groups(
