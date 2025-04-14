@@ -20,7 +20,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
-    fun loginChange(newLogin: String) {
+    fun onLoginChange(newLogin: String) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {
                 _uiState.value = current.copy(login = newLogin)
@@ -29,7 +29,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = newLogin,
-                    tag = current.tag,
+                    username = current.username,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image
@@ -40,16 +40,16 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun tagChange(newTag: String) {
+    fun onUsernameChange(newUsername: String) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {
-                _uiState.value = current.copy(tag = newTag)
+                _uiState.value = current.copy(username = newUsername)
             }
 
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = current.login,
-                    tag = newTag,
+                    username = newUsername,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image
@@ -60,7 +60,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun passwordChange(newPassword: String) {
+    fun onPasswordChange(newPassword: String) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {
                 _uiState.value = current.copy(password = newPassword)
@@ -69,7 +69,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = current.login,
-                    tag = current.tag,
+                    username = current.username,
                     password = newPassword,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image
@@ -80,7 +80,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun passwordRepeatChange(newPasswordRepeat: String) {
+    fun onPasswordRepeatChange(newPasswordRepeat: String) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {
                 _uiState.value = current.copy(passwordRepeat = newPasswordRepeat)
@@ -89,7 +89,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = current.login,
-                    tag = current.tag,
+                    username = current.username,
                     password = current.password,
                     passwordRepeat = newPasswordRepeat,
                     image = current.image
@@ -100,7 +100,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun imageChange(newImage: Uri?) {
+    fun onImageChange(newImage: Uri?) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {
                 _uiState.value = current.copy(image = newImage)
@@ -109,7 +109,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = current.login,
-                    tag = current.tag,
+                    username = current.username,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = newImage
@@ -120,25 +120,26 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun signup() {
+    fun register() {
         val current = _uiState.value
 
         if (current is RegisterUiState.Idle) {
-            if (current.login.isBlank() || current.password.isBlank()) {
+            if (current.login.isBlank() || current.username.isBlank()
+                || current.password.isBlank() || current.passwordRepeat.isBlank()) {
                 _uiState.value = RegisterUiState.Error(
                     login = current.login,
-                    tag = current.tag,
+                    username = current.username,
                     password = current.password,
                     passwordRepeat = current.passwordRepeat,
                     image = current.image,
-                    errorMsg = "fields shouldn't be blank"
+                    errorMsg = getApplication<Application>().getString(R.string.empty_fields)
                 )
                 return
             }
 
             _uiState.value = RegisterUiState.Loading(
                 login = current.login,
-                tag = current.tag,
+                username = current.username,
                 password = current.password,
                 passwordRepeat = current.passwordRepeat,
                 image = current.image
@@ -149,7 +150,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 //                    if (current.password != current.passwordRepeat)  {
 //                        _uiState.value = RegisterUiState.Error (
 //                            login = current.login,
-//                            tag = current.tag,
+//                            username = current.username,
 //                            password = current.password,
 //                            passwordRepeat = current.passwordRepeat,
 //                            image = current.image,
@@ -159,7 +160,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 //                        val imageUri = current.image
 //                        val imagePart = imageUri?.let { createMultipartBodyPart(it) }
 //
-//                        val request = NetworkService.api.signup(
+//                        val request = RetrofitInstance.api.signup(
 //                            login = current.login.toRequestBody("text/plain".toMediaTypeOrNull()),
 //                            tag = current.tag.toRequestBody("text/plain".toMediaTypeOrNull()),
 //                            password = current.password.toRequestBody("text/plain".toMediaTypeOrNull()),
@@ -171,11 +172,26 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 //                        )
 //                    }
                 } catch (e: HttpException) {
-                    TODO("Server exceptions")
+                    val currErrorMsg = when (e.code()) {
+                        400 -> R.string.error_400
+                        401 -> R.string.error_401
+                        404 -> R.string.error_404
+                        409 -> R.string.error_409
+                        else -> R.string.unknown_server_error
+                    }
+
+                    _uiState.value = RegisterUiState.Error (
+                        login = current.login,
+                        username = current.username,
+                        password = current.password,
+                        passwordRepeat = current.passwordRepeat,
+                        image = current.image,
+                        errorMsg = getApplication<Application>().getString(currErrorMsg)
+                    )
                 } catch (e: Exception) {
                     _uiState.value = RegisterUiState.Error(
                         login = current.login,
-                        tag = current.tag,
+                        username = current.username,
                         password = current.password,
                         passwordRepeat = current.passwordRepeat,
                         image = current.image,

@@ -32,11 +32,12 @@ import com.example.finanstics.presentation.forms.ImageForm
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable
-fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) {
+fun Register(navController: NavController) {
+    val vm: RegisterViewModel = viewModel()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-            vm.imageChange(uri)
+            vm.onImageChange(uri)
         }
     )
     val uiState = vm.uiState.collectAsState().value
@@ -48,11 +49,11 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.weight(0.2f))
 
-            if ((uiState is RegisterUiState.Idle) || (uiState is RegisterUiState.Error)) {
+            if (uiState !is RegisterUiState.Success) {
                 Image(
                     painter = painterResource(R.drawable.logo),
                     modifier = Modifier.size(280.dp).weight(1f),
-                    contentDescription = ""
+                    contentDescription = stringResource(R.string.logo_name)
                 )
             }
 
@@ -67,28 +68,28 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = false,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.onLoginChange(it) }
                             )
 
                             Form(
-                                uiState.tag,
+                                uiState.username,
                                 label = stringResource(R.string.username),
                                 isError = false,
-                                lambda = { vm.tagChange(it) }
+                                lambda = { vm.onUsernameChange(it) }
                             )
 
                             Form(
                                 uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.onPasswordChange(it) }
                             )
 
                             Form(
                                 uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = false,
-                                lambda = { vm.passwordRepeatChange(it) }
+                                lambda = { vm.onPasswordRepeatChange(it) }
                             )
                         }
 
@@ -105,7 +106,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = { vm.signup() },
+                        action = { vm.register() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 
@@ -130,28 +131,28 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = true,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.onLoginChange(it) }
                             )
 
                             Form(
-                                uiState.tag,
+                                uiState.username,
                                 label = stringResource(R.string.username),
                                 isError = true,
-                                lambda = { vm.tagChange(it) }
+                                lambda = { vm.onUsernameChange(it) }
                             )
 
                             Form(
                                 uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = true,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.onPasswordChange(it) }
                             )
 
                             Form(
                                 uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = true,
-                                lambda = { vm.passwordRepeatChange(it) }
+                                lambda = { vm.onPasswordRepeatChange(it) }
                             )
                         }
 
@@ -166,7 +167,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = { vm.signup() },
+                        action = { vm.register() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 

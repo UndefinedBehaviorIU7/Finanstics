@@ -14,7 +14,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
-    fun loginChange(newLogin: String) {
+    fun onLoginChange(newLogin: String) {
         when (val current = _uiState.value) {
             is LoginUiState.Idle -> {
                 _uiState.value = current.copy(login = newLogin)
@@ -31,7 +31,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun passwordChange(newPassword: String) {
+    fun onPasswordChange(newPassword: String) {
         when (val current = _uiState.value) {
             is LoginUiState.Idle -> {
                 _uiState.value = current.copy(password = newPassword)
@@ -48,7 +48,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun auth() {
+    fun login() {
         val current = _uiState.value
 
         if (current is LoginUiState.Idle) {
@@ -56,7 +56,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.value = LoginUiState.Error(
                     login = current.login,
                     password = current.password,
-                    errorMsg = "Fields shouldn't be blank"
+                    errorMsg = getApplication<Application>().getString(R.string.empty_fields)
                 )
                 return
             }
@@ -90,7 +90,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 //                        successMsg = getApplication<Application>().getString(R.string.login_success)
 //                    )
                 } catch (e: HttpException) {
-                    TODO("Server exceptions")
+                    val currErrorMsg = when (e.code()) {
+                        400 -> R.string.error_400
+                        401 -> R.string.error_401
+                        404 -> R.string.error_404
+                        409 -> R.string.error_409
+                        else -> R.string.unknown_server_error
+                    }
+
+                    _uiState.value = LoginUiState.Error (
+                        login = current.login,
+                        password = current.password,
+                        errorMsg = getApplication<Application>().getString(currErrorMsg)
+                    )
                 } catch (e: Exception) {
                     _uiState.value = LoginUiState.Error(
                         login = current.login,

@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.R
+import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
 
 @Suppress("MagicNumber", "LongMethod")
@@ -57,21 +59,27 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                                 value = uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = false,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.onLoginChange(it) }
                             )
 
                             Form(
                                 value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.onPasswordChange(it) }
                             )
                         }
 
                         Spacer(modifier = Modifier.weight(0.5f))
                     }
 
-//                    TODO("New account button")
+                    ButtonForm(
+                        modifier = Modifier.weight(0.5f),
+                        buttonText = stringResource(R.string.login),
+                        navText = stringResource(R.string.register),
+                        action = { vm.login() },
+                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                    )
 
                     Spacer(modifier = Modifier.weight(0.6f))
                 }
@@ -86,19 +94,19 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                                 value = uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = true,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.onLoginChange(it) }
                             )
 
                             Form(
                                 value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = true,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.onPasswordChange(it) }
                             )
 
                             Spacer(modifier = Modifier.weight(0.5f))
                             Text(
-                                text = "Error: ${uiState.errorMsg}",
+                                text = uiState.errorMsg,
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                     .weight(0.5f),
@@ -107,7 +115,13 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         Spacer(modifier = Modifier.weight(0.1f))
                     }
 
-//                    TODO("New account button")
+                    ButtonForm(
+                        modifier = Modifier.weight(0.5f),
+                        buttonText = stringResource(R.string.login),
+                        navText = stringResource(R.string.register),
+                        action = { vm.login() },
+                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                    )
 
                     Spacer(modifier = Modifier.weight(0.6f))
                 }
@@ -122,7 +136,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 }
 
                 is LoginUiState.Success -> {
-                    TODO("nav")
+                    navController.navigate(Navigation.GROUPS.toString())
                 }
             }
         }

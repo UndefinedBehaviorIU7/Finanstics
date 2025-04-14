@@ -5,7 +5,7 @@ import android.net.Uri
 sealed class RegisterUiState {
     data class Idle(
         val login: String = "",
-        val tag: String = "",
+        val username: String = "",
         val password: String = "",
         val passwordRepeat: String = "",
         val image: Uri? = null
@@ -13,7 +13,7 @@ sealed class RegisterUiState {
 
     data class Loading(
         val login: String,
-        val tag: String,
+        val username: String,
         val password: String,
         val passwordRepeat: String,
         val image: Uri?
@@ -21,7 +21,7 @@ sealed class RegisterUiState {
 
     data class Error(
         val login: String,
-        val tag: String,
+        val username: String,
         val password: String,
         val passwordRepeat: String,
         val image: Uri?,
