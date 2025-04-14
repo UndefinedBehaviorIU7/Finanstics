@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.finanstics.presentation.group.GroupMainScreen
 import com.example.finanstics.presentation.groups.Groups
 import com.example.finanstics.presentation.login.Login
+import com.example.finanstics.presentation.register.Register
 import com.example.finanstics.ui.theme.FinansticsTheme
 
 enum class Navigation(val route: String) {
@@ -19,6 +20,7 @@ enum class Navigation(val route: String) {
     GROUPS("groups"),
     CALENDAR("calendar"),
     LOGIN("login"),
+    REGISTER("register"),
     SETTINGS("settings"),
     GROUP_STATS("group_stats"),
     GROUP_CALENDAR("group_calendar"),
@@ -49,6 +51,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Navigation.LOGIN.toString()) {
                         Login(navController)
+                    }
+                    composable(Navigation.REGISTER.toString()) {
+                        Register(navController)
                     }
                     composable(Navigation.GROUPS.toString()) {
                         Groups(

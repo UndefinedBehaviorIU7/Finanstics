@@ -2,6 +2,16 @@
     <string name="app_name">Finanstics</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
+    <string name="password_repeat">Повтор пароля</string>
+    <string name="username">Имя пользоваателя</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="login_success">Вход выполнен</string>
+    <string name="select_img">Выберите изображение</string>
+    <string name="selected_img">Выбранное изображение</string>
+    <string name="img_placeholder">Стандартное изображение</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="registered">Пользователь успешно зарегистрирован</string>
+    <string name="have_an_account">Уже есть аккаунт</string>
+    <string name="passwords_do_not_match">Пароли не совпадают</string>
+    <string name="empty_fields">Заполните все поля для продолжения</string>
 </resources>
