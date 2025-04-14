@@ -9,7 +9,7 @@ sealed class RegisterUiState {
         val password: String = "",
         val passwordRepeat: String = "",
         val image: Uri? = null
-    ): RegisterUiState()
+    ) : RegisterUiState()
 
     data class Loading(
         val login: String,
@@ -17,7 +17,7 @@ sealed class RegisterUiState {
         val password: String,
         val passwordRepeat: String,
         val image: Uri?
-    ): RegisterUiState()
+    ) : RegisterUiState()
 
     data class Error(
         val login: String,
@@ -26,9 +26,9 @@ sealed class RegisterUiState {
         val passwordRepeat: String,
         val image: Uri?,
         val errorMsg: String
-    ): RegisterUiState()
+    ) : RegisterUiState()
 
     data class Success(
         val successMsg: String
-    ): RegisterUiState()
+    ) : RegisterUiState()
 }

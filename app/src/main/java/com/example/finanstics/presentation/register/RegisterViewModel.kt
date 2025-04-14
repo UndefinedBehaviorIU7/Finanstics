@@ -1,21 +1,21 @@
 package com.example.finanstics.presentation.register
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
 import com.example.finanstics.R
-import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
-import java.io.File
-import java.io.FileOutputStream
 
-class RegisterViewModel(application: Application): AndroidViewModel(application) {
+class RegisterViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
@@ -172,7 +172,7 @@ class RegisterViewModel(application: Application): AndroidViewModel(application)
                 } catch (e: HttpException) {
                     TODO("Server exceptions")
                 } catch (e: Exception) {
-                    _uiState.value = RegisterUiState.Error (
+                    _uiState.value = RegisterUiState.Error(
                         login = current.login,
                         tag = current.tag,
                         password = current.password,

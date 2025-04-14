@@ -63,28 +63,33 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(2.5f).fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
-                            Form(uiState.login,
+                            Form(
+                                uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = false,
                                 lambda = { vm.loginChange(it) }
                             )
 
-                            Form(uiState.tag,
+                            Form(
+                                uiState.tag,
                                 label = stringResource(R.string.username),
                                 isError = false,
                                 lambda = { vm.tagChange(it) }
                             )
 
-                            Form(uiState.password,
+                            Form(
+                                uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
                                 lambda = { vm.passwordChange(it) }
                             )
 
-                            Form(uiState.passwordRepeat,
+                            Form(
+                                uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = false,
-                                lambda = { vm.passwordRepeatChange(it) })
+                                lambda = { vm.passwordRepeatChange(it) }
+                            )
                         }
 
                         ImageForm(
@@ -100,7 +105,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = {vm.signup()},
+                        action = { vm.signup() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 
@@ -117,21 +122,37 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(2.5f).fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            Form(uiState.login, label = stringResource(R.string.login),
-                                isError = true, lambda = { vm.loginChange(it) })
+                        Column(
+                            modifier = Modifier.padding(start = 60.dp, end = 60.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Form(
+                                uiState.login,
+                                label = stringResource(R.string.login),
+                                isError = true,
+                                lambda = { vm.loginChange(it) }
+                            )
 
-                            Form(uiState.tag, label = stringResource(R.string.username),
-                                isError = true, lambda = { vm.tagChange(it) })
+                            Form(
+                                uiState.tag,
+                                label = stringResource(R.string.username),
+                                isError = true,
+                                lambda = { vm.tagChange(it) }
+                            )
 
-                            Form(uiState.password, label = stringResource(R.string.password),
-                                isError = true, lambda = { vm.passwordChange(it) })
+                            Form(
+                                uiState.password,
+                                label = stringResource(R.string.password),
+                                isError = true,
+                                lambda = { vm.passwordChange(it) }
+                            )
 
-                            Form(uiState.passwordRepeat,
+                            Form(
+                                uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = true,
-                                lambda = { vm.passwordRepeatChange(it) })
+                                lambda = { vm.passwordRepeatChange(it) }
+                            )
                         }
 
                         ImageForm(
@@ -145,7 +166,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = {vm.signup()},
+                        action = { vm.signup() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 
