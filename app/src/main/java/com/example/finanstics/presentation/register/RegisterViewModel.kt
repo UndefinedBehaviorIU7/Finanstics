@@ -15,6 +15,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 
+@Suppress("TooGenericExceptionCaught")
 class RegisterViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle())
     val uiState = _uiState.asStateFlow()
