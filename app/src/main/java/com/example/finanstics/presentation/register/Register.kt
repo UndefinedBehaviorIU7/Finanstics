@@ -1,5 +1,6 @@
 package com.example.finanstics.presentation.register
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -23,12 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import android.net.Uri
+import com.example.finanstics.R
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
 import com.example.finanstics.presentation.forms.ImageForm
-import com.example.finanstics.R
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable

@@ -26,8 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.finanstics.R
 import coil3.compose.rememberAsyncImagePainter
+import com.example.finanstics.R
 
 @Suppress("MagicNumber")
 @Composable
@@ -104,7 +104,7 @@ fun ImageForm(imageUri: Uri?, lambda: () -> Unit, text: String) {
         modifier = Modifier.padding(bottom = 10.dp)
     )
 
-    Box (contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
         if (imageUri != null) {
             Image(
                 painter = rememberAsyncImagePainter(imageUri),
