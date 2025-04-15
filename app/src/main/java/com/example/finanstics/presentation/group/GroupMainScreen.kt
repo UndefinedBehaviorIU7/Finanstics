@@ -7,7 +7,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -20,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.finanstics.presentation.navigation.BottomBar
 import com.example.finanstics.presentation.isIn
+import com.example.finanstics.presentation.navigation.BottomBar
 import com.example.finanstics.presentation.navigation.BottomBarScreen
 import com.example.finanstics.presentation.navigation.BottomBarUiState
 import com.example.finanstics.presentation.navigation.BottomBarViewModel
