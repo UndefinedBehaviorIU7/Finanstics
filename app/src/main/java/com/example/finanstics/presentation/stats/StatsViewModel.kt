@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
+private const val TIME_UPDATE = 5000L
+
 class StatsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -128,7 +130,7 @@ class StatsViewModel(
         viewModelScope.launch {
             while (true) {
                 fetchData()
-                delay(5000)
+                delay(TIME_UPDATE)
             }
         }
     }
