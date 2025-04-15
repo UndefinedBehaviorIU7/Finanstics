@@ -14,6 +14,7 @@ class StatsRepository(private var db: FinansticsDatabase) {
         year: Int
     ): List<Pair<String, Int>> {
         return actionsToPairs(actionDao.getIncomesByMonth(month, year), getAllCategories())
+            .sortedByDescending { it.second }
     }
 
     suspend fun getExpenses(
@@ -21,6 +22,7 @@ class StatsRepository(private var db: FinansticsDatabase) {
         year: Int
     ): List<Pair<String, Int>> {
         return actionsToPairs(actionDao.getExpensesByMonth(month, year), getAllCategories())
+            .sortedByDescending { it.second }
     }
 
     suspend fun getAllIncomes(): List<Pair<String, Int>> {

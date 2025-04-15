@@ -1,6 +1,8 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.db.Category
@@ -23,6 +25,8 @@ class StatsViewModel(
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
+    var incomes = mutableStateListOf<Pair<String, Int>>()
+    var expenses = mutableStateListOf<Pair<String, Int>>()
 
     init {
         example()
@@ -79,14 +83,20 @@ class StatsViewModel(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
                 )
-                val incomes = repository.getIncomes(
+                val incomesData = repository.getIncomes(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
-                val expenses = repository.getExpenses(
+                incomes.clear()
+                incomes.addAll(incomesData)
+
+                val expensesData = repository.getExpenses(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
+                expenses.clear()
+                expenses.addAll(expensesData)
+
                 _uiState.value = StatsUiState.Done(
                     incomes = incomes,
                     expenses = expenses,

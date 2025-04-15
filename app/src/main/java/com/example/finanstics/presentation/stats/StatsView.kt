@@ -19,6 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -34,9 +38,11 @@ import com.example.finanstics.ui.theme.USER_NAME
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Stats(
-    navController: NavController
+    navController: NavController,
 ) {
     val vm: StatsViewModel = viewModel()
+    val incomes = vm.incomes
+    val expenses = vm.expenses
 
     Box(
         modifier = Modifier
@@ -95,8 +101,8 @@ fun Stats(
                             vm = vm
                         )
                         StatsView(
-                            uiState.incomes,
-                            uiState.expenses,
+                            incomes,
+                            expenses,
                             vm
                         )
                     }
