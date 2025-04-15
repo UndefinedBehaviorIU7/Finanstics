@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.finanstics.presentation.addAction.AddAction
 import com.example.finanstics.presentation.group.GroupMainScreen
 import com.example.finanstics.presentation.groups.Groups
 import com.example.finanstics.presentation.login.Login
@@ -17,6 +18,7 @@ import com.example.finanstics.ui.theme.FinansticsTheme
 
 enum class Navigation(val route: String) {
     STATS("stats"),
+    ADD_ACTION("add_action"),
     GROUPS("groups"),
     CALENDAR("calendar"),
     LOGIN("login"),
@@ -54,6 +56,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Navigation.REGISTER.toString()) {
                         Register(navController)
+                    }
+                    composable(Navigation.ADD_ACTION.toString()) {
+                        AddAction(navController)
                     }
                     composable(Navigation.GROUPS.toString()) {
                         Groups(

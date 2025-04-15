@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -201,15 +202,14 @@ fun AddAction(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
                     .padding(
-                        top = 20.dp,
+                        top = 50.dp,
                         start = 20.dp,
                         end = 20.dp
                     )
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val typeActions = listOf("Доход", "Расход")
-
+                val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
                 TypeSelector(
                     value = uiState.typeAction,
                     label = "Тип действия",

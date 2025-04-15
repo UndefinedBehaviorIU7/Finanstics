@@ -30,14 +30,14 @@ data class Category(
 data class Action(
     @PrimaryKey(autoGenerate = true) val actionId: Int = 0,
     val type: Int,
-    val name: String?,
+    val name: String,
     val value: Int,
     val day: Int,
     val month: MonthNameClass,
     val year: Int,
     @ColumnInfo(index = true) val categoryId: Int,
     val description: String? = null,
-    val createdAt: String?,
+    val createdAt: String? = null,
     val serverId: Int? = null
 )
 
