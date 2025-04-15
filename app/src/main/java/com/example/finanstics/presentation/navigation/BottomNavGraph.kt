@@ -131,7 +131,11 @@ fun PlusActionButton(
             imageVector = CircleIcon,
             contentDescription = "",
             tint = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier.size(50.dp)
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    navController.navigate(Navigation.ADD_ACTION.toString())
+                }
         )
         Icon(
             imageVector = PlusCircleIcon,
@@ -139,9 +143,6 @@ fun PlusActionButton(
             tint = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .size(50.dp)
-                .clickable {
-                    TODO()
-                }
         )
     }
 }
