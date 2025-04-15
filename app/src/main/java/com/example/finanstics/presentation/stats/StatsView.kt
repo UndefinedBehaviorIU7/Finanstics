@@ -34,9 +34,11 @@ import com.example.finanstics.ui.theme.USER_NAME
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Stats(
-    navController: NavController
+    navController: NavController,
 ) {
     val vm: StatsViewModel = viewModel()
+    val incomes = vm.incomes
+    val expenses = vm.expenses
 
     Box(
         modifier = Modifier
@@ -95,8 +97,8 @@ fun Stats(
                             vm = vm
                         )
                         StatsView(
-                            uiState.incomes,
-                            uiState.expenses,
+                            incomes,
+                            expenses,
                             vm
                         )
                     }

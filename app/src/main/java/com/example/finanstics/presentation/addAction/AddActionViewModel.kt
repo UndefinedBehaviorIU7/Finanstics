@@ -3,7 +3,9 @@ package com.example.finanstics.presentation.addAction
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.db.Action
 import com.example.finanstics.db.FinansticsDatabase
+import com.example.finanstics.presentation.calendar.MonthNameClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,10 +18,11 @@ class AddActionViewModel(
     val db = FinansticsDatabase.getDatabase(application)
 
     private val repository = AddActionRepository(db)
+    private val actionDao = db.actionDao()
 
     private val _uiState = MutableStateFlow<AddActionUiState>(
         AddActionUiState.Idle(
-            typeAction = "",
+            typeAction = ActionType.EXPENSE,
             nameAction = "",
             moneyAction = 0,
             data = "",
@@ -51,7 +54,7 @@ class AddActionViewModel(
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
     fun updateUIState(
-        newTypeAction: String? = null,
+        newTypeAction: ActionType? = null,
         newNameAction: String? = null,
         newMoneyAction: Int? = null,
         newData: String? = null,
@@ -98,6 +101,25 @@ class AddActionViewModel(
                     menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
                     menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
                 )
+            }
+        }
+    }
+
+    fun addAction() {
+        val current = uiState.value
+        if (current is AddActionUiState.Idle) {
+            viewModelScope.launch {
+                val action = Action(
+                    name = current.nameAction,
+                    type = current.typeAction.ordinal,
+                    description = current.description,
+                    value = current.moneyAction,
+                    day = 20,
+                    month = MonthNameClass.APRIL,
+                    year = 2025,
+                    categoryId = 2,
+                )
+                actionDao.insertAction(action)
             }
         }
     }

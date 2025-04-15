@@ -2,7 +2,7 @@ package com.example.finanstics.presentation.addAction
 
 sealed class AddActionUiState {
     data class Idle(
-        var typeAction: String,
+        var typeAction: ActionType,
         var nameAction: String,
         var moneyAction: Int,
         var data: String,
@@ -14,7 +14,7 @@ sealed class AddActionUiState {
     ) : AddActionUiState()
 
     data class Error(
-        var typeAction: String,
+        var typeAction: ActionType,
         var nameAction: String,
         var moneyAction: Int,
         var data: String,
@@ -28,7 +28,7 @@ sealed class AddActionUiState {
     ) : AddActionUiState()
 
     data class Loading(
-        var typeAction: String,
+        var typeAction: ActionType,
         var nameAction: String,
         var moneyAction: Int,
         var data: String,

@@ -1,15 +1,19 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.CalendarClass
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+
+private const val TIME_UPDATE = 5000L
 
 class StatsViewModel(
     application: Application
@@ -23,36 +27,38 @@ class StatsViewModel(
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
+    var incomes = mutableStateListOf<Pair<String, Int>>()
+    var expenses = mutableStateListOf<Pair<String, Int>>()
 
     init {
         example()
         loadCalendar()
-        fetchData()
+        autoUpdate()
     }
 
     fun example() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
             if (cats.isEmpty()) {
-                db.categoryDao().insertCategory(Category(name = "Еда"))
-                db.categoryDao().insertCategory(Category(name = "Транспорт"))
-                db.categoryDao().insertCategory(Category(name = "Налоги/штрафы"))
-                db.categoryDao().insertCategory(Category(name = "Покупки"))
-                db.categoryDao().insertCategory(Category(name = "Транспорт"))
-                db.categoryDao().insertCategory(Category(name = "Спорт"))
-                db.categoryDao().insertCategory(Category(name = "Развлечения"))
-                db.categoryDao().insertCategory(Category(name = "Образование"))
-                db.categoryDao().insertCategory(Category(name = "Уход за собой"))
-                db.categoryDao().insertCategory(Category(name = "Здоровье"))
-                db.categoryDao().insertCategory(Category(name = "Быт"))
-                db.categoryDao().insertCategory(Category(name = "Прочие расходы"))
+                db.categoryDao().insertCategory(Category(name = "Еда", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Покупки", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Спорт", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Развлечения", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Образование", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Уход за собой", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Здоровье", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Быт", type = 0))
+                db.categoryDao().insertCategory(Category(name = "Прочие расходы", type = 0))
 
-                db.categoryDao().insertCategory(Category(name = "Зарплата"))
-                db.categoryDao().insertCategory(Category(name = "Перевод"))
-                db.categoryDao().insertCategory(Category(name = "Стипендия"))
-                db.categoryDao().insertCategory(Category(name = "Пенсия"))
-                db.categoryDao().insertCategory(Category(name = "Проценты"))
-                db.categoryDao().insertCategory(Category(name = "Прочие доходы"))
+                db.categoryDao().insertCategory(Category(name = "Зарплата", type = 2))
+                db.categoryDao().insertCategory(Category(name = "Перевод", type = 1))
+                db.categoryDao().insertCategory(Category(name = "Стипендия", type = 2))
+                db.categoryDao().insertCategory(Category(name = "Пенсия", type = 2))
+                db.categoryDao().insertCategory(Category(name = "Проценты", type = 2))
+                db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
             }
         }
     }
@@ -72,29 +78,59 @@ class StatsViewModel(
     }
 
     fun fetchData() {
-        _uiState.value = StatsUiState.LoadingData(calendar, totalBalance)
         viewModelScope.launch {
             try {
+                var update = false
                 totalBalance = repository.balance(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
                 )
-                val incomes = repository.getIncomes(
+                val incomesData = repository.getIncomes(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
-                val expenses = repository.getExpenses(
+                val incTmp = mutableStateListOf<Pair<String, Int>>()
+                incTmp.addAll(incomesData)
+
+                if (incTmp.size != incomes.size) {
+                    update = true
+                    incomes.clear()
+                    incomes.addAll(incomesData)
+                }
+
+                val expensesData = repository.getExpenses(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
-                _uiState.value = StatsUiState.Done(
-                    incomes = incomes,
-                    expenses = expenses,
-                    calendar = calendar,
-                    totalBalance = totalBalance
-                )
+
+                val expTmp = mutableStateListOf<Pair<String, Int>>()
+                expTmp.addAll(expensesData)
+
+                if (expTmp.size != expenses.size) {
+                    update = true
+                    expenses.clear()
+                    expenses.addAll(expensesData)
+                }
+
+                if (update) {
+                    _uiState.value = StatsUiState.Done(
+                        incomes = incomes,
+                        expenses = expenses,
+                        calendar = calendar,
+                        totalBalance = totalBalance
+                    )
+                }
             } catch (e: HttpException) {
                 _uiState.value = StatsUiState.Error(" ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private fun autoUpdate() {
+        viewModelScope.launch {
+            while (true) {
+                fetchData()
+                delay(TIME_UPDATE)
             }
         }
     }
