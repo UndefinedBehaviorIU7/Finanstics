@@ -10,22 +10,25 @@ import com.example.finanstics.presentation.calendar.MonthNameClass
 
 @Entity(tableName = "categories")
 data class Category(
-    @PrimaryKey (autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val serverId: Int? = null
 )
 
 @Entity(
     tableName = "actions",
-    foreignKeys = [ForeignKey(
-        entity = Category::class,
-        parentColumns = ["id"],
-        childColumns = ["categoryId"],
-        onDelete = ForeignKey.SET_NULL
-    )]
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = Category::class,
+                parentColumns = ["id"],
+                childColumns = ["categoryId"],
+                onDelete = ForeignKey.SET_NULL
+            )
+        ]
 )
 data class Action(
-    @PrimaryKey (autoGenerate = true) val actionId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val actionId: Int = 0,
     val type: Int,
     val name: String?,
     val value: Int,

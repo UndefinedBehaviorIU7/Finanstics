@@ -24,11 +24,13 @@ class StatsRepository(private var db: FinansticsDatabase) {
     }
 
     suspend fun getAllIncomes(): List<Pair<String, Int>> {
-        return actionsToPairs(actionDao.getAllIncomes(), getAllCategories()).sortedByDescending { it.second }
+        return actionsToPairs(actionDao.getAllIncomes(), getAllCategories())
+            .sortedByDescending { it.second }
     }
 
     suspend fun getAllExpenses(): List<Pair<String, Int>> {
-        return actionsToPairs(actionDao.getAllExpenses(), getAllCategories()).sortedByDescending { it.second }
+        return actionsToPairs(actionDao.getAllExpenses(), getAllCategories())
+            .sortedByDescending { it.second }
     }
 
     suspend fun getAllActions(): List<Action> {
