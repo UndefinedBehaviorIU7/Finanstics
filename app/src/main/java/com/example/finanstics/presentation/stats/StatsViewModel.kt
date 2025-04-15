@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.CalendarClass
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class StatsViewModel(
     init {
         example()
         loadCalendar()
-        fetchData()
+        autoUpdate()
     }
 
     fun example() {
@@ -75,9 +76,9 @@ class StatsViewModel(
     }
 
     fun fetchData() {
-        _uiState.value = StatsUiState.LoadingData(calendar, totalBalance)
         viewModelScope.launch {
             try {
+                var update = false
                 totalBalance = repository.balance(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
@@ -86,24 +87,48 @@ class StatsViewModel(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
-                incomes.clear()
-                incomes.addAll(incomesData)
+                val incTmp = mutableStateListOf<Pair<String, Int>>()
+                incTmp.addAll(incomesData)
+
+                if (incTmp.size != incomes.size) {
+                    update = true
+                    incomes.clear()
+                    incomes.addAll(incomesData)
+                }
 
                 val expensesData = repository.getExpenses(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
                 )
-                expenses.clear()
-                expenses.addAll(expensesData)
 
-                _uiState.value = StatsUiState.Done(
-                    incomes = incomes,
-                    expenses = expenses,
-                    calendar = calendar,
-                    totalBalance = totalBalance
-                )
+                val expTmp = mutableStateListOf<Pair<String, Int>>()
+                expTmp.addAll(expensesData)
+
+                if (expTmp.size != expenses.size) {
+                    update = true
+                    expenses.clear()
+                    expenses.addAll(expensesData)
+                }
+
+                if (update) {
+                    _uiState.value = StatsUiState.Done(
+                        incomes = incomes,
+                        expenses = expenses,
+                        calendar = calendar,
+                        totalBalance = totalBalance
+                    )
+                }
             } catch (e: HttpException) {
                 _uiState.value = StatsUiState.Error(" ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private fun autoUpdate() {
+        viewModelScope.launch {
+            while (true) {
+                fetchData()
+                delay(5000)
             }
         }
     }
