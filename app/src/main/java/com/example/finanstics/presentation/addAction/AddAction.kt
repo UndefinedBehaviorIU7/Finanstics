@@ -5,11 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -27,13 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.ui.theme.icons.CalendarIcon
 import java.util.Calendar
 
@@ -86,7 +91,9 @@ fun FormAddData(
         },
         readOnly = false,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .fillMaxWidth(),
         trailingIcon = {
             IconButton(onClick = { showDatePicker = true }) {
                 Icon(
@@ -128,7 +135,9 @@ fun Form2(value: String, label: String, isError: Boolean, lambda: (String) -> Un
             )
         },
         readOnly = false,
-        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .fillMaxWidth()
     )
 }
 
@@ -210,12 +219,14 @@ fun AddAction(
             ) {
                 val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
                 TypeSelector(
-                    value = uiState.typeAction,
+                    value = uiState.typeAction.label,
                     label = "Тип действия",
                     expanded = uiState.menuExpandedType,
                     typeActions = typeActions,
                     onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
-                    onTypeSelected = { vm.updateUIState(newTypeAction = it) }
+                    onTypeSelected = { selectedActionType ->
+                        vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+                    }
                 )
 
                 Form2(
@@ -254,8 +265,32 @@ fun AddAction(
                     isError = false,
                     lambda = { vm.updateUIState(newDescription = it) }
                 )
+
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    val width = maxWidth
+                    Button(
+                        onClick = {
+                            vm.addAction()
+                        },
+                    ) {
+                        Text(
+                            text = "Добавить",
+                            fontSize = 28.sp
+                        )
+                    }
+                }
+
+                Button(
+                    onClick = { navController.navigate(Navigation.STATS.toString()) }
+                ) {
+                    Text("назад", color = Color.White)
+                }
             }
         }
+
         else -> Unit
     }
 }
