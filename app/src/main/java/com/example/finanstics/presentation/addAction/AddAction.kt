@@ -67,7 +67,8 @@ fun FormAddData(
         textFieldState.value = TextFieldValue(
             formattedDate,
             selection = TextRange(
-                formattedDate.length, formattedDate.length
+                formattedDate.length,
+                formattedDate.length
             )
         )
     }
@@ -82,7 +83,7 @@ fun FormAddData(
                 label,
                 color = MaterialTheme.colorScheme.primary
             )
-                },
+        },
         readOnly = false,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
@@ -125,7 +126,7 @@ fun Form2(value: String, label: String, isError: Boolean, lambda: (String) -> Un
                 label,
                 color = MaterialTheme.colorScheme.primary
             )
-                },
+        },
         readOnly = false,
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
     )
@@ -150,7 +151,7 @@ fun TypeSelector(
                     label,
                     color = MaterialTheme.colorScheme.primary
                 )
-                    },
+            },
             readOnly = true,
             modifier = Modifier
                 .fillMaxWidth()
