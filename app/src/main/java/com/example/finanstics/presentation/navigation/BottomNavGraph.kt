@@ -135,7 +135,7 @@ fun PlusActionButton(
                 .size(50.dp)
                 .clickable {
                     navController.navigate(Navigation.ADD_ACTION.toString())
-            }
+                }
         )
         Icon(
             imageVector = PlusCircleIcon,
