@@ -132,7 +132,7 @@ fun Form2(value: String, label: String, isError: Boolean, lambda: (String) -> Un
     )
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongParameterList", "LongMethod")
 @Composable
 fun TypeSelector(
     value: String,

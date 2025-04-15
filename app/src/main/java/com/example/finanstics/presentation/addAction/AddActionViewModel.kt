@@ -25,6 +25,7 @@ class AddActionViewModel(
 
     val uiState = _uiState.asStateFlow()
 
+    @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
     fun updateUIState(
         newTypeAction: String? = null,
         newNameAction: String? = null,
