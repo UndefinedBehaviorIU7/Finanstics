@@ -1,13 +1,13 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
-import retrofit2.HttpException
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.presentation.calendar.CalendarClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class StatsViewModel(
     application: Application

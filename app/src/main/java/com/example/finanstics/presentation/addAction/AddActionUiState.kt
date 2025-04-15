@@ -11,7 +11,7 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ) : AddActionUiState()
 
     data class Error(
         var typeAction: String,
@@ -25,7 +25,7 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ) : AddActionUiState()
 
     data class Loading(
         var typeAction: String,
@@ -37,5 +37,5 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ) : AddActionUiState()
 }
