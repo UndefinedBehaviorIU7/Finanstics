@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.finanstics.presentation.calendar.MonthNameClass
 
+@Suppress("TooManyFunctions")
 @Dao
 interface ActionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
