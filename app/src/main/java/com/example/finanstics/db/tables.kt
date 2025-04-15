@@ -12,6 +12,7 @@ import com.example.finanstics.presentation.calendar.MonthNameClass
 data class Category(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
+    val type: Int,
     val serverId: Int? = null
 )
 
@@ -39,13 +40,4 @@ data class Action(
     val description: String? = null,
     val createdAt: String? = null,
     val serverId: Int? = null
-)
-
-data class CategoryWithActions(
-    @Embedded val category: Category,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "categoryId"
-    )
-    val actions: List<Action>
 )

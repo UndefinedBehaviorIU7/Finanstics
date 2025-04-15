@@ -66,11 +66,9 @@ interface CategoryDao {
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): List<Category>
 
-    @Transaction
-    @Query("SELECT * FROM categories WHERE id = :categoryId")
-    suspend fun getCategoryWithActions(categoryId: Int): CategoryWithActions?
+    @Query("SELECT * FROM categories WHERE type = 2 OR type = 1")
+    suspend fun getIncomesCategories(): List<Category>
 
-    @Transaction
-    @Query("SELECT * FROM categories")
-    suspend fun getAllCategoriesWithActions(): List<CategoryWithActions>
+    @Query("SELECT * FROM categories WHERE type = 0 OR type = 1")
+    suspend fun getExpensesCategories(): List<Category>
 }

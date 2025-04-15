@@ -267,13 +267,14 @@ fun AddAction(
                 )
 
                 BoxWithConstraints(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     val width = maxWidth
                     Button(
                         onClick = {
                             vm.addAction()
+                            navController.navigate(Navigation.STATS.route)
                         },
                     ) {
                         Text(
@@ -281,12 +282,6 @@ fun AddAction(
                             fontSize = 28.sp
                         )
                     }
-                }
-
-                Button(
-                    onClick = { navController.navigate(Navigation.STATS.toString()) }
-                ) {
-                    Text("назад", color = Color.White)
                 }
             }
         }
