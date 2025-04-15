@@ -1,7 +1,7 @@
 package com.example.finanstics.presentation.addAction
 
 sealed class AddActionUiState {
-    data class Idle (
+    data class Idle(
         var typeAction: String,
         var nameAction: String,
         var moneyAction: Int,
@@ -11,9 +11,9 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ):AddActionUiState()
 
-    data class Error (
+    data class Error(
         var typeAction: String,
         var nameAction: String,
         var moneyAction: Int,
@@ -25,9 +25,9 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ):AddActionUiState()
 
-    data class Loading (
+    data class Loading(
         var typeAction: String,
         var nameAction: String,
         var moneyAction: Int,
@@ -37,5 +37,5 @@ sealed class AddActionUiState {
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
-    ): AddActionUiState()
+    ):AddActionUiState()
 }

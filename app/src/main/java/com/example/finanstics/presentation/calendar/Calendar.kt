@@ -446,8 +446,6 @@ fun Calendar(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         when (val uiState = vm.uiState.collectAsState().value) {
             is CalendarUiState.Idle -> {
             }

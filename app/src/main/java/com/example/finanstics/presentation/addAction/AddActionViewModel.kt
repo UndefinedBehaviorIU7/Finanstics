@@ -2,7 +2,6 @@ package com.example.finanstics.presentation.addAction
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.finanstics.presentation.calendar.CalendarUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -23,7 +22,6 @@ class AddActionViewModel(
             menuExpandedCategory = false,
         )
     )
-
 
     val uiState = _uiState.asStateFlow()
 

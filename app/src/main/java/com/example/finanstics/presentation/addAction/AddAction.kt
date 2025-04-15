@@ -37,9 +37,14 @@ import androidx.navigation.NavController
 import com.example.finanstics.ui.theme.icons.CalendarIcon
 import java.util.Calendar
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
-fun FormAddData( value: String, label: String, isError: Boolean, lambda: (String) -> Unit ) {
+fun FormAddData(
+    value: String,
+    label: String,
+    isError: Boolean,
+    lambda: (String) -> Unit
+) {
     var showDatePicker by remember { mutableStateOf(false) }
     var formattedValue by remember { mutableStateOf(value) }
 
@@ -59,10 +64,13 @@ fun FormAddData( value: String, label: String, isError: Boolean, lambda: (String
         formattedValue = formattedDate
         lambda(formattedDate)
 
-        textFieldState.value = TextFieldValue(formattedDate, selection = TextRange(formattedDate.length, formattedDate.length))
-
+        textFieldState.value = TextFieldValue(
+            formattedDate,
+            selection = TextRange(
+                formattedDate.length, formattedDate.length
+            )
+        )
     }
-
 
     OutlinedTextField(
         value = textFieldState.value,
@@ -71,9 +79,10 @@ fun FormAddData( value: String, label: String, isError: Boolean, lambda: (String
         },
         label = {
             Text(
-            label,
-            color = MaterialTheme.colorScheme.primary
-        ) },
+                label,
+                color = MaterialTheme.colorScheme.primary
+            )
+                },
         readOnly = false,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
@@ -115,7 +124,8 @@ fun Form2(value: String, label: String, isError: Boolean, lambda: (String) -> Un
             Text(
                 label,
                 color = MaterialTheme.colorScheme.primary
-            ) },
+            )
+                },
         readOnly = false,
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
     )
@@ -139,7 +149,8 @@ fun TypeSelector(
                 Text(
                     label,
                     color = MaterialTheme.colorScheme.primary
-                ) },
+                )
+                    },
             readOnly = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -203,7 +214,7 @@ fun AddAction(
                     label = "Тип действия",
                     expanded = uiState.menuExpandedType,
                     typeActions = typeActions,
-                    onExpandChange = { vm.updateUIState(newMenuExpandedType  = it) },
+                    onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
                     onTypeSelected = { vm.updateUIState(newTypeAction = it) }
                 )
 
