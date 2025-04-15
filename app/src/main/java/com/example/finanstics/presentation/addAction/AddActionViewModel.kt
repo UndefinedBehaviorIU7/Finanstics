@@ -112,7 +112,7 @@ class AddActionViewModel(
                 val action = Action(
                     name = current.nameAction,
                     type = current.typeAction.ordinal,
-                    description = current.description ,
+                    description = current.description,
                     value = current.moneyAction,
                     day = 20,
                     month = MonthNameClass.APRIL,

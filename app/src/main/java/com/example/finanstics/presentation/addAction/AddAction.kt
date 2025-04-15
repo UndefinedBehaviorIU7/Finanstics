@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -225,7 +224,11 @@ fun AddAction(
                     typeActions = typeActions,
                     onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
                     onTypeSelected = { selectedActionType ->
-                        vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+                        vm.updateUIState(
+                            newTypeAction = ActionType
+                                .entries
+                                .firstOrNull { it.label == selectedActionType }
+                        )
                     }
                 )
 
