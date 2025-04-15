@@ -1,33 +1,44 @@
 package com.example.finanstics.presentation.stats
 
+import com.example.finanstics.db.Action
+import com.example.finanstics.db.Category
+import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.MonthNameClass
-import com.example.finanstics.presentation.group.stats.sumPairs
-import com.example.finanstics.ui.theme.EXPENSES_DATA_MONTHS
-import com.example.finanstics.ui.theme.INCOMES_DATA_MONTHS
 
-class StatsRepository {
+class StatsRepository(private var db: FinansticsDatabase) {
+    private val actionDao = db.actionDao()
+    private val categoryDao = db.categoryDao()
+
     suspend fun getIncomes(
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return INCOMES_DATA_MONTHS[month.number % INCOMES_DATA_MONTHS.size]
-            .sortedByDescending { it.second }
+        return actionsToPairs(actionDao.getIncomesByMonth(month, year), getAllCategories())
     }
 
     suspend fun getExpenses(
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return EXPENSES_DATA_MONTHS[month.number % EXPENSES_DATA_MONTHS.size]
+        return actionsToPairs(actionDao.getExpensesByMonth(month, year), getAllCategories())
+    }
+
+    suspend fun getAllIncomes(): List<Pair<String, Int>> {
+        return actionsToPairs(actionDao.getAllIncomes(), getAllCategories())
             .sortedByDescending { it.second }
     }
 
-    fun getAllIncomes(): List<Pair<String, Int>> {
-        return sumPairs(INCOMES_DATA_MONTHS.flatten())
+    suspend fun getAllExpenses(): List<Pair<String, Int>> {
+        return actionsToPairs(actionDao.getAllExpenses(), getAllCategories())
+            .sortedByDescending { it.second }
     }
 
-    fun getAllExpenses(): List<Pair<String, Int>> {
-        return sumPairs(EXPENSES_DATA_MONTHS.flatten())
+    suspend fun getAllActions(): List<Action> {
+        return actionDao.getAllActions()
+    }
+
+    suspend fun getAllCategories(): List<Category> {
+        return categoryDao.getAllCategories()
     }
 
     fun balance(
@@ -35,5 +46,16 @@ class StatsRepository {
         expenses: List<Pair<String, Int>>
     ): Int {
         return incomes.sumOf { it.second } - expenses.sumOf { it.second }
+    }
+
+    fun actionsToPairs(actions: List<Action>, categories: List<Category>): List<Pair<String, Int>> {
+        val categoryMap = categories.associateBy { it.id }
+
+        return actions
+            .map { action ->
+                val name = action.categoryId
+                    .let { categoryMap[it]!!.name }
+                action.value.let { name to it }
+            }
     }
 }
