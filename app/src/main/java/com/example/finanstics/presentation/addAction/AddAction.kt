@@ -189,7 +189,7 @@ fun TypeSelector(
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(
     navController: NavController
