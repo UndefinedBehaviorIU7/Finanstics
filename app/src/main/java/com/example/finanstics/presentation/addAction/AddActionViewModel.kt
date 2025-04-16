@@ -117,7 +117,10 @@ class AddActionViewModel(
         }
     }
 
-    private suspend fun validateIdle(state: AddActionUiState.Idle): Error? {
+    @Suppress("MagicNumber", "LongParameterList", "ComplexMethod", "ReturnCount")
+    private suspend fun validateIdle(
+        state: AddActionUiState.Idle
+    ): Error? {
         if (state.nameAction.isBlank()) return Error.NAME
         if (state.typeAction == ActionType.NULL) return Error.TYPE
         if (state.moneyAction <= 0) return Error.MONEY
