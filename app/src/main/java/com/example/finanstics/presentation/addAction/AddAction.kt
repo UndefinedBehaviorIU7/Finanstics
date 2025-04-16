@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.presentation.forms.Form
 import com.example.finanstics.ui.theme.icons.CalendarIcon
 import java.util.Calendar
 
@@ -197,6 +198,177 @@ fun TypeSelector(
     }
 }
 
+@Composable
+fun DrawIdle(
+    uiState: AddActionUiState.Idle,
+    vm: AddActionViewModel
+) {
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(
+                top = 50.dp,
+                start = 20.dp,
+                end = 20.dp
+            )
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
+        TypeSelector(
+            value = if (uiState.typeAction != ActionType.NULL) uiState.typeAction.label else "",
+            label = "Тип действия",
+            expanded = uiState.menuExpandedType,
+            typeActions = typeActions,
+            onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
+            onTypeSelected = { selectedActionType ->
+                vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+            }
+        )
+
+        Form(
+            value = uiState.nameAction,
+            label = "Название действия",
+            isError = false,
+            lambda = { vm.updateUIState(newNameAction = it) }
+        )
+
+        Form(
+            value = if(uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+            label = "Сколько Бабла",
+            isError = false,
+            lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
+        )
+
+        FormAddData(
+            value = uiState.data,
+            label = "Дата",
+            isError = false,
+            lambda = { vm.updateUIState(newData = it) }
+        )
+
+        TypeSelector(
+            value = uiState.category,
+            label = "Категория",
+            expanded = uiState.menuExpandedCategory,
+            typeActions = uiState.allCategory,
+            onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
+            onTypeSelected = { vm.updateUIState(newCategory = it) }
+        )
+
+        Form(
+            value = uiState.description,
+            label = "Описание",
+            isError = false,
+            lambda = { vm.updateUIState(newDescription = it) }
+        )
+
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            val width = maxWidth
+            Button(
+                onClick = {
+                    vm.addAction()
+
+                },
+            ) {
+                Text(
+                    text = "Добавить",
+                    fontSize = 28.sp
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun DrawError(
+    uiState: AddActionUiState.Error,
+    vm: AddActionViewModel,
+    error: Error
+) {
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(
+                top = 50.dp,
+                start = 20.dp,
+                end = 20.dp
+            )
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
+        TypeSelector(
+            value = if (uiState.typeAction != ActionType.NULL) uiState.typeAction.label else "",
+            label = "Тип действия",
+            expanded = uiState.menuExpandedType,
+            typeActions = typeActions,
+            onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
+            onTypeSelected = { selectedActionType ->
+                vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+            }
+        )
+
+        Form(
+            value = uiState.nameAction,
+            label = "Название действия",
+            isError = error == Error.NAME,
+            lambda = { vm.updateUIState(newNameAction = it) }
+        )
+
+        Form(
+            value = if(uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+            label = "Сколько Бабла",
+            isError = error == Error.MONEY,
+            lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
+        )
+
+        FormAddData(
+            value = uiState.data,
+            label = "Дата",
+            isError = error == Error.DATE,
+            lambda = { vm.updateUIState(newData = it) }
+        )
+
+        TypeSelector(
+            value = uiState.category,
+            label = "Категория",
+            expanded = uiState.menuExpandedCategory,
+            typeActions = uiState.allCategory,
+            onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
+            onTypeSelected = { vm.updateUIState(newCategory = it) }
+        )
+
+        Form(
+            value = uiState.description,
+            label = "Описание",
+            isError = error == Error.DESCRIPTION,
+            lambda = { vm.updateUIState(newDescription = it) }
+        )
+
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            val width = maxWidth
+            Button(
+                onClick = {
+                    vm.addAction()
+
+                },
+            ) {
+                Text(
+                    text = "Добавить",
+                    fontSize = 28.sp
+                )
+            }
+        }
+    }
+}
+
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(
@@ -205,90 +377,16 @@ fun AddAction(
     val vm: AddActionViewModel = viewModel()
     when (val uiState = vm.uiState.collectAsState().value) {
         is AddActionUiState.Idle -> {
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(
-                        top = 50.dp,
-                        start = 20.dp,
-                        end = 20.dp
-                    )
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
-                TypeSelector(
-                    value = uiState.typeAction.label,
-                    label = "Тип действия",
-                    expanded = uiState.menuExpandedType,
-                    typeActions = typeActions,
-                    onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
-                    onTypeSelected = { selectedActionType ->
-                        vm.updateUIState(
-                            newTypeAction = ActionType
-                                .entries
-                                .firstOrNull { it.label == selectedActionType }
-                        )
-                    }
-                )
-
-                Form2(
-                    value = uiState.nameAction,
-                    label = "Название действия",
-                    isError = false,
-                    lambda = { vm.updateUIState(newNameAction = it) }
-                )
-
-                Form2(
-                    value = uiState.moneyAction.toString(),
-                    label = "Сколько Бабла",
-                    isError = false,
-                    lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: 0) }
-                )
-
-                FormAddData(
-                    value = uiState.data,
-                    label = "Дата",
-                    isError = false,
-                    lambda = { vm.updateUIState(newData = it) }
-                )
-
-                TypeSelector(
-                    value = uiState.category,
-                    label = "Категория",
-                    expanded = uiState.menuExpandedCategory,
-                    typeActions = uiState.allCategory,
-                    onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-                    onTypeSelected = { vm.updateUIState(newCategory = it) }
-                )
-
-                Form2(
-                    value = uiState.description,
-                    label = "Описание",
-                    isError = false,
-                    lambda = { vm.updateUIState(newDescription = it) }
-                )
-
-                BoxWithConstraints(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    val width = maxWidth
-                    Button(
-                        onClick = {
-                            vm.addAction()
-                            navController.navigate(Navigation.STATS.route)
-                        },
-                    ) {
-                        Text(
-                            text = "Добавить",
-                            fontSize = 28.sp
-                        )
-                    }
-                }
-            }
+            DrawIdle(uiState, vm)
+        }
+        is AddActionUiState.Error -> {
+            DrawError(uiState, vm, uiState.error)
         }
 
-        else -> Unit
+        is AddActionUiState.Ok -> {
+            navController.navigate(Navigation.STATS.route)
+        }
+
+        else -> {}
     }
 }

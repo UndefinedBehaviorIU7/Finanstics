@@ -5,11 +5,20 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.db.Action
 import com.example.finanstics.db.FinansticsDatabase
-import com.example.finanstics.presentation.calendar.MonthNameClass
+import com.example.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+enum class Error(val str: String) {
+    NAME("имя"),
+    TYPE("тип действия"),
+    MONEY("сумма"),
+    DATE("дата"),
+    CATEGORY("категория"),
+    DESCRIPTION("описание")
+}
 
 class AddActionViewModel(
     application: Application
@@ -19,12 +28,13 @@ class AddActionViewModel(
 
     private val repository = AddActionRepository(db)
     private val actionDao = db.actionDao()
+    private val categoryDao = db.categoryDao()
 
     private val _uiState = MutableStateFlow<AddActionUiState>(
         AddActionUiState.Idle(
-            typeAction = ActionType.EXPENSE,
+            typeAction = ActionType.NULL,
             nameAction = "",
-            moneyAction = 0,
+            moneyAction = -1,
             data = "",
             category = "",
             description = "",
@@ -102,25 +112,68 @@ class AddActionViewModel(
                     menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
                 )
             }
+
+            else -> {}
         }
+    }
+
+    private suspend fun validateIdle(state: AddActionUiState.Idle): Error? {
+        if (state.nameAction.isBlank()) return Error.NAME
+        if (state.typeAction == ActionType.NULL) return Error.TYPE
+        if (state.moneyAction <= 0) return Error.MONEY
+        if (state.data.isBlank()) return Error.DATE
+        if (state.category.isBlank() || categoryDao.getCategoryByName(state.category) == null) return Error.CATEGORY
+        if (state.description.isBlank()) return Error.DESCRIPTION
+
+        return null
+    }
+
+    fun createErrorState(
+        current: AddActionUiState.Idle,
+        error: Error
+    ): AddActionUiState.Error {
+        return AddActionUiState.Error(
+            typeAction = current.typeAction,
+            nameAction = current.nameAction,
+            moneyAction = current.moneyAction,
+            data = current.data,
+            category = current.category,
+            description = current.description,
+            error = error,
+            allCategory = current.allCategory,
+            menuExpandedType = current.menuExpandedType,
+            menuExpandedCategory = current.menuExpandedCategory
+        )
     }
 
     fun addAction() {
         val current = uiState.value
         if (current is AddActionUiState.Idle) {
             viewModelScope.launch {
-                val action = Action(
-                    name = current.nameAction,
-                    type = current.typeAction.ordinal,
-                    description = current.description,
-                    value = current.moneyAction,
-                    day = 20,
-                    month = MonthNameClass.APRIL,
-                    year = 2025,
-                    categoryId = 2,
-                )
-                actionDao.insertAction(action)
+                val error = validateIdle(current)
+                if (error == null) {
+                    val data = DataClass.getDataByString(current.data)
+                    val action = Action(
+                        name = current.nameAction,
+                        type = current.typeAction.ordinal,
+                        description = current.description,
+                        value = current.moneyAction,
+                        day = data.getDay(),
+                        month = data.getMonth(),
+                        year = data.getYear(),
+                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
+                    )
+                    actionDao.insertAction(action)
+                    _uiState.value = AddActionUiState.Ok
+                }
+                else {
+                    _uiState.value = createErrorState(
+                        current = current,
+                        error = error
+                    )
+                }
             }
+
         }
     }
 }

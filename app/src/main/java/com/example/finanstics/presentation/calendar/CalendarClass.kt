@@ -107,31 +107,30 @@ data class DataClass(
         return year
     }
 
+    companion object {
+        fun getDataByString(
+            str: String
+        ): DataClass {
+            val el = str.split("\\.".toRegex())
+            return DataClass(el[0].toInt(), MonthNameClass.fromInt(el[1].toInt()), el[2].toInt())
+        }
+    }
+
     fun getMonthLast(): DataClass {
-        val monthLast = if (month == JANUARY)
-            DECEMBER
-        else
-            MonthNameClass.fromInt(month.number - 1)
-
-        val yearLast = if (month == JANUARY)
-            year - 1
-        else
-            year
-
+        val (monthLast, yearLast) = if (month == JANUARY) {
+            DECEMBER to (year - 1)
+        } else {
+            MonthNameClass.fromInt(month.number - 1) to year
+        }
         return DataClass(day, monthLast, yearLast)
     }
 
     fun getMonthNext(): DataClass {
-        val monthNext = if (month == DECEMBER)
-            JANUARY
-        else
-            MonthNameClass.fromInt(month.number + 1)
-
-        val yearNext = if (month == DECEMBER)
-            year + 1
-        else
-            year
-
+        val (monthNext, yearNext) = if (month == DECEMBER) {
+            JANUARY to (year + 1)
+        } else {
+            MonthNameClass.fromInt(month.number + 1) to year
+        }
         return DataClass(day, monthNext, yearNext)
     }
 
@@ -143,10 +142,10 @@ data class DataClass(
     }
 
     fun dataMonthLast() {
-        val nextDate = getMonthLast()
-        this.day = nextDate.getDay()
-        this.month = nextDate.getMonth()
-        this.year = nextDate.getYear()
+        val lastDate = getMonthLast()
+        this.day = lastDate.getDay()
+        this.month = lastDate.getMonth()
+        this.year = lastDate.getYear()
     }
 }
 
