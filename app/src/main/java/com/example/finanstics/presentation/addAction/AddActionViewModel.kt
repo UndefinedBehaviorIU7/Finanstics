@@ -122,8 +122,9 @@ class AddActionViewModel(
         if (state.typeAction == ActionType.NULL) return Error.TYPE
         if (state.moneyAction <= 0) return Error.MONEY
         if (state.data.isBlank()) return Error.DATE
-        if (state.category.isBlank()
-            || categoryDao.getCategoryByName(state.category) == null) return Error.CATEGORY
+        if (state.category.isBlank() ||
+            categoryDao.getCategoryByName(state.category) == null
+            ) return Error.CATEGORY
         if (state.description.isBlank()) return Error.DESCRIPTION
 
         return null

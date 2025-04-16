@@ -198,6 +198,7 @@ fun TypeSelector(
     }
 }
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawIdle(
     uiState: AddActionUiState.Idle,
@@ -224,8 +225,9 @@ fun DrawIdle(
             onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
             onTypeSelected = { selectedActionType ->
                 vm.updateUIState(
-                    newTypeAction = 
-                        ActionType.entries.firstOrNull { it.label == selectedActionType }
+                    newTypeAction = ActionType
+                        .entries
+                        .firstOrNull { it.label == selectedActionType }
                 )
             }
         )
@@ -273,7 +275,8 @@ fun DrawIdle(
         ) {
             val width = maxWidth
             Button(
-                onClick = { vm.addAction()
+                onClick = {
+                    vm.addAction()
                     navController.popBackStack()
                 },
             ) {
@@ -286,6 +289,7 @@ fun DrawIdle(
     }
 }
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawError(
     uiState: AddActionUiState.Error,
@@ -386,9 +390,7 @@ fun AddAction(
             DrawError(uiState, vm, uiState.error)
         }
 
-        is AddActionUiState.Ok -> {
-
-        }
+        is AddActionUiState.Ok -> {}
 
         else -> {}
     }
