@@ -201,7 +201,8 @@ fun TypeSelector(
 @Composable
 fun DrawIdle(
     uiState: AddActionUiState.Idle,
-    vm: AddActionViewModel
+    vm: AddActionViewModel,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -222,7 +223,10 @@ fun DrawIdle(
             typeActions = typeActions,
             onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
             onTypeSelected = { selectedActionType ->
-                vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+                vm.updateUIState(
+                    newTypeAction = 
+                        ActionType.entries.firstOrNull { it.label == selectedActionType }
+                )
             }
         )
 
@@ -234,7 +238,7 @@ fun DrawIdle(
         )
 
         Form(
-            value = if(uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+            value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
             label = "Сколько Бабла",
             isError = false,
             lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
@@ -269,9 +273,8 @@ fun DrawIdle(
         ) {
             val width = maxWidth
             Button(
-                onClick = {
-                    vm.addAction()
-
+                onClick = { vm.addAction()
+                    navController.popBackStack()
                 },
             ) {
                 Text(
@@ -308,7 +311,10 @@ fun DrawError(
             typeActions = typeActions,
             onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
             onTypeSelected = { selectedActionType ->
-                vm.updateUIState(newTypeAction = ActionType.entries.firstOrNull { it.label == selectedActionType })
+                vm.updateUIState(
+                    newTypeAction =
+                        ActionType.entries.firstOrNull { it.label == selectedActionType }
+                )
             }
         )
 
@@ -320,7 +326,7 @@ fun DrawError(
         )
 
         Form(
-            value = if(uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+            value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
             label = "Сколько Бабла",
             isError = error == Error.MONEY,
             lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
@@ -355,10 +361,7 @@ fun DrawError(
         ) {
             val width = maxWidth
             Button(
-                onClick = {
-                    vm.addAction()
-
-                },
+                onClick = { vm.addAction() },
             ) {
                 Text(
                     text = "Добавить",
@@ -377,14 +380,14 @@ fun AddAction(
     val vm: AddActionViewModel = viewModel()
     when (val uiState = vm.uiState.collectAsState().value) {
         is AddActionUiState.Idle -> {
-            DrawIdle(uiState, vm)
+            DrawIdle(uiState, vm, navController)
         }
         is AddActionUiState.Error -> {
             DrawError(uiState, vm, uiState.error)
         }
 
         is AddActionUiState.Ok -> {
-            navController.navigate(Navigation.STATS.route)
+
         }
 
         else -> {}
