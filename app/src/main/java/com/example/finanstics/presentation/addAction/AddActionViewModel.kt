@@ -124,7 +124,7 @@ class AddActionViewModel(
         if (state.data.isBlank()) return Error.DATE
         if (state.category.isBlank() ||
             categoryDao.getCategoryByName(state.category) == null
-            ) return Error.CATEGORY
+        ) return Error.CATEGORY
         if (state.description.isBlank()) return Error.DESCRIPTION
 
         return null
