@@ -20,8 +20,7 @@ sealed class AddActionUiState {
         var data: String,
         var category: String,
         var description: String,
-        val errorMessage: String,
-        var errorField: List<String>,
+        val error: com.example.finanstics.presentation.addAction.Error,
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
@@ -38,4 +37,6 @@ sealed class AddActionUiState {
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean
     ) : AddActionUiState()
+
+    data object Ok : AddActionUiState()
 }

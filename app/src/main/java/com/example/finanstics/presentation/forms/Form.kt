@@ -37,12 +37,12 @@ fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Uni
         onValueChange = lambda,
         label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.background,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            focusedLabelColor = MaterialTheme.colorScheme.onSurface,
-            cursorColor = MaterialTheme.colorScheme.onSurface
+            else MaterialTheme.colorScheme.secondary,
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            cursorColor = MaterialTheme.colorScheme.primary
         ),
         readOnly = false,
         modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
