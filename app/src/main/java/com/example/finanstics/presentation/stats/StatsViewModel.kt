@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.CalendarClass
@@ -14,16 +15,20 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 private const val TIME_UPDATE = 5000L
+private const val USER_ID = 21
 
+@Suppress("TooGenericExceptionCaught")
 class StatsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
+    var tagStr: String? = ""
 
     val db = FinansticsDatabase.getDatabase(application)
 
     private val repository = StatsRepository(db)
+    private val api = RetrofitInstance.api
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
@@ -59,6 +64,21 @@ class StatsViewModel(
                 db.categoryDao().insertCategory(Category(name = "Пенсия", type = 2))
                 db.categoryDao().insertCategory(Category(name = "Проценты", type = 2))
                 db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
+            }
+
+            try {
+                val userResponse = RetrofitInstance.api.getUser(USER_ID)
+                if (userResponse.isSuccessful) {
+                    val user = userResponse.body()
+                    if (user != null) {
+                        println("tag = ${user.tag}")
+                        tagStr = user.tag
+                    } else {
+                        println("nulllllllllllllllllll")
+                    }
+                }
+            } catch (e: Exception) {
+                println("Failed to fetch user: ${e.message}")
             }
         }
     }
