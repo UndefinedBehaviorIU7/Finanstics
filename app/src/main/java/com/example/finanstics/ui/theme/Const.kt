@@ -8,6 +8,9 @@ const val DEGREES_MAX = 360
 val OFFSET_BAR = 60.dp
 const val ALL_TIME = "всё время"
 
+const val USER_ID = 21
+const val TOKEN = "fdfb4a02b736bcf4248454cb0eb680ae01fc5b1000ad15a5ef0696a6f27b644c"
+
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,
     "Стипендия" to 5500,

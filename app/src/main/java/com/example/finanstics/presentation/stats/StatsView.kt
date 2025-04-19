@@ -38,7 +38,7 @@ fun Stats(
     val vm: StatsViewModel = viewModel()
     val incomes = vm.incomes
     val expenses = vm.expenses
-    val userName: String = if (vm.tag_str == null) "" else vm.tag_str!!
+    val userName: String = if (vm.tagStr == null) "" else vm.tagStr!!
 
     Box(
         modifier = Modifier

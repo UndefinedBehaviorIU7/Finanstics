@@ -1,12 +1,19 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
+import com.example.finanstics.db.syncLocalWithServerActions
+import com.example.finanstics.db.syncLocalWithServerCategories
+import com.example.finanstics.db.syncServerWithLocalActions
+import com.example.finanstics.db.syncServerWithLocalCategories
 import com.example.finanstics.presentation.calendar.CalendarClass
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +24,7 @@ import retrofit2.HttpException
 private const val TIME_UPDATE = 5000L
 private const val USER_ID = 21
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("TooGenericExceptionCaught")
 class StatsViewModel(
     application: Application
@@ -38,7 +46,7 @@ class StatsViewModel(
     init {
         example()
         loadCalendar()
-        autoUpdate()
+//        autoUpdate()
     }
 
     fun example() {
@@ -146,10 +154,17 @@ class StatsViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun autoUpdate() {
         viewModelScope.launch {
             while (true) {
                 fetchData()
+                syncLocalWithServerCategories(application)
+                syncServerWithLocalCategories(application)
+
+                syncLocalWithServerActions(application)
+                syncServerWithLocalActions(application)
+
                 delay(TIME_UPDATE)
             }
         }

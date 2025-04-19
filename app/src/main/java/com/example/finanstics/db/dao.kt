@@ -5,9 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.example.finanstics.presentation.calendar.MonthNameClass
+import com.example.finanstics.api.models.ActionResponse
 
 @Suppress("TooManyFunctions")
 @Dao
@@ -32,8 +31,8 @@ interface ActionDao {
 
     @Query(
         "SELECT * FROM actions WHERE strftime('%m', date) = printf('%02d', :month) " +
-            "AND strftime('%Y', date) = printf('%d', :year) " +
-            "AND strftime('%d', date) = printf('%02d', :day)"
+                "AND strftime('%Y', date) = printf('%d', :year) " +
+                "AND strftime('%d', date) = printf('%02d', :day)"
     )
     suspend fun getActionsByDate(month: Int, year: Int, day: Int): List<Action>
 
@@ -45,18 +44,27 @@ interface ActionDao {
 
     @Query(
         "SELECT * FROM actions " +
-            "WHERE strftime('%m', date) = printf('%02d', :month) " +
-            "AND strftime('%Y', date) = printf('%d', :year) " +
-            "AND type = 1"
+                "WHERE strftime('%m', date) = printf('%02d', :month) " +
+                "AND strftime('%Y', date) = printf('%d', :year) " +
+                "AND type = 1"
     )
     suspend fun getIncomesByMonthYear(month: Int, year: Int): List<Action>
 
     @Query(
         "SELECT * FROM actions WHERE strftime('%m', date) = printf('%02d', :month) " +
-            "AND strftime('%Y', date) = printf('%d', :year) " +
-            "AND type = 0"
+                "AND strftime('%Y', date) = printf('%d', :year) " +
+                "AND type = 0"
     )
     suspend fun getExpensesByMonthYear(month: Int, year: Int): List<Action>
+
+    @Query("SELECT * FROM actions WHERE serverId IS NULL")
+    suspend fun getUnsyncedActions(): List<Action>
+
+    @Query("UPDATE actions SET serverId = :serverId WHERE actionId = :actionId")
+    suspend fun updateServerId(actionId: Int, serverId: Int)
+
+    @Query("SELECT * FROM actions WHERE serverId = :serverId LIMIT 1")
+    suspend fun getActionByServerId(serverId: Int): Action?
 }
 
 @Dao
@@ -84,4 +92,13 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE type = 0 OR type = 1")
     suspend fun getExpensesCategories(): List<Category>
+
+    @Query("SELECT * FROM categories WHERE serverId IS NULL")
+    suspend fun getUnsyncedCategories(): List<Category>
+
+    @Query("UPDATE categories SET serverId = :serverId WHERE id = :categoryId")
+    suspend fun updateServerId(categoryId: Int, serverId: Int)
+
+    @Query("SELECT * FROM categories WHERE serverId = :serverId LIMIT 1")
+    suspend fun getCategoryByServerId(serverId: Int): Category?
 }

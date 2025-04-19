@@ -11,24 +11,24 @@ import java.time.LocalDate
 
 @Entity(tableName = "categories")
 data class Category(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey val id: Int = 0,
     val name: String,
     val type: Int,
-    val serverId: Int? = null
+    var serverId: Int? = null
 )
 
 @Entity(
     tableName = "actions",
-    foreignKeys =
-        [
-            ForeignKey(
-                entity = Category::class,
-                parentColumns = ["id"],
-                childColumns = ["categoryId"],
-                onDelete = ForeignKey.SET_NULL
-            )
-        ]
+    foreignKeys = [
+        ForeignKey(
+            entity = Category::class,
+            parentColumns = ["id"],
+            childColumns = ["categoryId"],
+            onDelete = ForeignKey.SET_NULL
+        )
+    ]
 )
+
 data class Action(
     @PrimaryKey(autoGenerate = true) val actionId: Int = 0,
     val type: Int,
@@ -38,5 +38,5 @@ data class Action(
     @ColumnInfo(index = true) val categoryId: Int,
     val description: String? = null,
     val createdAt: String? = null,
-    val serverId: Int? = null
+    var serverId: Int? = null
 )

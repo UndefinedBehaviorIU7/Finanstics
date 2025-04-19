@@ -14,9 +14,10 @@ class ApiRepository {
     suspend fun addCategory(
         userId: Int,
         token: String,
-        categoryName: String
+        categoryName: String,
+        type: Int
     ): Response<CategoryResponse> {
-        return RetrofitInstance.api.addCategory(userId, token, categoryName)
+        return RetrofitInstance.api.addCategory(userId, token, categoryName, type)
     }
 
     suspend fun addAction(
@@ -27,11 +28,11 @@ class ApiRepository {
         return RetrofitInstance.api.addAction(
             userId = userId,
             token = token,
-            actionName = action.name!!,
-            actionType = action.type!!,
-            value = action.value!!,
-            date = action.date!!,
-            categoryId = action.categoryId!!,
+            actionName = action.name,
+            actionType = action.type,
+            value = action.value,
+            date = action.date,
+            categoryId = action.categoryId,
             description = action.description!!,
             groupId = action.groupId!!
         )
