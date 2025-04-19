@@ -15,13 +15,15 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 private const val TIME_UPDATE = 5000L
+private const val USER_ID = 21
 
+@Suppress("TooGenericExceptionCaught")
 class StatsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
-    var tag_str: String? = ""
+    var tagStr: String? = ""
 
     val db = FinansticsDatabase.getDatabase(application)
 
@@ -65,12 +67,12 @@ class StatsViewModel(
             }
 
             try {
-                val userResponse = RetrofitInstance.api.getUser(21)
+                val userResponse = RetrofitInstance.api.getUser(USER_ID)
                 if (userResponse.isSuccessful) {
                     val user = userResponse.body()
                     if (user != null) {
                         println("tag = ${user.tag}")
-                        tag_str = user.tag
+                        tagStr = user.tag
                     } else {
                         println("nulllllllllllllllllll")
                     }
