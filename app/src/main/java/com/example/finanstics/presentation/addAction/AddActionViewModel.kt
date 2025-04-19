@@ -1,6 +1,8 @@
 package com.example.finanstics.presentation.addAction
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.db.Action
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 enum class Error(val str: String) {
     NAME("имя"),
@@ -151,6 +154,7 @@ class AddActionViewModel(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addAction() {
         val current = uiState.value
         if (current is AddActionUiState.Idle) {
@@ -163,9 +167,7 @@ class AddActionViewModel(
                         type = current.typeAction.ordinal,
                         description = current.description,
                         value = current.moneyAction,
-                        day = data.getDay(),
-                        month = data.getMonth(),
-                        year = data.getYear(),
+                        date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
                         categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
                     )
                     actionDao.insertAction(action)

@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.example.finanstics.presentation.calendar.MonthNameClass
+import java.time.LocalDate
 
 @Entity(tableName = "categories")
 data class Category(
@@ -33,9 +34,7 @@ data class Action(
     val type: Int,
     val name: String,
     val value: Int,
-    val day: Int,
-    val month: MonthNameClass,
-    val year: Int,
+    val date: LocalDate,
     @ColumnInfo(index = true) val categoryId: Int,
     val description: String? = null,
     val createdAt: String? = null,
