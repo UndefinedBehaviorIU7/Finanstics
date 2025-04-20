@@ -47,7 +47,8 @@ suspend fun syncLocalWithServerActions(application: Application) {
                         }
                     } else {
                         Log.e(
-                            "Sync", "Failed to sync action ${action.actionId}: " +
+                            "Sync",
+                            "Failed to sync action ${action.actionId}: " +
                                 "${response.errorBody()?.string()}"
                         )
                     }
@@ -85,7 +86,8 @@ suspend fun syncLocalWithServerCategories(application: Application) {
                 }
             } else {
                 Log.e(
-                    "Sync", "Failed to sync category ${category.id}: " +
+                    "Sync",
+                    "Failed to sync category ${category.id}: " +
                         "${response.errorBody()?.string()}"
                 )
             }

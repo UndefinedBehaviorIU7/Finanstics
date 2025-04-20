@@ -42,7 +42,6 @@ interface NetworkService {
         @Path("user_id") userId: Int
     ): Response<List<Action>>
 
-
     @GET("users/{user_id}/categories")
     suspend fun getUserCategories(
         @Path("user_id") userId: Int
