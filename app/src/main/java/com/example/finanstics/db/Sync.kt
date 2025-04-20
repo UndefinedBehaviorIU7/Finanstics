@@ -54,7 +54,6 @@ suspend fun syncLocalWithServerActions(application: Application) {
             }
             val serverResp = response.body()
             if (serverResp != null) actionDao.updateServerId(action.actionId, serverResp.id)
-
         } catch (e: Exception) {
             Log.e("Sync", "Error syncing action ${action.actionId}", e)
         }
