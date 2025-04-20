@@ -48,7 +48,7 @@ suspend fun syncLocalWithServerActions(application: Application) {
                     } else {
                         Log.e(
                             "Sync", "Failed to sync action ${action.actionId}: " +
-                                    "${response.errorBody()?.string()}"
+                                "${response.errorBody()?.string()}"
                         )
                     }
                 }
@@ -86,7 +86,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
             } else {
                 Log.e(
                     "Sync", "Failed to sync category ${category.id}: " +
-                            "${response.errorBody()?.string()}"
+                        "${response.errorBody()?.string()}"
                 )
             }
         } catch (e: Exception) {
@@ -158,7 +158,8 @@ suspend fun syncServerWithLocalActions(application: Application) {
     } catch (e: Exception) {
         Log.e(
             "Sync",
-            "Error syncing action from server to local", e
+            "Error syncing action from server to local",
+            e
         )
     }
 }
@@ -211,11 +212,15 @@ suspend fun syncServerWithLocalCategories(application: Application) {
             Log.e(
                 "Sync",
                 "Failed to load actions from server to local db:" +
-                        "${response.errorBody()?.string()}"
+                    "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
-        Log.e("Sync", "Error syncing action from server to local", e)
+        Log.e(
+            "Sync",
+            "Error syncing action from server to local",
+            e
+        )
     }
 }
 
