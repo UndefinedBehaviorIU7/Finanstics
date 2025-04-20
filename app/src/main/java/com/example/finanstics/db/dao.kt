@@ -66,6 +66,7 @@ interface ActionDao {
     suspend fun getActionByServerId(serverId: Int): Action?
 }
 
+@Suppress("TooManyFunctions")
 @Dao
 interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

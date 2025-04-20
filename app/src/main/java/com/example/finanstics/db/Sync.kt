@@ -10,6 +10,7 @@ import com.example.finanstics.ui.theme.USER_ID
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerActions(application: Application) {
     val api = RetrofitInstance.api
@@ -60,6 +61,7 @@ suspend fun syncLocalWithServerActions(application: Application) {
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerCategories(application: Application) {
     val api = RetrofitInstance.api
@@ -97,6 +99,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     }
 }
 
+@Suppress("LongMethod", "TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalActions(application: Application) {
     val api = RetrofitInstance.api
@@ -166,6 +169,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalCategories(application: Application) {
     val api = RetrofitInstance.api

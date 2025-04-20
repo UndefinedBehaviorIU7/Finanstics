@@ -13,6 +13,7 @@ import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
+import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,7 +53,7 @@ class StatsViewModel(
             val cats = db.categoryDao().getAllCategories()
             println(cats)
             println(cats.size)
-            if (cats.size < 17) {
+            if (cats.size < MIN_CATEGORIES_SIZE) {
                 db.categoryDao().insertCategory(Category(name = "Еда", type = 0, serverId = null))
                 db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))

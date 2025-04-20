@@ -7,6 +7,7 @@ const val INCOMES = "Доходы"
 const val DEGREES_MAX = 360
 val OFFSET_BAR = 60.dp
 const val ALL_TIME = "всё время"
+const val MIN_CATEGORIES_SIZE = 17
 
 const val USER_ID = 22
 const val TOKEN = "2c609d650e65d2320fd4850493881602a1fcbd68d3400a73684d7a8a966ee66b"
