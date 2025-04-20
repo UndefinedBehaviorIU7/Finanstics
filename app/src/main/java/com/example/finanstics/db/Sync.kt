@@ -119,9 +119,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
 
         serverActions?.forEach { serverAction ->
             var new = true
-            localActions.forEach { localAction ->
-                if (serverAction.id == localAction.serverId) new = false
-            }
+            localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }
             if (!new) return@forEach
             println(serverAction)
             Log.i(
