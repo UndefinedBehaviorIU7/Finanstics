@@ -122,30 +122,29 @@ suspend fun syncServerWithLocalActions(application: Application) {
             localActions.forEach { localAction ->
                 if (serverAction.id == localAction.serverId) new = false
             }
-            if (new) {
-                println(serverAction)
-                Log.i(
+            if (!new) return@forEach
+            println(serverAction)
+            Log.i(
+                "Sync",
+                "Load action ${serverAction.name} from server"
+            )
+            if (categoryDao.getCategoryByServerId(serverAction.category_id) == null) {
+                Log.e(
                     "Sync",
-                    "Load action ${serverAction.name} from server"
+                    "No category ${serverAction.category_id} from server"
                 )
-                if (categoryDao.getCategoryByServerId(serverAction.category_id) == null) {
-                    Log.e(
-                        "Sync",
-                        "No category ${serverAction.category_id} from server"
-                    )
-                    return@forEach
-                }
-                val newAction = Action(
-                    name = serverAction.name,
-                    type = serverAction.type,
-                    description = serverAction.description,
-                    value = serverAction.value,
-                    date = LocalDate.parse(serverAction.date, formatter),
-                    categoryId = serverAction.category_id,
-                    serverId = serverAction.id
-                )
-                actionDao.insertAction(newAction)
+                return@forEach
             }
+            val newAction = Action(
+                name = serverAction.name,
+                type = serverAction.type,
+                description = serverAction.description,
+                value = serverAction.value,
+                date = LocalDate.parse(serverAction.date, formatter),
+                categoryId = serverAction.category_id,
+                serverId = serverAction.id
+            )
+            actionDao.insertAction(newAction)
         }
         Log.i(
             "Sync",
