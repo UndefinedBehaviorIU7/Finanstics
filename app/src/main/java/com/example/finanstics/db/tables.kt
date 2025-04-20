@@ -1,17 +1,14 @@
 package com.example.finanstics.db
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.example.finanstics.presentation.calendar.MonthNameClass
 import java.time.LocalDate
 
 @Entity(tableName = "categories")
 data class Category(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val type: Int,
     var serverId: Int? = null

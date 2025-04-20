@@ -32,7 +32,7 @@ class ApiRepository {
             actionType = action.type,
             value = action.value,
             date = action.date,
-            categoryId = action.categoryId,
+            categoryId = action.category_id,
             description = action.description!!,
             groupId = action.groupId!!
         )

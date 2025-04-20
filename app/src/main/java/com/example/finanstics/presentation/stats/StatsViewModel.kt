@@ -2,6 +2,7 @@ package com.example.finanstics.presentation.stats
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
@@ -10,10 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
-import com.example.finanstics.db.syncLocalWithServerActions
-import com.example.finanstics.db.syncLocalWithServerCategories
-import com.example.finanstics.db.syncServerWithLocalActions
-import com.example.finanstics.db.syncServerWithLocalCategories
+import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,18 +44,19 @@ class StatsViewModel(
     init {
         example()
         loadCalendar()
-//        autoUpdate()
+        autoUpdate()
     }
 
     fun example() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
-            if (cats.isEmpty()) {
-                db.categoryDao().insertCategory(Category(name = "Еда", type = 0))
+            println(cats)
+            println(cats.size)
+            if (cats.size < 17) {
+                db.categoryDao().insertCategory(Category(name = "Еда", type = 0, serverId = null))
                 db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Покупки", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Спорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Развлечения", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Образование", type = 0))
@@ -81,12 +80,13 @@ class StatsViewModel(
                     if (user != null) {
                         println("tag = ${user.tag}")
                         tagStr = user.tag
-                    } else {
-                        println("nulllllllllllllllllll")
                     }
                 }
+                else {
+                    Log.e("LogIn", "Error login ${userResponse.errorBody()?.string()}")
+                }
             } catch (e: Exception) {
-                println("Failed to fetch user: ${e.message}")
+                Log.e("LogIn", "Failed to fetch user: ${e.message}")
             }
         }
     }
@@ -159,12 +159,7 @@ class StatsViewModel(
         viewModelScope.launch {
             while (true) {
                 fetchData()
-                syncLocalWithServerCategories(application)
-                syncServerWithLocalCategories(application)
-
-                syncLocalWithServerActions(application)
-                syncServerWithLocalActions(application)
-
+                syncData(application)
                 delay(TIME_UPDATE)
             }
         }

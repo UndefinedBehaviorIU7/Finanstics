@@ -84,6 +84,9 @@ interface CategoryDao {
     @Query("SELECT * FROM categories WHERE name = :name")
     suspend fun getCategoryByName(name: String): Category?
 
+    @Query("SELECT * FROM categories WHERE name = :name AND type = :type")
+    suspend fun getCategoryByNameAndType(name: String, type: Int): Category?
+
     @Query("SELECT * FROM categories")
     suspend fun getAllCategories(): List<Category>
 
@@ -99,6 +102,6 @@ interface CategoryDao {
     @Query("UPDATE categories SET serverId = :serverId WHERE id = :categoryId")
     suspend fun updateServerId(categoryId: Int, serverId: Int)
 
-    @Query("SELECT * FROM categories WHERE serverId = :serverId LIMIT 1")
+    @Query("SELECT * FROM categories WHERE serverId = :serverId")
     suspend fun getCategoryByServerId(serverId: Int): Category?
 }

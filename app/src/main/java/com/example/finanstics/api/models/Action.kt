@@ -7,7 +7,7 @@ data class Action(
     val name: String,
     val value: Int,
     val date: String,
-    val categoryId: Int,
+    val category_id: Int,
     val description: String?,
     val groupId: Int?,
     val createdAt: String?

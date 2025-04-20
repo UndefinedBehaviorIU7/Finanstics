@@ -23,36 +23,36 @@ suspend fun syncLocalWithServerActions(application: Application) {
     unsyncedActions.forEach { action ->
         try {
             val category = categoryDao.getCategoryById(action.categoryId)
-            if (category?.serverId != null) {
-                val response = api.addAction(
-                    userId = USER_ID,
-                    token = TOKEN,
-                    actionName = action.name,
-                    actionType = action.type,
-                    value = action.value,
-                    date = action.date.format(dateFormatter),
-                    categoryId = category.serverId!!,
-                    description = action.description,
-                    groupId = null
-                )
-
-                if (response.isSuccessful) {
-                    val serverId = response.body()
-                    if (serverId != null) {
-                        actionDao.updateServerId(action.actionId, serverId.id)
-                    }
-                } else {
-                    Log.e(
-                        "Sync", "Failed to sync action ${action.actionId}: " +
-                                "${response.errorBody()?.string()}"
-                    )
-                }
+            if (category == null) {
+                Log.e("Sync", "No ${action.categoryId} in db")
             } else {
-                Log.e(
-                    "Sync", "Failed to sync action. There is not such category"
-                )
+                if (category.serverId == null) {
+                    syncLocalWithServerCategories(application)
+                } else {
+                    val response = api.addAction(
+                        userId = USER_ID,
+                        token = TOKEN,
+                        actionName = action.name,
+                        actionType = action.type,
+                        value = action.value,
+                        date = action.date.format(dateFormatter),
+                        categoryId = category.serverId!!,
+                        description = action.description,
+                        groupId = null
+                    )
+                    if (response.isSuccessful) {
+                        val serverResponse = response.body()
+                        if (serverResponse != null) {
+                            actionDao.updateServerId(action.actionId, serverResponse.id)
+                        }
+                    } else {
+                        Log.e(
+                            "Sync", "Failed to sync action ${action.actionId}: " +
+                                    "${response.errorBody()?.string()}"
+                        )
+                    }
+                }
             }
-
         } catch (e: Exception) {
             Log.e("Sync", "Error syncing action ${action.actionId}", e)
         }
@@ -64,7 +64,10 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     val api = RetrofitInstance.api
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
+    println(categoryDao.getAllCategories())
     val unsyncedCategories = categoryDao.getUnsyncedCategories()
+    println("Unsynced categories:")
+    println(unsyncedCategories)
 
     unsyncedCategories.forEach { category ->
         try {
@@ -76,13 +79,13 @@ suspend fun syncLocalWithServerCategories(application: Application) {
             )
 
             if (response.isSuccessful) {
-                val serverId = response.body()
-                if (serverId != null) {
-                    categoryDao.updateServerId(category.id, serverId.id)
+                val serverResponse = response.body()
+                if (serverResponse != null) {
+                    categoryDao.updateServerId(category.id, serverResponse.id)
                 }
             } else {
                 Log.e(
-                    "Sync", "Failed to sync action ${category.id}: " +
+                    "Sync", "Failed to sync category ${category.id}: " +
                             "${response.errorBody()?.string()}"
                 )
             }
@@ -97,6 +100,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     val api = RetrofitInstance.api
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
+    val categoryDao = db.categoryDao()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     try {
@@ -105,36 +109,37 @@ suspend fun syncServerWithLocalActions(application: Application) {
         if (response.isSuccessful) {
             val serverActions = response.body()
             val localActions = db.actionDao().getAllActions()
+            println(localActions)
 
             serverActions?.forEach { serverAction ->
                 var new = true
                 localActions.forEach { localAction ->
-                    if (serverAction.id == localAction.serverId)
+                    if (serverAction.id == localAction.serverId) {
+                        println("Action ${serverAction.name} is here")
                         new = false
+                    }
                 }
                 if (new) {
-                    Log.e(
-                        "Sync", "NEW"
+                    println(serverAction)
+                    Log.i(
+                        "Sync", "Load action ${serverAction.name} from server"
                     )
-                    val newAction = Action(
-                        name = serverAction.name,
-                        type = serverAction.type,
-                        description = serverAction.description,
-                        value = serverAction.value,
-                        date = LocalDate.parse(serverAction.date, formatter),
-                        categoryId = serverAction.categoryId,
-                        serverId = serverAction.id
-                    )
-
-                    val categoryExists = db.categoryDao()
-                        .getCategoryById(serverAction.categoryId) != null
-                    if (categoryExists) {
-                        actionDao.insertAction(newAction)
-                    } else {
+                    if (categoryDao.getCategoryByServerId(serverAction.category_id) == null){
                         Log.e(
-                            "SyncError", "Category ${serverAction.categoryId} " +
-                                    "not found for action ${serverAction.name}"
+                            "Sync", "No category ${serverAction.category_id} from server"
                         )
+                    }
+                    else {
+                        val newAction = Action(
+                            name = serverAction.name,
+                            type = serverAction.type,
+                            description = serverAction.description,
+                            value = serverAction.value,
+                            date = LocalDate.parse(serverAction.date, formatter),
+                            categoryId = serverAction.category_id,
+                            serverId = serverAction.id
+                        )
+                        actionDao.insertAction(newAction)
                     }
                 }
             }
@@ -143,7 +148,8 @@ suspend fun syncServerWithLocalActions(application: Application) {
             )
         } else {
             Log.e(
-                "Sync", "Failed to load actions from server to local db"
+                "Sync", "Failed to load actions from server to local db:" +
+                        "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
@@ -159,34 +165,52 @@ suspend fun syncServerWithLocalCategories(application: Application) {
 
     try {
         val response = api.getUserCategories(USER_ID)
-
         if (response.isSuccessful) {
             val serverCategories = response.body()
-            val localCategories = categoryDao.getAllCategories()
 
             serverCategories?.forEach { serverCategory ->
-                var new = true
-                localCategories.forEach { localCategory ->
-                    if (serverCategory.id == localCategory.serverId)
-                        new = false
-                }
-                if (new) {
-                    val newCategory = Category(
-                        name = serverCategory.name,
-                        type = serverCategory.type,
+                val cat = categoryDao
+                    .getCategoryByNameAndType(
+                        serverCategory.name,
+                        serverCategory.type
                     )
-                    categoryDao.insertCategory(newCategory)
+                if (cat != null) {
+                    categoryDao.updateServerId(cat.id, serverCategory.id)
+                    Log.i(
+                        "Sync", "Category ${cat.name} updated from server id"
+                    )
+                } else {
+                    categoryDao.insertCategory(
+                        Category(
+                            name = serverCategory.name,
+                            type = serverCategory.type,
+                            serverId = serverCategory.id
+                        )
+                    )
+                    Log.i(
+                        "Sync", "Category ${serverCategory.name} loaded from server"
+                    )
                 }
             }
             Log.i(
-                "Sync", "Loaded categories from server to local db"
+                "Sync", "Loaded categories from server to local db is done"
             )
         } else {
             Log.e(
-                "Sync", "Failed to load actions from server to local db"
+                "Sync", "Failed to load actions from server to local db:" +
+                        "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
         Log.e("Sync", "Error syncing action from server to local", e)
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+suspend fun syncData(application: Application){
+    syncLocalWithServerCategories(application)
+    syncServerWithLocalCategories(application)
+
+    syncServerWithLocalActions(application)
+    syncLocalWithServerActions(application)
 }
