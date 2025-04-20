@@ -95,7 +95,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     }
 }
 
-@Suppress("LongMethod", "TooGenericExceptionCaught")
+@Suppress("LongMethod", "TooGenericExceptionCaught", "NestedBlockDepth")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalActions(application: Application) {
     val api = RetrofitInstance.api
@@ -121,6 +121,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
             var new = true
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }
             if (!new) return@forEach
+
             println(serverAction)
             Log.i(
                 "Sync",
