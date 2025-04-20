@@ -115,21 +115,22 @@ suspend fun syncServerWithLocalActions(application: Application) {
                 var new = true
                 localActions.forEach { localAction ->
                     if (serverAction.id == localAction.serverId) {
-                        println("Action ${serverAction.name} is here")
+                        println("Action ${serverAction.name} has already been downloaded")
                         new = false
                     }
                 }
                 if (new) {
                     println(serverAction)
                     Log.i(
-                        "Sync", "Load action ${serverAction.name} from server"
+                        "Sync",
+                        "Load action ${serverAction.name} from server"
                     )
-                    if (categoryDao.getCategoryByServerId(serverAction.category_id) == null){
+                    if (categoryDao.getCategoryByServerId(serverAction.category_id) == null) {
                         Log.e(
-                            "Sync", "No category ${serverAction.category_id} from server"
+                            "Sync",
+                            "No category ${serverAction.category_id} from server"
                         )
-                    }
-                    else {
+                    } else {
                         val newAction = Action(
                             name = serverAction.name,
                             type = serverAction.type,
@@ -144,16 +145,21 @@ suspend fun syncServerWithLocalActions(application: Application) {
                 }
             }
             Log.i(
-                "Sync", "Loaded actions from server to local db"
+                "Sync",
+                "Loaded actions from server to local db"
             )
         } else {
             Log.e(
-                "Sync", "Failed to load actions from server to local db:" +
-                        "${response.errorBody()?.string()}"
+                "Sync",
+                "Failed to load actions from server to local db:" +
+                    "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
-        Log.e("Sync", "Error syncing action from server to local", e)
+        Log.e(
+            "Sync",
+            "Error syncing action from server to local", e
+        )
     }
 }
 
@@ -175,9 +181,13 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                         serverCategory.type
                     )
                 if (cat != null) {
-                    categoryDao.updateServerId(cat.id, serverCategory.id)
+                    categoryDao.updateServerId(
+                        cat.id,
+                        serverCategory.id
+                    )
                     Log.i(
-                        "Sync", "Category ${cat.name} updated from server id"
+                        "Sync",
+                        "Category ${cat.name} updated from server id"
                     )
                 } else {
                     categoryDao.insertCategory(
@@ -188,16 +198,19 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                         )
                     )
                     Log.i(
-                        "Sync", "Category ${serverCategory.name} loaded from server"
+                        "Sync",
+                        "Category ${serverCategory.name} loaded from server"
                     )
                 }
             }
             Log.i(
-                "Sync", "Loaded categories from server to local db is done"
+                "Sync",
+                "Loaded categories from server to local db is done"
             )
         } else {
             Log.e(
-                "Sync", "Failed to load actions from server to local db:" +
+                "Sync",
+                "Failed to load actions from server to local db:" +
                         "${response.errorBody()?.string()}"
             )
         }
@@ -207,7 +220,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-suspend fun syncData(application: Application){
+suspend fun syncData(application: Application) {
     syncLocalWithServerCategories(application)
     syncServerWithLocalCategories(application)
 

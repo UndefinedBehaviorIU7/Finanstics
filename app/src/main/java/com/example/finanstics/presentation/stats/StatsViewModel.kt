@@ -81,8 +81,7 @@ class StatsViewModel(
                         println("tag = ${user.tag}")
                         tagStr = user.tag
                     }
-                }
-                else {
+                } else {
                     Log.e("LogIn", "Error login ${userResponse.errorBody()?.string()}")
                 }
             } catch (e: Exception) {

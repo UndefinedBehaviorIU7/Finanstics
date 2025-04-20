@@ -31,8 +31,8 @@ interface ActionDao {
 
     @Query(
         "SELECT * FROM actions WHERE strftime('%m', date) = printf('%02d', :month) " +
-                "AND strftime('%Y', date) = printf('%d', :year) " +
-                "AND strftime('%d', date) = printf('%02d', :day)"
+            "AND strftime('%Y', date) = printf('%d', :year) " +
+            "AND strftime('%d', date) = printf('%02d', :day)"
     )
     suspend fun getActionsByDate(month: Int, year: Int, day: Int): List<Action>
 
@@ -44,16 +44,16 @@ interface ActionDao {
 
     @Query(
         "SELECT * FROM actions " +
-                "WHERE strftime('%m', date) = printf('%02d', :month) " +
-                "AND strftime('%Y', date) = printf('%d', :year) " +
-                "AND type = 1"
+            "WHERE strftime('%m', date) = printf('%02d', :month) " +
+            "AND strftime('%Y', date) = printf('%d', :year) " +
+            "AND type = 1"
     )
     suspend fun getIncomesByMonthYear(month: Int, year: Int): List<Action>
 
     @Query(
         "SELECT * FROM actions WHERE strftime('%m', date) = printf('%02d', :month) " +
-                "AND strftime('%Y', date) = printf('%d', :year) " +
-                "AND type = 0"
+            "AND strftime('%Y', date) = printf('%d', :year) " +
+            "AND type = 0"
     )
     suspend fun getExpensesByMonthYear(month: Int, year: Int): List<Action>
 
