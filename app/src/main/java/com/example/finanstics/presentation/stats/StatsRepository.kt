@@ -13,7 +13,10 @@ class StatsRepository(private var db: FinansticsDatabase) {
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return actionsToPairs(actionDao.getIncomesByMonth(month, year), getAllCategories())
+        return actionsToPairs(
+            actionDao.getIncomesByMonthYear(month.number, year),
+            getAllCategories()
+        )
             .sortedByDescending { it.second }
     }
 
@@ -21,7 +24,10 @@ class StatsRepository(private var db: FinansticsDatabase) {
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>> {
-        return actionsToPairs(actionDao.getExpensesByMonth(month, year), getAllCategories())
+        return actionsToPairs(
+            actionDao.getExpensesByMonthYear(month.number, year),
+            getAllCategories()
+        )
             .sortedByDescending { it.second }
     }
 

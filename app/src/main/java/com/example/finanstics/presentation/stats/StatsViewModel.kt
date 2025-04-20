@@ -1,12 +1,19 @@
 package com.example.finanstics.presentation.stats
 
 import android.app.Application
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
+import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
+import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,16 +21,21 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 private const val TIME_UPDATE = 5000L
+private const val USER_ID = 21
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("TooGenericExceptionCaught")
 class StatsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
+    var tagStr: String? = ""
 
     val db = FinansticsDatabase.getDatabase(application)
 
     private val repository = StatsRepository(db)
+    private val api = RetrofitInstance.api
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
@@ -39,12 +51,13 @@ class StatsViewModel(
     fun example() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
-            if (cats.isEmpty()) {
-                db.categoryDao().insertCategory(Category(name = "Еда", type = 0))
+            println(cats)
+            println(cats.size)
+            if (cats.size < MIN_CATEGORIES_SIZE) {
+                db.categoryDao().insertCategory(Category(name = "Еда", type = 0, serverId = null))
                 db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Покупки", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Спорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Развлечения", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Образование", type = 0))
@@ -59,6 +72,21 @@ class StatsViewModel(
                 db.categoryDao().insertCategory(Category(name = "Пенсия", type = 2))
                 db.categoryDao().insertCategory(Category(name = "Проценты", type = 2))
                 db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
+            }
+
+            try {
+                val userResponse = RetrofitInstance.api.getUser(USER_ID)
+                if (userResponse.isSuccessful) {
+                    val user = userResponse.body()
+                    if (user != null) {
+                        println("tag = ${user.tag}")
+                        tagStr = user.tag
+                    }
+                } else {
+                    Log.e("LogIn", "Error login ${userResponse.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("LogIn", "Failed to fetch user: ${e.message}")
             }
         }
     }
@@ -126,10 +154,12 @@ class StatsViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun autoUpdate() {
         viewModelScope.launch {
             while (true) {
                 fetchData()
+                syncData(application)
                 delay(TIME_UPDATE)
             }
         }

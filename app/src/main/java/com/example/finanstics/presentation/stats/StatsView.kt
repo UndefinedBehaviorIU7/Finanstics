@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.calendar.MonthNameClass
-import com.example.finanstics.ui.theme.USER_NAME
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -39,6 +38,7 @@ fun Stats(
     val vm: StatsViewModel = viewModel()
     val incomes = vm.incomes
     val expenses = vm.expenses
+    val userName: String = if (vm.tagStr == null) "" else vm.tagStr!!
 
     Box(
         modifier = Modifier
@@ -63,7 +63,7 @@ fun Stats(
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(USER_NAME)
+                        Header(userName)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -75,7 +75,7 @@ fun Stats(
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(USER_NAME)
+                        Header(userName)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -90,7 +90,7 @@ fun Stats(
                 is StatsUiState.Done -> {
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
-                        Header(USER_NAME)
+                        Header(userName)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,

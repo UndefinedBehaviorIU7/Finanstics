@@ -1,11 +1,13 @@
 package com.example.finanstics.api.models
 
+import com.example.finanstics.db.Category
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface NetworkService {
     @GET("users/{user_id}")
@@ -13,26 +15,35 @@ interface NetworkService {
         @Path("user_id") userId: Int
     ): Response<User>
 
-    @FormUrlEncoded
     @POST("users/{user_id}/add_category")
     suspend fun addCategory(
         @Path("user_id") userId: Int,
-        @Field("token") token: String,
-        @Field("category_name") categoryName: String
+        @Query("token") token: String,
+        @Query("category_name") categoryName: String,
+        @Query("type") type: Int,
     ): Response<CategoryResponse>
 
-    @FormUrlEncoded
     @Suppress("LongParameterList")
     @POST("users/{user_id}/add_action")
     suspend fun addAction(
         @Path("user_id") userId: Int,
-        @Field("token") token: String,
-        @Field("action_name") actionName: String,
-        @Field("action_type") actionType: Int,
-        @Field("value") value: Int,
-        @Field("date") date: String,
-        @Field("category_id") categoryId: Int,
-        @Field("description") description: String,
-        @Field("group_id") groupId: Int?
+        @Query("token") token: String,
+        @Query("action_name") actionName: String,
+        @Query("action_type") actionType: Int,
+        @Query("value") value: Int,
+        @Query("date_str") date: String,
+        @Query("category_id") categoryId: Int,
+        @Query("description") description: String?,
+        @Query("group_id") groupId: Int?
     ): Response<ActionResponse>
+
+    @GET("users/{user_id}/actions")
+    suspend fun getUserActions(
+        @Path("user_id") userId: Int
+    ): Response<List<Action>>
+
+    @GET("users/{user_id}/categories")
+    suspend fun getUserCategories(
+        @Path("user_id") userId: Int
+    ): Response<List<Category>>
 }
