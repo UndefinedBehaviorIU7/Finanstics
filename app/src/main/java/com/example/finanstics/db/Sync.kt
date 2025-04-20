@@ -26,33 +26,34 @@ suspend fun syncLocalWithServerActions(application: Application) {
             val category = categoryDao.getCategoryById(action.categoryId)
             if (category == null) {
                 Log.e("Sync", "No ${action.categoryId} in db")
+                return@forEach
+            }
+
+            if (category.serverId == null) {
+                syncLocalWithServerCategories(application)
             } else {
-                if (category.serverId == null) {
-                    syncLocalWithServerCategories(application)
-                } else {
-                    val response = api.addAction(
-                        userId = USER_ID,
-                        token = TOKEN,
-                        actionName = action.name,
-                        actionType = action.type,
-                        value = action.value,
-                        date = action.date.format(dateFormatter),
-                        categoryId = category.serverId!!,
-                        description = action.description,
-                        groupId = null
-                    )
-                    if (response.isSuccessful) {
-                        val serverResponse = response.body()
-                        if (serverResponse != null) {
-                            actionDao.updateServerId(action.actionId, serverResponse.id)
-                        }
-                    } else {
-                        Log.e(
-                            "Sync",
-                            "Failed to sync action ${action.actionId}: " +
-                                "${response.errorBody()?.string()}"
-                        )
+                val response = api.addAction(
+                    userId = USER_ID,
+                    token = TOKEN,
+                    actionName = action.name,
+                    actionType = action.type,
+                    value = action.value,
+                    date = action.date.format(dateFormatter),
+                    categoryId = category.serverId!!,
+                    description = action.description,
+                    groupId = null
+                )
+                if (response.isSuccessful) {
+                    val serverResponse = response.body()
+                    if (serverResponse != null) {
+                        actionDao.updateServerId(action.actionId, serverResponse.id)
                     }
+                } else {
+                    Log.e(
+                        "Sync",
+                        "Failed to sync action ${action.actionId}: " +
+                                "${response.errorBody()?.string()}"
+                    )
                 }
             }
         } catch (e: Exception) {
@@ -90,7 +91,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
                 Log.e(
                     "Sync",
                     "Failed to sync category ${category.id}: " +
-                        "${response.errorBody()?.string()}"
+                            "${response.errorBody()?.string()}"
                 )
             }
         } catch (e: Exception) {
@@ -110,7 +111,6 @@ suspend fun syncServerWithLocalActions(application: Application) {
 
     try {
         val response = api.getUserActions(USER_ID)
-
         if (response.isSuccessful) {
             val serverActions = response.body()
             val localActions = db.actionDao().getAllActions()
@@ -135,18 +135,18 @@ suspend fun syncServerWithLocalActions(application: Application) {
                             "Sync",
                             "No category ${serverAction.category_id} from server"
                         )
-                    } else {
-                        val newAction = Action(
-                            name = serverAction.name,
-                            type = serverAction.type,
-                            description = serverAction.description,
-                            value = serverAction.value,
-                            date = LocalDate.parse(serverAction.date, formatter),
-                            categoryId = serverAction.category_id,
-                            serverId = serverAction.id
-                        )
-                        actionDao.insertAction(newAction)
+                        return@forEach
                     }
+                    val newAction = Action(
+                        name = serverAction.name,
+                        type = serverAction.type,
+                        description = serverAction.description,
+                        value = serverAction.value,
+                        date = LocalDate.parse(serverAction.date, formatter),
+                        categoryId = serverAction.category_id,
+                        serverId = serverAction.id
+                    )
+                    actionDao.insertAction(newAction)
                 }
             }
             Log.i(
@@ -157,7 +157,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
             Log.e(
                 "Sync",
                 "Failed to load actions from server to local db:" +
-                    "${response.errorBody()?.string()}"
+                        "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
@@ -180,7 +180,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
         val response = api.getUserCategories(USER_ID)
         if (response.isSuccessful) {
             val serverCategories = response.body()
-
             serverCategories?.forEach { serverCategory ->
                 val cat = categoryDao
                     .getCategoryByNameAndType(
@@ -196,19 +195,19 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                         "Sync",
                         "Category ${cat.name} updated from server id"
                     )
-                } else {
-                    categoryDao.insertCategory(
-                        Category(
-                            name = serverCategory.name,
-                            type = serverCategory.type,
-                            serverId = serverCategory.id
-                        )
-                    )
-                    Log.i(
-                        "Sync",
-                        "Category ${serverCategory.name} loaded from server"
-                    )
+                    return@forEach
                 }
+                categoryDao.insertCategory(
+                    Category(
+                        name = serverCategory.name,
+                        type = serverCategory.type,
+                        serverId = serverCategory.id
+                    )
+                )
+                Log.i(
+                    "Sync",
+                    "Category ${serverCategory.name} loaded from server"
+                )
             }
             Log.i(
                 "Sync",
@@ -218,7 +217,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
             Log.e(
                 "Sync",
                 "Failed to load actions from server to local db:" +
-                    "${response.errorBody()?.string()}"
+                        "${response.errorBody()?.string()}"
             )
         }
     } catch (e: Exception) {
