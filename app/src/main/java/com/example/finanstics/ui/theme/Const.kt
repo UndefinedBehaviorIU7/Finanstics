@@ -9,8 +9,10 @@ val OFFSET_BAR = 60.dp
 const val ALL_TIME = "всё время"
 const val MIN_CATEGORIES_SIZE = 17
 
+const val PREF_NAME = "FinansticsPref"
+
 const val USER_ID = 22
-const val TOKEN = "2c609d650e65d2320fd4850493881602a1fcbd68d3400a73684d7a8a966ee66b"
+const val TOKEN = "068507632a30589de26a5928318a975f0aca8c54553122c7b139406dd0adbbba"
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,

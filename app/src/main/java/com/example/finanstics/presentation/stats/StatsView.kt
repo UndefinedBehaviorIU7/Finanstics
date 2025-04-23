@@ -1,6 +1,8 @@
 package com.example.finanstics.presentation.stats
 
 import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.calendar.MonthNameClass
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Stats(
@@ -110,6 +113,7 @@ fun Stats(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun StatsView(
@@ -139,6 +143,7 @@ fun StatsView(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewVertical(
@@ -178,7 +183,7 @@ fun StatsViewVertical(
                 Balance(
                     vm.balance(incomes, expenses),
                     MonthNameClass.str(uiState.calendar.getData().getMonth()),
-                    uiState.totalBalance
+                    -uiState.totalBalance
                 )
             }
             item { Divider(10.dp, 2.dp) }
@@ -200,6 +205,7 @@ fun StatsViewVertical(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun StatsViewHorizontal(

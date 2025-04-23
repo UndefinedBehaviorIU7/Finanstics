@@ -11,7 +11,8 @@ data class Category(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val type: Int,
-    var serverId: Int? = null
+    var serverId: Int? = null,
+    var createdAt: String? = null
 )
 
 @Entity(
@@ -34,6 +35,6 @@ data class Action(
     val date: LocalDate,
     @ColumnInfo(index = true) val categoryId: Int,
     val description: String? = null,
-    val createdAt: String? = null,
+    var createdAt: String? = null,
     var serverId: Int? = null
 )

@@ -37,13 +37,25 @@ interface NetworkService {
         @Query("group_id") groupId: Int?
     ): Response<ActionResponse>
 
-    @GET("users/{user_id}/actions")
+    @GET("users/{user_id}/actions/all")
     suspend fun getUserActions(
         @Path("user_id") userId: Int
     ): Response<List<Action>>
 
-    @GET("users/{user_id}/categories")
+    @GET("users/{user_id}/actions/{time}")
+    suspend fun getUserActionsSince(
+        @Path("user_id") userId: Int,
+        @Path("time") time: String
+    ): Response<List<Action>>
+
+    @GET("users/{user_id}/categories/all")
     suspend fun getUserCategories(
         @Path("user_id") userId: Int
+    ): Response<List<Category>>
+
+    @GET("users/{user_id}/categories/{time}")
+    suspend fun getUserCategoriesSince(
+        @Path("user_id") userId: Int,
+        @Path("time") time: String
     ): Response<List<Category>>
 }
