@@ -37,7 +37,6 @@ class StatsViewModel(
     val db = FinansticsDatabase.getDatabase(application)
 
     private val repository = StatsRepository(db)
-    private val api = RetrofitInstance.api
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
