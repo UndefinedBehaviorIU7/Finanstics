@@ -169,7 +169,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     }
 }
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "LongMethod")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalCategories(application: Application) {
     val api = RetrofitInstance.api

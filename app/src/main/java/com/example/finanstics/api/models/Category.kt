@@ -1,5 +1,6 @@
 package com.example.finanstics.api.models
 
+@Suppress("ConstructorParameterNaming")
 data class Category(
     val id: Int,
     val name: String,
