@@ -169,6 +169,7 @@ class AddActionViewModel(
                         value = current.moneyAction,
                         date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
                         categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
+                        createdAt = "2025-04-22T14:30:00"
                     )
                     actionDao.insertAction(action)
                     _uiState.value = AddActionUiState.Ok

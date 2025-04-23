@@ -11,5 +11,5 @@ data class Action(
     val category_id: Int,
     val description: String?,
     val groupId: Int?,
-    val createdAt: String?
+    val created_at: String?
 )

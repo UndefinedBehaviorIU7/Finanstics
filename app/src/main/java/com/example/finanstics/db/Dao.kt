@@ -62,6 +62,9 @@ interface ActionDao {
     @Query("UPDATE actions SET serverId = :serverId WHERE actionId = :actionId")
     suspend fun updateServerId(actionId: Int, serverId: Int)
 
+    @Query("UPDATE actions SET createdAt = :creationTime WHERE actionId = :actionId")
+    suspend fun updateCreationTime(actionId: Int, creationTime: String)
+
     @Query("SELECT * FROM actions WHERE serverId = :serverId LIMIT 1")
     suspend fun getActionByServerId(serverId: Int): Action?
 }
@@ -101,6 +104,9 @@ interface CategoryDao {
 
     @Query("UPDATE categories SET serverId = :serverId WHERE id = :categoryId")
     suspend fun updateServerId(categoryId: Int, serverId: Int)
+
+    @Query("UPDATE categories SET createdAt = :creationTime WHERE id = :categoryId")
+    suspend fun updateCreationTime(categoryId: Int, creationTime: String)
 
     @Query("SELECT * FROM categories WHERE serverId = :serverId")
     suspend fun getCategoryByServerId(serverId: Int): Category?

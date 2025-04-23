@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-private const val TIME_UPDATE = 5000L
+private const val TIME_UPDATE = 1000L
 private const val USER_ID = 21
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -39,6 +39,7 @@ class StatsViewModel(
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
+    var actions = mutableStateListOf<Triple<String, Int, Int>>()
     var incomes = mutableStateListOf<Pair<String, Int>>()
     var expenses = mutableStateListOf<Pair<String, Int>>()
 
@@ -109,10 +110,14 @@ class StatsViewModel(
         viewModelScope.launch {
             try {
                 var update = false
-                totalBalance = repository.balance(
+                val newTotalBalance = repository.balance(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
                 )
+                if (newTotalBalance != totalBalance) {
+                    totalBalance = newTotalBalance
+                    update = true
+                }
                 val incomesData = repository.getIncomes(
                     calendar.getData().getMonth(),
                     calendar.getData().getYear()
