@@ -46,9 +46,7 @@ class ApiRepository {
         )
     }
 
-    suspend fun getUserActions(
-       userId: Int
-    ): Response<List<Action>> {
+    suspend fun getUserActions(userId: Int): Response<List<Action>> {
         return RetrofitInstance.api.getUserActions(userId)
     }
 
