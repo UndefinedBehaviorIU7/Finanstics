@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.MonthNameClass
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -66,7 +68,7 @@ fun Stats(
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(userName)
+                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -78,7 +80,7 @@ fun Stats(
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(userName)
+                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -93,7 +95,7 @@ fun Stats(
                 is StatsUiState.Done -> {
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
-                        Header(userName)
+                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -288,20 +290,42 @@ fun StatsErrorView(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun Header(
-    userName: String
+    vm: StatsViewModel,
+    navController: NavController
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = userName,
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
+        if (vm.isAuth) {
+            Text(
+                text = vm.tagStr,
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            Spacer(Modifier.weight(2f))
+            Text(
+                text = "Вход",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable { navController.navigate(Navigation.LOGIN.toString()) }
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = "Регистрация",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable { navController.navigate(Navigation.REGISTER.toString()) }
+            )
+            Spacer(Modifier.weight(2f))
+        }
     }
 }
 

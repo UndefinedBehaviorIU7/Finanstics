@@ -13,6 +13,7 @@ import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
+import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +31,8 @@ class StatsViewModel(
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
-    var tagStr: String? = ""
+    var tagStr: String = ""
+    var isAuth = true
 
     val db = FinansticsDatabase.getDatabase(application)
 
@@ -44,12 +46,12 @@ class StatsViewModel(
     var expenses = mutableStateListOf<Pair<String, Int>>()
 
     init {
-        example()
+        initialisation()
         loadCalendar()
         autoUpdate()
     }
 
-    fun example() {
+    fun initialisation() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
             println(cats)
@@ -75,20 +77,15 @@ class StatsViewModel(
                 db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
             }
 
-            try {
-                val userResponse = RetrofitInstance.api.getUser(USER_ID)
-                if (userResponse.isSuccessful) {
-                    val user = userResponse.body()
-                    if (user != null) {
-                        println("tag = ${user.tag}")
-                        tagStr = user.tag
-                    }
-                } else {
-                    Log.e("LogIn", "Error login ${userResponse.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                Log.e("LogIn", "Failed to fetch user: ${e.message}")
+            val prefManager = PreferencesManager(application)
+            val id = prefManager.getData("id", "")
+            val tag = prefManager.getData("tag", "")
+            val password = prefManager.getData("password", "")
+
+            if (id.isEmpty() || tag.isEmpty() || password.isEmpty()) {
+                isAuth = false
             }
+            tagStr = tag
         }
     }
 
