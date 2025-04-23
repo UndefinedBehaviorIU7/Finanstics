@@ -16,9 +16,6 @@ import com.example.finanstics.presentation.login.Login
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.presentation.register.Register
 import com.example.finanstics.ui.theme.FinansticsTheme
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 
 enum class Navigation(val route: String) {
     STATS("stats"),
@@ -42,7 +39,10 @@ class MainActivity : ComponentActivity() {
 
         val preferencesManager = PreferencesManager(this)
         preferencesManager.saveData("id", "21")
-        preferencesManager.saveData("token", "03ceb11f7a80945bd454f488a11ab0f2f4f29817e7be6fae837393c0fd04d728")
+        preferencesManager.saveData(
+            "token",
+            "03ceb11f7a80945bd454f488a11ab0f2f4f29817e7be6fae837393c0fd04d728"
+        )
 
         setContent {
             FinansticsTheme(

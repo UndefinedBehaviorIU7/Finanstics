@@ -83,8 +83,10 @@ class StatsRepository(private var db: FinansticsDatabase) {
             }
     }
 
-    fun actionsToTriples(actions: List<Action>, categories: List<Category>):
-            List<Triple<String, Int, Int>> {
+    fun actionsToTriples(
+        actions: List<Action>,
+        categories: List<Category>
+    ): List<Triple<String, Int, Int>> {
         val categoryMap = categories.associateBy { it.id }
 
         return actions.map { action ->

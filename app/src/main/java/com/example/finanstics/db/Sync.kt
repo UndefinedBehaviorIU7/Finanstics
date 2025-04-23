@@ -54,7 +54,7 @@ suspend fun syncLocalWithServerActions(application: Application) {
                 return@forEach
             }
             val serverResp = response.body()
-            if (serverResp != null){
+            if (serverResp != null) {
                 actionDao.updateServerId(action.actionId, serverResp.id)
                 actionDao.updateCreationTime(action.actionId, serverResp.created_at)
             }
@@ -93,7 +93,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
                 return@forEach
             }
             val serverResp = response.body()
-            if (serverResp != null){
+            if (serverResp != null) {
                 categoryDao.updateServerId(category.id, serverResp.id)
                 categoryDao.updateCreationTime(category.id, serverResp.created_at)
             }
