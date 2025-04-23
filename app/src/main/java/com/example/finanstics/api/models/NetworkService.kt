@@ -1,9 +1,6 @@
 package com.example.finanstics.api.models
 
-import com.example.finanstics.db.Category
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -58,4 +55,18 @@ interface NetworkService {
         @Path("user_id") userId: Int,
         @Path("time") time: String
     ): Response<List<Category>>
+
+    @POST("register")
+    suspend fun register(
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
+        @Query("image") image: String,
+    ): Response<UserResponse>
+
+    @POST("login")
+    suspend fun login(
+        @Query("tag") tag: String,
+        @Query("password") password: String,
+    ): Response<UserResponse>
 }

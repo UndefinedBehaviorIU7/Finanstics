@@ -4,7 +4,7 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.example.finanstics.api.RetrofitInstance
+import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.TOKEN
 import com.example.finanstics.ui.theme.USER_ID
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerActions(application: Application) {
-    val api = RetrofitInstance.api
+    val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
     val categoryDao = db.categoryDao()
@@ -34,11 +34,11 @@ suspend fun syncLocalWithServerActions(application: Application) {
                 syncLocalWithServerCategories(application)
                 return@forEach
             }
-            val response = api.addAction(
+            val response = apiRep.addAction(
                 userId = USER_ID,
                 token = TOKEN,
                 actionName = action.name,
-                actionType = action.type,
+                type = action.type,
                 value = action.value,
                 date = action.date.format(dateFormatter),
                 categoryId = category.serverId!!,
@@ -67,7 +67,7 @@ suspend fun syncLocalWithServerActions(application: Application) {
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerCategories(application: Application) {
-    val api = RetrofitInstance.api
+    val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
     println(categoryDao.getAllCategories())
@@ -77,7 +77,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
 
     unsyncedCategories.forEach { category ->
         try {
-            val response = api.addCategory(
+            val response = apiRep.addCategory(
                 userId = USER_ID,
                 token = TOKEN,
                 categoryName = category.name,
@@ -106,7 +106,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
 @Suppress("LongMethod", "TooGenericExceptionCaught", "NestedBlockDepth")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalActions(application: Application) {
-    val api = RetrofitInstance.api
+    val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
     val categoryDao = db.categoryDao()
@@ -114,7 +114,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     val preferencesManager = PreferencesManager(application)
 
     try {
-        val response = api.getUserActionsSince(USER_ID, preferencesManager.getUpdateTime())
+        val response = apiRep.getUserActionsSince(USER_ID, preferencesManager.getUpdateTime())
         if (!response.isSuccessful) {
             Log.e(
                 "Sync",
@@ -172,13 +172,13 @@ suspend fun syncServerWithLocalActions(application: Application) {
 @Suppress("TooGenericExceptionCaught", "LongMethod")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalCategories(application: Application) {
-    val api = RetrofitInstance.api
+    val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
     val preferencesManager = PreferencesManager(application)
 
     try {
-        val response = api.getUserCategoriesSince(USER_ID, preferencesManager.getUpdateTime())
+        val response = apiRep.getUserCategoriesSince(USER_ID, preferencesManager.getUpdateTime())
         if (!response.isSuccessful) {
             Log.e(
                 "Sync",
@@ -200,7 +200,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                 )
                 categoryDao.updateCreationTime(
                     cat.id,
-                    serverCategory.createdAt!!
+                    serverCategory.created_at!!
                 )
                 preferencesManager.saveUpdateTime()
                 Log.i(
@@ -214,7 +214,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     name = serverCategory.name,
                     type = serverCategory.type,
                     serverId = serverCategory.id,
-                    createdAt = serverCategory.createdAt
+                    createdAt = serverCategory.created_at
                 )
             )
             preferencesManager.saveUpdateTime()
