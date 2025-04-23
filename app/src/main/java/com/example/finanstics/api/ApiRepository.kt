@@ -22,6 +22,7 @@ class ApiRepository {
         return RetrofitInstance.api.addCategory(userId, token, categoryName, type)
     }
 
+    @Suppress("LongParameterList")
     suspend fun addAction(
         userId: Int,
         token: String,
