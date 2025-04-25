@@ -34,7 +34,7 @@ interface NetworkService {
         @Query("group_id") groupId: Int?
     ): Response<ActionResponse>
 
-    @GET("users/{user_id}/actions/all")
+    @GET("users/{user_id}/actions/personal")
     suspend fun getUserActions(
         @Path("user_id") userId: Int
     ): Response<List<Action>>

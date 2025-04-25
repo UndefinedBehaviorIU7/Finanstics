@@ -1,6 +1,8 @@
 package com.example.finanstics.presentation.addAction
 
 import android.app.DatePickerDialog
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -37,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.Form
 import com.example.finanstics.ui.theme.icons.CalendarIcon
 import java.util.Calendar
@@ -198,6 +199,7 @@ fun TypeSelector(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawIdle(
@@ -289,6 +291,7 @@ fun DrawIdle(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawError(
@@ -376,6 +379,7 @@ fun DrawError(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(

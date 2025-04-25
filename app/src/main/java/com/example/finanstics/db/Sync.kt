@@ -154,7 +154,6 @@ suspend fun syncServerWithLocalActions(application: Application) {
                 createdAt = serverAction.created_at
             )
             actionDao.insertAction(newAction)
-            preferencesManager.saveUpdateTime()
         }
         Log.i(
             "Sync",
@@ -202,7 +201,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     cat.id,
                     serverCategory.created_at!!
                 )
-                preferencesManager.saveUpdateTime()
                 Log.i(
                     "Sync",
                     "Category ${cat.name} updated from server id"
@@ -217,7 +215,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     createdAt = serverCategory.created_at
                 )
             )
-            preferencesManager.saveUpdateTime()
             Log.i(
                 "Sync",
                 "Category ${serverCategory.name} loaded from server"
@@ -243,4 +240,7 @@ suspend fun syncData(application: Application) {
 
     syncServerWithLocalActions(application)
     syncLocalWithServerActions(application)
+
+    val preferencesManager = PreferencesManager(application)
+    preferencesManager.saveUpdateTime()
 }

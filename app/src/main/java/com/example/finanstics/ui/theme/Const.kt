@@ -10,9 +10,10 @@ const val ALL_TIME = "всё время"
 const val MIN_CATEGORIES_SIZE = 17
 
 const val PREF_NAME = "FinansticsPref"
+const val TIME_INIT = "2025-01-01T00:00:01.230233"
 
-const val USER_ID = 22
-const val TOKEN = "988656d2ac0451a66be3ff9dc8a94d1921f3d539d0cde2dfdfe9bd291eb33610"
+const val USER_ID = 2
+const val TOKEN = "937c8fcf94c49dec7272821cb43f9335eb4a726431f3b39d64b9154d2758ddd5"
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,
