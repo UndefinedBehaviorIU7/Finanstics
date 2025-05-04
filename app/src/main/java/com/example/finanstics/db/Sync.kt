@@ -126,6 +126,20 @@ suspend fun syncServerWithLocalActions(application: Application) {
         val localActions = db.actionDao().getAllActions()
         println(localActions)
 
+
+
+        val response1 = apiRep.getGroupActions(1)
+        if (!response1.isSuccessful) {
+            Log.e(
+                "Sync",
+                "qeewqewqewewqeqe :" +
+                        "${response1.errorBody()?.string()}"
+            )
+        }
+        val serverActions1 = response1.body()
+        println(serverActions1)
+
+
         serverActions?.forEach { serverAction ->
             var new = true
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }
@@ -154,7 +168,6 @@ suspend fun syncServerWithLocalActions(application: Application) {
                 createdAt = serverAction.created_at
             )
             actionDao.insertAction(newAction)
-            preferencesManager.saveUpdateTime()
         }
         Log.i(
             "Sync",
@@ -202,7 +215,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     cat.id,
                     serverCategory.created_at!!
                 )
-                preferencesManager.saveUpdateTime()
                 Log.i(
                     "Sync",
                     "Category ${cat.name} updated from server id"
@@ -217,7 +229,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     createdAt = serverCategory.created_at
                 )
             )
-            preferencesManager.saveUpdateTime()
             Log.i(
                 "Sync",
                 "Category ${serverCategory.name} loaded from server"
@@ -243,4 +254,7 @@ suspend fun syncData(application: Application) {
 
     syncServerWithLocalActions(application)
     syncLocalWithServerActions(application)
+
+    val preferencesManager = PreferencesManager(application)
+    preferencesManager.saveUpdateTime()
 }

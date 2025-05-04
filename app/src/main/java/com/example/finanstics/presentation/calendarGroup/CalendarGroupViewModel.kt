@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarViewModel(
+class CalendarGroupViewMode(
     application: Application
 ) : AndroidViewModel(application) {
-    private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState.Loading)
+    private val _uiState = MutableStateFlow<CalendarGroupUiState>(CalendarGroupUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     //    private val calendardata = java.util.Calendar.getInstance()
@@ -23,7 +23,7 @@ class CalendarViewModel(
 
     init {
         viewModelScope.launch {
-            calendar.initActionsDay(application)
+            calendar.initActionsDayByApi(application, 1)
             loadCalendar()
         }
     }
@@ -33,42 +33,42 @@ class CalendarViewModel(
         try {
             viewModelScope.launch {
                 calendar.initActionsDay(application)
-                _uiState.value = CalendarUiState.Loading
-                _uiState.value = CalendarUiState.DrawActions(calendar, CalendarClass.getNowDay())
+                _uiState.value = CalendarGroupUiState.Loading
+                _uiState.value = CalendarGroupUiState.DrawActions(calendar, CalendarClass.getNowDay())
             }
         } catch (e: NullPointerException) {
-            _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
+            _uiState.value = CalendarGroupUiState.Error("Ошибка: данные календаря отсутствуют")
         } catch (e: IllegalStateException) {
-            _uiState.value = CalendarUiState.Error("Ошибка: некорректное состояние календаря")
+            _uiState.value = CalendarGroupUiState.Error("Ошибка: некорректное состояние календаря")
         } catch (e: Exception) {
-            _uiState.value = CalendarUiState.Error("Неизвестная ошибка: ${e.message}")
+            _uiState.value = CalendarGroupUiState.Error("Неизвестная ошибка: ${e.message}")
         }
     }
 
     fun nextMonth() {
         Log.d("CalendarViewModel", "Next month clicked")
-        if (_uiState.value is CalendarUiState.Default ||
-            _uiState.value is CalendarUiState.DrawActions
+        if (_uiState.value is CalendarGroupUiState.Default ||
+            _uiState.value is CalendarGroupUiState.DrawActions
         ) {
             viewModelScope.launch {
                 calendar.nextMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
                 newCalendar.initActionsDay(application)
-                _uiState.value = CalendarUiState.Default(newCalendar)
+                _uiState.value = CalendarGroupUiState.Default(newCalendar)
                 val day = CalendarClass.getNowDay()
                 if (day.getData().getMonth() == calendar.getData().getMonth())
-                    _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
                 else
-                    _uiState.value = CalendarUiState.Default(newCalendar)
+                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
             }
         }
     }
 
     fun lastMonth() {
         Log.d("CalendarViewModel", "Previous month clicked")
-        if (_uiState.value is CalendarUiState.Default ||
-            _uiState.value is CalendarUiState.DrawActions
+        if (_uiState.value is CalendarGroupUiState.Default ||
+            _uiState.value is CalendarGroupUiState.DrawActions
         ) {
             viewModelScope.launch {
                 calendar.lastMonth()
@@ -77,9 +77,9 @@ class CalendarViewModel(
                 newCalendar.initActionsDay(application)
                 val day = CalendarClass.getNowDay()
                 if (day.getData().getMonth() == calendar.getData().getMonth())
-                    _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
                 else
-                    _uiState.value = CalendarUiState.Default(newCalendar)
+                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
 
             }
         }
@@ -88,21 +88,21 @@ class CalendarViewModel(
     fun actions(
         day: DayClass
     ) {
-        if (_uiState.value is CalendarUiState.Default ||
-            _uiState.value is CalendarUiState.DrawActions
+        if (_uiState.value is CalendarGroupUiState.Default ||
+            _uiState.value is CalendarGroupUiState.DrawActions
         ) {
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
-            _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+            _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
         }
     }
 
     fun toDefault() {
-        if (_uiState.value is CalendarUiState.DrawActions
+        if (_uiState.value is CalendarGroupUiState.DrawActions
         ) {
             val newCalendar = CalendarClass()
             newCalendar.copy(calendar)
-            _uiState.value = CalendarUiState.Default(newCalendar)
+            _uiState.value = CalendarGroupUiState.Default(newCalendar)
         }
     }
 }

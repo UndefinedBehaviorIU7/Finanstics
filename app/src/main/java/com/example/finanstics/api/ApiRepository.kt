@@ -100,4 +100,26 @@ class ApiRepository {
             password
         )
     }
+
+    suspend fun getGroupActions(
+        groupId: Int,
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActions(
+            groupId
+        )
+    }
+
+    suspend fun getGroupActionsByDate(
+        groupId: Int,
+        year: Int,
+        month: Int,
+        day: Int? = null
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByDate(
+            groupId,
+            year,
+            month,
+            day
+        )
+    }
 }

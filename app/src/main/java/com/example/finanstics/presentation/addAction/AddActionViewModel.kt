@@ -20,7 +20,9 @@ enum class Error(val str: String) {
     MONEY("сумма"),
     DATE("дата"),
     CATEGORY("категория"),
-    DESCRIPTION("описание")
+    DESCRIPTION("описание"),
+    OK("ok"),
+    UISTATE("uiState")
 }
 
 class AddActionViewModel(
@@ -121,19 +123,16 @@ class AddActionViewModel(
     }
 
     @Suppress("MagicNumber", "LongParameterList", "ComplexMethod", "ReturnCount")
-    private suspend fun validateIdle(
+    fun validateIdle(
         state: AddActionUiState.Idle
-    ): Error? {
+    ): Error {
         if (state.nameAction.isBlank()) return Error.NAME
         if (state.typeAction == ActionType.NULL) return Error.TYPE
         if (state.moneyAction <= 0) return Error.MONEY
         if (state.data.isBlank()) return Error.DATE
-        if (state.category.isBlank() ||
-            categoryDao.getCategoryByName(state.category) == null
-        ) return Error.CATEGORY
-        if (state.description.isBlank()) return Error.DESCRIPTION
+        if (state.category.isBlank()) return Error.CATEGORY
 
-        return null
+        return Error.OK
     }
 
     fun createErrorState(
@@ -154,13 +153,43 @@ class AddActionViewModel(
         )
     }
 
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun addAction() {
+//        val current = uiState.value
+//        if (current is AddActionUiState.Idle) {
+//            viewModelScope.launch {
+//                val error = validateIdle(current)
+//                if (error == null) {
+//                    val data = DataClass.getDataByString(current.data)
+//                    val action = Action(
+//                        name = current.nameAction,
+//                        type = current.typeAction.ordinal,
+//                        description = current.description,
+//                        value = current.moneyAction,
+//                        date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
+//                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
+//                        createdAt = "2025-04-22T14:30:00"
+//                    )
+//                    actionDao.insertAction(action)
+//                    _uiState.value = AddActionUiState.Ok
+//                } else {
+//                    _uiState.value = createErrorState(
+//                        current = current,
+//                        error = error
+//                    )
+//                }
+//            }
+//        }
+//    }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addAction() {
+    fun addAction(): Error {
         val current = uiState.value
+        var error: Error = Error.UISTATE
         if (current is AddActionUiState.Idle) {
             viewModelScope.launch {
-                val error = validateIdle(current)
-                if (error == null) {
+                error = validateIdle(current)
+                if (error == Error.OK) {
                     val data = DataClass.getDataByString(current.data)
                     val action = Action(
                         name = current.nameAction,
@@ -181,5 +210,7 @@ class AddActionViewModel(
                 }
             }
         }
+        return error
     }
+
 }

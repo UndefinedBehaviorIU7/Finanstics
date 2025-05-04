@@ -33,7 +33,7 @@ interface ActionDao {
             "AND strftime('%Y', date) = printf('%d', :year) " +
             "AND strftime('%d', date) = printf('%02d', :day)"
     )
-    suspend fun getActionsByDate(month: Int, year: Int, day: Int): List<Action>
+    suspend fun getActionsByDate(day: Int, month: Int, year: Int): List<Action>
 
     @Query("SELECT * FROM actions WHERE type = 0")
     suspend fun getAllIncomes(): List<Action>

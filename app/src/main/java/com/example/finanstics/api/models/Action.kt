@@ -10,6 +10,6 @@ data class Action(
     val date: String,
     val category_id: Int,
     val description: String?,
-    val groupId: Int?,
-    val created_at: String?
+    val created_at: String?,
+    val groups: List<Int>
 )

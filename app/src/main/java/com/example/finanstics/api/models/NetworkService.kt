@@ -69,4 +69,17 @@ interface NetworkService {
         @Query("tag") tag: String,
         @Query("password") password: String,
     ): Response<UserResponse>
+
+    @GET("groups/{group_id}/actions")
+    suspend fun getGroupActionsByDate(
+        @Path("group_id") groupId: Int,
+        @Path("year") year: Int,
+        @Path("month") month: Int,
+        @Path("day") day: Int?,
+    ): Response<List<Action>>
+
+    @GET("groups/{group_id}/actions/all")
+    suspend fun getGroupActions(
+        @Path("group_id") groupId: Int
+    ): Response<List<Action>>
 }
