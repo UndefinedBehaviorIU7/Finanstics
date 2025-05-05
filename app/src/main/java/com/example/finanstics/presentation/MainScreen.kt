@@ -1,7 +1,5 @@
 package com.example.finanstics.presentation
 
-import android.app.Application
-import android.content.Context
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
