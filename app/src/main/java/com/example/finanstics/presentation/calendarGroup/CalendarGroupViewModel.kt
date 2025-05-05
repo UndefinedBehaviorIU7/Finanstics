@@ -23,7 +23,7 @@ class CalendarGroupViewMode(
 
     init {
         viewModelScope.launch {
-            calendar.initActionsDayByApi(application, 1)
+            calendar.initActionsDayByApi(application, 2)
             loadCalendar()
         }
     }
@@ -32,7 +32,7 @@ class CalendarGroupViewMode(
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
-                calendar.initActionsDay(application)
+                calendar.initActionsDayByApi(application, 1)
                 _uiState.value = CalendarGroupUiState.Loading
                 _uiState.value = CalendarGroupUiState.DrawActions(calendar, CalendarClass.getNowDay())
             }
@@ -54,7 +54,7 @@ class CalendarGroupViewMode(
                 calendar.nextMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                newCalendar.initActionsDay(application)
+                calendar.initActionsDayByApi(application, 1)
                 _uiState.value = CalendarGroupUiState.Default(newCalendar)
                 val day = CalendarClass.getNowDay()
                 if (day.getData().getMonth() == calendar.getData().getMonth())
@@ -74,7 +74,7 @@ class CalendarGroupViewMode(
                 calendar.lastMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                newCalendar.initActionsDay(application)
+                calendar.initActionsDayByApi(application, 1)
                 val day = CalendarClass.getNowDay()
                 if (day.getData().getMonth() == calendar.getData().getMonth())
                     _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)

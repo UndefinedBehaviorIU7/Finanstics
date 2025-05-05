@@ -28,12 +28,12 @@ suspend fun getUserName(
         val apiRep = ApiRepository()
         val response = apiRep.getUser(userId)
         if (!response.isSuccessful) {
-            Log.e("getUserName ERROR", "not isSuccessful")
+            Log.e("getUserName", "not isSuccessful")
         } else {
             res = response.body()?.username
         }
     } catch (e: Exception) {
-        Log.e("getUserName ERROR", e.toString())
+        Log.e("getUserName", e.toString())
     }
     return res
 }
@@ -63,7 +63,9 @@ suspend fun getArrayActionDataClass(
     val res = mutableListOf<ActionDataClass>()
     for (el in actions) {
         val userName = getUserName(el.userId)
+        Log.d("getArrayActionDataClass", "for")
         if (userName != null) {
+            Log.d("getArrayActionDataClass", el.name)
             res.add(ActionDataClass(
                 userName = userName,
                 actionName = el.name,
@@ -74,6 +76,7 @@ suspend fun getArrayActionDataClass(
             ))
         }
     }
+
     return res.toTypedArray()
 }
 
@@ -85,15 +88,20 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
         try {
             val response = apiRep.getGroupActionsByDate(
                 groupId,
-                data.getDay(),
+                data.getYear(),
                 data.getMonth().number,
-                data.getYear())
+                data.getDay())
+
+
             if (!response.isSuccessful) {
                 res = null
             } else {
                 val actions = response.body()
-                if (actions != null)
+
+                if (actions != null) {
                     res = getArrayActionDataClass(actions)
+                }
+
             }
         } catch (e: Exception) {
             Log.e("getGroupActionDays ERROR", e.toString())

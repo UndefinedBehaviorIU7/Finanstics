@@ -73,9 +73,9 @@ interface NetworkService {
     @GET("groups/{group_id}/actions")
     suspend fun getGroupActionsByDate(
         @Path("group_id") groupId: Int,
-        @Path("year") year: Int,
-        @Path("month") month: Int,
-        @Path("day") day: Int?,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int?,
     ): Response<List<Action>>
 
     @GET("groups/{group_id}/actions/all")
