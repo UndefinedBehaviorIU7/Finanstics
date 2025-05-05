@@ -67,6 +67,9 @@ interface ActionDao {
 
     @Query("SELECT * FROM actions WHERE serverId = :serverId LIMIT 1")
     suspend fun getActionByServerId(serverId: Int): Action?
+
+    @Query("SELECT * FROM actions WHERE categoryId = :categoryId AND type = :type")
+    suspend fun getActionByCategoryAndType(categoryId: Int, type: Int): List<Action>
 }
 
 @Suppress("TooManyFunctions")

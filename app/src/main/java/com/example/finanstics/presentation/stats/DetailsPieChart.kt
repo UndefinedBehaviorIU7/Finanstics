@@ -1,6 +1,9 @@
 package com.example.finanstics.presentation.stats
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -8,14 +11,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,10 +34,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.R
+import com.example.finanstics.db.Action
 import com.example.finanstics.ui.theme.Blue
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun DetailsPieChart(
@@ -43,7 +53,9 @@ fun DetailsPieChart(
         data.size
     )
     val sumTotal = data.sumOf { it.second }
+    val vm: DetailsViewModel = viewModel()
 
+    val chosen by vm.chosenCategory.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -60,10 +72,14 @@ fun DetailsPieChart(
         }
         if (data.isNotEmpty()) {
             data.forEachIndexed { index, (_, value) ->
+                val type = if (expenses) 0 else 1
                 DetailsPieChartItem(
                     data = Pair(data[index].first, value),
                     widthSize = (sumTotal / data[index].second.toFloat()),
                     color = colors[index],
+                    vm = vm,
+                    type = type,
+                    chosen = data[index].first == chosen.first && type == chosen.second,
                     animateDuration = animateDuration
                 )
             }
@@ -83,12 +99,16 @@ fun DetailsPieChart(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun DetailsPieChartItem(
     data: Pair<String, Int>,
+    type: Int,
     widthSize: Float,
     color: Color = Blue,
+    chosen: Boolean = false,
+    vm: DetailsViewModel,
     animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
@@ -102,47 +122,133 @@ fun DetailsPieChartItem(
         modifier = Modifier.padding(vertical = 10.dp),
         color = Color.Transparent
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(3f)) {
-                Text(
-                    modifier = Modifier.padding(end = 15.dp),
-                    text = data.first,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        vm.changeState(data.first, type)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(3f)) {
+                    Text(
+                        modifier = Modifier.padding(end = 15.dp),
+                        text = data.first,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
+                        color = if (chosen) color else MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                BarLen(
+                    modifier = Modifier.weight(4f),
+                    isAnimationPlayed = isAnimationPlayed,
+                    widthSize = widthSize,
+                    color = color
                 )
+
+                Column(modifier = Modifier.weight(2f)) {
+                    Text(
+                        modifier = Modifier.padding(start = 15.dp),
+                        text = data.second.toString(),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
-            BoxWithConstraints(modifier = Modifier.weight(4f)) {
-                val barLen = animateDp(
-                    animationPlayed = isAnimationPlayed,
-                    start = 0.dp,
-                    end = maxWidth / widthSize,
-                    animDuration = 1000
-                )
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = color,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .height(10.dp)
-                        .width(barLen)
-                )
-            }
-
-            Column(modifier = Modifier.weight(2f)) {
-                Text(
-                    modifier = Modifier.padding(start = 15.dp),
-                    text = data.second.toString(),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.primary
-                )
+            Box(modifier = Modifier.heightIn(max = 1200.dp)) {
+                val uiState by vm.uiState.collectAsState()
+                if (uiState is DetailsUiState.Detailed) {
+                    val detailedState = uiState as DetailsUiState.Detailed
+                    if (detailedState.chosen == data.first && detailedState.type == type) {
+                        LazyColumn(
+                            modifier = Modifier.padding(top = 5.dp)
+                        ) {
+                            items(detailedState.actions) { action ->
+                                ActionInfo(
+                                    action = action,
+                                    totalSum = data.second,
+                                    widthSize = widthSize,
+                                    onClick = { vm.hideDetailedActions() },
+                                    color = color
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+}
+
+@Composable
+fun ActionInfo(
+    action: Action,
+    totalSum: Int,
+    widthSize: Float,
+    onClick: () -> Unit,
+    color: Color,
+    animateDuration: Int = STATS_ANIMATE_DURATION
+) {
+    var isAnimationPlayed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        isAnimationPlayed = true
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            modifier = Modifier.weight(3f),
+            text = action.name,
+            color = MaterialTheme.colorScheme.secondary
+        )
+
+        BarLen(
+            modifier = Modifier.weight(4f),
+            widthSize = totalSum.toFloat() / (action.value.toFloat() / widthSize),
+            isAnimationPlayed = isAnimationPlayed,
+            color = color
+        )
+
+        Text(
+            modifier = Modifier.weight(2f).padding(start = 15.dp),
+            text = action.value.toString(),
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun BarLen(
+    modifier: Modifier,
+    isAnimationPlayed: Boolean = true,
+    widthSize: Float,
+    color: Color
+) {
+    BoxWithConstraints(modifier = modifier) {
+        val barLen = animateDp(
+            animationPlayed = isAnimationPlayed,
+            start = 0.dp,
+            end = maxWidth / widthSize,
+            animDuration = 1000
+        )
+        Box(
+            modifier = Modifier
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .height(10.dp)
+                .width(barLen)
+        )
     }
 }

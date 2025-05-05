@@ -34,7 +34,6 @@ class StatsViewModel(
 
     private val _isAuth = MutableStateFlow(false)
     val isAuth: StateFlow<Boolean> = _isAuth.asStateFlow()
-
     var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
