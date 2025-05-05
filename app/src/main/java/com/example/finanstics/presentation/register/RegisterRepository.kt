@@ -1,7 +1,6 @@
 package com.example.finanstics.presentation.register
 
 import android.content.Context
-import android.net.Uri
 import com.example.finanstics.R
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.UserResponse
@@ -14,7 +13,7 @@ class RegisterRepository(private val context: Context) {
         username: String,
         password: String,
         tag: String,
-        image: Uri?,
+        image: String,
     ): RegisterUiState {
         return try {
             val response = RetrofitInstance.api.register(
@@ -42,7 +41,7 @@ class RegisterRepository(private val context: Context) {
         username: String,
         password: String,
         tag: String,
-        image: Uri?
+        image: String
     ): RegisterUiState {
         return if (response.isSuccessful) {
             val body = response.body()

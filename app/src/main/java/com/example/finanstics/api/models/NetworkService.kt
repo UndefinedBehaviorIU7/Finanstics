@@ -65,7 +65,7 @@ interface NetworkService {
         @Query("image") image: String,
     ): Response<UserResponse>
 
-    @POST("login")
+    @GET("login")
     suspend fun login(
         @Query("tag") tag: String,
         @Query("password") password: String,

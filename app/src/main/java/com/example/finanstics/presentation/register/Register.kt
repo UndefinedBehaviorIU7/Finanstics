@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,6 @@ import com.example.finanstics.R
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
-import com.example.finanstics.presentation.forms.ImageForm
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -114,11 +114,11 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                             )
                         }
 
-                        ImageForm(
-                            uiState.image,
-                            text = stringResource(R.string.select_img),
-                            lambda = { launcher.launch("image/*") }
-                        )
+//                        ImageForm(
+//                            uiState.image,
+//                            text = stringResource(R.string.select_img),
+//                            lambda = { launcher.launch("image/*") }
+//                        )
 
                         Spacer(modifier = Modifier.height(60.dp))
                     }
@@ -176,11 +176,11 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                         }
-                        ImageForm(
-                            uiState.image,
-                            text = stringResource(R.string.select_img),
-                            lambda = { launcher.launch("image/*") }
-                        )
+//                        ImageForm(
+//                            uiState.image,
+//                            text = stringResource(R.string.select_img),
+//                            lambda = { launcher.launch("image/*") }
+//                        )
                     }
 
                     ButtonForm(
@@ -204,7 +204,9 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                 }
 
                 is RegisterUiState.Success -> {
-                    navController.navigate(Navigation.LOGIN.toString())
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Navigation.LOGIN.toString())
+                    }
                 }
             }
         }

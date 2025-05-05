@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -156,7 +157,9 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 }
 
                 is LoginUiState.Success -> {
-                    navController.navigate(Navigation.GROUPS.toString())
+                    LaunchedEffect(Unit) {
+                        navController.navigate(Navigation.GROUPS.toString())
+                    }
                 }
             }
         }
