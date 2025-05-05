@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,7 +50,7 @@ import com.example.finanstics.ui.theme.icons.RightIcon
 @Composable
 fun CalendarDay(
     days: Array<DayClass?>,
-    vm: CalendarViewModel
+    vm: CalendarGroupViewModel
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
@@ -64,7 +63,7 @@ fun CalendarDay(
             var selected = false
             if (day != null) {
                 when (val uiState = vm.uiState.collectAsState().value) {
-                    is CalendarUiState.DrawActions -> {
+                    is CalendarGroupUiState.DrawActions -> {
                         if (day == uiState.day)
                             selected = true
                     }
@@ -88,7 +87,7 @@ fun CalendarDay(
 @Composable
 private fun CalendarDayItem(
     day: DayClass,
-    vm: CalendarViewModel,
+    vm: CalendarGroupViewModel,
     selected: Boolean = false
 ) {
     Box(
@@ -141,33 +140,13 @@ private fun CalendarDayItem(
     }
 }
 
-@Suppress("MagicNumber")
-@Composable
-fun WeekDraw() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach { day ->
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                text = day,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun CalendarHeading(
     month: MonthNameClass,
     year: Int,
-    vm: CalendarViewModel
+    vm: CalendarGroupViewModel
 ) {
     Row(
         modifier = Modifier
@@ -237,7 +216,7 @@ fun CalendarHeading(
 @Composable
 fun CalendarDraw(
     calendar: CalendarClass,
-    vm: CalendarViewModel
+    vm: CalendarGroupViewModel
 ) {
     Column(
         modifier = Modifier
@@ -253,98 +232,6 @@ fun CalendarDraw(
     }
 }
 
-@Suppress("MagicNumber", "LongMethod")
-@Composable
-fun DrawAction(
-    actionDataClass: ActionDataClass
-) {
-    Button(
-        onClick = { },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        colors = ButtonDefaults.buttonColors(
-            MaterialTheme.colorScheme.onBackground,
-            MaterialTheme.colorScheme.primary
-        ),
-        contentPadding = PaddingValues(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = actionDataClass.getActionName(),
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = actionDataClass.getUserName(),
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = actionDataClass.getActionCategory(),
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    text = "${actionDataClass.getMoney()}",
-                    color = if (actionDataClass.getActionType() == 0) Color.Red else Color.Green,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun ActionsDraw(
-    actionDataClasses: Array<ActionDataClass?>
-) {
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(actionDataClasses.size) { index ->
-            val action = actionDataClasses[index]
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                if (action != null) {
-                    DrawAction(action)
-                }
-            }
-        }
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
@@ -352,7 +239,7 @@ fun DrawCalendarWithAction(
     calendar: CalendarClass,
     actionDataClasses: Array<ActionDataClass?>,
     isLandscape: Boolean,
-    vm: CalendarViewModel,
+    vm: CalendarGroupViewModel,
 ) {
     if (isLandscape) {
         Row(
@@ -380,7 +267,7 @@ fun DrawCalendarWithAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = "Календарь группы",
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -400,7 +287,7 @@ fun DrawCalendarWithAction(
 fun DrawCalendarWithoutAction(
     calendar: CalendarClass,
     isLandscape: Boolean,
-    vm: CalendarViewModel,
+    vm: CalendarGroupViewModel,
 ) {
     if (isLandscape) {
         Row(
@@ -427,7 +314,7 @@ fun DrawCalendarWithoutAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = "Календарь группы",
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -438,12 +325,12 @@ fun DrawCalendarWithoutAction(
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
-fun Calendar(
+fun CalendarGroup(
     navController: NavController
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val vm: CalendarViewModel = viewModel()
+    val vm: CalendarGroupViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -457,26 +344,28 @@ fun Calendar(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (val uiState = vm.uiState.collectAsState().value) {
-            is CalendarUiState.Idle -> {
+            is CalendarGroupUiState.Idle -> {
             }
 
-            is CalendarUiState.Loading -> {
+            is CalendarGroupUiState.Loading -> {
             }
 
-            is CalendarUiState.Error -> {
+            is CalendarGroupUiState.Error -> {
                 Text("Error: ${uiState.message}")
             }
 
-            is CalendarUiState.Default -> {
+            is CalendarGroupUiState.Default -> {
                 DrawCalendarWithoutAction(uiState.calendar, isLandscape, vm)
             }
 
-            is CalendarUiState.DrawActions -> {
+            is CalendarGroupUiState.DrawActions -> {
                 val action = uiState.day?.getActions()
                 if (action != null) {
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
                 }
             }
+
+            else -> {}
         }
     }
 }

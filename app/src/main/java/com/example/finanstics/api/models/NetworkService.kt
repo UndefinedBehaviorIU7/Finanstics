@@ -6,6 +6,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("TooManyFunctions")
 interface NetworkService {
     @GET("users/{user_id}")
     suspend fun getUser(
@@ -69,4 +70,17 @@ interface NetworkService {
         @Query("tag") tag: String,
         @Query("password") password: String,
     ): Response<UserResponse>
+
+    @GET("groups/{group_id}/actions")
+    suspend fun getGroupActionsByDate(
+        @Path("group_id") groupId: Int,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int?,
+    ): Response<List<Action>>
+
+    @GET("groups/{group_id}/actions/all")
+    suspend fun getGroupActions(
+        @Path("group_id") groupId: Int
+    ): Response<List<Action>>
 }

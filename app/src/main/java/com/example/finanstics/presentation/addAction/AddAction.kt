@@ -279,6 +279,7 @@ fun DrawIdle(
                     vm.addAction()
                     navController.popBackStack()
                 },
+                enabled = vm.validateIdle(uiState) == Error.OK
             ) {
                 Text(
                     text = "Добавить",
@@ -386,6 +387,7 @@ fun AddAction(
         is AddActionUiState.Idle -> {
             DrawIdle(uiState, vm, navController)
         }
+
         is AddActionUiState.Error -> {
             DrawError(uiState, vm, uiState.error)
         }

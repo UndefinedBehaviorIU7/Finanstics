@@ -8,6 +8,7 @@ import com.example.finanstics.api.models.User
 import com.example.finanstics.api.models.UserResponse
 import retrofit2.Response
 
+@Suppress("TooManyFunctions")
 class ApiRepository {
     suspend fun getUser(userId: Int): Response<User> {
         return RetrofitInstance.api.getUser(userId)
@@ -98,6 +99,28 @@ class ApiRepository {
         return RetrofitInstance.api.login(
             tag,
             password
+        )
+    }
+
+    suspend fun getGroupActions(
+        groupId: Int,
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActions(
+            groupId
+        )
+    }
+
+    suspend fun getGroupActionsByDate(
+        groupId: Int,
+        year: Int,
+        month: Int,
+        day: Int? = null
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByDate(
+            groupId,
+            year,
+            month,
+            day
         )
     }
 }

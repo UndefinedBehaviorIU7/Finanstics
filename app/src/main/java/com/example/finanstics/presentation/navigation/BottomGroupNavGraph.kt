@@ -1,5 +1,7 @@
 package com.example.finanstics.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.presentation.calendar.CalendarGroup
 import com.example.finanstics.presentation.group.calendar.GroupCalendar
 import com.example.finanstics.presentation.group.settings.GroupSettings
 import com.example.finanstics.presentation.group.stats.GroupStats
@@ -34,6 +37,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -50,7 +54,7 @@ fun BottomGroupNavGraph(
         ) { page ->
             when (page) {
                 0 -> GroupStats(navController)
-                1 -> GroupCalendar(navController)
+                1 -> CalendarGroup(navController)
                 2 -> GroupSettings(navController)
             }
         }

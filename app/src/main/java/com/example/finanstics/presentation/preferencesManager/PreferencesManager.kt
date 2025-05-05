@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import com.example.finanstics.ui.theme.PREF_NAME
+import com.example.finanstics.ui.theme.TIME_INIT
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -45,7 +46,7 @@ class PreferencesManager(context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getUpdateTime(): String {
-        println(getData("time_update", ""))
-        return getData("time_update", "")
+        println(getData("time_update", TIME_INIT))
+        return getData("time_update", TIME_INIT)
     }
 }

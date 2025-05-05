@@ -1,6 +1,12 @@
 package com.example.finanstics.presentation.calendar
 
+import CalendarGroupRepository
+import CalendarRepository
+import android.app.Application
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.MonthNameClass.APRIL
 import com.example.finanstics.presentation.calendar.MonthNameClass.DECEMBER
 import com.example.finanstics.presentation.calendar.MonthNameClass.FEBRUARY
@@ -149,7 +155,7 @@ data class DataClass(
     }
 }
 
-data class Action(
+data class ActionDataClass(
     private var userName: String,
     private var actionName: String,
     private var actionType: Int,
@@ -173,24 +179,21 @@ data class Action(
     fun getActionType(): Int {
         return actionType
     }
+
+    fun getActionCategory(): String {
+        return actionCategory
+    }
 }
 
 data class DayClass(
     private val data: DataClass
 ) {
     private val dayOfWeek: DayWeekClass = DayWeekClass.fromInt(dayOfWeekInit(data))
-    private val money = COUNT_MONEY
-    private var actions: Array<Action?>
+    private var money = COUNT_MONEY
+    private var actionDataClasses: Array<ActionDataClass?> = arrayOfNulls(0)
 
-    private fun initActions(): Array<Action?> {
-        val action = mutableListOf<Action>()
-        for (i in ZERO..COUNT_ACTION)
-            action.add(Action("user $i", "action $i", ZERO, (i + 1) * NUM_100, "категория", data))
-        return action.toTypedArray()
-    }
-
-    init {
-        actions = initActions()
+    fun initActions(actions: Array<ActionDataClass?>) {
+        actionDataClasses = actions
     }
 
     companion object {
@@ -214,8 +217,8 @@ data class DayClass(
         }
     }
 
-    fun getActions(): Array<Action?> {
-        return actions
+    fun getActions(): Array<ActionDataClass?> {
+        return actionDataClasses!!
     }
 
     fun getDayData(): Int {
@@ -232,6 +235,20 @@ data class DayClass(
 
     fun getDayOfWeek(): DayWeekClass {
         return dayOfWeek
+    }
+
+    fun updateMoney() {
+        var res = 0
+        for (el in actionDataClasses) {
+            if (el != null) {
+                if (el.getActionType() == 0) {
+                    res -= el.getMoney()
+                } else {
+                    res += el.getMoney()
+                }
+            }
+        }
+        money = res
     }
 }
 
@@ -328,14 +345,38 @@ class GridDatas(
         return days.toTypedArray()
     }
 
-    fun newDays(
-        data: DataClass
-    ) {
+    fun newDays(data: DataClass) {
         days = initDays(data)
     }
 
     fun getDays(): Array<DayClass?> {
         return days
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun initActions(application: Application) {
+        val db = FinansticsDatabase.getDatabase(application)
+        val repository = CalendarRepository(db)
+        for (el in days) {
+            el?.initActions(repository.getActionDays(el.getData()))
+            el?.updateMoney()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun initActionsByApi(
+        application: Application,
+        groupId: Int
+    ) {
+        val db = FinansticsDatabase.getDatabase(application)
+        val repository = CalendarGroupRepository(db)
+        for (el in days) {
+            val actions = repository.getGroupActionDays(groupId, el!!.getData())
+            if (actions != null) {
+                el.initActions(actions)
+                el.updateMoney()
+            }
+        }
     }
 }
 
@@ -390,9 +431,7 @@ class CalendarClass {
         gridDatas.newDays(data)
     }
 
-    fun copy(
-        calendar: CalendarClass
-    ) {
+    fun copy(calendar: CalendarClass) {
         data = calendar.getData()
         gridDatas = calendar.getGrid()
     }
@@ -402,5 +441,18 @@ class CalendarClass {
         newInstance.data = this.data
         newInstance.gridDatas = this.gridDatas
         return newInstance
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun initActionsDay(application: Application) {
+        gridDatas.initActions(application)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun initActionsDayByApi(
+        application: Application,
+        groupId: Int
+    ) {
+        gridDatas.initActionsByApi(application, groupId)
     }
 }

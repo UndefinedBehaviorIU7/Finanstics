@@ -11,8 +11,10 @@ const val MIN_CATEGORIES_SIZE = 17
 
 const val PREF_NAME = "FinansticsPref"
 
-const val USER_ID = 22
-const val TOKEN = "988656d2ac0451a66be3ff9dc8a94d1921f3d539d0cde2dfdfe9bd291eb33610"
+const val TIME_INIT = "2025-01-01T00:00:01.230233"
+
+const val USER_ID = 2
+const val TOKEN = "74ea432d53847930fb534a9f4ce059054a98e6ddeb2e2220a5450d9706cfbb64"
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,
