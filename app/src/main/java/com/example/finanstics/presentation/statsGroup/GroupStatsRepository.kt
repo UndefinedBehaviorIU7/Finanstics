@@ -1,0 +1,179 @@
+package com.example.finanstics.presentation.statsGroup
+
+import android.util.Log
+import com.example.finanstics.api.ApiRepository
+import com.example.finanstics.api.models.Action
+import com.example.finanstics.api.models.Category
+import com.example.finanstics.presentation.calendar.MonthNameClass
+import com.example.finanstics.ui.theme.GROUP_ID
+import com.example.finanstics.ui.theme.USER_ID
+
+fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
+    return list.groupBy { it.first }
+        .mapValues { (_, pairs) -> pairs.sumOf { it.second } }
+        .toList()
+        .sortedByDescending { it.second }
+}
+
+class GroupStatsRepository {
+    suspend fun getIncomes(
+        month: MonthNameClass,
+        year: Int
+    ): List<Pair<String, Int>>? {
+        val apiRep = ApiRepository()
+        var incomes = listOf<Pair<String, Int>>()
+        try {
+            val respAct = apiRep.getGroupActionsByDate(
+                groupId = GROUP_ID,
+                year = year,
+                month = month.number
+            )
+            val respCat = apiRep.getUserCategories(USER_ID)
+
+            if (!respAct.isSuccessful || !respCat.isSuccessful) {
+                return null
+            } else {
+                val actions = respAct.body()
+                val categories = respCat.body()
+
+                if (actions != null && categories != null) {
+                    incomes = actionsToPairs(
+                        actions.filter { it.type == 1 },
+                        categories
+                    )
+                        .groupBy { it.first }
+                        .map { (category, pairs) ->
+                            category to pairs.sumOf { it.second }
+                        }
+                        .sortedByDescending { it.second }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getGroupActions ERROR", e.toString())
+            return null
+        }
+        return incomes
+    }
+
+    suspend fun getExpenses(
+        month: MonthNameClass,
+        year: Int
+    ): List<Pair<String, Int>>? {
+        val apiRep = ApiRepository()
+        var expenses = listOf<Pair<String, Int>>()
+        try {
+            val respAct = apiRep.getGroupActionsByDate(
+                groupId = GROUP_ID,
+                year = year,
+                month = month.number
+            )
+            val respCat = apiRep.getUserCategories(USER_ID)
+
+            if (!respAct.isSuccessful || !respCat.isSuccessful) {
+                return null
+            } else {
+                val actions = respAct.body()
+                val categories = respCat.body()
+
+                if (actions != null && categories != null) {
+                    expenses = actionsToPairs(
+                        actions.filter { it.type == 0 },
+                        categories
+                    )
+                        .groupBy { it.first }
+                        .map { (category, pairs) ->
+                            category to pairs.sumOf { it.second }
+                        }
+                        .sortedByDescending { it.second }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getGroupActions ERROR", e.toString())
+            return null
+        }
+        return expenses
+    }
+
+    suspend fun getAllIncomes(): List<Pair<String, Int>>? {
+        val apiRep = ApiRepository()
+        var incomes = listOf<Pair<String, Int>>()
+        try {
+            val respAct = apiRep.getGroupActions(GROUP_ID)
+            val respCat = apiRep.getUserCategories(USER_ID)
+
+            if (!respAct.isSuccessful || !respCat.isSuccessful) {
+                return null
+            } else {
+                val actions = respAct.body()
+                val categories = respCat.body()
+
+                if (actions != null && categories != null) {
+                    incomes = actionsToPairs(
+                        actions.filter { it.type == 1 },
+                        categories
+                    )
+                        .groupBy { it.first }
+                        .map { (category, pairs) ->
+                            category to pairs.sumOf { it.second }
+                        }
+                        .sortedByDescending { it.second }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getGroupActions ERROR", e.toString())
+            return null
+        }
+        return sumPairs(incomes)
+    }
+
+    suspend fun getAllExpenses(): List<Pair<String, Int>>? {
+        val apiRep = ApiRepository()
+        var expenses = listOf<Pair<String, Int>>()
+        try {
+            val respAct = apiRep.getGroupActions(GROUP_ID)
+            val respCat = apiRep.getUserCategories(USER_ID)
+
+            if (!respAct.isSuccessful || !respCat.isSuccessful) {
+                return null
+            } else {
+                val actions = respAct.body()
+                val categories = respCat.body()
+
+                if (actions != null && categories != null) {
+                    expenses = actionsToPairs(
+                        actions.filter { it.type == 0 },
+                        categories
+                    )
+                        .groupBy { it.first }
+                        .map { (category, pairs) ->
+                            category to pairs.sumOf { it.second }
+                        }
+                        .sortedByDescending { it.second }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("getGroupActions ERROR", e.toString())
+            return null
+        }
+        return sumPairs(expenses)
+    }
+
+    fun balance(
+        incomes: List<Pair<String, Int>>?,
+        expenses: List<Pair<String, Int>>?
+    ): Int? {
+        if (incomes == null && expenses == null) return null
+        return incomes!!.sumOf { it.second } - expenses!!.sumOf { it.second }
+    }
+
+    fun actionsToPairs(actions: List<Action>, categories: List<Category>): List<Pair<String, Int>> {
+        val categoryMap = categories.associateBy { it.id }
+
+        return actions
+            .map { action ->
+                val name = action.category_id
+                    .let { categoryMap[it]!!.name }
+                action.value.let { name to it }
+            }
+    }
+}

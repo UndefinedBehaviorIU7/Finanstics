@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.group.stats
+package com.example.finanstics.presentation.statsGroup
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -41,38 +41,51 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.value = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
             try {
-                totalBalance = repository.balance(
-                    repository.getAllIncomes(),
-                    repository.getAllExpenses()
+                val totalIncomes = repository.getAllIncomes()
+                val totalExpenses = repository.getAllExpenses()
+                val totalBalance = repository.balance(
+                    totalIncomes,
+                    totalExpenses
                 )
-                if (all) {
-                    val incomes = repository.getAllIncomes()
-                    val expenses = repository.getAllExpenses()
-
-                    _uiState.value = GroupStatsUiState.Done(
-                        incomes = incomes,
-                        expenses = expenses,
+                if (totalBalance == null) {
+                    _uiState.value = GroupStatsUiState.LoadingData(
                         calendar = calendar,
-                        all = all,
-                        totalBalance = totalBalance
+                        all = false, 0
                     )
                 } else {
-                    val incomes = repository.getIncomes(
-                        calendar.getData().getMonth(),
-                        calendar.getData().getYear()
-                    )
-                    val expenses = repository.getExpenses(
-                        calendar.getData().getMonth(),
-                        calendar.getData().getYear()
-                    )
+                    if (all) {
+                        _uiState.value = GroupStatsUiState.Done(
+                            incomes = totalIncomes!!,
+                            expenses = totalExpenses!!,
+                            calendar = calendar,
+                            all = all,
+                            totalBalance = totalBalance
+                        )
+                    } else {
+                        val incomes = repository.getIncomes(
+                            calendar.getData().getMonth(),
+                            calendar.getData().getYear()
+                        )
+                        val expenses = repository.getExpenses(
+                            calendar.getData().getMonth(),
+                            calendar.getData().getYear()
+                        )
+                        if (incomes == null || expenses == null) {
+                            _uiState.value = GroupStatsUiState.LoadingData(
+                                calendar = calendar,
+                                all = false, 0
+                            )
+                        } else {
+                            _uiState.value = GroupStatsUiState.Done(
+                                incomes = incomes,
+                                expenses = expenses,
+                                calendar = calendar,
+                                all = all,
+                                totalBalance = totalBalance
+                            )
+                        }
+                    }
 
-                    _uiState.value = GroupStatsUiState.Done(
-                        incomes = incomes,
-                        expenses = expenses,
-                        calendar = calendar,
-                        all = all,
-                        totalBalance = totalBalance
-                    )
                 }
             } catch (e: HttpException) {
                 _uiState.value = GroupStatsUiState.Error(" ${e.localizedMessage}")
@@ -90,6 +103,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         }
         println("month ${newCalendar.getData().getMonth()}")
         all = false
+        calendar = calendar.deepCopy()
         _uiState.value = GroupStatsUiState.Calendar(newCalendar, all, totalBalance)
     }
 
@@ -102,6 +116,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
             else -> return
         }
         all = false
+        calendar = calendar.deepCopy()
         _uiState.value = GroupStatsUiState.Calendar(newCalendar, all, totalBalance)
     }
 
@@ -111,9 +126,9 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun balance(
-        incomes: List<Pair<String, Int>>,
-        expenses: List<Pair<String, Int>>
-    ): Int {
+        incomes: List<Pair<String, Int>>?,
+        expenses: List<Pair<String, Int>>?
+    ): Int? {
         return repository.balance(incomes, expenses)
     }
 }

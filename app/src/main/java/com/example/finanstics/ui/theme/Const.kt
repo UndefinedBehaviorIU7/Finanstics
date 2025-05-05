@@ -15,6 +15,7 @@ const val TIME_INIT = "2025-01-01T00:00:01.230233"
 
 const val USER_ID = 2
 const val TOKEN = "74ea432d53847930fb534a9f4ce059054a98e6ddeb2e2220a5450d9706cfbb64"
+const val GROUP_ID = 1
 
 val INCOMES_DATA = listOf(
     "Зарплата" to 10000,

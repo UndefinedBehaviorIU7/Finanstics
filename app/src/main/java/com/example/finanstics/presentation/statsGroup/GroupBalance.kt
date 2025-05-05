@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.group.stats
+package com.example.finanstics.presentation.statsGroup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +17,7 @@ import com.example.finanstics.ui.theme.ALL_TIME
 @Suppress("MagicNumber")
 @Composable
 fun GroupBalance(
-    currentBalance: Int,
+    currentBalance: Int?,
     period: String,
     totalBalance: Int
 ) {
@@ -33,7 +33,7 @@ fun GroupBalance(
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     textAlign = TextAlign.Right,
-                    text = "$currentBalance",
+                    text = if (currentBalance != null) "$currentBalance" else "",
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.primary

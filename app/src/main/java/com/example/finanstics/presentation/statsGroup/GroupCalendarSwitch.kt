@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.group.stats
+package com.example.finanstics.presentation.statsGroup
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
