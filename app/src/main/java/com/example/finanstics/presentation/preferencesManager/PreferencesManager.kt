@@ -20,10 +20,18 @@ class PreferencesManager(context: Context) {
 
     fun saveData(
         key: String,
-        value: String
+        value: Any
     ) {
-        sharedPreferences.edit() {
-            putString(key, value)
+        with(sharedPreferences.edit()) {
+            when (value) {
+                is String -> putString(key, value)
+                is Int -> putInt(key, value)
+                is Boolean -> putBoolean(key, value)
+                is Float -> putFloat(key, value)
+                is Long -> putLong(key, value)
+                else -> throw IllegalArgumentException("Unsupported type: ${value::class.java}")
+            }
+            apply()
         }
     }
 

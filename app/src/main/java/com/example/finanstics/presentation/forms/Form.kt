@@ -71,14 +71,14 @@ fun ButtonForm(
                 end = 20.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = MaterialTheme.colorScheme.background
             ),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text(
                 text = buttonText,
                 fontSize = 25.sp,
-                color = MaterialTheme.colorScheme.secondary
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -88,7 +88,7 @@ fun ButtonForm(
         ) {
             Text(
                 text = navText,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }

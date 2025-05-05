@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Finanstics</string>
+    <string name="step_back">Назад</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="password_repeat">Повтор пароля</string>
     <string name="username">Имя пользоваателя</string>
     <string name="unknown_error">Неизвестная ошибка</string>
-    <string name="login_success">Вход выполнен</string>
+    <string name="log_in">Войти</string>
+    <string name="log_in_success">Вход выполнен</string>
     <string name="select_img">Выберите изображение</string>
     <string name="selected_img">Выбранное изображение</string>
     <string name="img_placeholder">Стандартное изображение</string>
@@ -14,4 +16,9 @@
     <string name="have_an_account">Уже есть аккаунт</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
     <string name="empty_fields">Заполните все поля для продолжения</string>
+    <string name="server_error_400">Ошибка 400</string>
+    <string name="server_error_401">Ошибка 400</string>
+    <string name="server_error_404">Ошибка 400</string>
+    <string name="server_error_409">Ошибка 400</string>
+    <string name="unknown_server_error">Неизвестная ошибка сервера</string>
 </resources>
