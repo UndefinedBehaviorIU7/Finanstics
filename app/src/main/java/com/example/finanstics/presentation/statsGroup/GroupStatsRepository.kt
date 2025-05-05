@@ -16,12 +16,13 @@ fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
 }
 
 class GroupStatsRepository {
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getIncomes(
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
-        var incomes = listOf<Pair<String, Int>>()
+        var incomes: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActionsByDate(
                 groupId = GROUP_ID,
@@ -30,9 +31,7 @@ class GroupStatsRepository {
             )
             val respCat = apiRep.getUserCategories(USER_ID)
 
-            if (!respAct.isSuccessful || !respCat.isSuccessful) {
-                return null
-            } else {
+            if (respAct.isSuccessful && respCat.isSuccessful){
                 val actions = respAct.body()
                 val categories = respCat.body()
 
@@ -50,7 +49,6 @@ class GroupStatsRepository {
             }
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
-            return null
         }
         return incomes
     }
@@ -60,7 +58,7 @@ class GroupStatsRepository {
         year: Int
     ): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
-        var expenses = listOf<Pair<String, Int>>()
+        var expenses: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActionsByDate(
                 groupId = GROUP_ID,
@@ -69,9 +67,7 @@ class GroupStatsRepository {
             )
             val respCat = apiRep.getUserCategories(USER_ID)
 
-            if (!respAct.isSuccessful || !respCat.isSuccessful) {
-                return null
-            } else {
+            if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
 
@@ -89,21 +85,18 @@ class GroupStatsRepository {
             }
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
-            return null
         }
         return expenses
     }
 
     suspend fun getAllIncomes(): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
-        var incomes = listOf<Pair<String, Int>>()
+        var incomes: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActions(GROUP_ID)
             val respCat = apiRep.getUserCategories(USER_ID)
 
-            if (!respAct.isSuccessful || !respCat.isSuccessful) {
-                return null
-            } else {
+            if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
 
@@ -121,21 +114,18 @@ class GroupStatsRepository {
             }
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
-            return null
         }
-        return sumPairs(incomes)
+        return if (incomes != null) sumPairs(incomes) else null
     }
 
     suspend fun getAllExpenses(): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
-        var expenses = listOf<Pair<String, Int>>()
+        var expenses: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActions(GROUP_ID)
             val respCat = apiRep.getUserCategories(USER_ID)
 
-            if (!respAct.isSuccessful || !respCat.isSuccessful) {
-                return null
-            } else {
+            if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
 
@@ -153,9 +143,8 @@ class GroupStatsRepository {
             }
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
-            return null
         }
-        return sumPairs(expenses)
+        return if (expenses != null) sumPairs(expenses) else null
     }
 
     fun balance(
