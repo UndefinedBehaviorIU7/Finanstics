@@ -3,6 +3,7 @@ package com.example.finanstics.presentation.login
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.R
 import com.example.finanstics.presentation.login.LoginRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,13 +35,33 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun logIn() {
         val current = _uiState.value
-        if (current !is LoginUiState.Idle) return
 
-        _uiState.value = LoginUiState.Loading(current.login, current.password)
+        if (current is LoginUiState.Error) {
+            _uiState.value = LoginUiState.Idle(
+                login = current.login,
+                password = current.password,
+            )
+        }
 
-        viewModelScope.launch {
-            val result = repository.login(current.login, current.password)
-            _uiState.value = result
+        if (current is LoginUiState.Idle) {
+            val login = current.login
+            val password = current.password
+
+            if (login.isBlank() || password.isBlank()) {
+                _uiState.value = LoginUiState.Error(
+                    login = login,
+                    password = password,
+                    errorMsg = getApplication<Application>().getString(R.string.empty_fields)
+                )
+                return
+            }
+
+            _uiState.value = LoginUiState.Loading(login, password)
+
+            viewModelScope.launch {
+                val result = repository.logIn(login, password)
+                _uiState.value = result
+            }
         }
     }
 }

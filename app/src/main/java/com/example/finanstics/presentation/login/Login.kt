@@ -110,7 +110,6 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                     Column(
                         modifier = Modifier.weight(1.3f)
                     ) {
-
                         Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
                             Form(
                                 value = uiState.login,

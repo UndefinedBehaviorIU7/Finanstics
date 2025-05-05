@@ -13,12 +13,13 @@
     <string name="img_placeholder">Стандартное изображение</string>
     <string name="register">Зарегистрироваться</string>
     <string name="registered">Пользователь успешно зарегистрирован</string>
+    <string name="already_registered">Пользователь уже существует</string>
     <string name="have_an_account">Уже есть аккаунт</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
     <string name="empty_fields">Заполните все поля для продолжения</string>
     <string name="server_error_400">Ошибка 400</string>
-    <string name="server_error_401">Ошибка 400</string>
-    <string name="server_error_404">Ошибка 400</string>
-    <string name="server_error_409">Ошибка 400</string>
+    <string name="server_error_401">Ошибка 401</string>
+    <string name="server_error_404">Ошибка 404</string>
+    <string name="server_error_409">Ошибка 409</string>
     <string name="unknown_server_error">Неизвестная ошибка сервера</string>
 </resources>

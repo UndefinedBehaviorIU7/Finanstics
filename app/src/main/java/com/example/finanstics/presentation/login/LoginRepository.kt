@@ -10,15 +10,7 @@ import retrofit2.Response
 
 class LoginRepository(private val context: Context) {
 
-    suspend fun login(login: String, password: String): LoginUiState {
-        if (login.isBlank() || password.isBlank()) {
-            return LoginUiState.Error(
-                login = login,
-                password = password,
-                errorMsg = context.getString(R.string.empty_fields)
-            )
-        }
-
+    suspend fun logIn(login: String, password: String): LoginUiState {
         return try {
             val response = RetrofitInstance.api.login(tag = login, password = password)
             handleResponse(response, login, password)
