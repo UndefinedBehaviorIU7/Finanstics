@@ -50,7 +50,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                 if (totalBalance == null) {
                     _uiState.value = GroupStatsUiState.LoadingData(
                         calendar = calendar,
-                        all = false, 0
+                        all = false,
+                        totalBalance = 0
                     )
                 } else {
                     if (all) {
@@ -73,7 +74,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                         if (incomes == null || expenses == null) {
                             _uiState.value = GroupStatsUiState.LoadingData(
                                 calendar = calendar,
-                                all = false, 0
+                                all = false,
+                                totalBalance = 0
                             )
                         } else {
                             _uiState.value = GroupStatsUiState.Done(
