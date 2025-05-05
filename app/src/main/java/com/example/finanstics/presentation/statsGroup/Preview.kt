@@ -1,4 +1,4 @@
-package com.example.finanstics.presentation.group.stats
+package com.example.finanstics.presentation.statsGroup
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable

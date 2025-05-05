@@ -1,9 +1,10 @@
-package com.example.finanstics.presentation.group.stats
+package com.example.finanstics.presentation.statsGroup
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -57,9 +58,14 @@ fun GroupStats(
         Row() {
             when (val uiState = vm.uiState.collectAsState().value) {
                 GroupStatsUiState.Loading -> {
-                    Loader(
-                        modifier = Modifier
-                    )
+                    BoxWithConstraints {
+                        val width = maxWidth
+                        Loader(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(width / 3)
+                        )
+                    }
                 }
 
                 is GroupStatsUiState.Calendar -> {
@@ -91,9 +97,14 @@ fun GroupStats(
                             calendar = calendar,
                             vm = vm
                         )
-                        Loader(
-                            modifier = Modifier
-                        )
+                        BoxWithConstraints {
+                            val width = maxWidth
+                            Loader(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(width / 3)
+                            )
+                        }
                     }
                 }
 

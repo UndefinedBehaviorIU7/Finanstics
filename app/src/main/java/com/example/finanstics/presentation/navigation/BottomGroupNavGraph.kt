@@ -27,9 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.CalendarGroup
-import com.example.finanstics.presentation.group.calendar.GroupCalendar
 import com.example.finanstics.presentation.group.settings.GroupSettings
-import com.example.finanstics.presentation.group.stats.GroupStats
+import com.example.finanstics.presentation.statsGroup.GroupStats
 import com.example.finanstics.ui.theme.icons.CircleIcon
 import com.example.finanstics.ui.theme.icons.PersonIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
