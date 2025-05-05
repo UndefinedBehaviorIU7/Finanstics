@@ -16,10 +16,7 @@ suspend fun syncLocalWithServerActions(application: Application) {
     val userId = prefManager.getInt("id", 0)
     val token = prefManager.getString("token", "")
 
-    if (token.isEmpty() || userId == 0) {
-        return
-    }
-    
+    if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
@@ -77,10 +74,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     val userId = prefManager.getInt("id", 0)
     val token = prefManager.getString("token", "")
 
-    if (token.isEmpty() || userId == 0) {
-        return
-    }
-    
+    if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
@@ -124,10 +118,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     val userId = prefManager.getInt("id", 0)
     val token = prefManager.getString("token", "")
 
-    if (token.isEmpty() || userId == 0) {
-        return
-    }
-    
+    if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
