@@ -125,7 +125,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
         val serverActions = response.body()
         val localActions = db.actionDao().getAllActions()
         println(localActions)
-        
+
         serverActions?.forEach { serverAction ->
             var new = true
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }

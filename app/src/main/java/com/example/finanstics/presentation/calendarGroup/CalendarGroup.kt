@@ -140,26 +140,6 @@ private fun CalendarDayItem(
     }
 }
 
-//@Suppress("MagicNumber")
-//@Composable
-//fun WeekDraw() {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth(),
-//        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach { day ->
-//            Text(
-//                color = MaterialTheme.colorScheme.primary,
-//                text = day,
-//                modifier = Modifier.weight(1f),
-//                textAlign = TextAlign.Center
-//            )
-//        }
-//    }
-//}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable

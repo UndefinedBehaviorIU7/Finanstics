@@ -51,13 +51,13 @@ suspend fun getArrayActionDataClass(
             Log.d("getArrayActionDataClass", el.name)
             res.add(
                 ActionDataClass(
-                userName = userName,
-                actionName = el.name,
-                actionType = el.type,
-                actionMoney = el.value,
-                actionCategory = "cat",
-                data = dataApiToDataClass(el.date)
-            )
+                    userName = userName,
+                    actionName = el.name,
+                    actionType = el.type,
+                    actionMoney = el.value,
+                    actionCategory = "cat",
+                    data = dataApiToDataClass(el.date)
+                    )
             )
         }
     }
