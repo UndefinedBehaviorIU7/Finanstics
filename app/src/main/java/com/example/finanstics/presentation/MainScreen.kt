@@ -115,7 +115,7 @@ fun MainScreen(
                 pagerState = pagerState,
                 navController = navController,
                 offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
-                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2
+                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2,
             )
 
             Box(

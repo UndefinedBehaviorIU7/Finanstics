@@ -2,27 +2,26 @@ package com.example.finanstics.presentation.stats
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
 private const val TIME_UPDATE = 1000L
-private const val USER_ID = 21
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("TooGenericExceptionCaught")
@@ -32,7 +31,11 @@ class StatsViewModel(
     private val _uiState = MutableStateFlow<StatsUiState>(StatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
     var tagStr: String = ""
-    var isAuth = true
+
+    private val _isAuth = MutableStateFlow(false)
+    val isAuth: StateFlow<Boolean> = _isAuth.asStateFlow()
+
+    var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
 
@@ -46,8 +49,8 @@ class StatsViewModel(
 
     init {
         initialisation()
+        loginUpdate()
         loadCalendar()
-        autoUpdate()
     }
 
     fun initialisation() {
@@ -75,16 +78,6 @@ class StatsViewModel(
                 db.categoryDao().insertCategory(Category(name = "Проценты", type = 2))
                 db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
             }
-
-            val prefManager = PreferencesManager(application)
-            val id = prefManager.getData("id", "")
-            val tag = prefManager.getData("tag", "")
-            val password = prefManager.getData("password", "")
-
-            if (id.isEmpty() || tag.isEmpty() || password.isEmpty()) {
-                isAuth = false
-            }
-            tagStr = tag
         }
     }
 
@@ -156,14 +149,43 @@ class StatsViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun autoUpdate() {
-        viewModelScope.launch {
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
             while (true) {
+                if (!_isAuth.value)
+                    loginUpdate()
                 fetchData()
-                syncData(application)
+                if (_isAuth.value)
+                    syncData(application)
                 delay(TIME_UPDATE)
             }
         }
+    }
+
+    private fun loginUpdate() {
+        val prefManager = PreferencesManager(application)
+        val id = prefManager.getInt("id", 0)
+        val tag = prefManager.getString("tag", "")
+        val token = prefManager.getString("token", "")
+
+        println("id = $id, tag = $tag, token = $token")
+        if (token.isNotEmpty()) {
+            _isAuth.value = true
+            tagStr = tag
+        }
+    }
+
+    fun logOut() {
+        val prefManager = PreferencesManager(application)
+        prefManager.saveData("id", 0)
+        prefManager.saveData("tag", "")
+        prefManager.saveData("token", "")
+        _isAuth.value = false
+    }
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
     }
 
     fun lastMonth() {

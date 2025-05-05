@@ -1,5 +1,8 @@
 package com.example.finanstics.presentation.navigation
 
+import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,20 +15,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.Calendar
+import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.presentation.settings.Settings
 import com.example.finanstics.presentation.stats.Stats
 import com.example.finanstics.ui.theme.icons.CircleIcon
@@ -36,13 +44,14 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun BottomNavGraph(
     pagerState: PagerState,
     navController: NavController,
-    offsetIcons: Dp
+    offsetIcons: Dp,
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -50,9 +59,10 @@ fun BottomNavGraph(
         HorizontalPager(
             state = pagerState
         ) { page ->
+            val isVisible = page == pagerState.currentPage
             when (page) {
-                0 -> Stats(navController)
-                1 -> Calendar(navController)
+                0 -> Stats(navController, isVisible)
+                1 -> Calendar(navController, isVisible)
                 2 -> Settings(navController)
             }
         }
@@ -152,6 +162,9 @@ fun PlusActionButton(
 fun GroupsButton(
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val application = context.applicationContext as Application
+    var showLoginDialog by remember { mutableStateOf(false) }
     Box() {
         Icon(
             imageVector = CircleIcon,
@@ -169,8 +182,34 @@ fun GroupsButton(
                 .size(50.dp)
                 .padding(12.dp)
                 .clickable {
-                    navController.navigate(Navigation.GROUPS.toString())
+                    if (isAuth(application)) {
+                        navController.navigate(Navigation.GROUPS.toString())
+                    } else {
+                        showLoginDialog = true
+                    }
                 }
         )
     }
+    LogInRegisterDialog(
+        isVisible = showLoginDialog,
+        onDismiss = { showLoginDialog = false },
+        onLoginPressed = {
+            showLoginDialog = false
+            navController.navigate(Navigation.LOGIN.toString())
+        },
+        onRegisterPressed = {
+            showLoginDialog = false
+            navController.navigate(Navigation.REGISTER.toString())
+        },
+        modifier = Modifier
+            .width(350.dp)
+            .height(290.dp)
+    )
+}
+
+fun isAuth(application: Application): Boolean {
+    val prefManager = PreferencesManager(application)
+    val token = prefManager.getString("token", "")
+    val id = prefManager.getInt("id", 0)
+    return (id != 0 && token.isNotEmpty())
 }

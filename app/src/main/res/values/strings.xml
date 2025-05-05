@@ -22,4 +22,15 @@
     <string name="server_error_404">Ошибка 404</string>
     <string name="server_error_409">Ошибка 409</string>
     <string name="unknown_server_error">Неизвестная ошибка сервера</string>
+    <string name="incomes">Доходы</string>
+    <string name="expenses">Расходы</string>
+    <string name="logIn">Вход</string>
+    <string name="registration">Регисрация</string>
+    <string name="log_out">Выход</string>
+    <string name="absent">Отсутсвуют</string>
+    <string name="balance_for">Баланс за</string>
+    <string name="all_time">всё время</string>
+    <string name="All_time">Всё время</string>
+    <string name="need_auth">Требуется вход</string>
+    <string name="authorisation_warning">Для доступа к режиму групп необходимо авторизоваться</string>
 </resources>

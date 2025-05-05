@@ -1,5 +1,7 @@
 package com.example.finanstics.presentation.stats
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.ui.theme.icons.LeftIcon
 import com.example.finanstics.ui.theme.icons.RightIcon
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun CalendarSwitch(

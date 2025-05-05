@@ -37,13 +37,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val preferencesManager = PreferencesManager(this)
-        preferencesManager.saveData("id", "21")
-        preferencesManager.saveData(
-            "token",
-            "03ceb11f7a80945bd454f488a11ab0f2f4f29817e7be6fae837393c0fd04d728"
-        )
-
         setContent {
             FinansticsTheme(
                 dynamicColor = false
