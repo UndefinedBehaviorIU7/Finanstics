@@ -197,8 +197,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
     val userId = prefManager.getInt("id", 0)
     val token = prefManager.getString("token", "")
 
-    if (token.isEmpty() || userId == 0)
-        return
+    if (token.isEmpty() || userId == 0) return
     
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
