@@ -57,7 +57,7 @@ suspend fun getArrayActionDataClass(
                     actionMoney = el.value,
                     actionCategory = "cat",
                     data = dataApiToDataClass(el.date)
-                    )
+                )
             )
         }
     }
