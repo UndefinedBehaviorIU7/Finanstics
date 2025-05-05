@@ -31,7 +31,7 @@ class GroupStatsRepository {
             )
             val respCat = apiRep.getUserCategories(USER_ID)
 
-            if (respAct.isSuccessful && respCat.isSuccessful){
+            if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
 
