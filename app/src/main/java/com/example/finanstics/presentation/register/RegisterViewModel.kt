@@ -1,7 +1,6 @@
 package com.example.finanstics.presentation.register
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.R
@@ -24,7 +23,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     "username" -> current.copy(username = value as String)
                     "password" -> current.copy(password = value as String)
                     "passwordRepeat" -> current.copy(passwordRepeat = value as String)
-                    "image" -> current.copy(image = value as Uri?)
+                    "image" -> current.copy(image = value as String)
                     else -> current
                 }
             }
@@ -36,7 +35,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     password = if (field == "password") value as String else current.password,
                     passwordRepeat = if (field == "passwordRepeat") value as String
                     else current.passwordRepeat,
-                    image = if (field == "image") value as Uri? else current.image
+                    image = if (field == "image") value as String else current.image
                 )
             }
 

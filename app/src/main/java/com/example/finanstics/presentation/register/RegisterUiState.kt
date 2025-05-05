@@ -1,14 +1,12 @@
 package com.example.finanstics.presentation.register
 
-import android.net.Uri
-
 sealed class RegisterUiState {
     data class Idle(
         val login: String = "",
         val username: String = "",
         val password: String = "",
         val passwordRepeat: String = "",
-        val image: Uri? = null
+        val image: String = ""
     ) : RegisterUiState()
 
     data class Loading(
@@ -16,7 +14,7 @@ sealed class RegisterUiState {
         val username: String,
         val password: String,
         val passwordRepeat: String,
-        val image: Uri?
+        val image: String
     ) : RegisterUiState()
 
     data class Error(
@@ -24,7 +22,7 @@ sealed class RegisterUiState {
         val username: String,
         val password: String,
         val passwordRepeat: String,
-        val image: Uri?,
+        val image: String,
         val errorMsg: String
     ) : RegisterUiState()
 
