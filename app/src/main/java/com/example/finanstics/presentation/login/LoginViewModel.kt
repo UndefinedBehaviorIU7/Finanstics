@@ -7,97 +7,59 @@ import com.example.finanstics.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
-@Suppress("TooGenericExceptionCaught")
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = LoginRepository(application.applicationContext)
+
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
-    fun loginChange(newLogin: String) {
-        when (val current = _uiState.value) {
-            is LoginUiState.Idle -> {
-                _uiState.value = current.copy(login = newLogin)
+    fun updateField(field: String, newValue: String) {
+        val current = _uiState.value
+        _uiState.value = when (current) {
+            is LoginUiState.Idle -> when (field) {
+                "login" -> current.copy(login = newValue)
+                "password" -> current.copy(password = newValue)
+                else -> current
             }
 
-            is LoginUiState.Error -> {
-                _uiState.value = LoginUiState.Idle(
-                    login = newLogin,
-                    password = current.password
-                )
-            }
+            is LoginUiState.Error -> LoginUiState.Idle(
+                login = if (field == "login") newValue else current.login,
+                password = if (field == "password") newValue else current.password
+            )
 
-            else -> Unit
+            else -> current
         }
     }
 
-    fun passwordChange(newPassword: String) {
-        when (val current = _uiState.value) {
-            is LoginUiState.Idle -> {
-                _uiState.value = current.copy(password = newPassword)
-            }
-
-            is LoginUiState.Error -> {
-                _uiState.value = LoginUiState.Idle(
-                    login = current.login,
-                    password = newPassword,
-                )
-            }
-
-            else -> Unit
-        }
-    }
-
-    fun auth() {
+    fun logIn() {
         val current = _uiState.value
 
+        if (current is LoginUiState.Error) {
+            _uiState.value = LoginUiState.Idle(
+                login = current.login,
+                password = current.password,
+            )
+        }
+
         if (current is LoginUiState.Idle) {
-            if (current.login.isBlank() || current.password.isBlank()) {
+            val login = current.login
+            val password = current.password
+
+            if (login.isBlank() || password.isBlank()) {
                 _uiState.value = LoginUiState.Error(
-                    login = current.login,
-                    password = current.password,
-                    errorMsg = "Fields shouldn't be blank"
+                    login = login,
+                    password = password,
+                    errorMsg = getApplication<Application>().getString(R.string.empty_fields)
                 )
                 return
             }
 
-            _uiState.value = LoginUiState.Loading(
-                login = current.login,
-                password = current.password
-            )
+            _uiState.value = LoginUiState.Loading(login, password)
 
             viewModelScope.launch {
-                try {
-//                    TODO("Auth")
-//                    val request = RetrofitInstance.api.auth(
-//                        login = current.login,
-//                        password = current.password
-//                    )
-//                    val id = request.id
-//                    val token = request.token
-//
-//                    val sharedPref = getApplication<Application>()
-//                        .getSharedPreferences("auth", Context.MODE_PRIVATE)
-//
-//                    sharedPref.edit {
-//                        putString("token", token)
-//                            .putInt("id", id)
-//                    }
-//
-//                    _uiState.value = LoginUiState.Success(
-//                        id = id,
-//                        token = token,
-//                        successMsg = getApplication<Application>().getString(R.string.login_success)
-//                    )
-                } catch (e: HttpException) {
-                    TODO("Server exceptions")
-                } catch (e: Exception) {
-                    _uiState.value = LoginUiState.Error(
-                        login = current.login,
-                        password = current.password,
-                        errorMsg = getApplication<Application>().getString(R.string.unknown_error)
-                    )
-                }
+                val result = repository.logIn(login, password)
+                _uiState.value = result
             }
         }
     }

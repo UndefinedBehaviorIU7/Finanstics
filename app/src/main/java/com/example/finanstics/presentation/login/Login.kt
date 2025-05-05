@@ -6,9 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.R
+import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
 
 @Suppress("MagicNumber", "LongMethod")
@@ -34,6 +41,22 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.step_back),
+                        modifier = Modifier.size(100.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.weight(0.7f))
 
@@ -57,21 +80,27 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                                 value = uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = false,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.updateField("login", it) }
                             )
 
                             Form(
                                 value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.updateField("password", it) }
                             )
                         }
 
                         Spacer(modifier = Modifier.weight(0.5f))
                     }
 
-//                    TODO("New account button")
+                    ButtonForm(
+                        modifier = Modifier.weight(0.5f),
+                        buttonText = stringResource(R.string.log_in),
+                        navText = stringResource(R.string.register),
+                        action = { vm.logIn() },
+                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                    )
 
                     Spacer(modifier = Modifier.weight(0.6f))
                 }
@@ -80,25 +109,24 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                     Column(
                         modifier = Modifier.weight(1.3f)
                     ) {
-
                         Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
                             Form(
                                 value = uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = true,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.updateField("login", it) }
                             )
 
                             Form(
                                 value = uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = true,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.updateField("password", it) }
                             )
 
                             Spacer(modifier = Modifier.weight(0.5f))
                             Text(
-                                text = "Error: ${uiState.errorMsg}",
+                                text = uiState.errorMsg,
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                     .weight(0.5f),
@@ -107,7 +135,13 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                         Spacer(modifier = Modifier.weight(0.1f))
                     }
 
-//                    TODO("New account button")
+                    ButtonForm(
+                        modifier = Modifier.weight(0.5f),
+                        buttonText = stringResource(R.string.log_in),
+                        navText = stringResource(R.string.register),
+                        action = { vm.logIn() },
+                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                    )
 
                     Spacer(modifier = Modifier.weight(0.6f))
                 }
@@ -122,7 +156,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                 }
 
                 is LoginUiState.Success -> {
-                    TODO("nav")
+                    navController.navigate(Navigation.GROUPS.toString())
                 }
             }
         }

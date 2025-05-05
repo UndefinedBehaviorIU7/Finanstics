@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,16 +42,32 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-            vm.imageChange(uri)
+            vm.updateField("image", uri)
         }
     )
     val uiState = vm.uiState.collectAsState().value
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.step_back),
+                        modifier = Modifier.size(100.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.weight(0.2f))
 
             if ((uiState is RegisterUiState.Idle) || (uiState is RegisterUiState.Error)) {
@@ -67,28 +89,28 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = false,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.updateField("login", it) }
                             )
 
                             Form(
-                                uiState.tag,
+                                uiState.username,
                                 label = stringResource(R.string.username),
                                 isError = false,
-                                lambda = { vm.tagChange(it) }
+                                lambda = { vm.updateField("username", it) }
                             )
 
                             Form(
                                 uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = false,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.updateField("password", it) }
                             )
 
                             Form(
                                 uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = false,
-                                lambda = { vm.passwordRepeatChange(it) }
+                                lambda = { vm.updateField("passwordRepeat", it) }
                             )
                         }
 
@@ -105,7 +127,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = { vm.signup() },
+                        action = { vm.register() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 
@@ -113,11 +135,6 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                 }
 
                 is RegisterUiState.Error -> {
-                    Text(
-                        text = uiState.errorMsg,
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                    )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.weight(2.5f).fillMaxWidth()
@@ -130,31 +147,35 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 uiState.login,
                                 label = stringResource(R.string.login),
                                 isError = true,
-                                lambda = { vm.loginChange(it) }
+                                lambda = { vm.updateField("login", it) }
                             )
 
                             Form(
-                                uiState.tag,
+                                uiState.username,
                                 label = stringResource(R.string.username),
                                 isError = true,
-                                lambda = { vm.tagChange(it) }
+                                lambda = { vm.updateField("username", it) }
                             )
 
                             Form(
                                 uiState.password,
                                 label = stringResource(R.string.password),
                                 isError = true,
-                                lambda = { vm.passwordChange(it) }
+                                lambda = { vm.updateField("password", it) }
                             )
 
                             Form(
                                 uiState.passwordRepeat,
                                 label = stringResource(R.string.password_repeat),
                                 isError = true,
-                                lambda = { vm.passwordRepeatChange(it) }
+                                lambda = { vm.updateField("passwordRepeat", it) }
+                            )
+                            Text(
+                                text = uiState.errorMsg,
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                         }
-
                         ImageForm(
                             uiState.image,
                             text = stringResource(R.string.select_img),
@@ -166,7 +187,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                         modifier = Modifier.weight(0.5f),
                         buttonText = stringResource(R.string.register),
                         navText = stringResource(R.string.have_an_account),
-                        action = { vm.signup() },
+                        action = { vm.register() },
                         navigate = { navController.navigate(Navigation.LOGIN.toString()) }
                     )
 
