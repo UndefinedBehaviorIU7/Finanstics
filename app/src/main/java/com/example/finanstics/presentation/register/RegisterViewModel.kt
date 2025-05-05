@@ -34,7 +34,8 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     login = if (field == "login") value as String else current.login,
                     username = if (field == "username") value as String else current.username,
                     password = if (field == "password") value as String else current.password,
-                    passwordRepeat = if (field == "passwordRepeat") value as String else current.passwordRepeat,
+                    passwordRepeat = if (field == "passwordRepeat") value as String
+                    else current.passwordRepeat,
                     image = if (field == "image") value as Uri? else current.image
                 )
             }
@@ -49,11 +50,11 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
         if (current is RegisterUiState.Error) {
             _uiState.value = RegisterUiState.Idle(
-                    login = current.login,
-                    username = current.username,
-                    password = current.password,
-                    passwordRepeat = "",
-                    image = current.image
+                login = current.login,
+                username = current.username,
+                password = current.password,
+                passwordRepeat = "",
+                image = current.image
             )
         }
 
@@ -75,20 +76,26 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 )
                 return
             }
-
-            if (password != passwordRepeat)  {
-                _uiState.value = RegisterUiState.Error (
+            if (password != passwordRepeat) {
+                _uiState.value = RegisterUiState.Error(
                     login = login,
                     username = username,
                     password = password,
                     passwordRepeat = "",
                     image = image,
-                    errorMsg = getApplication<Application>().getString(R.string.passwords_do_not_match)
+                    errorMsg = getApplication<Application>()
+                        .getString(R.string.passwords_do_not_match)
                 )
                 return
             }
 
-            _uiState.value = RegisterUiState.Loading(login, username, password, passwordRepeat, image)
+            _uiState.value = RegisterUiState.Loading(
+                login = login,
+                username = username,
+                password = password,
+                passwordRepeat = passwordRepeat,
+                image = image
+            )
 
             viewModelScope.launch {
                 val result = repository.register(username, password, login, image)

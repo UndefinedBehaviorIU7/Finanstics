@@ -5,7 +5,6 @@ import com.example.finanstics.R
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.UserResponse
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
-import com.example.finanstics.presentation.login.LoginUiState
 import retrofit2.Response
 
 class LoginRepository(private val context: Context) {

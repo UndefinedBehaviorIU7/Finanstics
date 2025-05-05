@@ -31,7 +31,6 @@ import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
 
-
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {

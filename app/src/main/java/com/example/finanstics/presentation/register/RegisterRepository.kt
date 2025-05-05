@@ -9,10 +9,11 @@ import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
 
-    suspend fun register(username: String,
-                         password: String,
-                         tag: String,
-                         image: Uri?,
+    suspend fun register(
+        username: String,
+        password: String,
+        tag: String,
+        image: Uri?,
     ): RegisterUiState {
         return try {
             val response = RetrofitInstance.api.register(
