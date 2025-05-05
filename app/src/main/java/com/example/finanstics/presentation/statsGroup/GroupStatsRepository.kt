@@ -53,6 +53,7 @@ class GroupStatsRepository {
         return incomes
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getExpenses(
         month: MonthNameClass,
         year: Int
@@ -89,6 +90,7 @@ class GroupStatsRepository {
         return expenses
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getAllIncomes(): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
         var incomes: List<Pair<String, Int>>? = null
@@ -118,6 +120,7 @@ class GroupStatsRepository {
         return if (incomes != null) sumPairs(incomes) else null
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getAllExpenses(): List<Pair<String, Int>>? {
         val apiRep = ApiRepository()
         var expenses: List<Pair<String, Int>>? = null
