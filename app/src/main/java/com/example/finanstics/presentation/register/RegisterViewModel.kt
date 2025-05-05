@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-@Suppress("TooGenericExceptionCaught")
 class RegisterViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = RegisterRepository(application.applicationContext)
 
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle())
     val uiState = _uiState.asStateFlow()
 
+    @Suppress("ComplexMethod")
     fun updateField(field: String, value: Any?) {
         when (val current = _uiState.value) {
             is RegisterUiState.Idle -> {

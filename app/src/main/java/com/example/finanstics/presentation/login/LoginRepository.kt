@@ -9,6 +9,7 @@ import retrofit2.Response
 
 class LoginRepository(private val context: Context) {
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun logIn(login: String, password: String): LoginUiState {
         return try {
             val response = RetrofitInstance.api.login(tag = login, password = password)
@@ -22,6 +23,7 @@ class LoginRepository(private val context: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     private fun handleResponse(
         response: Response<UserResponse>,
         login: String,

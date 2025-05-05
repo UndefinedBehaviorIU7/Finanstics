@@ -9,6 +9,7 @@ import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun register(
         username: String,
         password: String,
@@ -35,6 +36,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     private fun handleResponse(
         response: Response<UserResponse>,
         username: String,
