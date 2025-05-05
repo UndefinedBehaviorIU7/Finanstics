@@ -448,14 +448,10 @@ fun Calendar(
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
 
-    LaunchedEffect(Unit) {
-
-    }
+    LaunchedEffect(Unit) { }
 
     DisposableEffect(Unit) {
-        onDispose {
-
-        }
+        onDispose { }
     }
 
     Column(

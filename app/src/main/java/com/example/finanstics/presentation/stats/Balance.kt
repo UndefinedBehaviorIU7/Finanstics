@@ -45,7 +45,7 @@ fun Balance(
                 Row() {
                     Text(
                         text = stringResource(R.string.balance_for) + " " +
-                                stringResource(R.string.all_time),
+                            stringResource(R.string.all_time),
                         fontWeight = FontWeight.Medium,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.primary
