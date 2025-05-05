@@ -1,6 +1,6 @@
 package com.example.finanstics.presentation.calendar
 
-    sealed class CalendarGroupUiState {
+sealed class CalendarGroupUiState {
     data object Idle : CalendarGroupUiState()
     data object Loading : CalendarGroupUiState()
 

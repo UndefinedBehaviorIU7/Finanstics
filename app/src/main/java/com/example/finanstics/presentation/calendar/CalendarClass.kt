@@ -192,7 +192,7 @@ data class DayClass(
     private var money = COUNT_MONEY
     private var actionDataClasses: Array<ActionDataClass?> = arrayOfNulls(0)
 
-    fun initActions (actions: Array<ActionDataClass?>) {
+    fun initActions(actions: Array<ActionDataClass?>) {
         actionDataClasses = actions
     }
 
@@ -353,8 +353,8 @@ class GridDatas(
         return days
     }
 
-     @RequiresApi(Build.VERSION_CODES.O)
-     suspend fun initActions(application: Application) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun initActions(application: Application) {
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarRepository(db)
         for (el in days) {

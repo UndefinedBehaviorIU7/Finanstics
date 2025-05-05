@@ -80,7 +80,6 @@ class CalendarViewModel(
                     _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
                 else
                     _uiState.value = CalendarUiState.Default(newCalendar)
-
             }
         }
     }

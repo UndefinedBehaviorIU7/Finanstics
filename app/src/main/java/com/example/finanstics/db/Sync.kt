@@ -125,21 +125,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
         val serverActions = response.body()
         val localActions = db.actionDao().getAllActions()
         println(localActions)
-
-
-
-        val response1 = apiRep.getGroupActions(1)
-        if (!response1.isSuccessful) {
-            Log.e(
-                "Sync",
-                "qeewqewqewewqeqe :" +
-                        "${response1.errorBody()?.string()}"
-            )
-        }
-        val serverActions1 = response1.body()
-        println(serverActions1)
-
-
+        
         serverActions?.forEach { serverAction ->
             var new = true
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }

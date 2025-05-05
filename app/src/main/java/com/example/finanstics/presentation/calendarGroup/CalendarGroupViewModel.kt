@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-class CalendarGroupViewMode(
+class CalendarGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<CalendarGroupUiState>(CalendarGroupUiState.Loading)
@@ -34,7 +34,10 @@ class CalendarGroupViewMode(
             viewModelScope.launch {
                 calendar.initActionsDayByApi(application, 1)
                 _uiState.value = CalendarGroupUiState.Loading
-                _uiState.value = CalendarGroupUiState.DrawActions(calendar, CalendarClass.getNowDay())
+                _uiState.value = CalendarGroupUiState.DrawActions(
+                    calendar,
+                    CalendarClass.getNowDay()
+                )
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarGroupUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -80,7 +83,6 @@ class CalendarGroupViewMode(
                     _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
                 else
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
-
             }
         }
     }

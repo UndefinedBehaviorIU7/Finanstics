@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,7 +50,7 @@ import com.example.finanstics.ui.theme.icons.RightIcon
 @Composable
 fun CalendarDay(
     days: Array<DayClass?>,
-    vm: CalendarGroupViewMode
+    vm: CalendarGroupViewModel
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(7),
@@ -88,7 +87,7 @@ fun CalendarDay(
 @Composable
 private fun CalendarDayItem(
     day: DayClass,
-    vm: CalendarGroupViewMode,
+    vm: CalendarGroupViewModel,
     selected: Boolean = false
 ) {
     Box(
@@ -167,7 +166,7 @@ private fun CalendarDayItem(
 fun CalendarHeading(
     month: MonthNameClass,
     year: Int,
-    vm: CalendarGroupViewMode
+    vm: CalendarGroupViewModel
 ) {
     Row(
         modifier = Modifier
@@ -237,7 +236,7 @@ fun CalendarHeading(
 @Composable
 fun CalendarDraw(
     calendar: CalendarClass,
-    vm: CalendarGroupViewMode
+    vm: CalendarGroupViewModel
 ) {
     Column(
         modifier = Modifier
@@ -253,98 +252,6 @@ fun CalendarDraw(
     }
 }
 
-//@Suppress("MagicNumber", "LongMethod")
-//@Composable
-//fun DrawAction(
-//    actionDataClass: ActionDataClass
-//) {
-//    Button(
-//        onClick = { },
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 8.dp),
-//        colors = ButtonDefaults.buttonColors(
-//            MaterialTheme.colorScheme.onBackground,
-//            MaterialTheme.colorScheme.primary
-//        ),
-//        contentPadding = PaddingValues(8.dp)
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 8.dp),
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .padding(start = 8.dp),
-//                verticalArrangement = Arrangement.spacedBy(4.dp)
-//            ) {
-//                Text(
-//                    text = actionDataClass.getActionName(),
-//                    color = MaterialTheme.colorScheme.primary,
-//                    textAlign = TextAlign.Start,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//                Text(
-//                    text = actionDataClass.getUserName(),
-//                    color = MaterialTheme.colorScheme.primary,
-//                    textAlign = TextAlign.Start,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//            }
-//            Column(
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .padding(end = 8.dp),
-//                verticalArrangement = Arrangement.spacedBy(4.dp),
-//                horizontalAlignment = Alignment.End
-//            ) {
-//                Text(
-//                    text = actionDataClass.getActionCategory(),
-//                    color = MaterialTheme.colorScheme.primary,
-//                    textAlign = TextAlign.End,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//                Text(
-//                    text = "${actionDataClass.getMoney()}",
-//                    color = if (actionDataClass.getActionType() == 0) Color.Red else Color.Green,
-//                    textAlign = TextAlign.End,
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//            }
-//        }
-//    }
-//}
-
-//@Suppress("MagicNumber")
-//@Composable
-//fun ActionsDraw(
-//    actionDataClasses: Array<ActionDataClass?>
-//) {
-//
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize(),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        items(actionDataClasses.size) { index ->
-//            val action = actionDataClasses[index]
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(vertical = 4.dp)
-//            ) {
-//                if (action != null) {
-//                    DrawAction(action)
-//                }
-//            }
-//        }
-//    }
-//}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
@@ -352,7 +259,7 @@ fun DrawCalendarWithAction(
     calendar: CalendarClass,
     actionDataClasses: Array<ActionDataClass?>,
     isLandscape: Boolean,
-    vm: CalendarGroupViewMode,
+    vm: CalendarGroupViewModel,
 ) {
     if (isLandscape) {
         Row(
@@ -400,7 +307,7 @@ fun DrawCalendarWithAction(
 fun DrawCalendarWithoutAction(
     calendar: CalendarClass,
     isLandscape: Boolean,
-    vm: CalendarGroupViewMode,
+    vm: CalendarGroupViewModel,
 ) {
     if (isLandscape) {
         Row(
@@ -443,7 +350,7 @@ fun CalendarGroup(
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val vm: CalendarGroupViewMode = viewModel()
+    val vm: CalendarGroupViewModel = viewModel()
 
     Column(
         modifier = Modifier
