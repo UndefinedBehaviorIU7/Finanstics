@@ -6,6 +6,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+@Suppress("TooManyFunctions")
 interface NetworkService {
     @GET("users/{user_id}")
     suspend fun getUser(

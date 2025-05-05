@@ -8,6 +8,7 @@ import com.example.finanstics.api.models.User
 import com.example.finanstics.api.models.UserResponse
 import retrofit2.Response
 
+@Suppress("TooManyFunctions")
 class ApiRepository {
     suspend fun getUser(userId: Int): Response<User> {
         return RetrofitInstance.api.getUser(userId)

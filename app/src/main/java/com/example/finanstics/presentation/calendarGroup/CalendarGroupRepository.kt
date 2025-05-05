@@ -21,6 +21,7 @@ fun dataApiToDataClass(
     )
 }
 
+@Suppress("TooGenericExceptionCaught")
 suspend fun getUserName(
     userId: Int
 ): String? {
@@ -39,6 +40,7 @@ suspend fun getUserName(
     return res
 }
 
+@Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getArrayActionDataClass(
     actions: List<com.example.finanstics.api.models.Action>
@@ -66,6 +68,7 @@ suspend fun getArrayActionDataClass(
 }
 
 class CalendarGroupRepository(private var db: FinansticsDatabase) {
+    @Suppress("TooGenericExceptionCaught")
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun getGroupActionDays(groupId: Int, data: DataClass): Array<ActionDataClass?>? {
         var res: Array<ActionDataClass?>? = null
