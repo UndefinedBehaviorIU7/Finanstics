@@ -24,7 +24,6 @@ suspend fun syncLocalWithServerActions(application: Application) {
 
     val unsyncedActions = actionDao.getUnsyncedActions()
     val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-
     unsyncedActions.forEach { action ->
         try {
             val category = categoryDao.getCategoryById(action.categoryId)
