@@ -31,4 +31,6 @@
     <string name="balance_for">Баланс за</string>
     <string name="all_time">всё время</string>
     <string name="All_time">Всё время</string>
+    <string name="need_auth">Требуется вход</string>
+    <string name="authorisation_warning">Для доступа к режиму групп необходимо авторизоваться</string>
 </resources>

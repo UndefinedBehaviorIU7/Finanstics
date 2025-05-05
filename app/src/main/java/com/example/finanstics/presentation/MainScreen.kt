@@ -1,5 +1,7 @@
 package com.example.finanstics.presentation
 
+import android.app.Application
+import android.content.Context
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -115,7 +117,7 @@ fun MainScreen(
                 pagerState = pagerState,
                 navController = navController,
                 offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
-                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2
+                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2,
             )
 
             Box(
