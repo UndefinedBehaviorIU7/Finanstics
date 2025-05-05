@@ -31,6 +31,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -439,11 +441,22 @@ fun DrawCalendarWithoutAction(
 @Suppress("MagicNumber")
 @Composable
 fun Calendar(
-    navController: NavController
+    navController: NavController,
+    isVisible: Boolean = false
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+
+        }
+    }
 
     Column(
         modifier = Modifier

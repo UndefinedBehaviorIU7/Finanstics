@@ -34,6 +34,8 @@ class LoginRepository(private val context: Context) {
             if (body != null) {
                 val preferencesManager = PreferencesManager(context)
                 preferencesManager.saveData("id", body.id)
+                preferencesManager.saveData("tag", login)
+                preferencesManager.saveData("password", password)
                 preferencesManager.saveData("token", body.token)
 
                 LoginUiState.Success(

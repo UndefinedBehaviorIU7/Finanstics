@@ -23,17 +23,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.R
 import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.presentation.stats.DetailsPieChart
 import com.example.finanstics.presentation.stats.Divider
 import com.example.finanstics.presentation.stats.Loader
 import com.example.finanstics.presentation.stats.PieChart
-import com.example.finanstics.ui.theme.ALL_TIME
 import com.example.finanstics.ui.theme.GROUP_NAME
 
 @Suppress("MagicNumber", "LongMethod")
@@ -174,7 +175,7 @@ fun Header(
                 color = if (!isClicked) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.background,
                 fontSize = 18.sp,
-                text = "Всё время"
+                text = stringResource(R.string.All_time)
             )
         }
         Spacer(modifier = Modifier.weight(0.1f))
@@ -249,7 +250,7 @@ fun GroupStatsViewVertical(
             item {
                 GroupBalance(
                     currentBalance = vm.balance(incomes, expenses),
-                    period = if (uiState.all) ALL_TIME
+                    period = if (uiState.all) stringResource(R.string.all_time)
                     else MonthNameClass.str(uiState.calendar.getData().getMonth()),
                     uiState.totalBalance
                 )
@@ -325,7 +326,7 @@ fun GroupStatsViewHorizontal(
                     item {
                         GroupBalance(
                             currentBalance = vm.balance(incomes, expenses),
-                            period = if (uiState.all) ALL_TIME
+                            period = if (uiState.all) stringResource(R.string.all_time)
                             else MonthNameClass.str(uiState.calendar.getData().getMonth()),
                             uiState.totalBalance
                         )

@@ -21,16 +21,21 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.R
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.MonthNameClass
 
@@ -39,11 +44,25 @@ import com.example.finanstics.presentation.calendar.MonthNameClass
 @Composable
 fun Stats(
     navController: NavController,
+    isVisible: Boolean = true
 ) {
     val vm: StatsViewModel = viewModel()
     val incomes = vm.incomes
     val expenses = vm.expenses
-    val userName: String = if (vm.tagStr == null) "" else vm.tagStr!!
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            vm.autoUpdate()
+        } else {
+            vm.cancelUpdate()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.cancelUpdate()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -297,20 +316,34 @@ fun Header(
     vm: StatsViewModel,
     navController: NavController
 ) {
+    val isAuth by vm.isAuth.collectAsState()
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        if (vm.isAuth) {
+        if (isAuth) {
+            Spacer(Modifier.weight(2f))
             Text(
                 text = vm.tagStr,
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = stringResource(R.string.log_out),
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clickable {
+                        vm.cancelUpdate()
+                        vm.logOut()
+                    }
+            )
+            Spacer(Modifier.weight(2f))
         } else {
             Spacer(Modifier.weight(2f))
             Text(
-                text = "Вход",
+                text = stringResource(R.string.logIn),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
@@ -318,7 +351,7 @@ fun Header(
             )
             Spacer(Modifier.weight(1f))
             Text(
-                text = "Регистрация",
+                text = stringResource(R.string.registration),
                 fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

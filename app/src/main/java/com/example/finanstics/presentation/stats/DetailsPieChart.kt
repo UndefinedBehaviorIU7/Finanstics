@@ -23,9 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.finanstics.R
 import com.example.finanstics.ui.theme.Blue
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 
@@ -50,7 +52,7 @@ fun DetailsPieChart(
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
-                text = statsLabel(expenses),
+                text = stringResource(statsLabelId(expenses)),
                 fontWeight = FontWeight.Normal,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary
@@ -71,7 +73,7 @@ fun DetailsPieChart(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Отстуствуют",
+                    text = stringResource(R.string.absent),
                     modifier = Modifier.padding(20.dp),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium

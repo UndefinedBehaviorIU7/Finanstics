@@ -1,5 +1,7 @@
 package com.example.finanstics.presentation.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +38,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlin.math.abs
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -50,9 +53,10 @@ fun BottomNavGraph(
         HorizontalPager(
             state = pagerState
         ) { page ->
+            val isVisible = page == pagerState.currentPage
             when (page) {
-                0 -> Stats(navController)
-                1 -> Calendar(navController)
+                0 -> Stats(navController, isVisible)
+                1 -> Calendar(navController, isVisible)
                 2 -> Settings(navController)
             }
         }

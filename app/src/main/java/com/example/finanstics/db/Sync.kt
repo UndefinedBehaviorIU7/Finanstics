@@ -6,14 +6,20 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
-import com.example.finanstics.ui.theme.TOKEN
-import com.example.finanstics.ui.theme.USER_ID
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerActions(application: Application) {
+    val prefManager = PreferencesManager(application)
+    val userId = prefManager.getInt("id", 0)
+    val token = prefManager.getString("token", "")
+
+    if (token.isEmpty() || userId == 0) {
+        return
+    }
+    
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
@@ -35,8 +41,8 @@ suspend fun syncLocalWithServerActions(application: Application) {
                 return@forEach
             }
             val response = apiRep.addAction(
-                userId = USER_ID,
-                token = TOKEN,
+                userId = userId,
+                token = token,
                 actionName = action.name,
                 type = action.type,
                 value = action.value,
@@ -67,6 +73,14 @@ suspend fun syncLocalWithServerActions(application: Application) {
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerCategories(application: Application) {
+    val prefManager = PreferencesManager(application)
+    val userId = prefManager.getInt("id", 0)
+    val token = prefManager.getString("token", "")
+
+    if (token.isEmpty() || userId == 0) {
+        return
+    }
+    
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
@@ -78,8 +92,8 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     unsyncedCategories.forEach { category ->
         try {
             val response = apiRep.addCategory(
-                userId = USER_ID,
-                token = TOKEN,
+                userId = userId,
+                token = token,
                 categoryName = category.name,
                 type = category.type
             )
@@ -106,6 +120,14 @@ suspend fun syncLocalWithServerCategories(application: Application) {
 @Suppress("LongMethod", "TooGenericExceptionCaught", "NestedBlockDepth")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalActions(application: Application) {
+    val prefManager = PreferencesManager(application)
+    val userId = prefManager.getInt("id", 0)
+    val token = prefManager.getString("token", "")
+
+    if (token.isEmpty() || userId == 0) {
+        return
+    }
+    
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
@@ -114,7 +136,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
     val preferencesManager = PreferencesManager(application)
 
     try {
-        val response = apiRep.getUserActionsSince(USER_ID, preferencesManager.getUpdateTime())
+        val response = apiRep.getUserActionsSince(userId, preferencesManager.getUpdateTime())
         if (!response.isSuccessful) {
             Log.e(
                 "Sync",
@@ -171,13 +193,21 @@ suspend fun syncServerWithLocalActions(application: Application) {
 @Suppress("TooGenericExceptionCaught", "LongMethod")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalCategories(application: Application) {
+    val prefManager = PreferencesManager(application)
+    val userId = prefManager.getInt("id", 0)
+    val token = prefManager.getString("token", "")
+
+    if (token.isEmpty() || userId == 0) {
+        return
+    }
+    
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
     val preferencesManager = PreferencesManager(application)
 
     try {
-        val response = apiRep.getUserCategoriesSince(USER_ID, preferencesManager.getUpdateTime())
+        val response = apiRep.getUserCategoriesSince(userId, preferencesManager.getUpdateTime())
         if (!response.isSuccessful) {
             Log.e(
                 "Sync",

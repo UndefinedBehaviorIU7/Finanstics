@@ -20,11 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.finanstics.R
 import com.example.finanstics.ui.theme.ColorsExpenses
 import com.example.finanstics.ui.theme.ColorsIncomes
 import com.example.finanstics.ui.theme.DEGREES_MAX
-import com.example.finanstics.ui.theme.EXPENSES
-import com.example.finanstics.ui.theme.INCOMES
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 import com.example.finanstics.ui.theme.generateColdColor
 import com.example.finanstics.ui.theme.generateWarmColor
@@ -50,9 +49,9 @@ fun sumToSignText(sum: Int, expense: Boolean): String {
     return textSumSign
 }
 
-fun statsLabel(expenses: Boolean): String {
-    if (expenses) return EXPENSES
-    return INCOMES
+fun statsLabelId(expenses: Boolean): Int {
+    if (expenses) return R.string.expenses
+    return R.string.incomes
 }
 
 @Suppress("MagicNumber", "LongMethod")

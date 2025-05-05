@@ -36,11 +36,39 @@ class PreferencesManager(context: Context) {
         }
     }
 
-    fun getData(
+    fun getInt(
+        key: String,
+        defaultValue: Int
+    ): Int {
+        return sharedPreferences.getInt(key, defaultValue)
+    }
+
+    fun getString(
         key: String,
         defaultValue: String
     ): String {
         return sharedPreferences.getString(key, defaultValue) ?: defaultValue
+    }
+
+    fun getLong(
+        key: String,
+        defaultValue: Long
+    ): Long {
+        return sharedPreferences.getLong(key, defaultValue)
+    }
+
+    fun getFloat(
+        key: String,
+        defaultValue: Float
+    ): Float {
+        return sharedPreferences.getFloat(key, defaultValue)
+    }
+
+    fun getBoolean(
+        key: String,
+        defaultValue: Boolean
+    ): Boolean {
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -54,7 +82,7 @@ class PreferencesManager(context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getUpdateTime(): String {
-        println(getData("time_update", TIME_INIT))
-        return getData("time_update", TIME_INIT)
+        println(getString("time_update", TIME_INIT))
+        return getString("time_update", TIME_INIT)
     }
 }
