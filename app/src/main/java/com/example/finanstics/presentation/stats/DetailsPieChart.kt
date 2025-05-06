@@ -39,7 +39,6 @@ import com.example.finanstics.R
 import com.example.finanstics.db.Action
 import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.ui.theme.Blue
-import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
@@ -47,8 +46,7 @@ import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 fun DetailsPieChart(
     data: List<Pair<String, Int>>,
     date: CalendarClass,
-    expenses: Boolean,
-    animateDuration: Int = STATS_ANIMATE_DURATION
+    expenses: Boolean
 ) {
     val colors = statsColors(
         expenses,
@@ -82,8 +80,7 @@ fun DetailsPieChart(
                     color = colors[index],
                     vm = vm,
                     type = type,
-                    chosen = data[index].first == chosen.first && type == chosen.second,
-                    animateDuration = animateDuration
+                    chosen = data[index].first == chosen.first && type == chosen.second
                 )
             }
         } else {
@@ -111,16 +108,10 @@ fun DetailsPieChartItem(
     widthSize: Float,
     color: Color = Blue,
     chosen: Boolean = false,
-    vm: DetailsViewModel,
-    animateDuration: Int = STATS_ANIMATE_DURATION
+    vm: DetailsViewModel
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        isAnimationPlayed = true
-    }
-
-    println(widthSize)
+    LaunchedEffect(Unit) { isAnimationPlayed = true }
 
     Surface(
         modifier = Modifier.padding(vertical = 10.dp),
@@ -130,9 +121,7 @@ fun DetailsPieChartItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {
-                        vm.changeState(data.first, type)
-                    },
+                    .clickable { vm.changeState(data.first, type) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(3f)) {
@@ -144,14 +133,12 @@ fun DetailsPieChartItem(
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
-
                 BarLen(
                     modifier = Modifier.weight(4f),
                     isAnimationPlayed = isAnimationPlayed,
                     widthSize = widthSize,
                     color = color
                 )
-
                 Column(modifier = Modifier.weight(2f)) {
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
@@ -168,9 +155,7 @@ fun DetailsPieChartItem(
                 if (uiState is DetailsUiState.Detailed) {
                     val detailedState = uiState as DetailsUiState.Detailed
                     if (detailedState.chosen == data.first && detailedState.type == type) {
-                        LazyColumn(
-                            modifier = Modifier.padding(top = 5.dp)
-                        ) {
+                        LazyColumn(Modifier.padding(top = 5.dp)) {
                             items(detailedState.actions) { action ->
                                 ActionInfo(
                                     action = action,
@@ -189,13 +174,13 @@ fun DetailsPieChartItem(
 }
 
 @Composable
+@Suppress("MagicNumber")
 fun ActionInfo(
     action: Action,
     totalSum: Int,
     widthSize: Float,
     onClick: () -> Unit,
-    color: Color,
-    animateDuration: Int = STATS_ANIMATE_DURATION
+    color: Color
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
 
