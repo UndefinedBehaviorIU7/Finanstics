@@ -47,8 +47,8 @@ fun Stats(
     isVisible: Boolean = true
 ) {
     val vm: StatsViewModel = viewModel()
-    val incomes = vm.incomes
-    val expenses = vm.expenses
+    val incomes by vm.incomes.collectAsState()
+    val expenses by vm.expenses.collectAsState()
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
@@ -173,6 +173,9 @@ fun StatsViewVertical(
     vm: StatsViewModel
 ) {
     val uiState = vm.uiState.collectAsState().value
+    val date by vm.date.collectAsState()
+    println(date.getData().getMonth())
+
     if (uiState is StatsUiState.Done) {
         LazyColumn(
             modifier = Modifier
@@ -211,6 +214,7 @@ fun StatsViewVertical(
             item {
                 DetailsPieChart(
                     data = incomes,
+                    date = date.deepCopy(),
                     expenses = false
                 )
             }
@@ -218,6 +222,7 @@ fun StatsViewVertical(
             item {
                 DetailsPieChart(
                     data = expenses,
+                    date = date.deepCopy(),
                     expenses = true
                 )
             }
@@ -269,6 +274,7 @@ fun StatsViewHorizontal(
                     item {
                         DetailsPieChart(
                             data = incomes,
+                            date = uiState.calendar,
                             expenses = false
                         )
                     }
@@ -286,6 +292,7 @@ fun StatsViewHorizontal(
                     item {
                         DetailsPieChart(
                             data = expenses,
+                            date = uiState.calendar,
                             expenses = true
                         )
                     }

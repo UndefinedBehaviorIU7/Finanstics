@@ -1,6 +1,8 @@
 package com.example.finanstics.presentation.statsGroup
 
 import android.content.res.Configuration
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -182,6 +184,7 @@ fun Header(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun GroupStatsView(
@@ -211,6 +214,7 @@ fun GroupStatsView(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewVertical(
@@ -261,6 +265,7 @@ fun GroupStatsViewVertical(
             item {
                 DetailsPieChart(
                     data = incomes,
+                    date = uiState.calendar,
                     expenses = false
                 )
             }
@@ -268,6 +273,7 @@ fun GroupStatsViewVertical(
             item {
                 DetailsPieChart(
                     data = expenses,
+                    date = uiState.calendar,
                     expenses = true
                 )
             }
@@ -276,6 +282,7 @@ fun GroupStatsViewVertical(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStatsViewHorizontal(
@@ -318,6 +325,7 @@ fun GroupStatsViewHorizontal(
                     item {
                         DetailsPieChart(
                             data = incomes,
+                            date = uiState.calendar,
                             expenses = false
                         )
                     }
@@ -336,6 +344,7 @@ fun GroupStatsViewHorizontal(
                     item {
                         DetailsPieChart(
                             data = expenses,
+                            date = uiState.calendar,
                             expenses = true
                         )
                     }

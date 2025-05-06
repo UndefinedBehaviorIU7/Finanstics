@@ -13,6 +13,7 @@ import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
+import com.example.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,6 @@ class StatsViewModel(
 
     private val _isAuth = MutableStateFlow(false)
     val isAuth: StateFlow<Boolean> = _isAuth.asStateFlow()
-
     var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
@@ -43,9 +43,17 @@ class StatsViewModel(
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
-    var actions = mutableStateListOf<Triple<String, Int, Int>>()
-    var incomes = mutableStateListOf<Pair<String, Int>>()
-    var expenses = mutableStateListOf<Pair<String, Int>>()
+
+    private val _actions = MutableStateFlow<List<Triple<String, Int, Int>>>(emptyList())
+    private val _incomes = MutableStateFlow<List<Pair<String, Int>>>(emptyList())
+    private val _expenses = MutableStateFlow<List<Pair<String, Int>>>(emptyList())
+
+    val actions = _actions.asStateFlow()
+    val incomes = _incomes.asStateFlow()
+    val expenses = _expenses.asStateFlow()
+
+    private val _date = MutableStateFlow(CalendarClass())
+    val date = _date.asStateFlow()
 
     init {
         initialisation()
@@ -85,6 +93,7 @@ class StatsViewModel(
     fun loadCalendar() {
         try {
             _uiState.value = StatsUiState.Loading
+            _date.value = calendar
             _uiState.value = StatsUiState.Calendar(calendar, 0)
         } catch (e: NullPointerException) {
             _uiState.value = StatsUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -103,7 +112,7 @@ class StatsViewModel(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
                 )
-                if (newTotalBalance != totalBalance) {
+                if (newTotalBalance != totalBalance || _uiState.value !is StatsUiState.Done) {
                     totalBalance = newTotalBalance
                     update = true
                 }
@@ -114,10 +123,10 @@ class StatsViewModel(
                 val incTmp = mutableStateListOf<Pair<String, Int>>()
                 incTmp.addAll(incomesData)
 
-                if (incTmp.size != incomes.size) {
+                if (incTmp.size != _incomes.value.size || _uiState.value !is StatsUiState.Done) {
                     update = true
-                    incomes.clear()
-                    incomes.addAll(incomesData)
+                    _incomes.value = emptyList()
+                    _incomes.value = incomesData
                 }
 
                 val expensesData = repository.getExpenses(
@@ -128,16 +137,16 @@ class StatsViewModel(
                 val expTmp = mutableStateListOf<Pair<String, Int>>()
                 expTmp.addAll(expensesData)
 
-                if (expTmp.size != expenses.size) {
+                if (expTmp.size != _expenses.value.size || _uiState.value !is StatsUiState.Done) {
                     update = true
-                    expenses.clear()
-                    expenses.addAll(expensesData)
+                    _expenses.value = emptyList()
+                    _expenses.value = expensesData
                 }
 
                 if (update) {
                     _uiState.value = StatsUiState.Done(
-                        incomes = incomes,
-                        expenses = expenses,
+                        incomes = _incomes.value,
+                        expenses = _expenses.value,
                         calendar = calendar,
                         totalBalance = totalBalance
                     )
@@ -168,7 +177,6 @@ class StatsViewModel(
         val tag = prefManager.getString("tag", "")
         val token = prefManager.getString("token", "")
 
-        println("id = $id, tag = $tag, token = $token")
         if (token.isNotEmpty()) {
             _isAuth.value = true
             tagStr = tag
@@ -179,6 +187,7 @@ class StatsViewModel(
         val prefManager = PreferencesManager(application)
         prefManager.saveData("id", 0)
         prefManager.saveData("tag", "")
+        prefManager.saveData("time_update", TIME_INIT)
         prefManager.saveData("token", "")
         _isAuth.value = false
     }
@@ -197,6 +206,7 @@ class StatsViewModel(
             else -> return
         }
         println("month ${newCalendar.getData().getMonth()}")
+        _date.value = newCalendar
         _uiState.value = StatsUiState.Calendar(newCalendar, totalBalance)
     }
 
@@ -208,6 +218,7 @@ class StatsViewModel(
             is StatsUiState.Done -> current.calendar.deepCopy().apply { nextMonth() }
             else -> return
         }
+        _date.value = newCalendar
         _uiState.value = StatsUiState.Calendar(newCalendar, totalBalance)
     }
 

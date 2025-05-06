@@ -67,6 +67,18 @@ interface ActionDao {
 
     @Query("SELECT * FROM actions WHERE serverId = :serverId LIMIT 1")
     suspend fun getActionByServerId(serverId: Int): Action?
+
+    @Query(
+        "SELECT * FROM actions WHERE strftime('%m', date) = printf('%02d', :month) " +
+            "AND strftime('%Y', date) = printf('%d', :year) " +
+            "AND categoryId = :categoryId AND type = :type"
+    )
+    suspend fun getActionsDateByCategoryAndType(
+        month: Int,
+        year: Int,
+        categoryId: Int,
+        type: Int
+    ): List<Action>
 }
 
 @Suppress("TooManyFunctions")
