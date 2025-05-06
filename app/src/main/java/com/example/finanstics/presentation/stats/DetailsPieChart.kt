@@ -100,7 +100,7 @@ fun DetailsPieChart(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber", "LongParameterList")
+@Suppress("MagicNumber", "LongParameterList", "LongMethod")
 @Composable
 fun DetailsPieChartItem(
     data: Pair<String, Int>,
@@ -112,6 +112,7 @@ fun DetailsPieChartItem(
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { isAnimationPlayed = true }
+
     Surface(
         modifier = Modifier.padding(vertical = 10.dp),
         color = Color.Transparent
@@ -132,12 +133,14 @@ fun DetailsPieChartItem(
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
+
                 BarLen(
                     modifier = Modifier.weight(4f),
                     isAnimationPlayed = isAnimationPlayed,
                     widthSize = widthSize,
                     color = color
                 )
+
                 Column(modifier = Modifier.weight(2f)) {
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
@@ -148,6 +151,7 @@ fun DetailsPieChartItem(
                     )
                 }
             }
+
             Box(modifier = Modifier.heightIn(max = 1200.dp)) {
                 val uiState by vm.uiState.collectAsState()
                 if (uiState is DetailsUiState.Detailed) {
