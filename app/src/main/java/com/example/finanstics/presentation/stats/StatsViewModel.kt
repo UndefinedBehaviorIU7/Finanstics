@@ -13,10 +13,12 @@ import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
+import com.example.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -42,9 +44,14 @@ class StatsViewModel(
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
-    var actions = mutableStateListOf<Triple<String, Int, Int>>()
-    var incomes = mutableStateListOf<Pair<String, Int>>()
-    var expenses = mutableStateListOf<Pair<String, Int>>()
+
+    private val _actions = MutableStateFlow<List<Triple<String, Int, Int>>>(emptyList())
+    private val _incomes = MutableStateFlow<List<Pair<String, Int>>>(emptyList())
+    private val _expenses = MutableStateFlow<List<Pair<String, Int>>>(emptyList())
+
+    val actions = _actions.asStateFlow()
+    val incomes = _incomes.asStateFlow()
+    val expenses = _expenses.asStateFlow()
 
     private val _date = MutableStateFlow(CalendarClass())
     val date = _date.asStateFlow()
@@ -106,7 +113,7 @@ class StatsViewModel(
                     repository.getAllIncomes(),
                     repository.getAllExpenses()
                 )
-                if (newTotalBalance != totalBalance) {
+                if (newTotalBalance != totalBalance || _uiState.value !is StatsUiState.Done) {
                     totalBalance = newTotalBalance
                     update = true
                 }
@@ -117,10 +124,10 @@ class StatsViewModel(
                 val incTmp = mutableStateListOf<Pair<String, Int>>()
                 incTmp.addAll(incomesData)
 
-                if (incTmp.size != incomes.size) {
+                if (incTmp.size != _incomes.value.size || _uiState.value !is StatsUiState.Done) {
                     update = true
-                    incomes.clear()
-                    incomes.addAll(incomesData)
+                    _incomes.value = emptyList()
+                    _incomes.value = incomesData
                 }
 
                 val expensesData = repository.getExpenses(
@@ -131,16 +138,16 @@ class StatsViewModel(
                 val expTmp = mutableStateListOf<Pair<String, Int>>()
                 expTmp.addAll(expensesData)
 
-                if (expTmp.size != expenses.size) {
+                if (expTmp.size != _expenses.value.size || _uiState.value !is StatsUiState.Done) {
                     update = true
-                    expenses.clear()
-                    expenses.addAll(expensesData)
+                    _expenses.value = emptyList()
+                    _expenses.value = expensesData
                 }
 
                 if (update) {
                     _uiState.value = StatsUiState.Done(
-                        incomes = incomes,
-                        expenses = expenses,
+                        incomes = _incomes.value,
+                        expenses = _expenses.value,
                         calendar = calendar,
                         totalBalance = totalBalance
                     )
@@ -181,6 +188,7 @@ class StatsViewModel(
         val prefManager = PreferencesManager(application)
         prefManager.saveData("id", 0)
         prefManager.saveData("tag", "")
+        prefManager.saveData("time_update", TIME_INIT)
         prefManager.saveData("token", "")
         _isAuth.value = false
     }

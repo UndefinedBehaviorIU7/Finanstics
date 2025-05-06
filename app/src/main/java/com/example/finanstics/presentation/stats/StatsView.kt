@@ -47,8 +47,8 @@ fun Stats(
     isVisible: Boolean = true
 ) {
     val vm: StatsViewModel = viewModel()
-    val incomes = vm.incomes
-    val expenses = vm.expenses
+    val incomes by vm.incomes.collectAsState()
+    val expenses by vm.expenses.collectAsState()
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
