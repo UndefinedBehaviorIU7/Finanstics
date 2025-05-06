@@ -34,11 +34,12 @@ import androidx.navigation.NavController
 import com.example.finanstics.R
 import com.example.finanstics.presentation.calendar.MonthNameClass
 import com.example.finanstics.presentation.stats.DetailsPieChart
-import com.example.finanstics.presentation.stats.Divider
-import com.example.finanstics.presentation.stats.Loader
 import com.example.finanstics.presentation.stats.PieChart
+import com.example.finanstics.ui.theme.Divider
 import com.example.finanstics.ui.theme.GROUP_NAME
+import com.example.finanstics.ui.theme.Loader
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStats(

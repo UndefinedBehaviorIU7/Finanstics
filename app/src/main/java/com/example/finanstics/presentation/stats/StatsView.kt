@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,6 +35,8 @@ import androidx.navigation.NavController
 import com.example.finanstics.R
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.MonthNameClass
+import com.example.finanstics.ui.theme.Divider
+import com.example.finanstics.ui.theme.Loader
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
@@ -369,23 +368,4 @@ fun Header(
     }
 }
 
-@Suppress("MagicNumber")
-@Composable
-fun Divider(
-    space: Dp,
-    stroke: Dp,
-    after: Dp = 10.dp
-) {
-    Spacer(modifier = Modifier.height(space))
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        thickness = stroke,
-        color = MaterialTheme.colorScheme.secondary
-    )
-    Spacer(modifier = Modifier.height(after))
-}
 
-@Composable
-fun Loader(modifier: Modifier) {
-    CircularProgressIndicator(modifier)
-}
