@@ -5,10 +5,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.CalendarClass
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +25,6 @@ class DetailsViewModel(
     private val _chosenCategory = MutableStateFlow(Pair("", -1))
     val chosenCategory: StateFlow<Pair<String, Int>> = _chosenCategory.asStateFlow()
 
-
     val db = FinansticsDatabase.getDatabase(application)
     val actionDao = db.actionDao()
     val categoryDao = db.categoryDao()
@@ -44,7 +41,8 @@ class DetailsViewModel(
                     date.getData().getMonth().number,
                     date.getData().getYear(),
                     cat.id,
-                    type)
+                    type
+                )
                     .sortedByDescending { it.value }
                 _uiState.value = DetailsUiState.Detailed(
                     chosen = category,

@@ -159,7 +159,7 @@ fun DetailsPieChartItem(
                         text = data.second.toString(),
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.primary
+                        color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
             }
