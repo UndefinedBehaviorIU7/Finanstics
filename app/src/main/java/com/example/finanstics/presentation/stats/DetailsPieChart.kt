@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.R
 import com.example.finanstics.db.Action
+import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.ui.theme.Blue
 import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 
@@ -45,6 +46,7 @@ import com.example.finanstics.ui.theme.STATS_ANIMATE_DURATION
 @Composable
 fun DetailsPieChart(
     data: List<Pair<String, Int>>,
+    date: CalendarClass,
     expenses: Boolean,
     animateDuration: Int = STATS_ANIMATE_DURATION
 ) {
@@ -54,6 +56,7 @@ fun DetailsPieChart(
     )
     val sumTotal = data.sumOf { it.second }
     val vm: DetailsViewModel = viewModel()
+    vm.date = date
 
     val chosen by vm.chosenCategory.collectAsState()
     Column(
@@ -135,7 +138,7 @@ fun DetailsPieChartItem(
                     Text(
                         modifier = Modifier.padding(end = 15.dp),
                         text = data.first,
-                        fontWeight = FontWeight.Normal,
+                        fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
                         fontSize = 16.sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
@@ -216,7 +219,8 @@ fun ActionInfo(
             modifier = Modifier.weight(4f),
             widthSize = totalSum.toFloat() / (action.value.toFloat() / widthSize),
             isAnimationPlayed = isAnimationPlayed,
-            color = color
+            color = color,
+            colorIn = MaterialTheme.colorScheme.background
         )
 
         Text(
@@ -232,7 +236,8 @@ fun BarLen(
     modifier: Modifier,
     isAnimationPlayed: Boolean = true,
     widthSize: Float,
-    color: Color
+    color: Color,
+    colorIn: Color = color,
 ) {
     BoxWithConstraints(modifier = modifier) {
         val barLen = animateDp(
@@ -246,6 +251,11 @@ fun BarLen(
                 .background(
                     color = color,
                     shape = RoundedCornerShape(10.dp)
+                )
+                .padding(2.dp)
+                .background(
+                    color = colorIn,
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .height(10.dp)
                 .width(barLen)

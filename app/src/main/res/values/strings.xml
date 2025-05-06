@@ -25,7 +25,7 @@
     <string name="incomes">Доходы</string>
     <string name="expenses">Расходы</string>
     <string name="logIn">Вход</string>
-    <string name="registration">Регисрация</string>
+    <string name="registration">Регистрация</string>
     <string name="log_out">Выход</string>
     <string name="absent">Отсутсвуют</string>
     <string name="balance_for">Баланс за</string>

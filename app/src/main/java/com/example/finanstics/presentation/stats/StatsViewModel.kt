@@ -46,6 +46,9 @@ class StatsViewModel(
     var incomes = mutableStateListOf<Pair<String, Int>>()
     var expenses = mutableStateListOf<Pair<String, Int>>()
 
+    private val _date = MutableStateFlow(CalendarClass())
+    val date = _date.asStateFlow()
+
     init {
         initialisation()
         loginUpdate()
@@ -84,6 +87,7 @@ class StatsViewModel(
     fun loadCalendar() {
         try {
             _uiState.value = StatsUiState.Loading
+            _date.value = calendar
             _uiState.value = StatsUiState.Calendar(calendar, 0)
         } catch (e: NullPointerException) {
             _uiState.value = StatsUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -167,7 +171,6 @@ class StatsViewModel(
         val tag = prefManager.getString("tag", "")
         val token = prefManager.getString("token", "")
 
-        println("id = $id, tag = $tag, token = $token")
         if (token.isNotEmpty()) {
             _isAuth.value = true
             tagStr = tag
@@ -196,6 +199,7 @@ class StatsViewModel(
             else -> return
         }
         println("month ${newCalendar.getData().getMonth()}")
+        _date.value = newCalendar
         _uiState.value = StatsUiState.Calendar(newCalendar, totalBalance)
     }
 
@@ -207,6 +211,7 @@ class StatsViewModel(
             is StatsUiState.Done -> current.calendar.deepCopy().apply { nextMonth() }
             else -> return
         }
+        _date.value = newCalendar
         _uiState.value = StatsUiState.Calendar(newCalendar, totalBalance)
     }
 
