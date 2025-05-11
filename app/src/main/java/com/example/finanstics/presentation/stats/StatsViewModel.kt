@@ -11,6 +11,7 @@ import com.example.finanstics.db.Category
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.db.syncData
 import com.example.finanstics.presentation.calendar.CalendarClass
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import com.example.finanstics.ui.theme.TIME_INIT
@@ -173,9 +174,10 @@ class StatsViewModel(
 
     private fun loginUpdate() {
         val prefManager = PreferencesManager(application)
+        val encryptedPrefManager = EncryptedPreferencesManager(application)
         val id = prefManager.getInt("id", 0)
         val tag = prefManager.getString("tag", "")
-        val token = prefManager.getString("token", "")
+        val token = encryptedPrefManager.getString("token", "")
 
         if (token.isNotEmpty()) {
             _isAuth.value = true
@@ -185,10 +187,11 @@ class StatsViewModel(
 
     fun logOut() {
         val prefManager = PreferencesManager(application)
+        val encryptedPrefManager = EncryptedPreferencesManager(application)
         prefManager.saveData("id", 0)
         prefManager.saveData("tag", "")
         prefManager.saveData("time_update", TIME_INIT)
-        prefManager.saveData("token", "")
+        encryptedPrefManager.saveData("token", "")
         _isAuth.value = false
     }
 
