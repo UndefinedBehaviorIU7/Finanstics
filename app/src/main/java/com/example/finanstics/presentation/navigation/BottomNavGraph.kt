@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.calendar.Calendar
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.presentation.settings.Settings
 import com.example.finanstics.presentation.stats.Stats
@@ -209,7 +210,8 @@ fun GroupsButton(
 
 fun isAuth(application: Application): Boolean {
     val prefManager = PreferencesManager(application)
-    val token = prefManager.getString("token", "")
+    val encryptedPrefManager = EncryptedPreferencesManager(application)
+    val token = encryptedPrefManager.getString("token", "")
     val id = prefManager.getInt("id", 0)
     return (id != 0 && token.isNotEmpty())
 }

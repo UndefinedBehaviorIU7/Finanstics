@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.finanstics.R
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.UserResponse
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import retrofit2.Response
 
@@ -33,10 +34,11 @@ class LoginRepository(private val context: Context) {
             val body = response.body()
             if (body != null) {
                 val preferencesManager = PreferencesManager(context)
+                val encryptedPrefManager = EncryptedPreferencesManager(context)
                 preferencesManager.saveData("id", body.id)
                 preferencesManager.saveData("tag", login)
                 preferencesManager.saveData("password", password)
-                preferencesManager.saveData("token", body.token)
+                encryptedPrefManager.saveData("token", body.token)
 
                 LoginUiState.Success(
                     id = body.id,

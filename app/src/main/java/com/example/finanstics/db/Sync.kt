@@ -4,7 +4,9 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.application
 import com.example.finanstics.api.ApiRepository
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -13,8 +15,9 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerActions(application: Application) {
     val prefManager = PreferencesManager(application)
+    val encryptedPrefManager = EncryptedPreferencesManager(application)
     val userId = prefManager.getInt("id", 0)
-    val token = prefManager.getString("token", "")
+    val token = encryptedPrefManager.getString("token", "")
 
     if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
@@ -70,8 +73,9 @@ suspend fun syncLocalWithServerActions(application: Application) {
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncLocalWithServerCategories(application: Application) {
     val prefManager = PreferencesManager(application)
+    val encryptedPrefManager = EncryptedPreferencesManager(application)
     val userId = prefManager.getInt("id", 0)
-    val token = prefManager.getString("token", "")
+    val token = encryptedPrefManager.getString("token", "")
 
     if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
@@ -114,8 +118,9 @@ suspend fun syncLocalWithServerCategories(application: Application) {
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalActions(application: Application) {
     val prefManager = PreferencesManager(application)
+    val encryptedPrefManager = EncryptedPreferencesManager(application)
     val userId = prefManager.getInt("id", 0)
-    val token = prefManager.getString("token", "")
+    val token = encryptedPrefManager.getString("token", "")
 
     if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
@@ -184,8 +189,9 @@ suspend fun syncServerWithLocalActions(application: Application) {
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun syncServerWithLocalCategories(application: Application) {
     val prefManager = PreferencesManager(application)
+    val encryptedPrefManager = EncryptedPreferencesManager(application)
     val userId = prefManager.getInt("id", 0)
-    val token = prefManager.getString("token", "")
+    val token = encryptedPrefManager.getString("token", "")
 
     if (token.isEmpty() || userId == 0) return
     val apiRep = ApiRepository()
