@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose.v287)
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation (libs.androidx.datastore.preferences)
 
 
