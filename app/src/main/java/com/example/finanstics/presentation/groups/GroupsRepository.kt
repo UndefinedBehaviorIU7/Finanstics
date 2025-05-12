@@ -6,7 +6,6 @@ import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.Group
 import retrofit2.Response
 
-
 class GroupsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun getGroups(): GroupsUiState {

@@ -49,7 +49,7 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
         vm.fetchGroups()
     }
 
-    Box (
+    Box(
         modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.background)
     ) {
         Column(
@@ -58,7 +58,7 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                 .padding(horizontal = 10.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Row (
+            Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -103,7 +103,6 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                     )
                 )
             }
-
 
             when (uiState) {
                 is GroupsUiState.Loading -> {
@@ -179,7 +178,6 @@ fun GroupCard(navController: NavController, group: Group) {
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-
     }
     HorizontalDivider(
         thickness = 2.dp,
