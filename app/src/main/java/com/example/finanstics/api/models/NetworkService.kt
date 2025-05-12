@@ -84,7 +84,6 @@ interface NetworkService {
         @Path("group_id") groupId: Int
     ): Response<List<Action>>
 
-
     @GET("groups/{group_id}")
     suspend fun getGroupById(
         @Path("group_id") groupId: Int
