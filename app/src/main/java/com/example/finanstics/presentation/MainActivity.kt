@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +14,6 @@ import com.example.finanstics.presentation.addAction.AddAction
 import com.example.finanstics.presentation.group.GroupMainScreen
 import com.example.finanstics.presentation.groups.Groups
 import com.example.finanstics.presentation.login.Login
-import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.example.finanstics.presentation.register.Register
 import com.example.finanstics.ui.theme.FinansticsTheme
 
@@ -32,6 +32,7 @@ enum class Navigation(val route: String) {
 
 @Suppress("LongMethod")
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
