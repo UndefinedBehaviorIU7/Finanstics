@@ -39,7 +39,7 @@ import com.example.finanstics.R
 import com.example.finanstics.api.models.Group
 
 @ExperimentalMaterial3Api
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
     val uiState = vm.uiState.collectAsState().value
@@ -140,6 +140,7 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun GroupList(navController: NavController, groups: List<Group>) {
     LazyColumn(
@@ -153,6 +154,7 @@ fun GroupList(navController: NavController, groups: List<Group>) {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun GroupCard(navController: NavController, group: Group) {
     Box(
