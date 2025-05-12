@@ -4,6 +4,7 @@ import com.example.finanstics.api.models.Action
 import com.example.finanstics.api.models.ActionResponse
 import com.example.finanstics.api.models.Category
 import com.example.finanstics.api.models.CategoryResponse
+import com.example.finanstics.api.models.Group
 import com.example.finanstics.api.models.User
 import com.example.finanstics.api.models.UserResponse
 import retrofit2.Response
@@ -122,5 +123,13 @@ class ApiRepository {
             month,
             day
         )
+    }
+
+    suspend fun getGroupById(groupId: Int): Response<Group> {
+        return RetrofitInstance.api.getGroupById(groupId)
+    }
+
+    suspend fun getAllGroups(): Response<List<Group>> {
+        return RetrofitInstance.api.getAllGroups()
     }
 }
