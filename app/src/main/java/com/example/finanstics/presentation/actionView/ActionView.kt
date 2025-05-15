@@ -33,7 +33,7 @@ import com.example.finanstics.ui.theme.Divider
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Suppress("MagicNumber", "LongMethod")
+@Suppress("MagicNumber", "LongMethod", "LongParameterList")
 fun LocalActionView(
     action: Action,
     category: String,
