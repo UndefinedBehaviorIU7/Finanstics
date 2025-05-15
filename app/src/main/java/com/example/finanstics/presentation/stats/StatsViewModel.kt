@@ -38,7 +38,6 @@ class StatsViewModel(
     var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
-
     private val repository = StatsRepository(db)
 
     private var calendar = CalendarClass()
