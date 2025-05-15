@@ -1,7 +1,6 @@
 package com.example.finanstics.presentation.stats
 
 import com.example.finanstics.db.Action
-import com.example.finanstics.db.Category
 
 sealed class DetailsUiState {
     object Default : DetailsUiState()
