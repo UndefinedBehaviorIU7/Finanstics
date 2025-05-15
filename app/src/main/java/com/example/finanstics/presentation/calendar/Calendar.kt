@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.finanstics.presentation.stats.Divider
+import com.example.finanstics.ui.theme.Divider
 import com.example.finanstics.ui.theme.icons.LeftIcon
 import com.example.finanstics.ui.theme.icons.RightIcon
 

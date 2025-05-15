@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.finanstics.db.Action
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.CalendarClass
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,13 +59,26 @@ class DetailsViewModel(
         _uiState.value = DetailsUiState.Default
     }
 
-    fun isChosen(
-        name: String,
-        type: Int
-    ): Boolean {
-        return when (val uiState = _uiState.value) {
-            is DetailsUiState.Default -> false
-            is DetailsUiState.Detailed -> uiState.chosen == name && uiState.type == type
+    fun viewAction(action: Action) {
+        val uiState = _uiState.value
+        if (uiState is DetailsUiState.Detailed) {
+            _uiState.value = DetailsUiState.DetailedAction(
+                actions = uiState.actions,
+                chosen = uiState.chosen,
+                action = action,
+                type = uiState.type
+            )
+        }
+    }
+
+    fun hideAction() {
+        val uiState = _uiState.value
+        if (uiState is DetailsUiState.DetailedAction) {
+            _uiState.value = DetailsUiState.Detailed(
+                actions = uiState.actions,
+                chosen = uiState.chosen,
+                type = uiState.type
+            )
         }
     }
 

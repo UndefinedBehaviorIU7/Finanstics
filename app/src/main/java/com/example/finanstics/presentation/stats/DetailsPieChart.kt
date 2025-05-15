@@ -37,8 +37,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.finanstics.R
 import com.example.finanstics.db.Action
+import com.example.finanstics.presentation.actionView.LocalActionView
 import com.example.finanstics.presentation.calendar.CalendarClass
 import com.example.finanstics.ui.theme.Blue
+import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
@@ -111,10 +113,11 @@ fun DetailsPieChartItem(
     vm: DetailsViewModel
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
+    var showAction by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { isAnimationPlayed = true }
 
     Surface(
-        modifier = Modifier.padding(vertical = 10.dp),
+        modifier = Modifier.padding(vertical = 20.dp),
         color = Color.Transparent
     ) {
         Column {
@@ -154,27 +157,77 @@ fun DetailsPieChartItem(
 
             Box(modifier = Modifier.heightIn(max = 1200.dp)) {
                 val uiState by vm.uiState.collectAsState()
-                if (uiState is DetailsUiState.Detailed) {
-                    val detailedState = uiState as DetailsUiState.Detailed
-                    if (detailedState.chosen == data.first && detailedState.type == type) {
-                        LazyColumn(Modifier.padding(top = 5.dp)) {
-                            items(detailedState.actions) { action ->
-                                ActionInfo(
-                                    action = action,
-                                    totalSum = data.second,
-                                    widthSize = widthSize,
-                                    onClick = { vm.hideDetailedActions() },
-                                    color = color
-                                )
+                when (uiState) {
+                    is DetailsUiState.Detailed -> {
+                        val detailedState = uiState as DetailsUiState.Detailed
+                        if (detailedState.chosen == data.first && detailedState.type == type) {
+                            LazyColumn(
+                                modifier = Modifier.padding(top = 5.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                items(detailedState.actions) { action ->
+                                    ActionInfo(
+                                        action = action,
+                                        totalSum = data.second,
+                                        widthSize = widthSize,
+                                        onClick = {
+                                            showAction = true
+                                            vm.viewAction(action)
+                                        },
+                                        color = color
+                                    )
+                                }
                             }
                         }
                     }
+                    is DetailsUiState.DetailedAction -> {
+                        val detailedState = uiState as DetailsUiState.DetailedAction
+                        if (detailedState.chosen == data.first && detailedState.type == type) {
+                            LazyColumn(
+                                modifier = Modifier.padding(top = 5.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                items(detailedState.actions) { action ->
+                                    ActionInfo(
+                                        action = action,
+                                        totalSum = data.second,
+                                        widthSize = widthSize,
+                                        onClick = {
+                                            showAction = true
+                                            vm.viewAction(action)
+                                        },
+                                        color = color
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    else -> {}
                 }
+            }
+
+            val uiState by vm.uiState.collectAsState()
+            if (uiState is DetailsUiState.DetailedAction) {
+                val detState = uiState as DetailsUiState.DetailedAction
+                LocalActionView(
+                    action = detState.action,
+                    category = detState.chosen,
+                    isVisible = showAction,
+                    onDismiss = {
+                        showAction = false
+                        vm.hideAction()
+                    },
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(250.dp),
+                    color = color
+                )
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Suppress("MagicNumber")
 fun ActionInfo(
@@ -193,15 +246,20 @@ fun ActionInfo(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 5.dp)
+            .padding(top = 25.dp)
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            modifier = Modifier.weight(3f),
-            text = action.name,
-            color = MaterialTheme.colorScheme.secondary
-        )
+        Column(Modifier.weight(3f)) {
+            Text(
+                text = action.name,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = dateToString(action.date),
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
 
         BarLen(
             modifier = Modifier.weight(4f),
@@ -212,9 +270,11 @@ fun ActionInfo(
         )
 
         Text(
-            modifier = Modifier.weight(2f).padding(start = 15.dp),
+            modifier = Modifier
+                .weight(2f)
+                .padding(start = 15.dp),
             text = action.value.toString(),
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -250,4 +310,21 @@ fun BarLen(
                 .width(barLen)
         )
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun dateToString(
+    date: LocalDate
+): String {
+    var day = "${date.dayOfMonth}"
+    if (day.length == 1) {
+        day = "0$day"
+    }
+
+    var month = "${date.monthValue}"
+    if (month.length == 1) {
+        month = "0$month"
+    }
+
+    return "$day.$month.${date.year}"
 }

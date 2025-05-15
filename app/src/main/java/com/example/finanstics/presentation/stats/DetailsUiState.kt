@@ -10,4 +10,11 @@ sealed class DetailsUiState {
         val chosen: String,
         val type: Int
     ) : DetailsUiState()
+
+    data class DetailedAction(
+        val actions: List<Action>,
+        val chosen: String,
+        val action: Action,
+        val type: Int
+    ) : DetailsUiState()
 }
