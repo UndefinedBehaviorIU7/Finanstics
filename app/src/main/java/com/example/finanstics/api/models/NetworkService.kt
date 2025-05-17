@@ -91,4 +91,9 @@ interface NetworkService {
 
     @GET("groups/all")
     suspend fun getAllGroups(): Response<List<Group>>
+
+    @GET("/users/{userId}/groups")
+    suspend fun getUserGroups(
+        @Path("userId") userId: Int
+    ): Response<List<Group>>
 }
