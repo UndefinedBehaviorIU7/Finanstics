@@ -8,17 +8,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -31,12 +36,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.R
 import com.example.finanstics.api.models.Group
+import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.ui.theme.icons.CircleIcon
+import com.example.finanstics.ui.theme.icons.PlusCircleIcon
 
 @ExperimentalMaterial3Api
 @Suppress("MagicNumber", "LongMethod")
@@ -60,8 +70,21 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
+                IconButton(
+                    onClick = { navController.navigateUp() },
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.step_back),
+                        modifier = Modifier.size(24.dp).fillMaxHeight(),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
                 SearchBar(
                     query = searchQuery.value,
                     onQueryChange = { query ->
@@ -79,7 +102,10 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                             contentDescription = "Search Icon"
                         )
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .width(40.dp)
+                        .weight(1f)
+                        .padding(vertical = 8.dp),
                     onSearch = {
                         if (searchQuery.value.isNotEmpty()) {
                             vm.searchGroups(searchQuery.value)
@@ -127,15 +153,15 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Image(
-                painter = painterResource(R.drawable.placeholder),
-                contentDescription = "Add group",
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.End)
-                    .padding(end = 10.dp, top = 10.dp, bottom = 10.dp)
-                    .clickable {}
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                PlusActionButton(
+                    onClick = {},
+                    offsetX = 0.dp
+                )
+            }
         }
     }
 }
@@ -185,4 +211,31 @@ fun GroupCard(navController: NavController, group: Group) {
         thickness = 2.dp,
         color = MaterialTheme.colorScheme.tertiary
     )
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun PlusActionButton(
+    onClick: () -> Unit,
+    offsetX: Dp
+) {
+    Box(
+        modifier = Modifier.offset(x = offsetX)
+    ) {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = "Add",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable { onClick }
+        )
+        Icon(
+            imageVector = PlusCircleIcon,
+            contentDescription = "Add",
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(50.dp)
+        )
+    }
 }
