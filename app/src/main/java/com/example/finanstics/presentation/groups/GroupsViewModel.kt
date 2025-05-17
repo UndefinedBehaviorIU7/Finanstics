@@ -3,8 +3,6 @@ package com.example.finanstics.presentation.groups
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
