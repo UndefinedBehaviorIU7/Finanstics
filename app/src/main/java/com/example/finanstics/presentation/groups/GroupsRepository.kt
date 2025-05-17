@@ -2,15 +2,20 @@ package com.example.finanstics.presentation.groups
 
 import android.content.Context
 import com.example.finanstics.R
+import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.Group
+import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import retrofit2.Response
 
 class GroupsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun getGroups(): GroupsUiState {
         return try {
-            val response = RetrofitInstance.api.getAllGroups()
+            val preferencesManager = PreferencesManager(context)
+            val userId = preferencesManager.getInt("id", -1)
+            val apiRepository = ApiRepository()
+            val response = apiRepository.getUserGroups(userId)
             handleResponse(response)
         } catch (e: Exception) {
             GroupsUiState.Error(
@@ -28,7 +33,7 @@ class GroupsRepository(private val context: Context) {
             val body = response.body()
             if (body != null) {
                 GroupsUiState.All(
-                    groups = emptyList()
+                    groups = body
                 )
             } else {
                 GroupsUiState.Error(
