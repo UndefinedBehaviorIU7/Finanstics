@@ -2,6 +2,7 @@ package com.example.finanstics.presentation.groups
 
 import android.content.Context
 import com.example.finanstics.R
+import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.Group
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
@@ -13,7 +14,8 @@ class GroupsRepository(private val context: Context) {
         return try {
             val preferencesManager = PreferencesManager(context)
             val userId = preferencesManager.getInt("id", -1)
-            val response = RetrofitInstance.api.getUserGroups(userId)
+            val apiRepository = ApiRepository()
+            val response = apiRepository.getUserGroups(userId)
             handleResponse(response)
         } catch (e: Exception) {
             GroupsUiState.Error(
