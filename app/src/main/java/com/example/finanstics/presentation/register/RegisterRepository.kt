@@ -176,7 +176,7 @@ class RegisterRepository(private val context: Context) {
                 )
                 return handleResponseVK(resp, vkId, username, password, image, tag)
             }
-            regState =  RegisterUiState.VKError(
+            regState = RegisterUiState.VKError(
                 login = tag,
                 password = password,
                 image = image,
@@ -185,7 +185,7 @@ class RegisterRepository(private val context: Context) {
                 errorMsg = context.getString(R.string.already_registered)
             )
         } catch (e: Exception) {
-            regState =  RegisterUiState.VKError(
+            regState = RegisterUiState.VKError(
                 login = tag,
                 password = password,
                 image = image,
