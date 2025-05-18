@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.R
+import com.vk.id.AccessToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -13,6 +14,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle())
     val uiState = _uiState.asStateFlow()
+
+    private val _vk = MutableStateFlow<AccessToken?>(null)
+    val vk = _vk.asStateFlow()
 
     fun updateField(field: String, newValue: String) {
         val current = _uiState.value
@@ -62,5 +66,20 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.value = result
             }
         }
+    }
+
+    fun loginVK() {
+        val vk = _vk.value
+        if (vk != null) {
+            viewModelScope.launch {
+                val result = repository.logInVK(vk)
+                _uiState.value = result
+            }
+        }
+    }
+
+    fun handleOneTapAuth(vk: AccessToken) {
+        _vk.value = vk
+        loginVK()
     }
 }

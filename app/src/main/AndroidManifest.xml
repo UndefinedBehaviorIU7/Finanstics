@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="com.example.finanstics.FinansticsApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/finanstics_logo"
@@ -26,5 +27,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

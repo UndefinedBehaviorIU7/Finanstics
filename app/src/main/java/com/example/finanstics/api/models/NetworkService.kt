@@ -13,6 +13,16 @@ interface NetworkService {
         @Path("user_id") userId: Int
     ): Response<User>
 
+    @GET("users/tags/{tag}")
+    suspend fun getUserByTag(
+        @Path("tag") tag: String
+    ): Response<User>
+
+    @GET("users/vk/{vk_id}")
+    suspend fun getUserVK(
+        @Path("vk_id") vkId: Int
+    ): Response<User>
+
     @POST("users/{user_id}/add_category")
     suspend fun addCategory(
         @Path("user_id") userId: Int,
@@ -65,11 +75,25 @@ interface NetworkService {
         @Query("image") image: String,
     ): Response<UserResponse>
 
+    @POST("register/vk")
+    suspend fun registerVK(
+        @Query("vk_id") vkId: Int,
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
+        @Query("image") image: String,
+    ): Response<UserResponse>
+
     @GET("login")
     suspend fun login(
         @Query("tag") tag: String,
         @Query("password") password: String,
     ): Response<UserResponse>
+
+    @GET("login/vk")
+    suspend fun loginVK(
+        @Query("vk_id") vkId: Int
+    ): Response<VKUserResponse>
 
     @GET("groups/{group_id}/actions")
     suspend fun getGroupActionsByDate(

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finanstics.R
+import com.vk.id.AccessToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -13,6 +14,9 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
     private val _uiState = MutableStateFlow<RegisterUiState>(RegisterUiState.Idle())
     val uiState = _uiState.asStateFlow()
+
+    private val _vk = MutableStateFlow<AccessToken?>(null)
+    val vk = _vk.asStateFlow()
 
     @Suppress("ComplexMethod")
     fun updateField(field: String, value: Any?) {
@@ -28,6 +32,13 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 }
             }
 
+            is RegisterUiState.VKIdle -> {
+                _uiState.value = when (field) {
+                    "login" -> current.copy(login = value as String)
+                    else -> current
+                }
+            }
+
             is RegisterUiState.Error -> {
                 _uiState.value = RegisterUiState.Idle(
                     login = if (field == "login") value as String else current.login,
@@ -39,12 +50,18 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 )
             }
 
+            is RegisterUiState.VKError -> {
+                _uiState.value = when (field) {
+                    "login" -> current.copy(login = value as String)
+                    else -> current
+                }
+            }
+
             else -> Unit
         }
     }
 
     fun register() {
-
         val current = _uiState.value
 
         if (current is RegisterUiState.Error) {
@@ -101,5 +118,48 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 _uiState.value = result
             }
         }
+    }
+
+    fun registerVK() {
+        val current = _uiState.value
+        if (current is RegisterUiState.VKIdle) {
+            val vkId = current.vkId
+            val login = current.login
+            val username = current.username
+            val password = current.password
+            val image = current.image
+
+            viewModelScope.launch {
+                val result = repository.registerVK(vkId, username, password, image, login)
+                _uiState.value = result
+            }
+        }
+        if (current is RegisterUiState.VKError) {
+            val vkId = current.vkId
+            val login = current.login
+            val username = current.username
+            val password = current.password
+            val image = current.image
+
+            viewModelScope.launch {
+                val result = repository.registerVK(vkId, username, password, image, login)
+                _uiState.value = result
+            }
+        }
+    }
+
+    fun vkIdle(vk: AccessToken) {
+        _uiState.value = RegisterUiState.VKIdle(
+            username = vk.userData.firstName + " " + vk.userData.lastName,
+            login = "",
+            password = "",
+            vkId = vk.userID.toInt(),
+            image = vk.userData.photo200!!
+        )
+    }
+
+    fun handleOneTapAuth(vk: AccessToken) {
+        _vk.value = vk
+        vkIdle(vk)
     }
 }
