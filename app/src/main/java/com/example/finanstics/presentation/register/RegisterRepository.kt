@@ -1,15 +1,12 @@
 package com.example.finanstics.presentation.register
 
 import android.content.Context
-import androidx.compose.ui.res.stringResource
 import com.example.finanstics.R
 import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.api.RetrofitInstance
 import com.example.finanstics.api.models.UserResponse
-import com.example.finanstics.presentation.login.LoginUiState
 import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
-import com.vk.id.AccessToken
 import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
@@ -202,12 +199,11 @@ suspend fun tagExists(tag: String): Boolean {
     val apiRep = ApiRepository()
     try {
         val resp = apiRep.getUserByTag(tag)
-        if (resp.isSuccessful){
+        if (resp.isSuccessful) {
             return (resp.body() != null)
         }
         return false
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
         return false
     }
 }

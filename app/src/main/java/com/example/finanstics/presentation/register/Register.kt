@@ -236,7 +236,6 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                             )
                         }
 
-
 //                        ImageForm(
 //                            uiState.image,
 //                            text = stringResource(R.string.select_img),

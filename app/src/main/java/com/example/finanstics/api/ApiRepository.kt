@@ -9,8 +9,6 @@ import com.example.finanstics.api.models.User
 import com.example.finanstics.api.models.UserResponse
 import com.example.finanstics.api.models.VKUserResponse
 import retrofit2.Response
-import retrofit2.http.POST
-import retrofit2.http.Query
 
 @Suppress("TooManyFunctions")
 class ApiRepository {
@@ -134,15 +132,21 @@ class ApiRepository {
         )
     }
 
-    suspend fun getUserVK(vkId: Int) : Response<User> {
+    suspend fun getUserVK(vkId: Int): Response<User> {
         return RetrofitInstance.api.getUserVK(vkId)
     }
 
     suspend fun getUserByTag(tag: String): Response<User> {
-        return  RetrofitInstance.api.getUserByTag(tag)
+        return RetrofitInstance.api.getUserByTag(tag)
     }
 
-    suspend fun registerVK(vkId: Int, username: String, password: String, tag: String, image: String): Response<UserResponse> {
+    suspend fun registerVK(
+        vkId: Int,
+        username: String,
+        password: String,
+        tag: String,
+        image: String
+    ): Response<UserResponse> {
         return RetrofitInstance.api.registerVK(
             vkId,
             username,

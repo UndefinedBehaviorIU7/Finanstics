@@ -9,9 +9,6 @@ import com.example.finanstics.api.models.VKUserResponse
 import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 import com.vk.id.AccessToken
-import com.vk.id.VKIDUser
-import com.vk.id.refreshuser.VKIDGetUserCallback
-import com.vk.id.refreshuser.VKIDGetUserFail
 import retrofit2.Response
 
 class LoginRepository(private val context: Context) {
