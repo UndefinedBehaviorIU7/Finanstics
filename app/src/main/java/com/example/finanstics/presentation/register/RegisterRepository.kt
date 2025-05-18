@@ -38,7 +38,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
-    @Suppress("MagicNumber", "ComplexCondition")
+    @Suppress("MagicNumber")
     private fun handleResponse(
         response: Response<UserResponse>,
         username: String,

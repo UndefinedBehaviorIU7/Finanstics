@@ -40,7 +40,7 @@ import com.example.finanstics.presentation.forms.Form
 import com.vk.id.onetap.compose.onetap.OneTap
 import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 
-@Suppress("MagicNumber", "LongMethod")
+@Suppress("MagicNumber", "LongMethod", "ComplexCondition")
 @Composable
 fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) {
     val launcher = rememberLauncherForActivityResult(
