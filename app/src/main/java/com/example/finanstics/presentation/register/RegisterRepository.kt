@@ -154,8 +154,17 @@ class RegisterRepository(private val context: Context) {
         image: String,
         tag: String
     ): RegisterUiState {
+        if (tagExists(tag)) {
+            return RegisterUiState.VKError(
+                login = tag,
+                password = password,
+                image = image,
+                username = username,
+                vkId = vkId,
+                errorMsg = context.getString(R.string.tag_exists)
+            )
+        }
         val apiRep = ApiRepository()
-
         val userResp = apiRep.getUserVK(vkId)
         try {
             if (!userResp.isSuccessful) {
@@ -186,5 +195,19 @@ class RegisterRepository(private val context: Context) {
                 errorMsg = context.getString(R.string.unknown_error)
             )
         }
+    }
+}
+
+suspend fun tagExists(tag: String): Boolean {
+    val apiRep = ApiRepository()
+    try {
+        val resp = apiRep.getUserByTag(tag)
+        if (resp.isSuccessful){
+            return (resp.body() != null)
+        }
+        return false
+    }
+    catch (e: Exception) {
+        return false
     }
 }

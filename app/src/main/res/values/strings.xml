@@ -16,6 +16,7 @@
     <string name="register">Зарегистрироваться</string>
     <string name="registered">Пользователь успешно зарегистрирован</string>
     <string name="already_registered">Пользователь уже существует</string>
+    <string name="tag_exists">Данный тег уже занят</string>
     <string name="have_an_account">Уже есть аккаунт</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
     <string name="empty_fields">Заполните все поля для продолжения</string>
