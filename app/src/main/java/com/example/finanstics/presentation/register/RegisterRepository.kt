@@ -87,7 +87,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "LongParameterList")
     private fun handleResponseVK(
         response: Response<UserResponse>,
         vkId: Int,
@@ -144,6 +144,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun registerVK(
         vkId: Int,
         username: String,
@@ -161,6 +162,7 @@ class RegisterRepository(private val context: Context) {
                 errorMsg = context.getString(R.string.tag_exists)
             )
         }
+        var regState: RegisterUiState
         val apiRep = ApiRepository()
         val userResp = apiRep.getUserVK(vkId)
         try {
@@ -174,7 +176,7 @@ class RegisterRepository(private val context: Context) {
                 )
                 return handleResponseVK(resp, vkId, username, password, image, tag)
             }
-            return RegisterUiState.VKError(
+            regState =  RegisterUiState.VKError(
                 login = tag,
                 password = password,
                 image = image,
@@ -183,7 +185,7 @@ class RegisterRepository(private val context: Context) {
                 errorMsg = context.getString(R.string.already_registered)
             )
         } catch (e: Exception) {
-            return RegisterUiState.VKError(
+            regState =  RegisterUiState.VKError(
                 login = tag,
                 password = password,
                 image = image,
@@ -192,9 +194,11 @@ class RegisterRepository(private val context: Context) {
                 errorMsg = context.getString(R.string.unknown_error)
             )
         }
+        return regState
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 suspend fun tagExists(tag: String): Boolean {
     val apiRep = ApiRepository()
     try {
@@ -202,8 +206,6 @@ suspend fun tagExists(tag: String): Boolean {
         if (resp.isSuccessful) {
             return (resp.body() != null)
         }
-        return false
-    } catch (e: Exception) {
-        return false
-    }
+    } catch (_: Exception) { }
+    return false
 }

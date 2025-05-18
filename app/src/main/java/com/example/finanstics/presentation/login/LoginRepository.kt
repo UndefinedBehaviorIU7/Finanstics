@@ -119,9 +119,10 @@ class LoginRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun logInVK(vk: AccessToken): LoginUiState {
+        var logInState: LoginUiState
         val apiRep = ApiRepository()
-
         val userResp = apiRep.getUserVK(vk.userID.toInt())
         try {
             if (userResp.isSuccessful) {
@@ -131,17 +132,18 @@ class LoginRepository(private val context: Context) {
                     return handleResponseVK(logResp, vk)
                 }
             }
-            return LoginUiState.Error(
+            logInState = LoginUiState.Error(
                 login = "",
                 password = "",
                 errorMsg = context.getString(R.string.no_user_vk_id)
             )
         } catch (e: Exception) {
-            return LoginUiState.Error(
+            logInState = LoginUiState.Error(
                 login = "",
                 password = "",
                 errorMsg = context.getString(R.string.unknown_error)
             )
         }
+        return logInState
     }
 }
