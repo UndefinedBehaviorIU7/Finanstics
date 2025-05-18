@@ -10,6 +10,7 @@
     <string name="no_user_vk_id">Пользователь не зарегистрирован через VK ID</string>
     <string name="log_in">Войти</string>
     <string name="log_in_success">Вход выполнен</string>
+    <string name="you_need_tag">Для завершения регистрации введите тег</string>
     <string name="select_img">Выберите изображение</string>
     <string name="selected_img">Выбранное изображение</string>
     <string name="img_placeholder">Стандартное изображение</string>

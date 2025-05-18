@@ -77,7 +77,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
             Spacer(modifier = Modifier.weight(0.2f))
 
             if ((uiState is RegisterUiState.Idle) || (uiState is RegisterUiState.Error) ||
-                (uiState is RegisterUiState.VKIdle)
+                (uiState is RegisterUiState.VKIdle) || (uiState is RegisterUiState.VKError)
             ) {
                 Image(
                     painter = painterResource(R.drawable.logo),
@@ -166,7 +166,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Для завершения регистрации введите тег",
+                                text = stringResource(R.string.you_need_tag),
                                 textAlign = TextAlign.Center,
                                 fontSize = 18.sp,
                                 color = MaterialTheme.colorScheme.primary
@@ -178,17 +178,16 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 isError = false,
                                 lambda = { vm.updateField("login", it) }
                             )
-
-                            ButtonForm(
-                                modifier = Modifier.weight(0.5f),
-                                buttonText = stringResource(R.string.register),
-                                navText = stringResource(R.string.have_an_account),
-                                action = { vm.registerVK() },
-                                navigate = { navController.navigate(Navigation.LOGIN.toString()) }
-                            )
-
-                            Spacer(modifier = Modifier.weight(0.5f))
                         }
+                        ButtonForm(
+                            modifier = Modifier.weight(0.5f),
+                            buttonText = stringResource(R.string.register),
+                            navText = stringResource(R.string.have_an_account),
+                            action = { vm.registerVK() },
+                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.5f))
                     }
                 }
 
@@ -267,6 +266,13 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                             modifier = Modifier.padding(start = 60.dp, end = 60.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(
+                                text = stringResource(R.string.you_need_tag),
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+
                             Form(
                                 uiState.login,
                                 label = stringResource(R.string.tag),
@@ -280,6 +286,15 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                             )
                         }
+                        ButtonForm(
+                            modifier = Modifier.weight(0.5f),
+                            buttonText = stringResource(R.string.register),
+                            navText = stringResource(R.string.have_an_account),
+                            action = { vm.registerVK() },
+                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.5f))
                     }
                 }
 

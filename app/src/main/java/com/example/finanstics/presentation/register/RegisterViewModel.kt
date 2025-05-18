@@ -50,6 +50,13 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 )
             }
 
+            is RegisterUiState.VKError -> {
+                _uiState.value = when (field) {
+                    "login" -> current.copy(login = value as String)
+                    else -> current
+                }
+            }
+
             else -> Unit
         }
     }
@@ -116,6 +123,18 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     fun registerVK() {
         val current = _uiState.value
         if (current is RegisterUiState.VKIdle) {
+            val vkId = current.vkId
+            val login = current.login
+            val username = current.username
+            val password = current.password
+            val image = current.image
+
+            viewModelScope.launch {
+                val result = repository.registerVK(vkId, username, password, image, login)
+                _uiState.value = result
+            }
+        }
+        if (current is RegisterUiState.VKError) {
             val vkId = current.vkId
             val login = current.login
             val username = current.username
