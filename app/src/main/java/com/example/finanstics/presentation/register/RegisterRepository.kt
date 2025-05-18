@@ -38,7 +38,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "ComplexCondition")
     private fun handleResponse(
         response: Response<UserResponse>,
         username: String,
@@ -144,7 +144,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "ReturnCount")
     suspend fun registerVK(
         vkId: Int,
         username: String,
