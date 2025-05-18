@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,8 @@ import com.example.finanstics.R
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.ButtonForm
 import com.example.finanstics.presentation.forms.Form
+import com.vk.id.onetap.compose.onetap.OneTap
+import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -89,6 +92,15 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                                 label = stringResource(R.string.password),
                                 isError = false,
                                 lambda = { vm.updateField("password", it) }
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            OneTap(
+                                onAuth = { oAuth, token ->
+                                    vm.handleOneTapAuth(token)
+                                },
+                                scenario = OneTapTitleScenario.SignIn,
                             )
                         }
 

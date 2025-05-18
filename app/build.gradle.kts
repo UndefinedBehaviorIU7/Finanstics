@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("vkid.manifest.placeholders")
 }
 
 android {
@@ -37,6 +38,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -47,7 +49,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -79,11 +80,15 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.1.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
-    implementation (libs.androidx.datastore.preferences)
-
+    implementation(libs.androidx.datastore.preferences)
 
     val room_version = "2.7.0"
 
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+
+    implementation("com.vk.id:vkid:2.4.0")
+    implementation("com.vk.id:onetap-compose:2.4.0")
 }

@@ -7,7 +7,10 @@ import com.example.finanstics.api.models.CategoryResponse
 import com.example.finanstics.api.models.Group
 import com.example.finanstics.api.models.User
 import com.example.finanstics.api.models.UserResponse
+import com.example.finanstics.api.models.VKUserResponse
 import retrofit2.Response
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 @Suppress("TooManyFunctions")
 class ApiRepository {
@@ -103,6 +106,12 @@ class ApiRepository {
         )
     }
 
+    suspend fun loginVK(
+        vkId: Int,
+    ): Response<VKUserResponse> {
+        return RetrofitInstance.api.loginVK(vkId)
+    }
+
     suspend fun getGroupActions(
         groupId: Int,
     ): Response<List<Action>> {
@@ -122,6 +131,24 @@ class ApiRepository {
             year,
             month,
             day
+        )
+    }
+
+    suspend fun getUserVK(vkId: Int) : Response<User> {
+        return RetrofitInstance.api.getUserVK(vkId)
+    }
+
+    suspend fun getUserByTag(tag: String): Response<User> {
+        return  RetrofitInstance.api.getUserByTag(tag)
+    }
+
+    suspend fun registerVK(vkId: Int, username: String, password: String, tag: String, image: String): Response<UserResponse> {
+        return RetrofitInstance.api.registerVK(
+            vkId,
+            username,
+            password,
+            tag,
+            image
         )
     }
 
