@@ -6,37 +6,49 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.R
 import com.example.finanstics.api.models.Group
+import com.example.finanstics.presentation.Navigation
+import com.example.finanstics.presentation.preferencesManager.PreferencesManager
+import com.example.finanstics.ui.theme.icons.CircleIcon
+import com.example.finanstics.ui.theme.icons.PlusCircleIcon
 
 @ExperimentalMaterial3Api
 @Suppress("MagicNumber", "LongMethod")
@@ -50,58 +62,33 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.background)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 10.dp, vertical = 10.dp),
+                .fillMaxSize().padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+
             Row(
+                modifier = Modifier
+                    .fillMaxWidth().height(IntrinsicSize.Min),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                SearchBar(
-                    query = searchQuery.value,
-                    onQueryChange = { query ->
-                        searchQuery.value = query
-                        if (query.isNotEmpty()) {
-                            vm.searchGroups(query)
-                        } else {
-                            vm.fetchGroups()
-                        }
-                    },
-                    placeholder = { Text("Search Groups") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search Icon"
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    onSearch = {
-                        if (searchQuery.value.isNotEmpty()) {
-                            vm.searchGroups(searchQuery.value)
-                        }
-                    },
-                    active = searchQuery.value.isNotEmpty(),
-                    onActiveChange = { active ->
-                        if (!active) {
-                            vm.fetchGroups()
-                        }
-                    },
-                    content = {
-                        if (uiState is GroupsUiState.Search) {
-                            if (uiState.searchedGroups.isNotEmpty()) {
-                                GroupList(navController, groups = uiState.searchedGroups)
-                            }
-                        }
-                    },
-                    colors = SearchBarDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                IconButton(
+                    onClick = { navController.navigateUp() },
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                )
+                }
+
+                GroupSearchBar(vm, navController, uiState, searchQuery)
             }
 
             when (uiState) {
@@ -127,15 +114,16 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Image(
-                painter = painterResource(R.drawable.placeholder),
-                contentDescription = "Add group",
+            Row(
                 modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.End)
-                    .padding(end = 10.dp, top = 10.dp, bottom = 10.dp)
-                    .clickable {}
-            )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                PlusActionButton(
+                    onClick = {},
+                    offsetX = 0.dp
+                )
+            }
         }
     }
 }
@@ -157,10 +145,16 @@ fun GroupList(navController: NavController, groups: List<Group>) {
 @Suppress("MagicNumber")
 @Composable
 fun GroupCard(navController: NavController, group: Group) {
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {}
+            .clickable {
+                preferencesManager.saveData("groupId", -1)
+                navController.navigate(Navigation.GROUP_STATS.toString())
+            }
     ) {
         Row(
             modifier = Modifier.padding(10.dp),
@@ -184,5 +178,82 @@ fun GroupCard(navController: NavController, group: Group) {
     HorizontalDivider(
         thickness = 2.dp,
         color = MaterialTheme.colorScheme.tertiary
+    )
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun PlusActionButton(
+    onClick: () -> Unit,
+    offsetX: Dp
+) {
+    Box(
+        modifier = Modifier.offset(x = offsetX)
+    ) {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = "Add",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable { onClick }
+        )
+        Icon(
+            imageVector = PlusCircleIcon,
+            contentDescription = "Add",
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(50.dp)
+        )
+    }
+}
+
+@ExperimentalMaterial3Api
+@Suppress("MagicNumber")
+@Composable
+fun GroupSearchBar(
+    vm: GroupsViewModel,
+    navController: NavController,
+    uiState: GroupsUiState,
+    searchQuery: MutableState<String>
+) {
+    SearchBar(
+        query = searchQuery.value,
+        onQueryChange = { query ->
+            searchQuery.value = query
+            if (query.isNotEmpty()) {
+                vm.searchGroups(query)
+            } else {
+                vm.fetchGroups()
+            }
+        },
+        placeholder = { Text("Search Groups") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search Icon"
+            )
+        },
+        onSearch = {
+            if (searchQuery.value.isNotEmpty()) {
+                vm.searchGroups(searchQuery.value)
+            }
+        },
+        active = searchQuery.value.isNotEmpty(),
+        onActiveChange = { active ->
+            if (!active) {
+                vm.fetchGroups()
+            }
+        },
+        content = {
+            if (uiState is GroupsUiState.Search) {
+                if (uiState.searchedGroups.isNotEmpty()) {
+                    GroupList(navController, groups = uiState.searchedGroups)
+                }
+            }
+        },
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+        ),
     )
 }
