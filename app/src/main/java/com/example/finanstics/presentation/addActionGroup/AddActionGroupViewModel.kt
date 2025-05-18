@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanstics.api.models.Group
 import com.example.finanstics.db.Action
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.DataClass
@@ -15,30 +14,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-enum class Error(val str: String) {
-    NAME("имя"),
-    TYPE("тип действия"),
-    MONEY("сумма"),
-    DATE("дата"),
-    CATEGORY("категория"),
-    DESCRIPTION("описание"),
-    SERVER("Сервер"),
-    OK("ok"),
-    UISTATE("uiState")
-}
-
-class AddActionViewModel(
+class AddActionGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
     val db = FinansticsDatabase.getDatabase(application)
 
-    private val repository = AddActionRepository(db, application.applicationContext)
+    private val repository = AddActionGroupRepository(db, application.applicationContext)
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
-    private val _uiState = MutableStateFlow<AddActionUiState>(
-        AddActionUiState.Idle(
+    private val _uiState = MutableStateFlow<AddActionGroupUiState>(
+        AddActionGroupUiState.Idle(
             typeAction = ActionType.NULL,
             nameAction = "",
             moneyAction = -1,
@@ -46,11 +33,8 @@ class AddActionViewModel(
             category = "",
             description = "",
             allCategory = listOf(),
-            allGroup = listOf(),
-            groups = listOf(),
             menuExpandedType = false,
             menuExpandedCategory = false,
-            menuExpandedGroup = false
         )
     )
 
@@ -61,20 +45,7 @@ class AddActionViewModel(
             val categoryNames = repository.getCategoriesNames()
             _uiState.update { currentState ->
                 when (currentState) {
-                    is AddActionUiState.Idle -> currentState.copy(allCategory = categoryNames)
-                    else -> currentState
-                }
-            }
-        }
-    }
-
-    fun getUserGroupsList() {
-        viewModelScope.launch {
-            val groups = repository.getUserGroup()
-            val groupNames = groups?.map { it } ?: emptyList()
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is AddActionUiState.Idle -> currentState.copy(allGroup = groupNames)
+                    is AddActionGroupUiState.Idle -> currentState.copy(allCategory = categoryNames)
                     else -> currentState
                 }
             }
@@ -83,7 +54,6 @@ class AddActionViewModel(
 
     init {
         getCategoriesList()
-        getUserGroupsList()
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
@@ -94,28 +64,11 @@ class AddActionViewModel(
         newData: String? = null,
         newCategory: String? = null,
         newDescription: String? = null,
-        newGroups: List<Group>? = null,
         newMenuExpandedType: Boolean? = null,
         newMenuExpandedCategory: Boolean? = null,
-        newMenuExpandedGroup: Boolean? = null
     ) {
         when (val current = _uiState.value) {
-            is AddActionUiState.Idle -> {
-                _uiState.value = current.copy(
-                    typeAction = newTypeAction ?: current.typeAction,
-                    nameAction = newNameAction ?: current.nameAction,
-                    moneyAction = newMoneyAction ?: current.moneyAction,
-                    data = newData ?: current.data,
-                    category = newCategory ?: current.category,
-                    description = newDescription ?: current.description,
-                    groups = newGroups ?: current.groups,
-                    menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
-                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory,
-                    menuExpandedGroup = newMenuExpandedGroup ?: current.menuExpandedGroup
-                )
-            }
-
-            is AddActionUiState.Error -> {
+            is AddActionGroupUiState.Idle -> {
                 _uiState.value = current.copy(
                     typeAction = newTypeAction ?: current.typeAction,
                     nameAction = newNameAction ?: current.nameAction,
@@ -128,7 +81,20 @@ class AddActionViewModel(
                 )
             }
 
-            is AddActionUiState.Loading -> {
+            is AddActionGroupUiState.Error -> {
+                _uiState.value = current.copy(
+                    typeAction = newTypeAction ?: current.typeAction,
+                    nameAction = newNameAction ?: current.nameAction,
+                    moneyAction = newMoneyAction ?: current.moneyAction,
+                    data = newData ?: current.data,
+                    category = newCategory ?: current.category,
+                    description = newDescription ?: current.description,
+                    menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
+                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
+                )
+            }
+
+            is AddActionGroupUiState.Loading -> {
                 _uiState.value = current.copy(
                     typeAction = newTypeAction ?: current.typeAction,
                     nameAction = newNameAction ?: current.nameAction,
@@ -147,7 +113,7 @@ class AddActionViewModel(
 
     @Suppress("MagicNumber", "LongParameterList", "ComplexMethod", "ReturnCount")
     fun validateIdle(
-        state: AddActionUiState.Idle
+        state: AddActionGroupUiState.Idle
     ): Error {
         if (state.nameAction.isBlank()) return Error.NAME
         if (state.typeAction == ActionType.NULL) return Error.TYPE
@@ -158,11 +124,11 @@ class AddActionViewModel(
         return Error.OK
     }
 
-    fun createErrorState(
-        current: AddActionUiState.Idle,
+    fun createErrorStateGroup(
+        current: AddActionGroupUiState.Idle,
         error: Error
-    ): AddActionUiState.Error {
-        return AddActionUiState.Error(
+    ): AddActionGroupUiState.Error {
+        return AddActionGroupUiState.Error(
             typeAction = current.typeAction,
             nameAction = current.nameAction,
             moneyAction = current.moneyAction,
@@ -172,10 +138,7 @@ class AddActionViewModel(
             error = error,
             allCategory = current.allCategory,
             menuExpandedType = current.menuExpandedType,
-            menuExpandedCategory = current.menuExpandedCategory,
-            allGroup = current.allGroup,
-            groups = current.groups,
-            menuExpandedGroup = current.menuExpandedGroup
+            menuExpandedCategory = current.menuExpandedCategory
         )
     }
 
@@ -212,24 +175,24 @@ class AddActionViewModel(
     fun addAction(): Error {
         val current = uiState.value
         var error: Error = Error.UISTATE
-        if (current is AddActionUiState.Idle) {
+        if (current is AddActionGroupUiState.Idle) {
             viewModelScope.launch {
                 error = validateIdle(current)
                 if (error == Error.OK) {
                     val data = DataClass.getDataByString(current.data)
-                    val action = Action(
-                        name = current.nameAction,
-                        type = current.typeAction.ordinal,
-                        description = current.description,
+                    val res = repository.AddActionGroupApi(
+                        actionName = current.nameAction,
+                        type = current.typeAction.toInt(),
                         value = current.moneyAction,
-                        date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
-                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
-                        createdAt = "2025-04-22T14:30:00"
+                        date = current.data,
+                        category = current.category,
+                        description = current.description,
                     )
-                    actionDao.insertAction(action)
-                    _uiState.value = AddActionUiState.Ok
+                    if (res == ErrorAddActionGroupApi.Ok) {
+                        error = Error.SERVER
+                    }
                 } else {
-                    _uiState.value = createErrorState(
+                    _uiState.value = createErrorStateGroup(
                         current = current,
                         error = error
                     )

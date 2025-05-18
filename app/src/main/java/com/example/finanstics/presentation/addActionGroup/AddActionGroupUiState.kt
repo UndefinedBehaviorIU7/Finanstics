@@ -1,8 +1,6 @@
 package com.example.finanstics.presentation.addAction
 
-import com.example.finanstics.api.models.Group
-
-sealed class AddActionUiState {
+sealed class AddActionGroupUiState {
     data class Idle(
         var typeAction: ActionType,
         var nameAction: String,
@@ -11,12 +9,9 @@ sealed class AddActionUiState {
         var category: String,
         var description: String,
         var allCategory: List<String>,
-        var allGroup: List<Group>,
-        var groups: List<Group>,
         val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean,
-        val menuExpandedGroup: Boolean,
-    ) : AddActionUiState()
+        val menuExpandedCategory: Boolean
+    ) : AddActionGroupUiState()
 
     data class Error(
         var typeAction: ActionType,
@@ -25,14 +20,11 @@ sealed class AddActionUiState {
         var data: String,
         var category: String,
         var description: String,
-        var allCategory: List<String>,
-        var allGroup: List<Group>,
-        var groups: List<Group>,
-        val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean,
-        val menuExpandedGroup: Boolean,
         val error: com.example.finanstics.presentation.addAction.Error,
-    ) : AddActionUiState()
+        var allCategory: List<String>,
+        val menuExpandedType: Boolean,
+        val menuExpandedCategory: Boolean
+    ) : AddActionGroupUiState()
 
     data class Loading(
         var typeAction: ActionType,
@@ -42,12 +34,9 @@ sealed class AddActionUiState {
         var category: String,
         var description: String,
         var allCategory: List<String>,
-        var allGroup: List<Group>,
-        var groups: List<Group>,
         val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean,
-        val menuExpandedGroup: Boolean,
-    ) : AddActionUiState()
+        val menuExpandedCategory: Boolean
+    ) : AddActionGroupUiState()
 
-    data object Ok : AddActionUiState()
+    data object Ok : AddActionGroupUiState()
 }

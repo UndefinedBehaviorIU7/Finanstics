@@ -34,7 +34,7 @@ class ApiRepository {
         date: String,
         categoryId: Int,
         description: String?,
-        groupId: Int?
+        groupId: List<Int>?
     ): Response<ActionResponse> {
         return RetrofitInstance.api.addAction(
             userId = userId,

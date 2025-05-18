@@ -7,11 +7,15 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.finanstics.api.models.Group
 import com.example.finanstics.presentation.Navigation
 import com.example.finanstics.presentation.forms.Form
 import com.example.finanstics.ui.theme.icons.CalendarIcon
@@ -198,6 +203,77 @@ fun TypeSelector(
     }
 }
 
+@Composable
+fun MultiTypeSelector(
+    selectedItems: List<Group>,
+    label: String,
+    expanded: Boolean,
+    typeActions: List<Group>,
+    onExpandChange: (Boolean) -> Unit,
+    onSelectionChanged: (List<Group>) -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box {
+        OutlinedTextField(
+            value = if (selectedItems.isEmpty()) "" else selectedItems.joinToString(),
+            onValueChange = {},
+            label = {
+                Text(
+                    label,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            },
+            readOnly = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            interactionSource = interactionSource,
+            colors = OutlinedTextFieldDefaults.colors()
+        )
+
+        LaunchedEffect(interactionSource) {
+            interactionSource.interactions.collect { interaction ->
+                if (interaction is PressInteraction.Release) {
+                    onExpandChange(true)
+                }
+            }
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandChange(false) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+        ) {
+            typeActions.forEach { item ->
+                val isChecked = selectedItems.contains(item)
+                DropdownMenuItem(
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = isChecked,
+                                onCheckedChange = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(item.name)
+                        }
+                    },
+                    onClick = {
+                        val newSelection = if (isChecked) {
+                            selectedItems - item
+                        } else {
+                            selectedItems + item
+                        }
+                        onSelectionChanged(newSelection)
+                    }
+                )
+            }
+        }
+    }
+}
+
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawIdle(
@@ -268,6 +344,16 @@ fun DrawIdle(
             isError = false,
             lambda = { vm.updateUIState(newDescription = it) }
         )
+
+        MultiTypeSelector(
+            selectedItems = uiState.groups,
+            label = "Категория",
+            expanded = uiState.menuExpandedGroup,
+            typeActions = uiState.allGroup,
+            onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
+            onSelectionChanged = { vm.updateUIState(newGroups = it) }
+        )
+
 
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth(),
