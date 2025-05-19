@@ -52,7 +52,8 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(onClick = { navController.navigateUp() }) {
