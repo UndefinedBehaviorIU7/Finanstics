@@ -10,7 +10,8 @@ sealed class AddActionGroupUiState {
         var description: String,
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean
+        val menuExpandedCategory: Boolean,
+        val duplication: Boolean
     ) : AddActionGroupUiState()
 
     data class Error(
@@ -23,7 +24,8 @@ sealed class AddActionGroupUiState {
         val error: com.example.finanstics.presentation.addAction.Error,
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean
+        val menuExpandedCategory: Boolean,
+        val duplication: Boolean
     ) : AddActionGroupUiState()
 
     data class Loading(
@@ -35,7 +37,8 @@ sealed class AddActionGroupUiState {
         var description: String,
         var allCategory: List<String>,
         val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean
+        val menuExpandedCategory: Boolean,
+        val duplication: Boolean
     ) : AddActionGroupUiState()
 
     data object Ok : AddActionGroupUiState()

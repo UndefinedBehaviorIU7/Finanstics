@@ -32,7 +32,7 @@ interface NetworkService {
         @Query("date_str") date: String,
         @Query("category_id") categoryId: Int,
         @Query("description") description: String?,
-        @Query("group_id") groupId: List<Int>?
+        @Query("groups_ids") groupId: List<Int>?
     ): Response<ActionResponse>
 
     @GET("users/{user_id}/actions/all")

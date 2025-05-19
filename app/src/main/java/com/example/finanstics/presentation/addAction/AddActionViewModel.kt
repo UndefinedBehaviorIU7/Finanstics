@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 enum class Error(val str: String) {
     NAME("имя"),
@@ -25,6 +26,14 @@ enum class Error(val str: String) {
     SERVER("Сервер"),
     OK("ok"),
     UISTATE("uiState")
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun dataForApi(dataStr: String): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val date = LocalDate.parse(dataStr, inputFormatter)
+    return date.format(outputFormatter)
 }
 
 class AddActionViewModel(
@@ -226,8 +235,25 @@ class AddActionViewModel(
                         categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
                         createdAt = "2025-04-22T14:30:00"
                     )
+
+                    val resApi = repository.addActionApi(
+                        actionName = current.nameAction,
+                        type = current.typeAction.ordinal,
+                        value = current.moneyAction,
+                        date = dataForApi(current.data),
+                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
+                        description = current.description,
+                        groups = current.groups
+                    )
+
                     actionDao.insertAction(action)
-                    _uiState.value = AddActionUiState.Ok
+                    if (resApi == ErrorAddActionApi.Ok)
+                        _uiState.value = AddActionUiState.Ok
+                    else
+                        _uiState.value = createErrorState(
+                            current = current,
+                            error = Error.SERVER
+                        )
                 } else {
                     _uiState.value = createErrorState(
                         current = current,

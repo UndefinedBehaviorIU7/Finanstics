@@ -152,7 +152,7 @@ fun GroupCard(navController: NavController, group: Group) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                preferencesManager.saveData("groupId", -1)
+                preferencesManager.saveData("groupId", group.id)
                 navController.navigate(Navigation.GROUP_STATS.toString())
             }
     ) {

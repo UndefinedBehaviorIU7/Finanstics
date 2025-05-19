@@ -121,7 +121,8 @@ fun BottomNavGraph(
                 ) {
                     PlusActionButton(
                         navController = navController,
-                        offsetX = offsetX
+                        offsetX = offsetX,
+                        Navigation.ADD_ACTION.toString()
                     )
                 }
             }
@@ -133,7 +134,8 @@ fun BottomNavGraph(
 @Composable
 fun PlusActionButton(
     navController: NavController,
-    offsetX: Dp
+    offsetX: Dp,
+    addActionNavigate: String
 ) {
     Box(
         modifier = Modifier.offset(x = offsetX)
@@ -145,7 +147,7 @@ fun PlusActionButton(
             modifier = Modifier
                 .size(50.dp)
                 .clickable {
-                    navController.navigate(Navigation.ADD_ACTION.toString())
+                    navController.navigate(addActionNavigate)
                 }
         )
         Icon(

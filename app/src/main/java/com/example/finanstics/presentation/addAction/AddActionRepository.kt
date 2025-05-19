@@ -6,7 +6,17 @@ import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.api.models.Group
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.ActionDataClass
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
+
+enum class ErrorAddActionApi(val str: String) {
+    ERROR("ошибка сервера"),
+    ERROR_USER_ID("вы не авторизированны"),
+    ERROR_USER_TOKEN("ошибка сессии"),
+    ERROR_ADD_ACTION_API("ошибка добавление действия на сервер"),
+    Ok("ок")
+
+}
 
 class AddActionRepository(private var db: FinansticsDatabase, private val context: Context) {
     private val actionDao = db.actionDao()
@@ -49,4 +59,59 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         }
         return resF
     }
+
+    suspend fun addActionApi(
+        actionName: String,
+        type: Int,
+        value: Int,
+        date: String,
+        categoryId: Int,
+        description: String?,
+        groups: List<Group>
+    ): ErrorAddActionApi {
+        Log.d("addActionApi", "enterF")
+
+        var res = ErrorAddActionApi.Ok
+
+        val apiRep = ApiRepository()
+
+
+        val preferencesManager = PreferencesManager(context)
+        val userId = preferencesManager.getInt("id", -1)
+        val encryptedPrefManager = EncryptedPreferencesManager(context)
+        val token = encryptedPrefManager.getString("token", "-1")
+
+        if (userId == -1 || token == "-1") {
+            Log.d("addActionApi", "ERROR preferencesManager UserId: ${userId.toString()}, token: ${token}")
+            res = if (userId == -1)
+                ErrorAddActionApi.ERROR_USER_ID
+            else
+                ErrorAddActionApi.ERROR_USER_TOKEN
+        } else {
+            try {
+                Log.d("addActionApi", "enter apiGo")
+                val response = apiRep.addAction(
+                    userId = userId,
+                    token = token,
+                    actionName = actionName,
+                    type = type,
+                    value = value,
+                    date = date,
+                    categoryId = categoryId,
+                    description = description,
+                    groupId = groups.map { it.id } + listOf(0)
+                )
+                if (!response.isSuccessful) {
+                    res = ErrorAddActionApi.ERROR_ADD_ACTION_API
+                }
+                Log.d("addActionApi", "res: ${res.str} groupId: ${groups.map { it.id } + listOf(0)}")
+            } catch (e: Exception) {
+                res = ErrorAddActionApi.ERROR
+            }
+        }
+        return res
+    }
+
+
+
 }

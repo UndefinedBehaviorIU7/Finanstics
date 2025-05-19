@@ -3,7 +3,9 @@ package com.example.finanstics.presentation.addAction
 import android.content.Context
 import android.util.Log
 import com.example.finanstics.api.ApiRepository
+import com.example.finanstics.api.models.Group
 import com.example.finanstics.db.FinansticsDatabase
+import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 
 enum class ErrorAddActionGroupApi(val str: String) {
@@ -40,22 +42,33 @@ class AddActionGroupRepository(private var db: FinansticsDatabase, private val c
         return categories.map { it.name }
     }
 
-    suspend fun AddActionGroupApi(
+    suspend fun addActionApi(
         actionName: String,
         type: Int,
         value: Int,
         date: String,
-        category: String,
+        categoryId: Int,
         description: String?,
+        duplication: Boolean
     ): ErrorAddActionGroupApi {
-        val apiRep = ApiRepository()
+        Log.d("addActionGroupApi", "startF")
+
         var res = ErrorAddActionGroupApi.Ok
+
+        val apiRep = ApiRepository()
+
         val preferencesManager = PreferencesManager(context)
+        val encryptedPrefManager = EncryptedPreferencesManager(context)
+
         val userId = preferencesManager.getInt("id", -1)
-        val token = preferencesManager.getString("token", "-1")
-        if (userId == -1 || token == "-1")
+
+        val groupId = preferencesManager.getInt("groupId", -1)
+        val token = encryptedPrefManager.getString("token", "-1")
+
+        if (userId == -1 || token == "-1") {
+            Log.d("addActionGroupApi", "ERROR preferencesManager UserId: ${userId.toString()}, token: ${token}")
             res = ErrorAddActionGroupApi.Error
-        else {
+        } else {
             try {
                 val response = apiRep.addAction(
                     userId = userId,
@@ -64,15 +77,18 @@ class AddActionGroupRepository(private var db: FinansticsDatabase, private val c
                     type = type,
                     value = value,
                     date = date,
-                    categoryId = 1,
+                    categoryId = categoryId,
                     description = description,
-                    groupId = listOf(2)
+                    groupId = listOf(groupId) + if (duplication) listOf(0) else emptyList()
                 )
+
                 if (!response.isSuccessful) {
                     res = ErrorAddActionGroupApi.Error
                 }
+
+                Log.d("addActionGroupApi", "res: ${res.str}")
             } catch (e: Exception) {
-                Log.e("getGroupActionDays ERROR", e.toString())
+                Log.e("addActionGroupApi ERROR", e.toString())
                 res = ErrorAddActionGroupApi.Error
             }
         }

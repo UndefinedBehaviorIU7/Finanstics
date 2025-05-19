@@ -35,6 +35,7 @@ class AddActionGroupViewModel(
             allCategory = listOf(),
             menuExpandedType = false,
             menuExpandedCategory = false,
+            duplication = false
         )
     )
 
@@ -66,6 +67,7 @@ class AddActionGroupViewModel(
         newDescription: String? = null,
         newMenuExpandedType: Boolean? = null,
         newMenuExpandedCategory: Boolean? = null,
+        newDuplication: Boolean? = null
     ) {
         when (val current = _uiState.value) {
             is AddActionGroupUiState.Idle -> {
@@ -77,7 +79,8 @@ class AddActionGroupViewModel(
                     category = newCategory ?: current.category,
                     description = newDescription ?: current.description,
                     menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
-                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
+                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory,
+                    duplication = newDuplication ?: current.duplication
                 )
             }
 
@@ -90,7 +93,8 @@ class AddActionGroupViewModel(
                     category = newCategory ?: current.category,
                     description = newDescription ?: current.description,
                     menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
-                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
+                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory,
+                    duplication = newDuplication ?: current.duplication
                 )
             }
 
@@ -103,7 +107,8 @@ class AddActionGroupViewModel(
                     category = newCategory ?: current.category,
                     description = newDescription ?: current.description,
                     menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
-                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
+                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory,
+                    duplication = newDuplication ?: current.duplication
                 )
             }
 
@@ -138,7 +143,8 @@ class AddActionGroupViewModel(
             error = error,
             allCategory = current.allCategory,
             menuExpandedType = current.menuExpandedType,
-            menuExpandedCategory = current.menuExpandedCategory
+            menuExpandedCategory = current.menuExpandedCategory,
+            duplication = current.duplication
         )
     }
 
@@ -180,13 +186,14 @@ class AddActionGroupViewModel(
                 error = validateIdle(current)
                 if (error == Error.OK) {
                     val data = DataClass.getDataByString(current.data)
-                    val res = repository.AddActionGroupApi(
+                    val res = repository.addActionApi(
                         actionName = current.nameAction,
                         type = current.typeAction.toInt(),
                         value = current.moneyAction,
-                        date = current.data,
-                        category = current.category,
+                        date = dataForApi(current.data),
+                        categoryId = 1,
                         description = current.description,
+                        duplication = current.duplication
                     )
                     if (res == ErrorAddActionGroupApi.Ok) {
                         error = Error.SERVER
