@@ -111,7 +111,8 @@ fun BottomGroupNavGraph(
                 ) {
                     PlusActionButton(
                         navController = navController,
-                        offsetX = offsetX
+                        offsetX = offsetX,
+                        Navigation.ADD_ACTION_GROUPS.toString()
                     )
                 }
             }
