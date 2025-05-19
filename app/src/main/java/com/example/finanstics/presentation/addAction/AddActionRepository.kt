@@ -24,7 +24,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         val categories = categoryDao.getAllCategories()
         return categories.map { it.name }
     }
-    
+
     @Suppress("NestedBlockDepth")
     suspend fun getUserGroup(): List<Group>? {
         val apiRep = ApiRepository()

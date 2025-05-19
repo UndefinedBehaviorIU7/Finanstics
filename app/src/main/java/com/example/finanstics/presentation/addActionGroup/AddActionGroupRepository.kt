@@ -24,8 +24,7 @@ class AddActionGroupRepository(
         return categories.map { it.name }
     }
 
-    @Suppress("MagicNumber",
-        "LongParameterList", "LongMethod", "ComplexMethod", "TooGenericExceptionCaught")
+    @Suppress("MagicNumber", "LongParameterList", "LongMethod", "TooGenericExceptionCaught")
     suspend fun addActionApi(
         actionName: String,
         type: Int,
