@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -41,15 +43,17 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     val uiState = vm.uiState.collectAsState().value
 
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding(),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp),
+                    .padding(start = 10.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 IconButton(onClick = { navController.navigateUp() }) {
@@ -64,99 +68,115 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.weight(0.7f))
 
-            if (uiState !is LoginUiState.Success && uiState !is LoginUiState.Loading) {
-                Image(
-                    painter = painterResource(R.drawable.logo),
-                    modifier = Modifier.size(280.dp).weight(1f),
-                    contentDescription = ""
-                )
-            }
-
             when (uiState) {
                 is LoginUiState.Idle -> {
-                    Column(
-                        modifier = Modifier.weight(1.2f)
-                    ) {
+                    Column(modifier = Modifier.padding(horizontal = 60.dp)) {
+                        Spacer(modifier = Modifier.weight(0.5f))
+                        Image(
+                            painter = painterResource(R.drawable.logo),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(280.dp)
+                                .weight(0.5f),
+                            contentDescription = "Finanstics"
+                        )
 
-                        Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
+                        Form(
+                            value = uiState.login,
+                            label = stringResource(R.string.login),
+                            isError = false,
+                            lambda = { vm.updateField("login", it) }
+                        )
 
-                            Form(
-                                value = uiState.login,
-                                label = stringResource(R.string.login),
-                                isError = false,
-                                lambda = { vm.updateField("login", it) }
-                            )
-
-                            Form(
-                                value = uiState.password,
-                                label = stringResource(R.string.password),
-                                isError = false,
-                                lambda = { vm.updateField("password", it) }
-                            )
-
-                            Spacer(modifier = Modifier.height(10.dp))
-
-                            OneTap(
-                                onAuth = { oAuth, token ->
-                                    vm.handleOneTapAuth(token)
-                                },
-                                scenario = OneTapTitleScenario.SignIn,
-                            )
-                        }
+                        Form(
+                            value = uiState.password,
+                            label = stringResource(R.string.password),
+                            isError = false,
+                            lambda = { vm.updateField("password", it) }
+                        )
 
                         Spacer(modifier = Modifier.weight(0.5f))
+
+                        ButtonForm(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            buttonText = stringResource(R.string.log_in),
+                            navText = stringResource(R.string.register),
+                            action = { vm.logIn() },
+                            navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        OneTap(
+                            onAuth = { oAuth, token ->
+                                vm.handleOneTapAuth(token)
+                            },
+                            scenario = OneTapTitleScenario.SignIn,
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.6f))
                     }
-
-                    ButtonForm(
-                        modifier = Modifier.weight(0.5f),
-                        buttonText = stringResource(R.string.log_in),
-                        navText = stringResource(R.string.register),
-                        action = { vm.logIn() },
-                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
-                    )
-
-                    Spacer(modifier = Modifier.weight(0.6f))
                 }
 
                 is LoginUiState.Error -> {
-                    Column(
-                        modifier = Modifier.weight(1.3f)
-                    ) {
-                        Column(modifier = Modifier.padding(start = 60.dp, end = 60.dp)) {
-                            Form(
-                                value = uiState.login,
-                                label = stringResource(R.string.login),
-                                isError = true,
-                                lambda = { vm.updateField("login", it) }
-                            )
+                    Column(modifier = Modifier.padding(horizontal = 60.dp)) {
+                        Spacer(modifier = Modifier.weight(0.5f))
+                        Image(
+                            painter = painterResource(R.drawable.logo),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(280.dp)
+                                .weight(0.5f),
+                            contentDescription = "Finanstics"
+                        )
 
-                            Form(
-                                value = uiState.password,
-                                label = stringResource(R.string.password),
-                                isError = true,
-                                lambda = { vm.updateField("password", it) }
-                            )
+                        Form(
+                            value = uiState.login,
+                            label = stringResource(R.string.login),
+                            isError = false,
+                            lambda = { vm.updateField("login", it) }
+                        )
 
-                            Spacer(modifier = Modifier.weight(0.5f))
+                        Form(
+                            value = uiState.password,
+                            label = stringResource(R.string.password),
+                            isError = false,
+                            lambda = { vm.updateField("password", it) }
+                        )
+
+                        Box(
+                            modifier = Modifier.weight(0.5f),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
                             Text(
                                 text = uiState.errorMsg,
                                 color = Color.Red,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    .weight(0.5f),
+                                textAlign = TextAlign.Center
                             )
                         }
-                        Spacer(modifier = Modifier.weight(0.1f))
+
+                        ButtonForm(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            buttonText = stringResource(R.string.log_in),
+                            navText = stringResource(R.string.register),
+                            action = { vm.logIn() },
+                            navigate = { navController.navigate(Navigation.REGISTER.toString()) }
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        OneTap(
+                            onAuth = { oAuth, token ->
+                                vm.handleOneTapAuth(token)
+                            },
+                            scenario = OneTapTitleScenario.SignIn,
+                        )
+
+                        Spacer(modifier = Modifier.weight(0.6f))
                     }
 
-                    ButtonForm(
-                        modifier = Modifier.weight(0.5f),
-                        buttonText = stringResource(R.string.log_in),
-                        navText = stringResource(R.string.register),
-                        action = { vm.logIn() },
-                        navigate = { navController.navigate(Navigation.REGISTER.toString()) }
-                    )
-
-                    Spacer(modifier = Modifier.weight(0.6f))
                 }
 
                 is LoginUiState.Loading -> {

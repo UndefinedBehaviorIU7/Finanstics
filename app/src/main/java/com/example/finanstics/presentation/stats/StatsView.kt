@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -69,8 +70,8 @@ fun Stats(
             .background(
                 color = MaterialTheme.colorScheme.background
             )
+            .systemBarsPadding()
             .padding(
-                top = 40.dp,
                 start = 20.dp,
                 end = 20.dp,
             )

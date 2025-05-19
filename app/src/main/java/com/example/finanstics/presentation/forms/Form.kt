@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +46,10 @@ fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Uni
             cursorColor = MaterialTheme.colorScheme.primary
         ),
         readOnly = false,
-        modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(bottom = 10.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp)
     )
 }
 
@@ -65,15 +69,16 @@ fun ButtonForm(
         Button(
             onClick = action,
             contentPadding = PaddingValues(
-                top = 10.dp,
-                bottom = 10.dp,
-                start = 20.dp,
-                end = 20.dp
+                vertical = 10.dp,
+                horizontal = 20.dp,
             ),
+            shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.background
+                containerColor = MaterialTheme.colorScheme.onBackground
             ),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
         ) {
             Text(
                 text = buttonText,
@@ -88,6 +93,7 @@ fun ButtonForm(
         ) {
             Text(
                 text = navText,
+                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary,
             )
         }
@@ -120,7 +126,8 @@ fun ImageForm(imageUri: Uri?, lambda: () -> Unit, text: String) {
                 painter = painterResource(id = R.drawable.placeholder),
                 contentDescription = stringResource(R.string.img_placeholder),
                 alignment = Alignment.Center,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier
+                    .size(150.dp)
                     .clickable(onClick = lambda)
             )
         }
