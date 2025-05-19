@@ -13,27 +13,10 @@ enum class ErrorAddActionGroupApi(val str: String) {
     Ok("ок")
 }
 
-//@Suppress("TooGenericExceptionCaught")
-//suspend fun getCategoriesById(
-//    userId: Int
-//): String? {
-//    var res: String? = null
-//    try {
-//        val apiRep = ApiRepository()
-//        val response = apiRep.getUserCategories(userId)
-//        if (!response.isSuccessful) {
-//            Log.e("getUserName", "not isSuccessful")
-//        } else {
-//            res = response.body()?.username
-//        }
-//    } catch (e: Exception) {
-//        Log.e("getUserName", e.toString())
-//    }
-//    return res
-//}
-
-
-class AddActionGroupRepository(private var db: FinansticsDatabase, private val context: Context) {
+class AddActionGroupRepository(
+    private var db: FinansticsDatabase,
+    private val context: Context
+) {
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
@@ -66,7 +49,6 @@ class AddActionGroupRepository(private var db: FinansticsDatabase, private val c
         val token = encryptedPrefManager.getString("token", "-1")
 
         if (userId == -1 || token == "-1") {
-            Log.d("addActionGroupApi", "ERROR preferencesManager UserId: ${userId.toString()}, token: ${token}")
             res = ErrorAddActionGroupApi.Error
         } else {
             try {

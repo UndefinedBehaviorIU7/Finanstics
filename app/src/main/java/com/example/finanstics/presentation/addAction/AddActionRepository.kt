@@ -5,7 +5,6 @@ import android.util.Log
 import com.example.finanstics.api.ApiRepository
 import com.example.finanstics.api.models.Group
 import com.example.finanstics.db.FinansticsDatabase
-import com.example.finanstics.presentation.calendar.ActionDataClass
 import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager
 
@@ -15,7 +14,6 @@ enum class ErrorAddActionApi(val str: String) {
     ERROR_USER_TOKEN("ошибка сессии"),
     ERROR_ADD_ACTION_API("ошибка добавление действия на сервер"),
     Ok("ок")
-
 }
 
 class AddActionRepository(private var db: FinansticsDatabase, private val context: Context) {
@@ -75,14 +73,12 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
 
         val apiRep = ApiRepository()
 
-
         val preferencesManager = PreferencesManager(context)
         val userId = preferencesManager.getInt("id", -1)
         val encryptedPrefManager = EncryptedPreferencesManager(context)
         val token = encryptedPrefManager.getString("token", "-1")
 
         if (userId == -1 || token == "-1") {
-            Log.d("addActionApi", "ERROR preferencesManager UserId: ${userId.toString()}, token: ${token}")
             res = if (userId == -1)
                 ErrorAddActionApi.ERROR_USER_ID
             else
@@ -104,14 +100,10 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                 if (!response.isSuccessful) {
                     res = ErrorAddActionApi.ERROR_ADD_ACTION_API
                 }
-                Log.d("addActionApi", "res: ${res.str} groupId: ${groups.map { it.id } + listOf(0)}")
             } catch (e: Exception) {
                 res = ErrorAddActionApi.ERROR
             }
         }
         return res
     }
-
-
-
 }

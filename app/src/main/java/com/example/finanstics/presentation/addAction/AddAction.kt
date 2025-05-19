@@ -2,11 +2,8 @@ package com.example.finanstics.presentation.addAction
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,10 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -261,7 +255,10 @@ fun MultiTypeSelector(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
+                unfocusedBorderColor = if (isError)
+                    MaterialTheme.colorScheme.error
+                else
+                    MaterialTheme.colorScheme.secondary,
                 focusedTextColor = MaterialTheme.colorScheme.primary,
                 focusedLabelColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.primary
@@ -305,7 +302,7 @@ fun MultiTypeSelector(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Checkbox(
                                         checked = isChecked,
-                                        onCheckedChange = null // чтобы чекбокс не реагировал сам, управление через onClick
+                                        onCheckedChange = null
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(item.name)
@@ -326,7 +323,6 @@ fun MultiTypeSelector(
         }
     }
 }
-
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
@@ -410,7 +406,6 @@ fun DrawIdle(
             onSelectionChanged = { vm.updateUIState(newGroups = it) },
             isError = false
         )
-
 
         BoxWithConstraints(
             modifier = Modifier.fillMaxWidth(),
