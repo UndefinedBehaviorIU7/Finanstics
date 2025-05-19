@@ -58,7 +58,13 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         return resF
     }
 
-    @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
+    @Suppress(
+        "MagicNumber",
+        "LongParameterList",
+        "LongMethod",
+        "ComplexMethod",
+        "TooGenericExceptionCaught"
+    )
     suspend fun addActionApi(
         actionName: String,
         type: Int,
@@ -79,7 +85,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         val encryptedPrefManager = EncryptedPreferencesManager(context)
         val token = encryptedPrefManager.getString("token", "-1")
 
-        if (userId == -1 || token == "-1") {
+        if (userId < 0 || token == "-1") {
             res = if (userId == -1)
                 ErrorAddActionApi.ERROR_USER_ID
             else
