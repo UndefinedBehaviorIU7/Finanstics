@@ -48,7 +48,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                         }
                     }
                     resF = res
-
                 }
             } catch (e: Exception) {
                 Log.e("getGroupActionDays ERROR", e.toString())

@@ -3,7 +3,6 @@ package com.example.finanstics.presentation.addAction
 import android.content.Context
 import android.util.Log
 import com.example.finanstics.api.ApiRepository
-import com.example.finanstics.api.models.Group
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.example.finanstics.presentation.preferencesManager.PreferencesManager

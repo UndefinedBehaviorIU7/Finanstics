@@ -5,14 +5,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finanstics.db.Action
 import com.example.finanstics.db.FinansticsDatabase
 import com.example.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class AddActionGroupViewModel(
     application: Application

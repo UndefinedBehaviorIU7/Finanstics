@@ -43,7 +43,10 @@ fun BooleanFormCheckboxField(
                 onCheckedChange = onCheckedChange,
                 colors = CheckboxDefaults.colors(
                     checkedColor = MaterialTheme.colorScheme.primary,
-                    uncheckedColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary,
+                    uncheckedColor = if (isError)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.secondary,
                     checkmarkColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
