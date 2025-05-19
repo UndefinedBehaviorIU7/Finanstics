@@ -232,6 +232,7 @@ fun Selector(
     }
 }
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun MultiTypeSelector(
     selectedItems: List<Group>,

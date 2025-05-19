@@ -57,6 +57,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         return resF
     }
 
+    @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
     suspend fun addActionApi(
         actionName: String,
         type: Int,

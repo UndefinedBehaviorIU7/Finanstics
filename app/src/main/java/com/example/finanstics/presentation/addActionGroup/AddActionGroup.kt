@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.finanstics.presentation.forms.Form
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun BooleanFormCheckboxField(
     value: Boolean,
