@@ -24,7 +24,8 @@ class AddActionGroupRepository(
         return categories.map { it.name }
     }
 
-    @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
+    @Suppress("MagicNumber",
+        "LongParameterList", "LongMethod", "ComplexMethod", "TooGenericExceptionCaught")
     suspend fun addActionApi(
         actionName: String,
         type: Int,
@@ -48,7 +49,7 @@ class AddActionGroupRepository(
         val groupId = preferencesManager.getInt("groupId", -1)
         val token = encryptedPrefManager.getString("token", "-1")
 
-        if (userId == -1 || token == "-1") {
+        if (userId < 0 || token == "-1") {
             res = ErrorAddActionGroupApi.Error
         } else {
             try {
