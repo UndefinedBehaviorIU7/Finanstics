@@ -30,7 +30,8 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         "LongParameterList",
         "LongMethod",
         "ComplexMethod",
-        "TooGenericExceptionCaught"
+        "TooGenericExceptionCaught",
+        "NestedBlockDepth"
     )
     suspend fun getUserGroup(): List<Group>? {
         val apiRep = ApiRepository()
