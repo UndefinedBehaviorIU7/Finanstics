@@ -180,6 +180,7 @@ fun DetailsPieChartItem(
                             }
                         }
                     }
+
                     is DetailsUiState.DetailedAction -> {
                         val detailedState = uiState as DetailsUiState.DetailedAction
                         if (detailedState.chosen == data.first && detailedState.type == type) {
@@ -202,6 +203,7 @@ fun DetailsPieChartItem(
                             }
                         }
                     }
+
                     else -> {}
                 }
             }
@@ -264,7 +266,7 @@ fun ActionInfo(
         BarLen(
             modifier = Modifier.weight(4f),
             widthSize = totalSum.toFloat() / (action.value.toFloat() / widthSize),
-            isAnimationPlayed = isAnimationPlayed,
+            isAnimationPlayed = true,
             color = color,
             colorIn = MaterialTheme.colorScheme.background
         )
