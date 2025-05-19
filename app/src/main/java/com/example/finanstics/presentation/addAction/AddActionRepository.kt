@@ -25,7 +25,13 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         return categories.map { it.name }
     }
 
-    @Suppress("NestedBlockDepth")
+    @Suppress(
+        "MagicNumber",
+        "LongParameterList",
+        "LongMethod",
+        "ComplexMethod",
+        "TooGenericExceptionCaught"
+    )
     suspend fun getUserGroup(): List<Group>? {
         val apiRep = ApiRepository()
         var resF: List<Group>?
