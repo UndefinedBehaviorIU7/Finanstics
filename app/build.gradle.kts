@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.finanstics"
+    namespace = "com.ub.finanstics"
     compileSdk = compileSdkV
 
     defaultConfig {
-        applicationId = "com.example.finanstics"
+        applicationId = "com.ub.finanstics"
         minSdk = minSdkV
         targetSdk = targetSdkV
         versionCode = 1
