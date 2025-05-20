@@ -5,7 +5,7 @@ set -e
 ROOT_FOLDER=build/bin
 VERSION=0.38.1
 KTLINT_BIN=$ROOT_FOLDER/ktlint-$VERSION
-SCAN_DIR="app/src/main/java/com/example/finanstics"
+SCAN_DIR="app/src/main/java/com/ub/finanstics"
 
 mkdir -p $ROOT_FOLDER
 
