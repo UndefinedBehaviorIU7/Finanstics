@@ -91,4 +91,7 @@ dependencies {
 
     implementation("com.vk.id:vkid:2.4.0")
     implementation("com.vk.id:onetap-compose:2.4.0")
+
+    implementation("com.google.firebase:firebase-messaging:23.0.0")
+    implementation("com.google.firebase:firebase-analytics:20.0.0")
 }

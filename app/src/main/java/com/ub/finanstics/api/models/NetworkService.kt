@@ -1,6 +1,9 @@
 package com.ub.finanstics.api.models
 
+import retrofit2.Call
+import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -120,4 +123,9 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("userId") userId: Int
     ): Response<List<Group>>
+
+    @POST("users/update_fcm_token")
+    fun updateFcmToken(
+        @Body token: String
+    ): Call<ResponseBody>
 }
