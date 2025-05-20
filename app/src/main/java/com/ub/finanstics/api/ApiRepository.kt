@@ -2,6 +2,7 @@ package com.ub.finanstics.api
 
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.ActionResponse
+import com.ub.finanstics.api.models.BaseResponse
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.api.models.CategoryResponse
 import com.ub.finanstics.api.models.Group
@@ -166,5 +167,9 @@ class ApiRepository {
 
     suspend fun getUserGroups(userId: Int): Response<List<Group>> {
         return RetrofitInstance.api.getUserGroups(userId)
+    }
+
+    suspend fun logout(token: String): Response<BaseResponse> {
+        return RetrofitInstance.api.logout(token)
     }
 }
