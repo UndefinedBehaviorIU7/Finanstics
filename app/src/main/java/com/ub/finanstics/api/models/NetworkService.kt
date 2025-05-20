@@ -120,4 +120,9 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("userId") userId: Int
     ): Response<List<Group>>
+
+    @POST("/logout")
+    suspend fun logout(
+        @Query("token") token: String
+    ): Response<BaseResponse>
 }
