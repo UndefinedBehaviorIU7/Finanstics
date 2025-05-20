@@ -5,8 +5,8 @@ set -e
 ROOT_FOLDER=build/bin
 VERSION=1.13.0
 DETEKT_BIN=$ROOT_FOLDER/detekt-$VERSION
-SCAN_DIR="app/src/main/java/com/example/finanstics"
-EXCLUDE_DIR="app/src/main/java/com/example/finanstics/ui/**"
+SCAN_DIR="app/src/main/java/com/ub/finanstics"
+EXCLUDE_DIR="app/src/main/java/com/ub/finanstics/ui/**"
 
 mkdir -p $ROOT_FOLDER
 
