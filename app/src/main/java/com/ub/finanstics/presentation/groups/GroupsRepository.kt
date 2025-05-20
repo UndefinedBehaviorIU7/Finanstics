@@ -3,7 +3,6 @@ package com.ub.finanstics.presentation.groups
 import android.content.Context
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import retrofit2.Response
