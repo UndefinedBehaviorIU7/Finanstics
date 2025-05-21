@@ -8,11 +8,14 @@ import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import okhttp3.ResponseBody
 import retrofit2.Response
 
 class ProfileSettingsRepository(private val context: Context) {
-    suspend fun isAuth(): Boolean {
+    fun isAuth(): Boolean {
         val enPrefs = EncryptedPreferencesManager(context)
         return enPrefs.getString("token", "") != ""
     }
@@ -25,13 +28,16 @@ class ProfileSettingsRepository(private val context: Context) {
                     if (stream != null) {
                         BitmapFactory.decodeStream(stream)
                     } else {
+                        Log.e("ABOBA_1", "Response: stream null")
                         null
                     }
                 }
             } else {
+                Log.e("ABOBA_1", "Response: ${response.code()}")
                 null
             }
         } catch (e: Exception) {
+            Log.e("ABOBA_1", "Response: ${e}")
             null
         }
     }
@@ -45,28 +51,31 @@ class ProfileSettingsRepository(private val context: Context) {
         }
     }
 
-    private suspend fun userInfoHandler(response: Response<User>): ProfileSettingsUiState {
+    private suspend fun userInfoHandler(response: Response<User>): ProfileSettingsUiState = coroutineScope {
         if (!response.isSuccessful) {
-            return ProfileSettingsUiState.Error(msg = "Код ошибки: ${response.code()}")
+            return@coroutineScope ProfileSettingsUiState.Error(msg = "Код ошибки: ${response.code()}")
         }
 
         val user = response.body()
-            ?: return ProfileSettingsUiState.Error(msg = "Неизвестная ошибка: пустое тело ответа")
+            ?: return@coroutineScope ProfileSettingsUiState.Error(msg = "Неизвестная ошибка: пустое тело ответа")
 
-        val bitmap = getImage(user.id)
+        val bitmapDeferred = async(Dispatchers.IO) {
+            getImage(user.id)
+        }
 
         val prefs = PreferencesManager(context)
         val night = prefs.getBoolean("nightMode", false)
         val notify = prefs.getBoolean("notifications", false)
-
-        val username = user.username!!
+        val username = user.username.orEmpty()
         val data = user.userData.orEmpty()
 
-        return ProfileSettingsUiState.Auth(
-            image = bitmap,
-            username = username,
-            userData = data,
-            nightMode = night,
+        val bitmap = bitmapDeferred.await()
+
+        ProfileSettingsUiState.Auth(
+            image         = bitmap,
+            username      = username,
+            userData      = data,
+            nightMode     = night,
             notifications = notify
         )
     }

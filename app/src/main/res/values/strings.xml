@@ -37,4 +37,9 @@
     <string name="All_time">Всё время</string>
     <string name="need_auth">Требуется вход</string>
     <string name="authorisation_warning">Для доступа к режиму групп необходимо авторизоваться</string>
+    <string name="night_mode">Темная тема</string>
+    <string name="notifications">Уведомления</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="empty_user_data">Упс! Кажется вы еще не заполнили информацию о себе</string>
+    <string name="about">О себе</string>
 </resources>
