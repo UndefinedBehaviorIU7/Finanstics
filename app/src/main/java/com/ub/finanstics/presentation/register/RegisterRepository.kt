@@ -5,8 +5,11 @@ import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.UserResponse
+import com.ub.finanstics.api.toPlainPart
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
@@ -20,10 +23,15 @@ class RegisterRepository(private val context: Context) {
     ): RegisterUiState {
         return try {
             val response = RetrofitInstance.api.register(
-                username = username,
-                password = password,
-                tag = tag,
-                image = "" // TODO("API")
+                username = username.toPlainPart(),
+                password = password.toPlainPart(),
+                tag = tag.toPlainPart(),
+                userData = "".toPlainPart(),
+                image = MultipartBody.Part.createFormData(
+                    name     = "image",
+                    filename = "empty.jpg",
+                    body     = ByteArray(0).toRequestBody()
+                )
             )
             handleResponse(response, username, password, tag, image)
         } catch (e: Exception) {
@@ -172,6 +180,7 @@ class RegisterRepository(private val context: Context) {
                     username = username,
                     image = image,
                     tag = tag,
+                    userData = "",
                     password = password
                 )
                 return handleResponseVK(resp, vkId, username, password, image, tag)
