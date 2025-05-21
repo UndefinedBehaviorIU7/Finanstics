@@ -1,10 +1,12 @@
 package com.ub.finanstics.api.models
 
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -124,8 +126,9 @@ interface NetworkService {
         @Path("userId") userId: Int
     ): Response<List<Group>>
 
-    @POST("users/update_fcm_token")
-    fun updateFcmToken(
-        @Body token: String
-    ): Call<ResponseBody>
+    @POST("/users/register_fcm_token")
+    suspend fun registerFCMToken(
+        @Query("token") token: String,
+        @Query("fcm_token") fcmToken: String
+    ): Response<ResponseBody>
 }

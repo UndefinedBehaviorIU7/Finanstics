@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("vkid.manifest.placeholders")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -92,6 +93,10 @@ dependencies {
     implementation("com.vk.id:vkid:2.4.0")
     implementation("com.vk.id:onetap-compose:2.4.0")
 
+    implementation("androidx.work:work-runtime:2.10.0")
+
     implementation("com.google.firebase:firebase-messaging:23.0.0")
-    implementation("com.google.firebase:firebase-analytics:20.0.0")
+    implementation("com.google.firebase:firebase-installations:18.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
+
 }

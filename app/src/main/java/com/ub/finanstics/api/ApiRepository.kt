@@ -8,6 +8,7 @@ import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.api.models.UserResponse
 import com.ub.finanstics.api.models.VKUserResponse
+import okhttp3.ResponseBody
 import retrofit2.Response
 
 @Suppress("TooManyFunctions")
@@ -166,5 +167,9 @@ class ApiRepository {
 
     suspend fun getUserGroups(userId: Int): Response<List<Group>> {
         return RetrofitInstance.api.getUserGroups(userId)
+    }
+
+    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
+        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
     }
 }

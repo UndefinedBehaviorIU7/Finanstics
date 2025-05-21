@@ -2,8 +2,10 @@ package com.ub.finanstics.presentation.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.R
+import com.ub.finanstics.fcm.regFirebaseToken
 import com.vk.id.AccessToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,6 +65,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
             viewModelScope.launch {
                 val result = repository.logIn(login, password)
+                regFirebaseToken(application.applicationContext)
                 _uiState.value = result
             }
         }
