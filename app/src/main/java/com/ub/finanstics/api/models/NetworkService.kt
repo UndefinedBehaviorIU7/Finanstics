@@ -144,7 +144,7 @@ interface NetworkService {
     @GET("/users/{group_id}/image")
     @Streaming
     suspend fun getGroupImage(
-        @Part("group_id") userId: Int
+        @Path("group_id") userId: Int
     ): Response<ResponseBody>
 
     @GET("/user_info")
