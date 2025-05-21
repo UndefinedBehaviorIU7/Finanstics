@@ -146,4 +146,9 @@ interface NetworkService {
     suspend fun getGroupImage(
         @Part("group_id") userId: Int
     ): Response<ResponseBody>
+
+    @GET("/user_info")
+    suspend fun userInfo(
+        @Query("user_id") userId: Int
+    ): Response<User>
 }
