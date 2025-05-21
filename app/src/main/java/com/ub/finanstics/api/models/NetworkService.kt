@@ -1,10 +1,14 @@
 package com.ub.finanstics.api.models
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 @Suppress("TooManyFunctions")
 interface NetworkService {
@@ -125,4 +129,10 @@ interface NetworkService {
     suspend fun logout(
         @Query("token") token: String
     ): Response<BaseResponse>
+
+    @GET("/users/{user_id}/image")
+    @Streaming
+    suspend fun getUserImage(
+        @Part("user_id") userId: Int
+    ): Response<ResponseBody>
 }
