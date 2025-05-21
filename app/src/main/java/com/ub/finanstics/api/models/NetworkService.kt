@@ -1,5 +1,7 @@
 package com.ub.finanstics.api.models
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
@@ -71,21 +73,24 @@ interface NetworkService {
         @Path("time") time: String
     ): Response<List<Category>>
 
+    @Multipart
     @POST("register")
     suspend fun register(
-        @Query("username") username: String,
-        @Query("password") password: String,
-        @Query("tag") tag: String,
-        @Query("image") image: String,
+        @Part("username") username: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("tag") tag: RequestBody,
+        @Part("user_data") userData: RequestBody,
+        @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
     @POST("register/vk")
     suspend fun registerVK(
-        @Query("vk_id") vkId: Int,
-        @Query("username") username: String,
-        @Query("password") password: String,
-        @Query("tag") tag: String,
-        @Query("image") image: String,
+        @Part("vk_id") vkId: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("tag") tag: RequestBody,
+        @Part("user_data") userData: RequestBody,
+        @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
     @GET("login")
@@ -134,5 +139,11 @@ interface NetworkService {
     @Streaming
     suspend fun getUserImage(
         @Part("user_id") userId: Int
+    ): Response<ResponseBody>
+
+    @GET("/users/{group_id}/image")
+    @Streaming
+    suspend fun getGroupImage(
+        @Part("group_id") userId: Int
     ): Response<ResponseBody>
 }

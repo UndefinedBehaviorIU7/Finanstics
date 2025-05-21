@@ -9,7 +9,18 @@ import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.api.models.UserResponse
 import com.ub.finanstics.api.models.VKUserResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import java.io.File
+import java.net.URLConnection
+
+// Мультипарт конвертер
+fun String.toPlainPart(): RequestBody =
+    this.toRequestBody("text/plain".toMediaTypeOrNull())
 
 @Suppress("TooManyFunctions")
 class ApiRepository {
@@ -81,17 +92,35 @@ class ApiRepository {
         )
     }
 
+    // Передавать нужно путь к файлу с устройства
     suspend fun register(
         username: String,
         password: String,
         tag: String,
-        image: String,
+        userData: String,
+        image: String?,
     ): Response<UserResponse> {
+        val usernameBody = username.toPlainPart()
+        val passwordBody = password.toPlainPart()
+        val tagBody = tag.toPlainPart()
+        val userDataBody = userData.toPlainPart()
+
+        val imageFile = File(image)
+        val mime = URLConnection.guessContentTypeFromName(imageFile.name)
+            ?: "application/octet-stream"
+        val imageReqBody = imageFile.asRequestBody(mime.toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData(
+            "image",
+            imageFile.name,
+            imageReqBody
+        )
+
         return RetrofitInstance.api.register(
-            username,
-            password,
-            tag,
-            image
+            usernameBody,
+            passwordBody,
+            tagBody,
+            userDataBody,
+            imagePart
         )
     }
 
@@ -146,14 +175,32 @@ class ApiRepository {
         username: String,
         password: String,
         tag: String,
-        image: String
+        userData: String,
+        image: String?
     ): Response<UserResponse> {
+        val vkIdBody = vkId.toString().toPlainPart()
+        val usernameBody = username.toPlainPart()
+        val passwordBody = password.toPlainPart()
+        val tagBody = tag.toPlainPart()
+        val userDataBody = userData.toPlainPart()
+
+        val imageFile = File(image)
+        val mime = URLConnection.guessContentTypeFromName(imageFile.name)
+            ?: "application/octet-stream"
+        val imageReqBody = imageFile.asRequestBody(mime.toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData(
+            "image",
+            imageFile.name,
+            imageReqBody
+        )
+
         return RetrofitInstance.api.registerVK(
-            vkId,
-            username,
-            password,
-            tag,
-            image
+            vkId = vkIdBody,
+            username = usernameBody,
+            password = passwordBody,
+            tag = tagBody,
+            userData = userDataBody,
+            image = imagePart
         )
     }
 
