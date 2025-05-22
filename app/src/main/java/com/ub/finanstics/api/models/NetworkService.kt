@@ -73,24 +73,19 @@ interface NetworkService {
         @Path("time") time: String
     ): Response<List<Category>>
 
-    @Multipart
     @POST("register")
     suspend fun register(
-        @Part("username") username: RequestBody,
-        @Part("password") password: RequestBody,
-        @Part("tag") tag: RequestBody,
-        @Part("user_data") userData: RequestBody,
-        @Part("image") image: MultipartBody.Part,
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
     ): Response<UserResponse>
 
     @POST("register/vk")
     suspend fun registerVK(
-        @Part("vk_id") vkId: RequestBody,
-        @Part("username") username: RequestBody,
-        @Part("password") password: RequestBody,
-        @Part("tag") tag: RequestBody,
-        @Part("user_data") userData: RequestBody,
-        @Part("image") image: MultipartBody.Part,
+        @Query("vk_id") vkId: Int,
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
     ): Response<UserResponse>
 
     @GET("login")

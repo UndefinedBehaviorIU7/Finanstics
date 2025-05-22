@@ -23,15 +23,9 @@ class RegisterRepository(private val context: Context) {
     ): RegisterUiState {
         return try {
             val response = RetrofitInstance.api.register(
-                username = username.toPlainPart(),
-                password = password.toPlainPart(),
-                tag = tag.toPlainPart(),
-                userData = "".toPlainPart(),
-                image = MultipartBody.Part.createFormData(
-                    name     = "image",
-                    filename = "empty.jpg",
-                    body     = ByteArray(0).toRequestBody()
-                )
+                username = username,
+                password = password,
+                tag = tag,
             )
             handleResponse(response, username, password, tag, image)
         } catch (e: Exception) {
@@ -178,9 +172,7 @@ class RegisterRepository(private val context: Context) {
                 val resp = apiRep.registerVK(
                     vkId = vkId,
                     username = username,
-                    image = image,
                     tag = tag,
-                    userData = "",
                     password = password
                 )
                 return handleResponseVK(resp, vkId, username, password, image, tag)
