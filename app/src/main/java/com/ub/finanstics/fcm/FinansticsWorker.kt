@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 
+const val WORKER_TAG = "FinansticsWorker"
+
 class FinansticsWorker(
     appContext: Context,
     workerParams: WorkerParameters
@@ -17,6 +19,6 @@ class FinansticsWorker(
     }
 
     companion object {
-        private val TAG = "FinansticsWorker"
+        private const val TAG = WORKER_TAG
     }
 }

@@ -69,6 +69,7 @@ class FinansticsFMS : FirebaseMessagingService() {
     }
     // [END receive_message]
 
+    @Suppress("FunctionOnlyReturningConstant")
     private fun isLongRunningJob() = true
 
     // [START on_new_token]
@@ -113,7 +114,6 @@ class FinansticsFMS : FirebaseMessagingService() {
      * @param token The new token.
      */
     private fun sendRegistrationToServer(token: String?) {
-        // TODO: Implement this method to send token to your app server.
         Log.d(TAG, "sendRegistrationTokenToServer($token)")
     }
 
@@ -200,6 +200,7 @@ fun logFirebaseToken(context: Context) {
     }
 }
 
+@Suppress("TooGenericExceptionCaught")
 suspend fun regFirebaseToken(context: Context) {
     val encryptedPref = EncryptedPreferencesManager(context)
     val fcmToken = encryptedPref.getString("fcm_token", "")

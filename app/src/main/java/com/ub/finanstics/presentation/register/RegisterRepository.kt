@@ -153,7 +153,7 @@ class RegisterRepository(private val context: Context) {
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "ReturnCount")
+    @Suppress("TooGenericExceptionCaught", "ReturnCount", "LongParameterList")
     suspend fun registerVK(
         vkId: Int,
         username: String,
