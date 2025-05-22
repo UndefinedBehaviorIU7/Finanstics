@@ -8,26 +8,17 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import okhttp3.ResponseBody
-import com.ub.finanstics.R
-import com.ub.finanstics.api.RetrofitInstance
-import com.ub.finanstics.presentation.MainActivity
-
-import android.widget.Toast
-import androidx.security.crypto.EncryptedSharedPreferences
-import com.google.firebase.FirebaseApp
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.presentation.MainActivity
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 
 class FinansticsFMS : FirebaseMessagingService() {
@@ -152,7 +143,8 @@ class FinansticsFMS : FirebaseMessagingService() {
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -217,7 +209,7 @@ suspend fun regFirebaseToken(context: Context) {
     encryptedPref.saveData("fcm_token", fcmToken)
     val token = encryptedPref.getString("token", "")
 
-    if (token.isNotEmpty() &&  fcmToken.isNotEmpty()) {
+    if (token.isNotEmpty() && fcmToken.isNotEmpty()) {
         val apiRep = ApiRepository()
         try {
             val response = apiRep.registerFCMToken(token, fcmToken)
@@ -227,7 +219,7 @@ suspend fun regFirebaseToken(context: Context) {
                 Log.e("FCM", "Register FCM failed: ${response.errorBody()}")
             }
         } catch (e: Exception) {
-            Log.e("FCM", "Register FCM Failed: ${e}")
+            Log.e("FCM", "Register FCM Failed: $e")
         }
     }
 }
