@@ -2,14 +2,18 @@ package com.ub.finanstics.api.models
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 @Suppress("TooManyFunctions")
 interface NetworkService {
@@ -72,21 +76,24 @@ interface NetworkService {
         @Path("time") time: String
     ): Response<List<Category>>
 
+    @Multipart
     @POST("register")
     suspend fun register(
-        @Query("username") username: String,
-        @Query("password") password: String,
-        @Query("tag") tag: String,
-        @Query("image") image: String,
+        @Part("username") username: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("tag") tag: RequestBody,
+        @Part("user_data") userData: RequestBody,
+        @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
     @POST("register/vk")
     suspend fun registerVK(
-        @Query("vk_id") vkId: Int,
-        @Query("username") username: String,
-        @Query("password") password: String,
-        @Query("tag") tag: String,
-        @Query("image") image: String,
+        @Part("vk_id") vkId: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("tag") tag: RequestBody,
+        @Part("user_data") userData: RequestBody,
+        @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
     @GET("login")
@@ -125,10 +132,27 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("userId") userId: Int
     ): Response<List<Group>>
-
+  
     @POST("/users/register_fcm_token")
     suspend fun registerFCMToken(
         @Query("token") token: String,
         @Query("fcm_token") fcmToken: String
+    ): Response<ResponseBody>
+      
+    @POST("/logout")
+    suspend fun logout(
+        @Query("token") token: String
+    ): Response<BaseResponse>
+
+    @GET("/users/{user_id}/image")
+    @Streaming
+    suspend fun getUserImage(
+        @Part("user_id") userId: Int
+    ): Response<ResponseBody>
+
+    @GET("/users/{group_id}/image")
+    @Streaming
+    suspend fun getGroupImage(
+        @Part("group_id") userId: Int
     ): Response<ResponseBody>
 }
