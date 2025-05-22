@@ -170,6 +170,7 @@ class ApiRepository {
         return RetrofitInstance.api.getUserByTag(tag)
     }
 
+    @Suppress("LongParameterList")
     suspend fun registerVK(
         vkId: Int,
         username: String,

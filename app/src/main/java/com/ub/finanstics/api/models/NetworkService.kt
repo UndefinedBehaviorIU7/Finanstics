@@ -83,6 +83,7 @@ interface NetworkService {
         @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
+    @Suppress("LongParameterList")
     @POST("register/vk")
     suspend fun registerVK(
         @Part("vk_id") vkId: RequestBody,
