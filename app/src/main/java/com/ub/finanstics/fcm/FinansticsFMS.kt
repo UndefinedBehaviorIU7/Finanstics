@@ -202,6 +202,9 @@ fun logFirebaseToken(context: Context) {
 
             encryptedPref.saveData("fcm_token", token)
         }
+    } else {
+        val msg = context.getString(R.string.msg_token_fmt, fcmToken)
+        Log.d("FCM", msg)
     }
 }
 
