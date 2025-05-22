@@ -51,13 +51,17 @@ fun Toggler(text: String, checked: Boolean, action: (Boolean) -> Unit) {
 
 @Composable
 fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel = viewModel()) {
-    when (val uiState = vm.uiState.collectAsState().value) {
-        is ProfileSettingsUiState.Auth -> {
-            Column {
-                Spacer(modifier = Modifier.weight(1.7f))
-                Row(modifier = Modifier.fillMaxSize().weight(6f)) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Column(modifier = Modifier.weight(4f), horizontalAlignment = Alignment.CenterHorizontally) {
+    val uiState = vm.uiState.collectAsState().value
+    Column {
+        Spacer(modifier = Modifier.weight(1.7f))
+        Row(modifier = Modifier.fillMaxSize().weight(6f)) {
+            Spacer(modifier = Modifier.weight(1f))
+            Column(
+                modifier = Modifier.weight(4f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when (uiState) {
+                    is ProfileSettingsUiState.Auth -> {
                         Column(modifier = Modifier.weight(5f), horizontalAlignment = Alignment.CenterHorizontally) {
                             if (uiState.image == null) {
                                 Image(
@@ -116,25 +120,24 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                         }
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    is ProfileSettingsUiState.NotAuth -> {
+
+                    }
+
+                    // TODO: добавить кнопку "Повторить запрос"
+                    is ProfileSettingsUiState.Error -> {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(text = uiState.msg, fontSize = 30.sp, color = Color.Red)
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.weight(2f))
             }
+            Spacer(modifier = Modifier.weight(1f))
         }
-
-        is ProfileSettingsUiState.NotAuth -> {
-
-        }
-
-        // TODO: добавить кнопку "Повторить запрос"
-        is ProfileSettingsUiState.Error -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(text = uiState.msg, fontSize = 30.sp, color = Color.Red)
-            }
-        }
+        Spacer(modifier = Modifier.weight(2f))
     }
 }

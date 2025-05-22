@@ -11,7 +11,6 @@ import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import okhttp3.ResponseBody
 import retrofit2.Response
 
 class ProfileSettingsRepository(private val context: Context) {
@@ -28,16 +27,13 @@ class ProfileSettingsRepository(private val context: Context) {
                     if (stream != null) {
                         BitmapFactory.decodeStream(stream)
                     } else {
-                        Log.e("ABOBA_1", "Response: stream null")
                         null
                     }
                 }
             } else {
-                Log.e("ABOBA_1", "Response: ${response.code()}")
                 null
             }
         } catch (e: Exception) {
-            Log.e("ABOBA_1", "Response: ${e}")
             null
         }
     }
@@ -79,5 +75,4 @@ class ProfileSettingsRepository(private val context: Context) {
             notifications = notify
         )
     }
-
 }
