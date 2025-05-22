@@ -52,7 +52,10 @@ import coil3.DrawableImage
 import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
-// TODO: выбор картинки, logout, редирект с регистрации, обновление юзер даты, пофиксить обновление экрана после логина
+/* TODO: выбор картинки, logout, редирект с регистрации, обновление юзер даты,
+    пофиксить обновление экрана после логина, пермишены на уведомления,
+    НЕ ЗАБЫТЬ ПОМЕНЯТЬ ТЕСТОВЫЙ СЕРВЕР
+ */
 
 @Composable
 fun Toggler(text: String, checked: Boolean, action: (Boolean) -> Unit) {
