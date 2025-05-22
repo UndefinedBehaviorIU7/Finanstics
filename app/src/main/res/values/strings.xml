@@ -42,4 +42,8 @@
     <string name="profile_picture">profile picture</string>
     <string name="empty_user_data">Упс! Кажется вы еще не заполнили информацию о себе</string>
     <string name="about">О себе</string>
+    <string name="connection_error">Connection Error</string>
+    <string name="no_internet">Потеряно соединение с сервером</string>
+    <string name="retry">Повторить попытку</string>
+    <string name="not_aut">Вы не вошли в аккаунт</string>
 </resources>

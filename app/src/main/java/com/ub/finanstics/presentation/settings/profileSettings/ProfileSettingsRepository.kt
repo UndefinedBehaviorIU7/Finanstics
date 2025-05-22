@@ -68,10 +68,10 @@ class ProfileSettingsRepository(private val context: Context) {
         val bitmap = bitmapDeferred.await()
 
         ProfileSettingsUiState.Auth(
-            image         = bitmap,
-            username      = username,
-            userData      = data,
-            nightMode     = night,
+            image = bitmap,
+            username = username,
+            userData = data,
+            nightMode = night,
             notifications = notify
         )
     }

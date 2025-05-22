@@ -21,4 +21,8 @@ sealed class ProfileSettingsUiState {
     data class Error(
         val msg: String
     ): ProfileSettingsUiState()
+
+    data class Loading(
+        val isLoading: Boolean
+    ): ProfileSettingsUiState()
 }
