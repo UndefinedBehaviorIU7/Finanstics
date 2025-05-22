@@ -29,12 +29,16 @@ import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
 
 enum class Navigation(val route: String) {
-    STATS("stats"), ADD_ACTION("add_action"), ADD_ACTION_GROUPS("add_action_groups"), GROUPS("groups"), CALENDAR(
-        "calendar"
-    ),
-    LOGIN("login"), REGISTER("register"), SETTINGS("settings"), GROUP_STATS("group_stats"), GROUP_CALENDAR(
-        "group_calendar"
-    ),
+    STATS("stats"),
+    ADD_ACTION("add_action"),
+    ADD_ACTION_GROUPS("add_action_groups"),
+    GROUPS("groups"),
+    CALENDAR("calendar"),
+    LOGIN("login"),
+    REGISTER("register"),
+    SETTINGS("settings"),
+    GROUP_STATS("group_stats"),
+    GROUP_CALENDAR("group_calendar"),
     GROUP_SETTINGS("group_settings")
 }
 
@@ -57,11 +61,13 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
                 NavHost(
-                    navController = navController, startDestination = Navigation.STATS.toString()
+                    navController = navController,
+                    startDestination = Navigation.STATS.toString()
                 ) {
                     composable(Navigation.STATS.toString()) {
                         MainScreen(
-                            navController = navController, initialPage = 0
+                            navController = navController,
+                            initialPage = 0
                         )
                     }
                     composable(Navigation.LOGIN.toString()) {
@@ -83,27 +89,32 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Navigation.CALENDAR.toString()) {
                         MainScreen(
-                            navController = navController, initialPage = 1
+                            navController = navController,
+                            initialPage = 1
                         )
                     }
                     composable(Navigation.SETTINGS.toString()) {
                         MainScreen(
-                            navController = navController, initialPage = 2
+                            navController = navController,
+                            initialPage = 2
                         )
                     }
                     composable(Navigation.GROUP_STATS.toString()) {
                         GroupMainScreen(
-                            navController = navController, initialPage = 0
+                            navController = navController,
+                            initialPage = 0
                         )
                     }
                     composable(Navigation.GROUP_CALENDAR.toString()) {
                         GroupMainScreen(
-                            navController = navController, initialPage = 1
+                            navController = navController,
+                            initialPage = 1
                         )
                     }
                     composable(Navigation.GROUP_SETTINGS.toString()) {
                         GroupMainScreen(
-                            navController = navController, initialPage = 2
+                            navController = navController,
+                            initialPage = 2
                         )
                     }
                 }
@@ -125,7 +136,8 @@ class MainActivity : ComponentActivity() {
     private fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
