@@ -83,6 +83,7 @@ interface NetworkService {
         @Part("image") image: MultipartBody.Part,
     ): Response<UserResponse>
 
+    @Suppress("LongParameterList")
     @POST("register/vk")
     suspend fun registerVK(
         @Part("vk_id") vkId: RequestBody,
@@ -129,6 +130,12 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("userId") userId: Int
     ): Response<List<Group>>
+
+    @POST("/users/register_fcm_token")
+    suspend fun registerFCMToken(
+        @Query("token") token: String,
+        @Query("fcm_token") fcmToken: String
+    ): Response<ResponseBody>
 
     @POST("/logout")
     suspend fun logout(

@@ -6,6 +6,7 @@ import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.UserResponse
 import com.ub.finanstics.api.models.VKUserResponse
+import com.ub.finanstics.fcm.logFirebaseToken
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.vk.id.AccessToken
@@ -14,6 +15,7 @@ import retrofit2.Response
 class LoginRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun logIn(login: String, password: String): LoginUiState {
+        logFirebaseToken(context)
         return try {
             val response = RetrofitInstance.api.login(tag = login, password = password)
             handleResponse(response, login, password)
@@ -121,6 +123,7 @@ class LoginRepository(private val context: Context) {
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun logInVK(vk: AccessToken): LoginUiState {
+        logFirebaseToken(context)
         var logInState: LoginUiState
         val apiRep = ApiRepository()
         val userResp = apiRep.getUserVK(vk.userID.toInt())

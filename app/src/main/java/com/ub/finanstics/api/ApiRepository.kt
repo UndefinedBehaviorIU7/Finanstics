@@ -14,11 +14,11 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.File
 import java.net.URLConnection
 
-// Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
     this.toRequestBody("text/plain".toMediaTypeOrNull())
 
@@ -170,6 +170,7 @@ class ApiRepository {
         return RetrofitInstance.api.getUserByTag(tag)
     }
 
+    @Suppress("LongParameterList")
     suspend fun registerVK(
         vkId: Int,
         username: String,
@@ -214,6 +215,10 @@ class ApiRepository {
 
     suspend fun getUserGroups(userId: Int): Response<List<Group>> {
         return RetrofitInstance.api.getUserGroups(userId)
+    }
+
+    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
+        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
     }
 
     suspend fun logout(token: String): Response<BaseResponse> {
