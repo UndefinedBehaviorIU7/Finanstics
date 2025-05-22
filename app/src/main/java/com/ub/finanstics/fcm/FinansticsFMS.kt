@@ -211,6 +211,10 @@ fun logFirebaseToken(context: Context) {
 suspend fun regFirebaseToken(context: Context) {
     val encryptedPref = EncryptedPreferencesManager(context)
     val fcmToken = encryptedPref.getString("fcm_token", "")
+    val msg = context.getString(R.string.msg_token_fmt, fcmToken)
+    Log.d("FCM1", msg)
+
+    encryptedPref.saveData("fcm_token", fcmToken)
     val token = encryptedPref.getString("token", "")
 
     if (token.isNotEmpty() &&  fcmToken.isNotEmpty()) {
