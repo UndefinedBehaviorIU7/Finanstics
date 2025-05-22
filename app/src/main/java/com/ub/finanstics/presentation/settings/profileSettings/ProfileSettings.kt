@@ -1,5 +1,7 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
+import android.app.UiModeManager
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,8 +47,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 import coil3.DrawableImage
 import com.ub.finanstics.R
+import com.ub.finanstics.ui.theme.ThemeViewModel
 
 @Composable
 fun Toggler(text: String, checked: Boolean, action: (Boolean) -> Unit) {
@@ -62,8 +67,11 @@ fun Toggler(text: String, checked: Boolean, action: (Boolean) -> Unit) {
 }
 
 @Composable
-fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel = viewModel()) {
+fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel = viewModel(),
+                    themeVm: ThemeViewModel) {
     val uiState = vm.uiState.collectAsState().value
+    val isDark by themeVm.isDark.collectAsState()
+
     Box (modifier = Modifier.background(MaterialTheme.colorScheme.background).statusBarsPadding().fillMaxSize()) {
         Column {
             Spacer(modifier = Modifier.weight(1.7f))
@@ -119,7 +127,9 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                             Column(modifier = Modifier.weight(3f)) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Toggler(text = stringResource(R.string.night_mode), isSystemInDarkTheme(), {})
+                                    Toggler(text = stringResource(R.string.night_mode),
+                                        checked = isDark,
+                                        action = { themeVm.toggleDarkMode(it) })
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
                                     Toggler(text = stringResource(R.string.notifications), false, {})
@@ -160,7 +170,10 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                             Column(modifier = Modifier.weight(3f)) {
                                 Spacer(modifier = Modifier.weight(1f))
                                 Box(modifier = Modifier.weight(1f)) {
-                                    Toggler(text = stringResource(R.string.night_mode), isSystemInDarkTheme(), {})
+                                    Toggler(text = stringResource(R.string.night_mode),
+                                        checked = isDark,
+                                        action = { themeVm.toggleDarkMode(it) }
+                                    )
                                 }
                                 Box(modifier = Modifier.weight(1f)) {
                                     Toggler(text = stringResource(R.string.notifications), false, {})

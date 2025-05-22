@@ -1,8 +1,10 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.runtime.traceEventEnd
 import coil3.Bitmap
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.User
@@ -14,6 +16,8 @@ import kotlinx.coroutines.coroutineScope
 import retrofit2.Response
 
 class ProfileSettingsRepository(private val context: Context) {
+    private val prefs = PreferencesManager(context)
+
     fun isAuth(): Boolean {
         val enPrefs = EncryptedPreferencesManager(context)
         return enPrefs.getString("token", "") != ""
@@ -59,7 +63,6 @@ class ProfileSettingsRepository(private val context: Context) {
             getImage(user.id)
         }
 
-        val prefs = PreferencesManager(context)
         val night = prefs.getBoolean("nightMode", false)
         val notify = prefs.getBoolean("notifications", false)
         val username = user.username.orEmpty()
@@ -74,5 +77,18 @@ class ProfileSettingsRepository(private val context: Context) {
             nightMode = night,
             notifications = notify
         )
+    }
+
+    fun hasNightModeOverride(): Boolean =
+        prefs.contains("nightMode")
+
+    fun getNightModeOverride(): Boolean? =
+        if (hasNightModeOverride())
+            prefs.getBoolean("nightMode", false)
+        else
+            null
+
+    fun saveNightModeOverride(on: Boolean) {
+        prefs.saveData("nightMode", on)
     }
 }

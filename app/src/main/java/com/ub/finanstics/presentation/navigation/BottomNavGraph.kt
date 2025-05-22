@@ -43,6 +43,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettings
+import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -53,6 +54,7 @@ fun BottomNavGraph(
     pagerState: PagerState,
     navController: NavController,
     offsetIcons: Dp,
+    themeVm: ThemeViewModel
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -64,7 +66,7 @@ fun BottomNavGraph(
             when (page) {
                 0 -> Stats(navController, isVisible)
                 1 -> Calendar(navController, isVisible)
-                2 -> ProfileSettings(navController)
+                2 -> ProfileSettings(navController, themeVm = themeVm)
             }
         }
 

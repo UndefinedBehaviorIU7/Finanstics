@@ -29,6 +29,8 @@ import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsViewModel
+import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlinx.coroutines.launch
 
 fun isIn(
@@ -49,18 +51,23 @@ fun isIn(
 @Composable
 fun MainScreen(
     navController: NavController,
-    initialPage: Int = 0
+    initialPage: Int = 0,
+    profileVm: ProfileSettingsViewModel = viewModel(),
+    themeVm: ThemeViewModel
 ) {
+    val isDarkState = themeVm.isDark.collectAsState()
+    val isDark = isDarkState.value
+
     val systemUiController = rememberSystemUiController()
-    val isDarkTheme = isSystemInDarkTheme()
     val navigationBarColor = MaterialTheme.colorScheme.background
+
 
     val pageHistory = remember { mutableStateListOf<Int>() }
 
-    LaunchedEffect(isDarkTheme) {
+    LaunchedEffect(isDark) {
         systemUiController.setNavigationBarColor(
             color = navigationBarColor,
-            darkIcons = !isDarkTheme
+            darkIcons = !isDark
         )
     }
 
@@ -116,6 +123,7 @@ fun MainScreen(
                 navController = navController,
                 offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
                     OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2,
+                themeVm
             )
 
             Box(

@@ -1,22 +1,21 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.ub.finanstics.ui.theme.FinansticsTheme
 
 class ProfileSettingsViewModel(application: Application): AndroidViewModel(application) {
     private val repository = ProfileSettingsRepository(application.applicationContext)
 
-    private val _uiState = MutableStateFlow<ProfileSettingsUiState>(
-        ProfileSettingsUiState.NotAuth(
-            nightMode = false,
-            notifications = false
-        )
-    )
+
+    private val _uiState = MutableStateFlow<ProfileSettingsUiState>(ProfileSettingsUiState.Loading(false))
+
     val uiState: StateFlow<ProfileSettingsUiState> = _uiState
 
     init {
