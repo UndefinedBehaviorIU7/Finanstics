@@ -129,13 +129,13 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("userId") userId: Int
     ): Response<List<Group>>
-  
+
     @POST("/users/register_fcm_token")
     suspend fun registerFCMToken(
         @Query("token") token: String,
         @Query("fcm_token") fcmToken: String
     ): Response<ResponseBody>
-      
+
     @POST("/logout")
     suspend fun logout(
         @Query("token") token: String
