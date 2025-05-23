@@ -12,6 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import retrofit2.Response
 
+@Suppress("TooGenericExceptionCaught")
 class ProfileSettingsRepository(private val context: Context) {
     private val prefs = PreferencesManager(context)
 
@@ -20,6 +21,7 @@ class ProfileSettingsRepository(private val context: Context) {
         return enPrefs.getString("token", "").isNotEmpty()
     }
 
+    @Suppress("NestedBlockDepth")
     private suspend fun getImage(userId: Int): Bitmap? {
         return try {
             val response = RetrofitInstance.api.getUserImage(userId)

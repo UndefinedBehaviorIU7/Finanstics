@@ -61,6 +61,7 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
+@Suppress("ForbiddenComment", "MagicNumber")
 // TODO: уведы, котлиновское апи, обновление картинки
 
 @Composable
@@ -131,6 +132,7 @@ fun ProfileSettingsScreen(
     }
 }
 
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun AuthContent(
     state: ProfileSettingsUiState.Auth,
@@ -209,6 +211,7 @@ private fun AuthContent(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun NotAuthContent(
     onLogin: () -> Unit,
@@ -263,6 +266,7 @@ private fun NotAuthContent(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun ErrorContent(onRetry: () -> Unit) {
     Column(
@@ -297,6 +301,7 @@ private fun ErrorContent(onRetry: () -> Unit) {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun LoadingContent() {
     Box(
@@ -312,6 +317,7 @@ private fun LoadingContent() {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun ProfileHeader(username: String, image: Bitmap?) {
     val painter = image?.asImageBitmap()?.let { BitmapPainter(it) }
@@ -331,6 +337,7 @@ private fun ProfileHeader(username: String, image: Bitmap?) {
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun Toggler(
     label: String,
