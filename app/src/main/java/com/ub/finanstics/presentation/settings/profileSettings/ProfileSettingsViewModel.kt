@@ -15,7 +15,6 @@ import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.compose
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -23,6 +22,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
+@Suppress("DEPRECATION")
 class ProfileSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ProfileSettingsRepository(application.applicationContext)
     private val _uiState = MutableStateFlow<ProfileSettingsUiState>(ProfileSettingsUiState.Loading)

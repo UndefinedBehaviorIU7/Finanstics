@@ -162,9 +162,9 @@ private fun AuthContent(
         )
     }
 
-    val initialUserData = remember { state.userData ?: "" }
+    val initialUserData = remember { state.userData }
     var lastSavedData by remember { mutableStateOf(initialUserData) }
-    val currentData = state.userData ?: ""
+    val currentData = state.userData
     val isDataChanged = currentData != lastSavedData
 
     Column(
