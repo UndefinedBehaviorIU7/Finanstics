@@ -1,13 +1,9 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
-import android.util.Log
-import androidx.compose.runtime.traceEventEnd
 import coil3.Bitmap
 import com.ub.finanstics.api.RetrofitInstance
-import com.ub.finanstics.api.models.BaseResponse
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
@@ -52,33 +48,38 @@ class ProfileSettingsRepository(private val context: Context) {
         }
     }
 
-    private suspend fun userInfoHandler(response: Response<User>): ProfileSettingsUiState = coroutineScope {
-        if (!response.isSuccessful) {
-            return@coroutineScope ProfileSettingsUiState.Error(msg = "Код ошибки: ${response.code()}")
+    private suspend fun userInfoHandler(response: Response<User>): ProfileSettingsUiState =
+        coroutineScope {
+            if (!response.isSuccessful) {
+                return@coroutineScope ProfileSettingsUiState.Error(
+                    msg = "Код ошибки: ${response.code()}"
+                )
+            }
+
+            val user = response.body()
+                ?: return@coroutineScope ProfileSettingsUiState.Error(
+                    msg = "Неизвестная ошибка: пустое тело ответа"
+                )
+
+            val bitmapDeferred = async(Dispatchers.IO) {
+                getImage(user.id)
+            }
+
+            val night = prefs.getBoolean("nightMode", false)
+            val notify = prefs.getBoolean("notifications", false)
+            val username = user.username.orEmpty()
+            val data = user.userData.orEmpty()
+
+            val bitmap = bitmapDeferred.await()
+
+            ProfileSettingsUiState.Auth(
+                image = bitmap,
+                username = username,
+                userData = data,
+                nightMode = night,
+                notifications = notify
+            )
         }
-
-        val user = response.body()
-            ?: return@coroutineScope ProfileSettingsUiState.Error(msg = "Неизвестная ошибка: пустое тело ответа")
-
-        val bitmapDeferred = async(Dispatchers.IO) {
-            getImage(user.id)
-        }
-
-        val night = prefs.getBoolean("nightMode", false)
-        val notify = prefs.getBoolean("notifications", false)
-        val username = user.username.orEmpty()
-        val data = user.userData.orEmpty()
-
-        val bitmap = bitmapDeferred.await()
-
-        ProfileSettingsUiState.Auth(
-            image = bitmap,
-            username = username,
-            userData = data,
-            nightMode = night,
-            notifications = notify
-        )
-    }
 
     private fun hasNightModeOverride(): Boolean =
         prefs.contains("nightMode")
@@ -94,7 +95,10 @@ class ProfileSettingsRepository(private val context: Context) {
     }
 
     suspend fun logout(): ProfileSettingsUiState {
-        val response = RetrofitInstance.api.logout(EncryptedPreferencesManager(context).getString("token", ""))
+        val response =
+            RetrofitInstance.api.logout(
+                EncryptedPreferencesManager(context).getString("token", "")
+            )
         if (response.isSuccessful) {
             return ProfileSettingsUiState.Loading
         } else {

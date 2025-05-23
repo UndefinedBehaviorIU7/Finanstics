@@ -1,8 +1,6 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
 import android.graphics.Bitmap
-import android.net.Uri
-
 
 sealed class ProfileSettingsUiState {
     data class Auth(
@@ -11,16 +9,16 @@ sealed class ProfileSettingsUiState {
         val userData: String?,
         val nightMode: Boolean,
         val notifications: Boolean,
-    ): ProfileSettingsUiState()
+    ) : ProfileSettingsUiState()
 
     data class NotAuth(
         val nightMode: Boolean,
         val notifications: Boolean
-    ): ProfileSettingsUiState()
+    ) : ProfileSettingsUiState()
 
     data class Error(
         val msg: String
-    ): ProfileSettingsUiState()
+    ) : ProfileSettingsUiState()
 
     object Loading: ProfileSettingsUiState()
 }
