@@ -7,9 +7,12 @@ import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.register.Register
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 @Suppress("TooGenericExceptionCaught")
@@ -75,11 +78,14 @@ class ProfileSettingsRepository(private val context: Context) {
             val bitmap = bitmapDeferred.await()
 
             ProfileSettingsUiState.Auth(
-                image = bitmap,
+                token = EncryptedPreferencesManager(context).getString("token", ""),
+                imageBitmap = bitmap,
+                imageUri = null,
                 username = username,
                 userData = data,
                 nightMode = night,
-                notifications = notify
+                notifications = notify,
+                userId = prefs.getInt("id", 0)
             )
         }
 
@@ -115,10 +121,16 @@ class ProfileSettingsRepository(private val context: Context) {
             userData = newData
         )
 
-        if (response.isSuccessful) {
-            return true
-        } else {
-            return false
-        }
+        return response.isSuccessful
+    }
+
+    suspend fun updateImage(image: MultipartBody.Part): Boolean {
+        val response = RetrofitInstance.api.updateUserImage(
+            userId =  prefs.getInt("id", 0).toString(),
+            token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
+            image = image
+        )
+
+        return response.isSuccessful
     }
 }

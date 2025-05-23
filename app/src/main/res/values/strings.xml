@@ -52,4 +52,5 @@
     <string name="not_aut">Вы не вошли в аккаунт</string>
     <string name="profile_image_desc">profile image</string>
     <string name="save">Save</string>
+    <string name="edit">Edit</string>
 </resources>
