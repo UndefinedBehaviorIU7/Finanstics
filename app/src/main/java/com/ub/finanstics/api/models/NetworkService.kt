@@ -80,6 +80,7 @@ interface NetworkService {
         @Query("tag") tag: String,
     ): Response<UserResponse>
 
+    @Suppress("LongParameterList")
     @POST("register/vk")
     suspend fun registerVK(
         @Query("vk_id") vkId: Int,
@@ -124,6 +125,12 @@ interface NetworkService {
     suspend fun getUserGroups(
         @Path("user_id") userId: Int
     ): Response<List<Group>>
+
+    @POST("/users/register_fcm_token")
+    suspend fun registerFCMToken(
+        @Query("token") token: String,
+        @Query("fcm_token") fcmToken: String
+    ): Response<ResponseBody>
 
     @POST("/logout")
     suspend fun logout(

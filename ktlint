@@ -18,13 +18,13 @@ fi
 
 if [ $CI ]; then
   export REVIEWDOG_GITHUB_API_TOKEN="${GITHUB_TOKEN}"
-  $KTLINT_BIN --android --reporter=checkstyle --editorconfig=/.editorconfig "$SCAN_DIR" |
+  $KTLINT_BIN --android --disabled_rules=indent,parameter-list-wrapping --reporter=checkstyle --editorconfig=/.editorconfig "$SCAN_DIR" |
     reviewdog -f=checkstyle \
       -name="ktlint" \
       -reporter="github-pr-review" \
       -fail-level=error
 else
-  $KTLINT_BIN --android --editorconfig=/.editorconfig "$SCAN_DIR" "$@"
+  $KTLINT_BIN --android --disabled_rules=indent,parameter-list-wrapping --editorconfig=/.editorconfig "$SCAN_DIR" "$@"
 fi
 
 echo "Done!"

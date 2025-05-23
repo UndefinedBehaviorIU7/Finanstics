@@ -35,6 +35,10 @@
     <string name="balance_for">Баланс за</string>
     <string name="all_time">всё время</string>
     <string name="All_time">Всё время</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="msg_token_fmt">FCM registration token: %s</string>
+    <string name="msg_subscribed">msg subscribed</string>
+    <string name="msg_subscribe_failed">msg subscribe failed</string>
     <string name="need_auth">Требуется вход</string>
     <string name="authorisation_warning">Для доступа к режиму групп необходимо авторизоваться</string>
     <string name="night_mode">Темная тема</string>

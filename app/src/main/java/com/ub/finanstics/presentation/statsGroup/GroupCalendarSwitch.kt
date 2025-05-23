@@ -1,5 +1,7 @@
 package com.ub.finanstics.presentation.statsGroup
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,14 +20,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.stats.DetailsViewModel
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupCalendarSwitch(
     calendar: CalendarClass,
-    vm: GroupStatsViewModel = viewModel()
+    vm: GroupStatsViewModel = viewModel(),
+    dvm: DetailsViewModel
 ) {
     val data = calendar.getData()
     Row(
@@ -42,6 +47,7 @@ fun GroupCalendarSwitch(
                 .size(30.dp)
                 .clickable {
                     vm.lastMonth()
+                    dvm.hideDetailedActions()
                     vm.fetchData()
                 }
         )
@@ -85,6 +91,7 @@ fun GroupCalendarSwitch(
                 .size(30.dp)
                 .clickable {
                     vm.nextMonth()
+                    dvm.hideDetailedActions()
                     vm.fetchData()
                 }
         )

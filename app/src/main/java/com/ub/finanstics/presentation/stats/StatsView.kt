@@ -47,6 +47,7 @@ fun Stats(
     isVisible: Boolean = true
 ) {
     val vm: StatsViewModel = viewModel()
+    val dvm: DetailsViewModel = viewModel()
     val incomes by vm.incomes.collectAsState()
     val expenses by vm.expenses.collectAsState()
 
@@ -90,7 +91,8 @@ fun Stats(
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                     }
                 }
@@ -101,7 +103,8 @@ fun Stats(
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                         Loader(
                             modifier = Modifier
@@ -115,12 +118,14 @@ fun Stats(
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                         StatsView(
                             incomes,
                             expenses,
-                            vm
+                            vm,
+                            dvm
                         )
                     }
                 }
@@ -137,7 +142,8 @@ fun Stats(
 fun StatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: StatsViewModel = viewModel()
+    vm: StatsViewModel = viewModel(),
+    dvm: DetailsViewModel
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -149,13 +155,15 @@ fun StatsView(
             StatsViewVertical(
                 incomes = incomes,
                 expenses = expenses,
-                vm = vm
+                vm = vm,
+                dvm = dvm
             )
         } else {
             StatsViewHorizontal(
                 incomes = incomes,
                 expenses = expenses,
-                vm = vm
+                vm = vm,
+                dvm = dvm
             )
         }
     }
@@ -167,7 +175,8 @@ fun StatsView(
 fun StatsViewVertical(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: StatsViewModel
+    vm: StatsViewModel,
+    dvm: DetailsViewModel
 ) {
     val uiState = vm.uiState.collectAsState().value
     val date by vm.date.collectAsState()
@@ -210,6 +219,7 @@ fun StatsViewVertical(
             item { Divider(10.dp, 2.dp) }
             item {
                 DetailsPieChart(
+                    vm = dvm,
                     data = incomes,
                     date = date.deepCopy(),
                     expenses = false
@@ -218,6 +228,7 @@ fun StatsViewVertical(
             item { Divider(10.dp, 2.dp) }
             item {
                 DetailsPieChart(
+                    vm = dvm,
                     data = expenses,
                     date = date.deepCopy(),
                     expenses = true
@@ -234,7 +245,8 @@ fun StatsViewVertical(
 fun StatsViewHorizontal(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: StatsViewModel
+    vm: StatsViewModel,
+    dvm: DetailsViewModel,
 ) {
     val uiState = vm.uiState.collectAsState().value
     if (uiState is StatsUiState.Done) {
@@ -270,6 +282,7 @@ fun StatsViewHorizontal(
                 LazyColumn {
                     item {
                         DetailsPieChart(
+                            vm = dvm,
                             data = incomes,
                             date = uiState.calendar,
                             expenses = false
@@ -288,6 +301,7 @@ fun StatsViewHorizontal(
                     item { Divider(10.dp, 2.dp) }
                     item {
                         DetailsPieChart(
+                            vm = dvm,
                             data = expenses,
                             date = uiState.calendar,
                             expenses = true

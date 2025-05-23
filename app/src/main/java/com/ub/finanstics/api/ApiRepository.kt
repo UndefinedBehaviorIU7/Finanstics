@@ -19,6 +19,7 @@ import retrofit2.Response
 import java.io.File
 import java.net.URLConnection
 
+// Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
     this.toRequestBody("text/plain".toMediaTypeOrNull())
 
@@ -163,7 +164,7 @@ class ApiRepository {
             vkId = vkId,
             username = username,
             password = password,
-            tag = tag,
+            tag = tag
         )
     }
 
@@ -178,10 +179,6 @@ class ApiRepository {
     suspend fun getUserGroups(userId: Int): Response<List<Group>> {
         return RetrofitInstance.api.getUserGroups(userId)
     }
-
-//    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
-//        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
-//    }
 
     suspend fun logout(token: String): Response<BaseResponse> {
         return RetrofitInstance.api.logout(token)
