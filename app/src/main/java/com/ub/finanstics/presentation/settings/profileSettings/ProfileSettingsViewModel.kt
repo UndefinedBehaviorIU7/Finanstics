@@ -102,7 +102,7 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
                     val success = repository.updateImage(imagePart)
                     if (success) {
                         _uiState.value = current.copy(
-                            imageUri    = uri,
+                            imageUri = uri,
                             imageBitmap = newBitmap
                         )
                     } else {

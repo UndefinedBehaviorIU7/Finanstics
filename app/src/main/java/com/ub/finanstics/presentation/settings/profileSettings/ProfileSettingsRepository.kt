@@ -126,7 +126,7 @@ class ProfileSettingsRepository(private val context: Context) {
 
     suspend fun updateImage(image: MultipartBody.Part): Boolean {
         val response = RetrofitInstance.api.updateUserImage(
-            userId =  prefs.getInt("id", 0).toString(),
+            userId = prefs.getInt("id", 0).toString(),
             token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
             image = image
         )
