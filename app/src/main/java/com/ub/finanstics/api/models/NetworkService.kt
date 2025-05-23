@@ -161,4 +161,13 @@ interface NetworkService {
         @Query("token") token: String,
         @Query("user_data") userData: String
     ): Response<BaseResponse>
+
+    @POST("/users/{user_id}/update_image")
+    @Multipart
+    @Streaming
+    suspend fun updateUserImage(
+        @Path("user_id") userId: String,
+        @Part("token") token: RequestBody,
+        @Part image: MultipartBody.Part
+    ): Response<BaseResponse>
 }

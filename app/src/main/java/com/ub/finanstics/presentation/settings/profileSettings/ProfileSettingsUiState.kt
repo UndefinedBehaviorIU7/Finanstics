@@ -1,14 +1,18 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
 import android.graphics.Bitmap
+import android.net.Uri
 
 sealed class ProfileSettingsUiState {
     data class Auth(
-        val image: Bitmap?,
+        val userId: Int,
         val username: String,
-        val userData: String?,
+        val token: String,
+        val userData: String,
+        val imageUri: Uri?,
+        val imageBitmap: Bitmap?,
         val nightMode: Boolean,
-        val notifications: Boolean,
+        val notifications: Boolean
     ) : ProfileSettingsUiState()
 
     data class NotAuth(

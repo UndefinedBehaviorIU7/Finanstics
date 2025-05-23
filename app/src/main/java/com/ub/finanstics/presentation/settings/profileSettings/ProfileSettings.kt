@@ -1,6 +1,13 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,6 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +61,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -61,8 +72,8 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("ForbiddenComment", "MagicNumber")
-// TODO: уведы, котлиновское апи, обновление картинки
 
 @Composable
 fun ProfileSettingsScreen(
@@ -132,6 +143,7 @@ fun ProfileSettingsScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun AuthContent(
@@ -141,9 +153,18 @@ private fun AuthContent(
     onLogout: () -> Unit,
     vm: ProfileSettingsViewModel
 ) {
-    val initialUserData = remember { state.userData ?: "" }
+    val context = LocalContext.current
+
+    val notificationsEnabled by remember {
+        mutableStateOf(
+            NotificationManagerCompat.from(context)
+                .areNotificationsEnabled()
+        )
+    }
+
+    val initialUserData = remember { state.userData }
     var lastSavedData by remember { mutableStateOf(initialUserData) }
-    val currentData = state.userData ?: ""
+    val currentData = state.userData
     val isDataChanged = currentData != lastSavedData
 
     Column(
@@ -151,12 +172,11 @@ private fun AuthContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        ProfileHeader(username = state.username, image = state.image)
+        ProfileHeader(username = state.username, image = state.imageBitmap, vm)
 
         OutlinedTextField(
             value = state.userData ?: stringResource(R.string.empty_user_data),
-            onValueChange = { vm.onDataChange(it)
-                            },
+            onValueChange = { vm.onDataChange(it) },
             label = { Text(stringResource(R.string.about)) },
             singleLine = false,
             maxLines = 3,
@@ -188,8 +208,13 @@ private fun AuthContent(
 
         Toggler(
             label = stringResource(R.string.notifications),
-            checked = false,
-            onToggle = {},
+            checked = notificationsEnabled,
+            onToggle = {
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).also { intent ->
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    context.startActivity(intent)
+                }
+            },
             fontSize = 20.sp
         )
 
@@ -256,13 +281,6 @@ private fun NotAuthContent(
             onToggle = onDarkModeToggle,
             fontSize = 20.sp
         )
-
-        Toggler(
-            label = stringResource(R.string.notifications),
-            checked = false,
-            onToggle = {},
-            fontSize = 20.sp
-        )
     }
 }
 
@@ -319,17 +337,53 @@ private fun LoadingContent() {
 
 @Suppress("MagicNumber")
 @Composable
-private fun ProfileHeader(username: String, image: Bitmap?) {
+private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsViewModel) {
     val painter = image?.asImageBitmap()?.let { BitmapPainter(it) }
         ?: painterResource(R.drawable.profile_placeholder)
-    Image(
-        painter = painter,
-        contentDescription = stringResource(R.string.profile_image_desc),
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(180.dp)
-            .clip(CircleShape)
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            vm.imageChange(uri)
+        }
     )
+
+    Box(
+        modifier = Modifier
+            .size(180.dp),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        Image(
+            painter = painter,
+            contentDescription = stringResource(R.string.profile_image_desc),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+                .clickable(onClick = { launcher.launch("image/*") })
+        )
+
+        IconButton(
+            onClick = { launcher.launch("image/*") },
+            modifier = Modifier
+                .padding(8.dp)
+                .size(32.dp)
+                .zIndex(1f)
+                .background(
+                    color = MaterialTheme.colorScheme.tertiary,
+                    shape = CircleShape
+                )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = stringResource(R.string.edit),
+                modifier = Modifier
+                    .size(30.dp),
+                tint = MaterialTheme.colorScheme.background
+            )
+        }
+    }
+
     Text(
         text = username,
         fontSize = 28.sp,
