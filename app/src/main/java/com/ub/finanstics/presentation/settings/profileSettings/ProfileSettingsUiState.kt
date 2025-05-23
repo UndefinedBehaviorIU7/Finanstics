@@ -22,7 +22,5 @@ sealed class ProfileSettingsUiState {
         val msg: String
     ): ProfileSettingsUiState()
 
-    data class Loading(
-        val isLoading: Boolean
-    ): ProfileSettingsUiState()
+    object Loading: ProfileSettingsUiState()
 }

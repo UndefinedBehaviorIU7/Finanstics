@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -44,13 +45,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import coil3.DrawableImage
 import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ThemeViewModel
+import com.ub.finanstics.presentation.Navigation
 
 /* TODO: выбор картинки, logout, редирект с регистрации, обновление юзер даты,
     пофиксить обновление экрана после логина, пермишены на уведомления,
@@ -76,6 +80,20 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                     themeVm: ThemeViewModel) {
     val uiState = vm.uiState.collectAsState().value
     val isDark by themeVm.isDark.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                vm.onScreenEnter()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Box (modifier = Modifier.background(MaterialTheme.colorScheme.background).statusBarsPadding().fillMaxSize()) {
         Column {
@@ -142,8 +160,17 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                                 Spacer(modifier = Modifier.weight(1.5f))
                             }
 
-                            // TODO: переделать на логаут
-                            Button(onClick = {},
+                            Button(onClick = {
+                                vm.logout()
+
+                                navController.popBackStack(
+                                    route = Navigation.STATS.toString(),
+                                    inclusive = true
+                                )
+
+                                navController.navigate(Navigation.STATS.toString()) {
+                                    launchSingleTop = true
+                                } },
                                 modifier = Modifier.weight(0.7f).width(180.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground,
                                     contentColor = MaterialTheme.colorScheme.primary)) {
@@ -157,7 +184,7 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                                 Text(text = stringResource(R.string.not_aut), modifier = Modifier.weight(1f),
                                     fontSize = 30.sp, textAlign = TextAlign.Center,
                                     lineHeight = 30.sp, color = MaterialTheme.colorScheme.primary)
-                                Button(onClick = {navController.navigate(com.ub.finanstics.presentation.Navigation.LOGIN.toString())},
+                                Button(onClick = {navController.navigate(Navigation.LOGIN.toString())},
                                     modifier = Modifier.weight(0.7f).width(180.dp),
                                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onBackground,
                                         contentColor = MaterialTheme.colorScheme.primary)) {
@@ -167,7 +194,7 @@ fun ProfileSettings(navController: NavController, vm: ProfileSettingsViewModel =
                                 Text(text = stringResource(R.string.register),
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clickable { navController.navigate(com.ub.finanstics.presentation.Navigation.REGISTER.toString()) },
+                                        .clickable { navController.navigate(Navigation.REGISTER.toString()) },
                                     textDecoration = TextDecoration.Underline,
                                     color = MaterialTheme.colorScheme.primary)
                             }

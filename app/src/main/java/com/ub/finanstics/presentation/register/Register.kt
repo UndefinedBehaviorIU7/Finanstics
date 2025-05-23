@@ -308,7 +308,7 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
 
                 is RegisterUiState.Success -> {
                     LaunchedEffect(Unit) {
-                        navController.popBackStack()
+                        navController.navigate(Navigation.SETTINGS.toString())
                     }
                 }
             }

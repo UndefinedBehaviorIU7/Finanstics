@@ -20,7 +20,7 @@ class ProfileSettingsRepository(private val context: Context) {
 
     fun isAuth(): Boolean {
         val enPrefs = EncryptedPreferencesManager(context)
-        return enPrefs.getString("token", "") != ""
+        return enPrefs.getString("token", "").isNotEmpty()
     }
 
     private suspend fun getImage(userId: Int): Bitmap? {
@@ -79,7 +79,7 @@ class ProfileSettingsRepository(private val context: Context) {
         )
     }
 
-    fun hasNightModeOverride(): Boolean =
+    private fun hasNightModeOverride(): Boolean =
         prefs.contains("nightMode")
 
     fun getNightModeOverride(): Boolean? =
@@ -90,5 +90,14 @@ class ProfileSettingsRepository(private val context: Context) {
 
     fun saveNightModeOverride(on: Boolean) {
         prefs.saveData("nightMode", on)
+    }
+
+    suspend fun logout(): ProfileSettingsUiState {
+        val response = RetrofitInstance.api.logout(EncryptedPreferencesManager(context).getString("token", ""))
+        if (response.isSuccessful) {
+            return ProfileSettingsUiState.Loading
+        } else {
+            return ProfileSettingsUiState.Error("Неизвестная ошибка")
+        }
     }
 }
