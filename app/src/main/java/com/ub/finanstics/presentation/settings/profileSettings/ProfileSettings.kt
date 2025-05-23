@@ -378,8 +378,8 @@ private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsV
                 imageVector = Icons.Default.Edit,
                 contentDescription = stringResource(R.string.edit),
                 modifier = Modifier
-                    .size(20.dp),
-                tint = MaterialTheme.colorScheme.onSurface
+                    .size(30.dp),
+                tint = MaterialTheme.colorScheme.background
             )
         }
     }
