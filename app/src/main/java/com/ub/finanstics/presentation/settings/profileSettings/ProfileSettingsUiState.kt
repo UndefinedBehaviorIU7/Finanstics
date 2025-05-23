@@ -10,7 +10,7 @@ sealed class ProfileSettingsUiState {
         val username: String,
         val userData: String?,
         val nightMode: Boolean,
-        val notifications: Boolean
+        val notifications: Boolean,
     ): ProfileSettingsUiState()
 
     data class NotAuth(

@@ -50,8 +50,29 @@ class ProfileSettingsViewModel(application: Application): AndroidViewModel(appli
         encryptedPrefManager.saveData("token", "")
     }
 
-    // TODO: попап с сохранением даты
     fun onDataChange(newData: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                _uiState.value = current.copy(userData = newData)
+            }
 
+            else -> Unit
+        }
+    }
+
+    fun saveUserData(newData: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                viewModelScope.launch {
+                    if (repository.updateData(newData)) {
+                        _uiState.value = current.copy()
+                    } else {
+                        _uiState.value = ProfileSettingsUiState.Error("Неизвестная ошибка")
+                    }
+                }
+            }
+
+            else -> Unit
+        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.presentation.Navigation
+import androidx.compose.material.icons.filled.Save
 
 // TODO: уведы, поенять плейсхолдер аватарки, обновление даты, котлиновское апи
 
@@ -82,7 +84,8 @@ fun ProfileSettingsScreen(
                             navController.navigate(Navigation.STATS.toString()) {
                                 launchSingleTop = true
                             }
-                        }
+                        },
+                        vm = vm
                     )
 
                     is ProfileSettingsUiState.NotAuth -> NotAuthContent(
@@ -106,8 +109,14 @@ private fun AuthContent(
     state: ProfileSettingsUiState.Auth,
     isDark: Boolean,
     onDarkModeToggle: (Boolean) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    vm: ProfileSettingsViewModel
 ) {
+    val initialUserData = remember { state.userData ?: "" }
+    var lastSavedData by remember { mutableStateOf(initialUserData) }
+    val currentData = state.userData ?: ""
+    val isDataChanged = currentData != lastSavedData
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -117,14 +126,28 @@ private fun AuthContent(
 
         OutlinedTextField(
             value = state.userData ?: stringResource(R.string.empty_user_data),
-            onValueChange = {},
+            onValueChange = { vm.onDataChange(it)
+                            },
             label = { Text(stringResource(R.string.about)) },
             singleLine = false,
             maxLines = 3,
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 120.dp)
+                .heightIn(min = 120.dp),
+            trailingIcon = {
+                if (isDataChanged) {
+                    IconButton(onClick = {
+                        vm.saveUserData(currentData)
+                        lastSavedData = currentData
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = stringResource(R.string.save)
+                        )
+                    }
+                }
+            }
         )
 
         Toggler(

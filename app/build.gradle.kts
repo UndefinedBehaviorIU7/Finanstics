@@ -92,4 +92,7 @@ dependencies {
 
     implementation("com.vk.id:vkid:2.4.0")
     implementation("com.vk.id:onetap-compose:2.4.0")
+
+    implementation("androidx.compose.material:material-icons-core:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
 }

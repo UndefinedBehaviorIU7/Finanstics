@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.runtime.traceEventEnd
 import coil3.Bitmap
 import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.api.models.BaseResponse
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
@@ -98,6 +99,20 @@ class ProfileSettingsRepository(private val context: Context) {
             return ProfileSettingsUiState.Loading
         } else {
             return ProfileSettingsUiState.Error("Неизвестная ошибка")
+        }
+    }
+
+    suspend fun updateData(newData: String): Boolean {
+        val response = RetrofitInstance.api.updateUserData(
+            token = EncryptedPreferencesManager(context).getString("token", ""),
+            userId = prefs.getInt("id", 0),
+            userData = newData
+        )
+
+        if (response.isSuccessful) {
+            return true
+        } else {
+            return false
         }
     }
 }

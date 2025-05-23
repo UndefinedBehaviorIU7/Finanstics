@@ -120,9 +120,9 @@ interface NetworkService {
     @GET("groups/all")
     suspend fun getAllGroups(): Response<List<Group>>
 
-    @GET("/users/{userId}/groups")
+    @GET("/users/{user_id}/groups")
     suspend fun getUserGroups(
-        @Path("userId") userId: Int
+        @Path("user_id") userId: Int
     ): Response<List<Group>>
 
     @POST("/logout")
@@ -146,4 +146,12 @@ interface NetworkService {
     suspend fun userInfo(
         @Query("user_id") userId: Int
     ): Response<User>
+
+    @POST("/users/{user_id}/update_data")
+    @Streaming
+    suspend fun updateUserData(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("user_data") userData: String
+    ): Response<BaseResponse>
 }
