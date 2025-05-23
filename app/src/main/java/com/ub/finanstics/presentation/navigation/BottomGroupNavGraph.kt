@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.calendar.CalendarGroup
-import com.ub.finanstics.presentation.group.settings.GroupSettings
 import com.ub.finanstics.presentation.statsGroup.GroupStats
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.PersonIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
+import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -43,7 +44,8 @@ import kotlin.math.abs
 fun BottomGroupNavGraph(
     pagerState: PagerState,
     navController: NavController,
-    offsetIcons: Dp
+    offsetIcons: Dp,
+    themeVm: ThemeViewModel
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -54,7 +56,7 @@ fun BottomGroupNavGraph(
             when (page) {
                 0 -> GroupStats(navController)
                 1 -> CalendarGroup(navController)
-                2 -> GroupSettings(navController)
+                2 -> ProfileSettingsScreen(navController, themeVm = themeVm)
             }
         }
 

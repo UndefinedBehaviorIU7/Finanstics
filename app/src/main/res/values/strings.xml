@@ -41,4 +41,15 @@
     <string name="msg_subscribe_failed">msg subscribe failed</string>
     <string name="need_auth">Требуется вход</string>
     <string name="authorisation_warning">Для доступа к режиму групп необходимо авторизоваться</string>
+    <string name="night_mode">Темная тема</string>
+    <string name="notifications">Уведомления</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="empty_user_data">Упс! Кажется вы еще не заполнили информацию о себе</string>
+    <string name="about">О себе</string>
+    <string name="connection_error">Connection Error</string>
+    <string name="no_internet">Потеряно соединение с сервером</string>
+    <string name="retry">Повторить попытку</string>
+    <string name="not_aut">Вы не вошли в аккаунт</string>
+    <string name="profile_image_desc">profile image</string>
+    <string name="save">Save</string>
 </resources>

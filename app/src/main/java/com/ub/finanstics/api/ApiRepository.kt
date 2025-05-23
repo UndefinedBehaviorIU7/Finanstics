@@ -19,6 +19,7 @@ import retrofit2.Response
 import java.io.File
 import java.net.URLConnection
 
+// Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
     this.toRequestBody("text/plain".toMediaTypeOrNull())
 
@@ -97,30 +98,11 @@ class ApiRepository {
         username: String,
         password: String,
         tag: String,
-        userData: String,
-        image: String?,
     ): Response<UserResponse> {
-        val usernameBody = username.toPlainPart()
-        val passwordBody = password.toPlainPart()
-        val tagBody = tag.toPlainPart()
-        val userDataBody = userData.toPlainPart()
-
-        val imageFile = File(image)
-        val mime = URLConnection.guessContentTypeFromName(imageFile.name)
-            ?: "application/octet-stream"
-        val imageReqBody = imageFile.asRequestBody(mime.toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData(
-            "image",
-            imageFile.name,
-            imageReqBody
-        )
-
         return RetrofitInstance.api.register(
-            usernameBody,
-            passwordBody,
-            tagBody,
-            userDataBody,
-            imagePart
+            username,
+            password,
+            tag,
         )
     }
 
@@ -176,32 +158,13 @@ class ApiRepository {
         username: String,
         password: String,
         tag: String,
-        userData: String,
-        image: String?
     ): Response<UserResponse> {
-        val vkIdBody = vkId.toString().toPlainPart()
-        val usernameBody = username.toPlainPart()
-        val passwordBody = password.toPlainPart()
-        val tagBody = tag.toPlainPart()
-        val userDataBody = userData.toPlainPart()
-
-        val imageFile = File(image)
-        val mime = URLConnection.guessContentTypeFromName(imageFile.name)
-            ?: "application/octet-stream"
-        val imageReqBody = imageFile.asRequestBody(mime.toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData(
-            "image",
-            imageFile.name,
-            imageReqBody
-        )
 
         return RetrofitInstance.api.registerVK(
-            vkId = vkIdBody,
-            username = usernameBody,
-            password = passwordBody,
-            tag = tagBody,
-            userData = userDataBody,
-            image = imagePart
+            vkId = vkId,
+            username = username,
+            password = password,
+            tag = tag
         )
     }
 
@@ -217,11 +180,11 @@ class ApiRepository {
         return RetrofitInstance.api.getUserGroups(userId)
     }
 
-    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
-        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
-    }
-
     suspend fun logout(token: String): Response<BaseResponse> {
         return RetrofitInstance.api.logout(token)
+    }
+
+    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
+        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
     }
 }

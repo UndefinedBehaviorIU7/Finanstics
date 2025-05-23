@@ -73,25 +73,20 @@ interface NetworkService {
         @Path("time") time: String
     ): Response<List<Category>>
 
-    @Multipart
     @POST("register")
     suspend fun register(
-        @Part("username") username: RequestBody,
-        @Part("password") password: RequestBody,
-        @Part("tag") tag: RequestBody,
-        @Part("user_data") userData: RequestBody,
-        @Part("image") image: MultipartBody.Part,
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
     ): Response<UserResponse>
 
     @Suppress("LongParameterList")
     @POST("register/vk")
     suspend fun registerVK(
-        @Part("vk_id") vkId: RequestBody,
-        @Part("username") username: RequestBody,
-        @Part("password") password: RequestBody,
-        @Part("tag") tag: RequestBody,
-        @Part("user_data") userData: RequestBody,
-        @Part("image") image: MultipartBody.Part,
+        @Query("vk_id") vkId: Int,
+        @Query("username") username: String,
+        @Query("password") password: String,
+        @Query("tag") tag: String,
     ): Response<UserResponse>
 
     @GET("login")
@@ -126,9 +121,9 @@ interface NetworkService {
     @GET("groups/all")
     suspend fun getAllGroups(): Response<List<Group>>
 
-    @GET("/users/{userId}/groups")
+    @GET("/users/{user_id}/groups")
     suspend fun getUserGroups(
-        @Path("userId") userId: Int
+        @Path("user_id") userId: Int
     ): Response<List<Group>>
 
     @POST("/users/register_fcm_token")
@@ -145,12 +140,25 @@ interface NetworkService {
     @GET("/users/{user_id}/image")
     @Streaming
     suspend fun getUserImage(
-        @Part("user_id") userId: Int
+        @Path("user_id") userId: Int
     ): Response<ResponseBody>
 
     @GET("/users/{group_id}/image")
     @Streaming
     suspend fun getGroupImage(
-        @Part("group_id") userId: Int
+        @Path("group_id") userId: Int
     ): Response<ResponseBody>
+
+    @GET("/user_info")
+    suspend fun userInfo(
+        @Query("user_id") userId: Int
+    ): Response<User>
+
+    @POST("/users/{user_id}/update_data")
+    @Streaming
+    suspend fun updateUserData(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("user_data") userData: String
+    ): Response<BaseResponse>
 }

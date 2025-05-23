@@ -22,6 +22,7 @@ navigationRuntimeAndroid = "2.9.0-alpha09"
 composeMaterial = "1.4.1"
 roomRuntime = "2.6.1"
 kotlinxMetadata = "0.7.0"
+appcompat = "1.7.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -55,6 +56,7 @@ androidx-navigation-runtime-android = { group = "androidx.navigation", name = "n
 androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 kotlinx-metadata-jvm = { module = "org.jetbrains.kotlinx:kotlinx-metadata-jvm", version.ref = "kotlinxMetadata" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 
 [plugins]

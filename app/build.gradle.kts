@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -92,11 +93,11 @@ dependencies {
 
     implementation("com.vk.id:vkid:2.4.0")
     implementation("com.vk.id:onetap-compose:2.4.0")
-
+    implementation("androidx.compose.material:material-icons-core:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("androidx.work:work-runtime:2.10.0")
 
     implementation("com.google.firebase:firebase-messaging:23.0.0")
     implementation("com.google.firebase:firebase-installations:18.0.0")
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
-
 }

@@ -88,7 +88,6 @@ fun Stats(
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -101,7 +100,6 @@ fun Stats(
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
                     Column() {
-                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -117,7 +115,6 @@ fun Stats(
                 is StatsUiState.Done -> {
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
-                        Header(vm, navController)
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -329,58 +326,3 @@ fun StatsErrorView(
         color = MaterialTheme.colorScheme.primary
     )
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
-@Composable
-fun Header(
-    vm: StatsViewModel,
-    navController: NavController
-) {
-    val isAuth by vm.isAuth.collectAsState()
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        if (isAuth) {
-            Spacer(Modifier.weight(2f))
-            Text(
-                text = vm.tagStr,
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.log_out),
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .clickable {
-                        vm.cancelUpdate()
-                        vm.logOut()
-                    }
-            )
-            Spacer(Modifier.weight(2f))
-        } else {
-            Spacer(Modifier.weight(2f))
-            Text(
-                text = stringResource(R.string.logIn),
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .clickable { navController.navigate(Navigation.LOGIN.toString()) }
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.registration),
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .clickable { navController.navigate(Navigation.REGISTER.toString()) }
-            )
-            Spacer(Modifier.weight(2f))
-        }
-    }
-}
-
-

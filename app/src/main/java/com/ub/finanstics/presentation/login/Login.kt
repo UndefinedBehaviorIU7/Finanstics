@@ -190,7 +190,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
                 is LoginUiState.Success -> {
                     LaunchedEffect(Unit) {
-                        navController.popBackStack()
+                        navController.navigate(Navigation.STATS.toString())
                     }
                 }
             }

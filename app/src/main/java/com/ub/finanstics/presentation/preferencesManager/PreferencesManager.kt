@@ -85,4 +85,8 @@ class PreferencesManager(context: Context) {
         println(getString("time_update", TIME_INIT))
         return getString("time_update", TIME_INIT)
     }
+
+    fun contains(key: String): Boolean {
+        return sharedPreferences.contains(key)
+    }
 }

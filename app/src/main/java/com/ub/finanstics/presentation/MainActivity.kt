@@ -14,7 +14,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -27,6 +30,7 @@ import com.ub.finanstics.presentation.groups.Groups
 import com.ub.finanstics.presentation.login.Login
 import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
+import com.ub.finanstics.ui.theme.ThemeViewModel
 
 enum class Navigation(val route: String) {
     STATS("stats"),
@@ -55,8 +59,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            val themeVm: ThemeViewModel = viewModel()
+            val isDark by themeVm.isDark.collectAsState()
+
             FinansticsTheme(
-                dynamicColor = false
+                dynamicColor = false,
+                darkTheme = isDark
             ) {
                 val navController = rememberNavController()
 
@@ -67,7 +75,8 @@ class MainActivity : ComponentActivity() {
                     composable(Navigation.STATS.toString()) {
                         MainScreen(
                             navController = navController,
-                            initialPage = 0
+                            initialPage = 0,
+                            themeVm = themeVm
                         )
                     }
                     composable(Navigation.LOGIN.toString()) {
@@ -90,31 +99,36 @@ class MainActivity : ComponentActivity() {
                     composable(Navigation.CALENDAR.toString()) {
                         MainScreen(
                             navController = navController,
-                            initialPage = 1
+                            initialPage = 1,
+                            themeVm = themeVm
                         )
                     }
                     composable(Navigation.SETTINGS.toString()) {
                         MainScreen(
                             navController = navController,
-                            initialPage = 2
+                            initialPage = 2,
+                            themeVm = themeVm
                         )
                     }
                     composable(Navigation.GROUP_STATS.toString()) {
                         GroupMainScreen(
                             navController = navController,
-                            initialPage = 0
+                            initialPage = 0,
+                            themeVm
                         )
                     }
                     composable(Navigation.GROUP_CALENDAR.toString()) {
                         GroupMainScreen(
                             navController = navController,
-                            initialPage = 1
+                            initialPage = 1,
+                            themeVm
                         )
                     }
                     composable(Navigation.GROUP_SETTINGS.toString()) {
                         GroupMainScreen(
                             navController = navController,
-                            initialPage = 2
+                            initialPage = 2,
+                            themeVm
                         )
                     }
                 }
@@ -127,7 +141,7 @@ class MainActivity : ComponentActivity() {
             if (!isGranted) {
                 Toast.makeText(
                     this,
-                    "FCM can't post notifications without POST_NOTIFICATIONS permission",
+                    "Для уведомлений предоставьте разрешение в настройках",
                     Toast.LENGTH_LONG
                 ).show()
             }

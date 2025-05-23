@@ -29,6 +29,7 @@ import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -37,7 +38,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun GroupMainScreen(
     navController: NavController,
-    initialPage: Int = 0
+    initialPage: Int = 0,
+    themeVm: ThemeViewModel
 ) {
     val systemUiController = rememberSystemUiController()
     val isDarkTheme = isSystemInDarkTheme()
@@ -103,7 +105,8 @@ fun GroupMainScreen(
                 pagerState = pagerState,
                 navController = navController,
                 offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
-                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2
+                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2,
+                themeVm = themeVm
             )
 
             Box(
