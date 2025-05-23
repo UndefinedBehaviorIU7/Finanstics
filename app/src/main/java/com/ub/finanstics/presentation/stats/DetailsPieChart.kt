@@ -46,6 +46,7 @@ import java.time.LocalDate
 @Suppress("MagicNumber")
 @Composable
 fun DetailsPieChart(
+    vm: DetailsViewModel,
     data: List<Pair<String, Int>>,
     date: CalendarClass,
     expenses: Boolean
@@ -55,7 +56,6 @@ fun DetailsPieChart(
         data.size
     )
     val sumTotal = data.sumOf { it.second }
-    val vm: DetailsViewModel = viewModel()
     vm.date = date
 
     val chosen by vm.chosenCategory.collectAsState()

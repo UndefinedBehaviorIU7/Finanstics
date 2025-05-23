@@ -28,7 +28,8 @@ import com.ub.finanstics.ui.theme.icons.RightIcon
 @Composable
 fun CalendarSwitch(
     calendar: CalendarClass,
-    vm: StatsViewModel = viewModel()
+    vm: StatsViewModel = viewModel(),
+    dvm: DetailsViewModel
 ) {
     val data = calendar.getData()
     Row(
@@ -45,6 +46,7 @@ fun CalendarSwitch(
                 .size(30.dp)
                 .clickable {
                     vm.lastMonth()
+                    dvm.hideDetailedActions()
                     vm.fetchData()
                 }
         )
@@ -88,6 +90,7 @@ fun CalendarSwitch(
                 .size(30.dp)
                 .clickable {
                     vm.nextMonth()
+                    dvm.hideDetailedActions()
                     vm.fetchData()
                 }
         )

@@ -22,18 +22,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.DetailsPieChart
+import com.ub.finanstics.presentation.stats.DetailsViewModel
 import com.ub.finanstics.presentation.stats.PieChart
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.GROUP_NAME
@@ -46,7 +51,9 @@ fun GroupStats(
     navController: NavController
 ) {
     val vm: GroupStatsViewModel = viewModel()
-
+    val dvm: DetailsViewModel = viewModel()
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -76,14 +83,15 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column() {
                         Header(
-                            GROUP_NAME,
+                            preferencesManager.getString("groupName", ""),
                             uiState.all,
                             vm
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                     }
                 }
@@ -92,14 +100,15 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column() {
                         Header(
-                            GROUP_NAME,
+                            preferencesManager.getString("groupName", ""),
                             uiState.all,
                             vm
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                         BoxWithConstraints {
                             val width = maxWidth
@@ -116,19 +125,21 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
                         Header(
-                            GROUP_NAME,
+                            preferencesManager.getString("groupName", ""),
                             uiState.all,
                             vm
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
                             calendar = calendar,
-                            vm = vm
+                            vm = vm,
+                            dvm = dvm
                         )
                         GroupStatsView(
                             uiState.incomes,
                             uiState.expenses,
-                            vm
+                            vm,
+                            dvm
                         )
                     }
                 }
@@ -155,6 +166,7 @@ fun Header(
         Text(
             text = groupName,
             modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
             fontSize = 20.sp,
             color = MaterialTheme.colorScheme.primary
         )
@@ -191,7 +203,8 @@ fun Header(
 fun GroupStatsView(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: GroupStatsViewModel = viewModel()
+    vm: GroupStatsViewModel = viewModel(),
+    dvm: DetailsViewModel
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
@@ -203,13 +216,15 @@ fun GroupStatsView(
             GroupStatsViewVertical(
                 incomes = incomes,
                 expenses = expenses,
-                vm = vm
+                vm = vm,
+                dvm = dvm
             )
         } else {
             GroupStatsViewHorizontal(
                 incomes = incomes,
                 expenses = expenses,
-                vm = vm
+                vm = vm,
+                dvm = dvm
             )
         }
     }
@@ -221,7 +236,8 @@ fun GroupStatsView(
 fun GroupStatsViewVertical(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: GroupStatsViewModel
+    vm: GroupStatsViewModel,
+    dvm: DetailsViewModel,
 ) {
     val uiState = vm.uiState.collectAsState().value
     if (uiState is GroupStatsUiState.Done) {
@@ -267,7 +283,8 @@ fun GroupStatsViewVertical(
                 DetailsPieChart(
                     data = incomes,
                     date = uiState.calendar,
-                    expenses = false
+                    expenses = false,
+                    vm = dvm
                 )
             }
             item { Divider(10.dp, 2.dp) }
@@ -275,7 +292,8 @@ fun GroupStatsViewVertical(
                 DetailsPieChart(
                     data = expenses,
                     date = uiState.calendar,
-                    expenses = true
+                    expenses = true,
+                    vm = dvm
                 )
             }
             item { Spacer(modifier = Modifier.height(50.dp)) }
@@ -289,7 +307,8 @@ fun GroupStatsViewVertical(
 fun GroupStatsViewHorizontal(
     incomes: List<Pair<String, Int>>,
     expenses: List<Pair<String, Int>>,
-    vm: GroupStatsViewModel
+    vm: GroupStatsViewModel,
+    dvm: DetailsViewModel
 ) {
     val uiState = vm.uiState.collectAsState().value
     if (uiState is GroupStatsUiState.Done) {
@@ -327,7 +346,8 @@ fun GroupStatsViewHorizontal(
                         DetailsPieChart(
                             data = incomes,
                             date = uiState.calendar,
-                            expenses = false
+                            expenses = false,
+                            vm = dvm
                         )
                     }
                     item { Divider(10.dp, 2.dp) }
@@ -346,7 +366,8 @@ fun GroupStatsViewHorizontal(
                         DetailsPieChart(
                             data = expenses,
                             date = uiState.calendar,
-                            expenses = true
+                            expenses = true,
+                            vm = dvm
                         )
                     }
                     item { Spacer(modifier = Modifier.height(50.dp)) }
