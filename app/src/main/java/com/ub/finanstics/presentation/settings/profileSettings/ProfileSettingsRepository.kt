@@ -7,7 +7,6 @@ import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.register.Register
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
