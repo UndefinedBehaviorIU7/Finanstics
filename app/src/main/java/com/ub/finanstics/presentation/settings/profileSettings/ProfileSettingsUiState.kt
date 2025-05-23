@@ -20,5 +20,5 @@ sealed class ProfileSettingsUiState {
         val msg: String
     ) : ProfileSettingsUiState()
 
-    object Loading: ProfileSettingsUiState()
+    object Loading : ProfileSettingsUiState()
 }

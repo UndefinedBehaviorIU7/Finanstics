@@ -61,7 +61,6 @@ fun MainScreen(
     val systemUiController = rememberSystemUiController()
     val navigationBarColor = MaterialTheme.colorScheme.background
 
-
     val pageHistory = remember { mutableStateListOf<Int>() }
 
     LaunchedEffect(isDark) {

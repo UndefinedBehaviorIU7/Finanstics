@@ -13,11 +13,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,8 +30,6 @@ import com.ub.finanstics.presentation.groups.Groups
 import com.ub.finanstics.presentation.login.Login
 import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
-import androidx.compose.runtime.getValue
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
 enum class Navigation(val route: String) {
