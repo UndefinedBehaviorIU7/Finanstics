@@ -133,6 +133,7 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
         )
     }
 
+    @Suppress("MagicNumber")
     private fun uriToBitmap(context: Context, uri: Uri): Bitmap {
         return if (Build.VERSION.SDK_INT < 28) {
             MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
