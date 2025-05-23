@@ -28,6 +28,7 @@ import com.ub.finanstics.presentation.addAction.AddActionGroup
 import com.ub.finanstics.presentation.group.GroupMainScreen
 import com.ub.finanstics.presentation.groups.Groups
 import com.ub.finanstics.presentation.login.Login
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
 import com.ub.finanstics.ui.theme.ThemeViewModel
@@ -49,10 +50,15 @@ enum class Navigation(val route: String) {
 @Suppress("LongMethod")
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
+    companion object {
+        private const val KEY_NOTIFICATIONS_ASKED = "notifications_asked"
+    }
+
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        askNotificationPermission()
+        askNotificationPermissionOnce()
         createNotificationChannel()
         val initialized = FirebaseApp.getApps(this).isNotEmpty()
         Log.d("FirebaseInit", "Is FirebaseApp initialized? $initialized")
@@ -147,13 +153,19 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    private fun askNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private fun askNotificationPermissionOnce() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+        val prefs = PreferencesManager(application)
+        val alreadyAsked = prefs.getBoolean(KEY_NOTIFICATIONS_ASKED, false)
+        if (!alreadyAsked) {
+            prefs.saveData(KEY_NOTIFICATIONS_ASKED, true)
+
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
-                ) {
+            ) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }

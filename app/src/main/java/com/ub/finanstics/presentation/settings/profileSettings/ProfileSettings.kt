@@ -1,6 +1,8 @@
 package com.ub.finanstics.presentation.settings.profileSettings
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -45,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -52,6 +55,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -141,6 +145,15 @@ private fun AuthContent(
     onLogout: () -> Unit,
     vm: ProfileSettingsViewModel
 ) {
+    val context = LocalContext.current
+
+    val notificationsEnabled by remember {
+        mutableStateOf(
+            NotificationManagerCompat.from(context)
+                .areNotificationsEnabled()
+        )
+    }
+
     val initialUserData = remember { state.userData ?: "" }
     var lastSavedData by remember { mutableStateOf(initialUserData) }
     val currentData = state.userData ?: ""
@@ -188,8 +201,13 @@ private fun AuthContent(
 
         Toggler(
             label = stringResource(R.string.notifications),
-            checked = false,
-            onToggle = {},
+            checked = notificationsEnabled,
+            onToggle = {
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).also { intent ->
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    context.startActivity(intent)
+                }
+            },
             fontSize = 20.sp
         )
 
@@ -254,13 +272,6 @@ private fun NotAuthContent(
             label = stringResource(R.string.night_mode),
             checked = isDark,
             onToggle = onDarkModeToggle,
-            fontSize = 20.sp
-        )
-
-        Toggler(
-            label = stringResource(R.string.notifications),
-            checked = false,
-            onToggle = {},
             fontSize = 20.sp
         )
     }
