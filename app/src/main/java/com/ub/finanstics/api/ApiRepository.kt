@@ -183,4 +183,8 @@ class ApiRepository {
     suspend fun logout(token: String): Response<BaseResponse> {
         return RetrofitInstance.api.logout(token)
     }
+
+    suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
+        return RetrofitInstance.api.registerFCMToken(token, fcmToken)
+    }
 }

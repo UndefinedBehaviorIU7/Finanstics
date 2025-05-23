@@ -143,7 +143,7 @@ class MainActivity : ComponentActivity() {
             if (!isGranted) {
                 Toast.makeText(
                     this,
-                    "FCM can't post notifications without POST_NOTIFICATIONS permission",
+                    "Для уведомлений предоставьте разрешение в настройках",
                     Toast.LENGTH_LONG
                 ).show()
             }

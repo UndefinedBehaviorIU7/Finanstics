@@ -34,7 +34,7 @@ import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.presentation.Navigation
 import androidx.compose.material.icons.filled.Save
 
-// TODO: уведы, поенять плейсхолдер аватарки, обновление даты, котлиновское апи
+// TODO: уведы, котлиновское апи, обновление картинки
 
 @Composable
 fun ProfileSettingsScreen(
@@ -324,7 +324,14 @@ fun Toggler(
         )
         Switch(
             checked = checked,
-            onCheckedChange = onToggle
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = MaterialTheme.colorScheme.tertiary,
+                checkedThumbColor = MaterialTheme.colorScheme.background,
+                uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
+                uncheckedBorderColor = MaterialTheme.colorScheme.tertiary,
+                uncheckedTrackColor = MaterialTheme.colorScheme.background
+            )
         )
     }
 }
