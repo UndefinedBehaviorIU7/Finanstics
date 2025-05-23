@@ -42,7 +42,7 @@ import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettings
+import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlin.math.abs
 
@@ -66,7 +66,7 @@ fun BottomNavGraph(
             when (page) {
                 0 -> Stats(navController, isVisible)
                 1 -> Calendar(navController, isVisible)
-                2 -> ProfileSettings(navController, themeVm = themeVm)
+                2 -> ProfileSettingsScreen(navController, themeVm = themeVm)
             }
         }
 

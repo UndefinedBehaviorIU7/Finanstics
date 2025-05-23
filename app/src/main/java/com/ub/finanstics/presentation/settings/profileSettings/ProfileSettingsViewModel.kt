@@ -49,4 +49,9 @@ class ProfileSettingsViewModel(application: Application): AndroidViewModel(appli
         prefManager.saveData("time_update", TIME_INIT)
         encryptedPrefManager.saveData("token", "")
     }
+
+    // TODO: попап с сохранением даты
+    fun onDataChange(newData: String) {
+
+    }
 }

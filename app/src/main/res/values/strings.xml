@@ -46,4 +46,5 @@
     <string name="no_internet">Потеряно соединение с сервером</string>
     <string name="retry">Повторить попытку</string>
     <string name="not_aut">Вы не вошли в аккаунт</string>
+    <string name="profile_image_desc">profile image</string>
 </resources>
