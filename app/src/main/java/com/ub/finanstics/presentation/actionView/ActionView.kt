@@ -2,6 +2,7 @@ package com.ub.finanstics.presentation.actionView
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -60,10 +61,11 @@ fun LocalActionView(
                     modifier = modifier.clickable { },
                     tonalElevation = 8.dp,
                     shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.secondary),
                     color = MaterialTheme.colorScheme.onBackground
                 ) {
                     Column(
-                        modifier = Modifier.padding(12.dp),
+                        modifier = Modifier.padding(top = 12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -73,59 +75,70 @@ fun LocalActionView(
                         )
 
                         Divider(
-                            space = 20.dp,
+                            space = 10.dp,
+                            after = 0.dp,
                             stroke = 1.dp,
                             color = MaterialTheme.colorScheme.background
                         )
 
-                        Text(
-                            text = category,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = color,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(Modifier.height(10.dp))
-
-                        Text(
-                            text = dateToString(action.date),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(Modifier.height(10.dp))
-
-                        if (action.description != null) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = MaterialTheme.colorScheme.background
+                                )
+                                .padding(12.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
-                                text = action.description,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.secondary,
+                                text = category,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = color,
                                 textAlign = TextAlign.Center
                             )
-                            Spacer(Modifier.height(10.dp))
-                        }
 
-                        Row(
-                            modifier = Modifier.fillMaxHeight(),
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    onDismiss()
-                                },
-                                modifier = Modifier
-                                    .background(
-                                        color = MaterialTheme.colorScheme.background,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .padding(horizontal = 10.dp)
-                            ) {
+                            Spacer(Modifier.height(10.dp))
+
+                            Text(
+                                text = dateToString(action.date),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(Modifier.height(10.dp))
+
+                            if (action.description != null) {
                                 Text(
-                                    text = stringResource(R.string.step_back),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = MaterialTheme.colorScheme.primary
+                                    text = action.description,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    textAlign = TextAlign.Center
                                 )
+                                Spacer(Modifier.height(10.dp))
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxHeight(),
+                                verticalAlignment = Alignment.Bottom
+                            ) {
+                                TextButton(
+                                    onClick = {
+                                        onDismiss()
+                                    },
+                                    modifier = Modifier
+                                        .background(
+                                            color = MaterialTheme.colorScheme.onBackground,
+                                            shape = RoundedCornerShape(12.dp)
+                                        )
+                                        .padding(horizontal = 10.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.step_back),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
                             }
                         }
                     }

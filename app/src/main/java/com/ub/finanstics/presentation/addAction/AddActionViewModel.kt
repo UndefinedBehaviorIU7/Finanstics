@@ -245,8 +245,9 @@ class AddActionViewModel(
                         description = current.description,
                         groups = current.groups
                     )
-
-                    actionDao.insertAction(action)
+                    if (resApi != ErrorAddActionApi.Ok) {
+                        actionDao.insertAction(action)
+                    }
                     if (resApi == ErrorAddActionApi.Ok)
                         _uiState.value = AddActionUiState.Ok
                     else
