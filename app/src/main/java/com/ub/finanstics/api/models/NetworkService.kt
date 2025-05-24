@@ -170,4 +170,16 @@ interface NetworkService {
         @Part("token") token: RequestBody,
         @Part image: MultipartBody.Part
     ): Response<BaseResponse>
+
+    @POST("groups/update_data")
+    @Multipart
+    suspend fun updateGroupData(
+        @Part("group_id") groupId: RequestBody,
+        @Part("token") token: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("group_data") groupData: RequestBody,
+        @Part("users") users: RequestBody,
+        @Part("admins") admins: RequestBody,
+        @Part image: MultipartBody.Part
+    ): Response<BaseResponse>
 }
