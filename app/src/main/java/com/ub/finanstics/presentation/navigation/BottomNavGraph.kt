@@ -81,7 +81,6 @@ fun BottomNavGraph(
         }
 
         val (currentPage, targetPage, offset) = pageInfo
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
         val offsetX by animateDpAsState(
             targetValue = when {
