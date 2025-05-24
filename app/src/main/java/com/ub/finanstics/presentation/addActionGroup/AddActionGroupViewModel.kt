@@ -8,13 +8,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.DataClass
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 
 class AddActionGroupViewModel(
     application: Application
@@ -78,10 +74,6 @@ class AddActionGroupViewModel(
                 duplication = false,
             )
         }
-    }
-
-    init {
-
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")

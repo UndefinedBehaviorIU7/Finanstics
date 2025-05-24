@@ -41,32 +41,6 @@ suspend fun getUserName(
     return res
 }
 
-//@Suppress("TooGenericExceptionCaught")
-//@RequiresApi(Build.VERSION_CODES.O)
-//suspend fun getArrayActionDataClass(
-//    actions: List<com.ub.finanstics.api.models.Action>
-//): ActionDataClass {
-//    for (el in actions) {
-//        val userName = getUserName(el.userId)
-//        Log.d("getArrayActionDataClass", "for")
-//        if (userName != null) {
-//            Log.d("getArrayActionDataClass", el.name)
-//            res.add(
-//                ActionDataClass(
-//                    userName = userName,
-//                    actionName = el.name,
-//                    actionType = el.type,
-//                    actionMoney = el.value,
-//                    actionCategory = "cat",
-//                    data = dataApiToDataClass(el.date)
-//                )
-//            )
-//        }
-//    }
-//
-//    return res
-//}
-
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getArrayDataClass(
@@ -82,16 +56,13 @@ suspend fun getArrayDataClass(
                 actionName = actions.name,
                 actionType = actions.type,
                 actionMoney = actions.value,
-                actionCategory = "cat",
+                actionCategory = actions.category_id.toString(),
                 data = dataApiToDataClass(actions.date)
             )
     }
 
     return res
 }
-
-
-
 
 class CalendarGroupRepository(private var db: FinansticsDatabase) {
 //    @Suppress("TooGenericExceptionCaught")
@@ -139,7 +110,6 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
 
             for (el in actions) {
                 val date = dataApiToDataClass(el.date)
-                Log.d("InfoEl", el.id.toString() + " " +  el.name + " " + el.userId.toString())
                 if (dataFirst <= date && date <= dataSecond) {
                     val list = tempMap.getOrPut(date) { mutableListOf() }
                     val actionsData = getArrayDataClass(el)

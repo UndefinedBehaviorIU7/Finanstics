@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.addAction
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -140,10 +139,6 @@ class AddActionViewModel(
                 )
             }
         }
-    }
-
-    init {
-
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")

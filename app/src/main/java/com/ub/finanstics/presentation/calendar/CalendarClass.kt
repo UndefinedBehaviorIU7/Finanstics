@@ -383,7 +383,10 @@ class GridDatas(
         val dataFirst = days[0]!!.getData() // начало периода, например месяц назад
         val dataSecond = days.last()!!.getData() // конец периода, например месяц вперёд
 
-        val actionsMap = repository.getGroupActionByDataMonth(groupId, dataFirst, dataSecond) ?: return
+        val actionsMap = repository.getGroupActionByDataMonth(
+            groupId,
+            dataFirst,
+            dataSecond) ?: return
 
         // Пробегаем по дням, и если для дня есть массив экшенов — забиваем его
         for (day in days) {
