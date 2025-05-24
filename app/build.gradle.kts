@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material3.window.size.class1.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,4 +101,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:23.0.0")
     implementation("com.google.firebase:firebase-installations:18.0.0")
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
+
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+    implementation("androidx.compose.material3:material3:1.1.0")
 }

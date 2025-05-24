@@ -32,21 +32,29 @@ import com.ub.finanstics.R
 
 @Suppress("MagicNumber")
 @Composable
-fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
+fun Form(
+    value: String,
+    label: String,
+    isError: Boolean,
+    lambda: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
         value = value,
         onValueChange = lambda,
         label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.secondary,
-            focusedTextColor = MaterialTheme.colorScheme.primary,
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            cursorColor = MaterialTheme.colorScheme.primary
+            focusedBorderColor    = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor  = if (isError)
+                MaterialTheme.colorScheme.error
+            else
+                MaterialTheme.colorScheme.secondary,
+            focusedTextColor      = MaterialTheme.colorScheme.primary,
+            focusedLabelColor     = MaterialTheme.colorScheme.primary,
+            cursorColor           = MaterialTheme.colorScheme.primary
         ),
         readOnly = false,
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(15.dp)

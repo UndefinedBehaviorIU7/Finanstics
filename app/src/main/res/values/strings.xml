@@ -53,4 +53,10 @@
     <string name="profile_image_desc">profile image</string>
     <string name="save">Save</string>
     <string name="edit">Edit</string>
+    <string name="group_name">Название группы</string>
+    <string name="group_data">Описание группы</string>
+    <string name="admins">Администраторы</string>
+    <string name="users">Пользователи</string>
+    <string name="add_group">Добавить</string>
+    <string name="add_group_title">Добавление группы</string>
 </resources>

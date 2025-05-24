@@ -1,2 +1,44 @@
 package com.ub.finanstics.presentation.addGroup
 
+import android.content.Context
+import com.google.gson.Gson
+
+import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+
+class AddGroupRepository(private val context: Context) {
+    private val prefs = PreferencesManager(context)
+    private val enPrefs = EncryptedPreferencesManager(context)
+
+    fun isAuth(): Boolean {
+        return enPrefs.getString("token", "").isNotEmpty()
+    }
+
+    suspend fun createGroup(state: AddGroupUiState.Idle): Boolean {
+        val gson = Gson()
+        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+
+        val response = RetrofitInstance.api.createGroup(
+            token = enPrefs.getString("token", "").toRequestBody(),
+            groupName = state.groupName.toRequestBody("text/plain".toMediaType()),
+            groupData = state.groupData.toRequestBody("text/plain".toMediaType()),
+            admins = gson.toJson(state.admins).toRequestBody(jsonMediaType),
+            users = gson.toJson(state.users).toRequestBody(jsonMediaType),
+        )
+
+        return response.isSuccessful
+    }
+
+    suspend fun getUserByTag(tag: String): Int {
+        val response = RetrofitInstance.api.getUserByTag(tag)
+
+        if (response.isSuccessful) {
+            return response.body()!!.id
+        } else {
+            return -1
+        }
+    }
+}

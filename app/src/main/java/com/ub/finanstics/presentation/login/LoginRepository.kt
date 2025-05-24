@@ -4,8 +4,8 @@ import android.content.Context
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
-import com.ub.finanstics.api.models.UserResponse
-import com.ub.finanstics.api.models.VKUserResponse
+import com.ub.finanstics.api.responses.UserResponse
+import com.ub.finanstics.api.responses.VKUserResponse
 import com.ub.finanstics.fcm.logFirebaseToken
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager

@@ -1,4 +1,4 @@
-package com.ub.finanstics.api.models
+package com.ub.finanstics.api.responses
 
 @Suppress("ConstructorParameterNaming")
 data class CategoryResponse(

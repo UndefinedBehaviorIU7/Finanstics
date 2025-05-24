@@ -1,5 +1,10 @@
 package com.ub.finanstics.api.models
 
+import com.ub.finanstics.api.responses.ActionResponse
+import com.ub.finanstics.api.responses.BaseResponse
+import com.ub.finanstics.api.responses.CategoryResponse
+import com.ub.finanstics.api.responses.UserResponse
+import com.ub.finanstics.api.responses.VKUserResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -172,9 +177,12 @@ interface NetworkService {
     ): Response<BaseResponse>
 
     @POST("/groups/create")
+    @Multipart
     suspend fun createGroup(
-        @Query("token") token: String,
-        @Query("group_name") groupName: String,
-        @Query("group_data") groupData: String
+        @Part("token") token: RequestBody,
+        @Part("group_name") groupName: RequestBody,
+        @Part("group_data") groupData: RequestBody,
+        @Part("admins") admins: RequestBody,
+        @Part("users") users: RequestBody
     ): Response<BaseResponse>
 }
