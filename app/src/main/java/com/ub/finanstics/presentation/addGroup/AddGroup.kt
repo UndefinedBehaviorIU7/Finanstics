@@ -44,6 +44,8 @@ import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
+// TODO: передача высоты форм через модификаторы, докрутить функционал
+
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun AddGroupScreen(
@@ -55,7 +57,6 @@ fun AddGroupScreen(
 
     val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
 
-    // Адаптивные размеры для разных экранов
     val horizontalPadding = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 32.dp
         WindowWidthSizeClass.Medium -> 64.dp
@@ -72,7 +73,7 @@ fun AddGroupScreen(
 
     val verticalGap = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 16.dp
-        WindowWidthSizeClass.Medium -> 20.dp
+        WindowWidthSizeClass.Medium -> 32.dp
         WindowWidthSizeClass.Expanded -> 24.dp
         else -> 16.dp
     }
@@ -142,7 +143,6 @@ fun IdleContent(
     windowSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
-    // Адаптивные размеры для контента
     val buttonHeight = when (windowSizeClass) {
         WindowWidthSizeClass.Compact -> 56.dp
         WindowWidthSizeClass.Medium -> 64.dp
@@ -159,7 +159,7 @@ fun IdleContent(
 
     val fontSize = when (windowSizeClass) {
         WindowWidthSizeClass.Compact -> 18.sp
-        WindowWidthSizeClass.Medium -> 20.sp
+        WindowWidthSizeClass.Medium -> 28.sp
         WindowWidthSizeClass.Expanded -> 22.sp
         else -> 18.sp
     }
@@ -220,7 +220,6 @@ fun Header(
     headerPadding: Dp,
     modifier: Modifier = Modifier
 ) {
-    // Адаптивные размеры для хедера
     val iconSize = when (windowSizeClass) {
         WindowWidthSizeClass.Compact -> 28.dp
         WindowWidthSizeClass.Medium -> 32.dp
