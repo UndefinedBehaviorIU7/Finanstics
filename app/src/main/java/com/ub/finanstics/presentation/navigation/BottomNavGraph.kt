@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -94,7 +95,8 @@ fun BottomNavGraph(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = offsetIcons),
+                .padding(bottom = offsetIcons)
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.Bottom
         ) {
             Box {
@@ -109,7 +111,8 @@ fun BottomNavGraph(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     GroupsButton(
-                        navController = navController
+                        navController = navController,
+                        offsetX = -offsetX
                     )
                 }
                 Row(
@@ -165,12 +168,15 @@ fun PlusActionButton(
 @Suppress("MagicNumber")
 @Composable
 fun GroupsButton(
-    navController: NavController
+    navController: NavController,
+    offsetX: Dp
 ) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
     var showLoginDialog by remember { mutableStateOf(false) }
-    Box() {
+    Box(
+        modifier = Modifier.offset(x = offsetX)
+    ) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",
