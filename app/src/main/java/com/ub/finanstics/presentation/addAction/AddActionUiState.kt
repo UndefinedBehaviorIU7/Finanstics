@@ -49,5 +49,9 @@ sealed class AddActionUiState {
         val menuExpandedGroup: Boolean,
     ) : AddActionUiState()
 
+    data class СhoiceType(
+        var typeAction: ActionType,
+    ) : AddActionUiState()
+
     data object Ok : AddActionUiState()
 }

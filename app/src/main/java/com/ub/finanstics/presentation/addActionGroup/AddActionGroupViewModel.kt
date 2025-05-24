@@ -2,15 +2,19 @@ package com.ub.finanstics.presentation.addAction
 
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.DataClass
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 class AddActionGroupViewModel(
     application: Application
@@ -23,36 +27,61 @@ class AddActionGroupViewModel(
     private val categoryDao = db.categoryDao()
 
     private val _uiState = MutableStateFlow<AddActionGroupUiState>(
-        AddActionGroupUiState.Idle(
-            typeAction = ActionType.NULL,
-            nameAction = "",
-            moneyAction = -1,
-            data = "",
-            category = "",
-            description = "",
-            allCategory = listOf(),
-            menuExpandedType = false,
-            menuExpandedCategory = false,
-            duplication = false
-        )
+        AddActionGroupUiState.СhoiceType(typeAction = ActionType.NULL)
     )
 
     val uiState = _uiState.asStateFlow()
 
-    fun getCategoriesList() {
+//    fun getCategoriesList() {
+//        viewModelScope.launch {
+//            val categoryNames = repository.getCategoriesNames()
+//            _uiState.update { currentState ->
+//                when (currentState) {
+//                    is AddActionGroupUiState.Idle -> currentState.copy(allCategory = categoryNames)
+//                    else -> currentState
+//                }
+//            }
+//        }
+//    }
+
+    fun chooseTypeAndLoad(type: ActionType) {
+        _uiState.value = AddActionGroupUiState.СhoiceType(type)
+
         viewModelScope.launch {
-            val categoryNames = repository.getCategoriesNames()
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is AddActionGroupUiState.Idle -> currentState.copy(allCategory = categoryNames)
-                    else -> currentState
-                }
-            }
+            _uiState.value = AddActionGroupUiState.Loading(
+                typeAction = type,
+                nameAction = "",
+                moneyAction = -1,
+                data = "",
+                category = "",
+                description = "",
+                allCategory = listOf(),
+                menuExpandedType = false,
+                menuExpandedCategory = false,
+                duplication = false
+            )
+
+            val categories = repository.getCategoriesNames(type.toInt())
+
+            Log.d("categoriesRes", categories.size.toString())
+
+            _uiState.value = AddActionGroupUiState.Idle(
+                typeAction = type,
+                nameAction = "",
+                moneyAction = -1,
+                data = "",
+                category = "",
+                description = "",
+                allCategory = categories,
+                menuExpandedType = false,
+                menuExpandedCategory = false,
+                duplication = false,
+            )
         }
     }
 
     init {
-        getCategoriesList()
+
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")

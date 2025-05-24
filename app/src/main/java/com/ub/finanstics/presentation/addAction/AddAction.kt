@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -11,13 +12,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -40,6 +48,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -48,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.icons.CalendarIcon
@@ -94,23 +104,27 @@ fun FormAddData(
         onValueChange = { newValue ->
             onValueChange(newValue.text)
         },
-        label = {
-            Text(
-                label,
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
+        label = { Text(label) },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.secondary,
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            cursorColor = MaterialTheme.colorScheme.primary
+        ),
         readOnly = false,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
         modifier = Modifier
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
         trailingIcon = {
             IconButton(onClick = { showDatePicker = true }) {
                 Icon(
                     imageVector = CalendarIcon,
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         }
@@ -131,25 +145,6 @@ fun FormAddData(
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun Form2(value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = lambda,
-        label = {
-            Text(
-                label,
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
-        readOnly = false,
-        modifier = Modifier
-            .padding(bottom = 10.dp)
-            .fillMaxWidth()
-    )
 }
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod")
@@ -191,6 +186,7 @@ fun Selector(
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size
                 },
+            shape = RoundedCornerShape(15.dp),
             interactionSource = remember { MutableInteractionSource() }
                 .also { interactionSource ->
                     LaunchedEffect(interactionSource) {
@@ -271,6 +267,7 @@ fun MultiTypeSelector(
                 .onGloballyPositioned { coordinates ->
                     textFieldSize = coordinates.size
                 },
+            shape = RoundedCornerShape(15.dp),
             interactionSource = interactionSource
         )
 
@@ -332,99 +329,76 @@ fun DrawIdle(
     vm: AddActionViewModel,
     navController: NavController
 ) {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(
-                top = 50.dp,
-                start = 20.dp,
-                end = 20.dp
-            )
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Text(
+        text = "Тип действия: ${ uiState.typeAction.label }",
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 22.sp
+    )
+
+    Form(
+        value = uiState.nameAction,
+        label = "Название действия",
+        isError = false,
+        lambda = { vm.updateUIState(newNameAction = it) }
+    )
+
+    Form(
+        value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+        label = "Сколько Бабла",
+        isError = false,
+        lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
+    )
+
+    FormAddData(
+        value = uiState.data,
+        label = "Дата",
+        isError = false,
+        lambda = { vm.updateUIState(newData = it) }
+    )
+
+    Selector(
+        value = uiState.category,
+        label = "Категория",
+        expanded = uiState.menuExpandedCategory,
+        allElements = uiState.allCategory,
+        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
+        selected = { vm.updateUIState(newCategory = it) },
+        isError = false
+    )
+
+    Form(
+        value = uiState.description,
+        label = "Описание",
+        isError = false,
+        lambda = { vm.updateUIState(newDescription = it) }
+    )
+
+    MultiTypeSelector(
+        selectedItems = uiState.groups,
+        label = "Продублировать в группы",
+        expanded = uiState.menuExpandedGroup,
+        allElements = uiState.allGroup,
+        onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
+        onSelectionChanged = { vm.updateUIState(newGroups = it) },
+        isError = false
+    )
+
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
-        Selector(
-            value = if (uiState.typeAction != ActionType.NULL) uiState.typeAction.label else "",
-            label = "Тип действия",
-            expanded = uiState.menuExpandedType,
-            allElements = typeActions,
-            onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
-            selected = { selectedActionType ->
-                vm.updateUIState(
-                    newTypeAction = ActionType
-                        .entries
-                        .firstOrNull { it.label == selectedActionType }
-                )
+        val width = maxWidth
+        Button(
+            onClick = {
+                vm.addAction()
+                navController.popBackStack()
             },
-            isError = false
-        )
-
-        Form(
-            value = uiState.nameAction,
-            label = "Название действия",
-            isError = false,
-            lambda = { vm.updateUIState(newNameAction = it) }
-        )
-
-        Form(
-            value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-            label = "Сколько Бабла",
-            isError = false,
-            lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
-        )
-
-        FormAddData(
-            value = uiState.data,
-            label = "Дата",
-            isError = false,
-            lambda = { vm.updateUIState(newData = it) }
-        )
-
-        Selector(
-            value = uiState.category,
-            label = "Категория",
-            expanded = uiState.menuExpandedCategory,
-            allElements = uiState.allCategory,
-            onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-            selected = { vm.updateUIState(newCategory = it) },
-            isError = false
-        )
-
-        Form(
-            value = uiState.description,
-            label = "Описание",
-            isError = false,
-            lambda = { vm.updateUIState(newDescription = it) }
-        )
-
-        MultiTypeSelector(
-            selectedItems = uiState.groups,
-            label = "Продублировать в группы",
-            expanded = uiState.menuExpandedGroup,
-            allElements = uiState.allGroup,
-            onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
-            onSelectionChanged = { vm.updateUIState(newGroups = it) },
-            isError = false
-        )
-
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.TopCenter
+            enabled = vm.validateIdle(uiState) == Error.OK
         ) {
-            val width = maxWidth
-            Button(
-                onClick = {
-                    vm.addAction()
-                    navController.popBackStack()
-                },
-                enabled = vm.validateIdle(uiState) == Error.OK
-            ) {
-                Text(
-                    text = "Добавить",
-                    fontSize = 28.sp
-                )
-            }
+            Text(
+                text = "Добавить",
+                fontSize = 28.sp
+            )
         }
     }
 }
@@ -436,84 +410,62 @@ fun DrawError(
     vm: AddActionViewModel,
     error: Error
 ) {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .padding(
-                top = 50.dp,
-                start = 20.dp,
-                end = 20.dp
-            )
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Text(
+        text = "Тип действия: ${ uiState.typeAction.label }",
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 22.sp
+    )
+
+    Form(
+        value = uiState.nameAction,
+        label = "Название действия",
+        isError = error == Error.NAME,
+        lambda = { vm.updateUIState(newNameAction = it) }
+    )
+
+    Form(
+        value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
+        label = "Сколько Бабла",
+        isError = error == Error.MONEY,
+        lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
+    )
+
+    FormAddData(
+        value = uiState.data,
+        label = "Дата",
+        isError = error == Error.DATE,
+        lambda = { vm.updateUIState(newData = it) }
+    )
+
+    Selector(
+        value = uiState.category,
+        label = "Продублировать в группы",
+        expanded = uiState.menuExpandedCategory,
+        allElements = uiState.allCategory,
+        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
+        selected = { vm.updateUIState(newCategory = it) },
+        isError = false
+    )
+
+    Form(
+        value = uiState.description,
+        label = "Описание",
+        isError = error == Error.DESCRIPTION,
+        lambda = { vm.updateUIState(newDescription = it) }
+    )
+
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        val typeActions = listOf(ActionType.INCOME.label, ActionType.EXPENSE.label)
-        Selector(
-            value = if (uiState.typeAction != ActionType.NULL) uiState.typeAction.label else "",
-            label = "Тип действия",
-            expanded = uiState.menuExpandedType,
-            allElements = typeActions,
-            onExpandChange = { vm.updateUIState(newMenuExpandedType = it) },
-            selected = { selectedActionType ->
-                vm.updateUIState(
-                    newTypeAction =
-                        ActionType.entries.firstOrNull { it.label == selectedActionType }
-                )
-            },
-            isError = error == Error.TYPE
-        )
-
-        Form(
-            value = uiState.nameAction,
-            label = "Название действия",
-            isError = error == Error.NAME,
-            lambda = { vm.updateUIState(newNameAction = it) }
-        )
-
-        Form(
-            value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-            label = "Сколько Бабла",
-            isError = error == Error.MONEY,
-            lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
-        )
-
-        FormAddData(
-            value = uiState.data,
-            label = "Дата",
-            isError = error == Error.DATE,
-            lambda = { vm.updateUIState(newData = it) }
-        )
-
-        Selector(
-            value = uiState.category,
-            label = "Продублировать в группы",
-            expanded = uiState.menuExpandedCategory,
-            allElements = uiState.allCategory,
-            onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-            selected = { vm.updateUIState(newCategory = it) },
-            isError = false
-        )
-
-        Form(
-            value = uiState.description,
-            label = "Описание",
-            isError = error == Error.DESCRIPTION,
-            lambda = { vm.updateUIState(newDescription = it) }
-        )
-
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.TopCenter
+        val width = maxWidth
+        Button(
+            onClick = { vm.addAction() },
         ) {
-            val width = maxWidth
-            Button(
-                onClick = { vm.addAction() },
-            ) {
-                Text(
-                    text = "Добавить",
-                    fontSize = 28.sp
-                )
-            }
+            Text(
+                text = "Добавить",
+                fontSize = 28.sp
+            )
         }
     }
 }
@@ -524,17 +476,110 @@ fun AddAction(
     navController: NavController
 ) {
     val vm: AddActionViewModel = viewModel()
-    when (val uiState = vm.uiState.collectAsState().value) {
-        is AddActionUiState.Idle -> {
-            DrawIdle(uiState, vm, navController)
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(
+                top = 20.dp,
+                start = 5.dp,
+                end = 5.dp
+            )
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Добавление действия",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 24.sp
+            )
+
+            IconButton(
+                onClick = { navController.navigateUp() },
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.step_back),
+                    modifier = Modifier.size(32.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
-        is AddActionUiState.Error -> {
-            DrawError(uiState, vm, uiState.error)
+        Divider(
+            color = MaterialTheme.colorScheme.outline,
+            thickness = 1.dp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when (val uiState = vm.uiState.collectAsState().value) {
+            is AddActionUiState.Idle -> {
+                DrawIdle(uiState, vm, navController)
+            }
+
+            is AddActionUiState.Error -> {
+                DrawError(uiState, vm, uiState.error)
+            }
+
+            is AddActionUiState.Ok -> {}
+
+            is AddActionUiState.СhoiceType -> {
+                Text(
+                    text = "Выберете тип действия",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 22.sp
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = { vm.chooseTypeAndLoad(ActionType.EXPENSE) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            stringResource(R.string.expense),
+                            fontSize = 22.sp
+                        )
+                    }
+
+                    Button(
+                        onClick = { vm.chooseTypeAndLoad(ActionType.INCOME) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            stringResource(R.string.income),
+                            fontSize = 22.sp
+                        )
+                    }
+                }
+            }
+
+            else -> {}
         }
-
-        is AddActionUiState.Ok -> {}
-
-        else -> {}
     }
 }

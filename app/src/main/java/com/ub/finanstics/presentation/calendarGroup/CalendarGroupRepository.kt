@@ -26,6 +26,7 @@ suspend fun getUserName(
     userId: Int
 ): String? {
     var res: String? = null
+    Log.d("getUserNameuserId", userId.toString())
     try {
         val apiRep = ApiRepository()
         val response = apiRep.getUser(userId)
@@ -40,59 +41,117 @@ suspend fun getUserName(
     return res
 }
 
+//@Suppress("TooGenericExceptionCaught")
+//@RequiresApi(Build.VERSION_CODES.O)
+//suspend fun getArrayActionDataClass(
+//    actions: List<com.ub.finanstics.api.models.Action>
+//): ActionDataClass {
+//    for (el in actions) {
+//        val userName = getUserName(el.userId)
+//        Log.d("getArrayActionDataClass", "for")
+//        if (userName != null) {
+//            Log.d("getArrayActionDataClass", el.name)
+//            res.add(
+//                ActionDataClass(
+//                    userName = userName,
+//                    actionName = el.name,
+//                    actionType = el.type,
+//                    actionMoney = el.value,
+//                    actionCategory = "cat",
+//                    data = dataApiToDataClass(el.date)
+//                )
+//            )
+//        }
+//    }
+//
+//    return res
+//}
+
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
-suspend fun getArrayActionDataClass(
-    actions: List<com.ub.finanstics.api.models.Action>
-): Array<ActionDataClass?> {
-    val res = mutableListOf<ActionDataClass>()
-    for (el in actions) {
-        val userName = getUserName(el.userId)
-        Log.d("getArrayActionDataClass", "for")
-        if (userName != null) {
-            Log.d("getArrayActionDataClass", el.name)
-            res.add(
-                ActionDataClass(
-                    userName = userName,
-                    actionName = el.name,
-                    actionType = el.type,
-                    actionMoney = el.value,
-                    actionCategory = "cat",
-                    data = dataApiToDataClass(el.date)
-                )
+suspend fun getArrayDataClass(
+    actions: com.ub.finanstics.api.models.Action
+): ActionDataClass? {
+    val userName = getUserName(actions.userId)
+    var res: ActionDataClass? = null
+    Log.d("getArrayActionDataClassid", actions.userId.toString())
+    if (userName != null) {
+        Log.d("getArrayActionDataClassok", actions.name)
+        res = ActionDataClass(
+                userName = userName,
+                actionName = actions.name,
+                actionType = actions.type,
+                actionMoney = actions.value,
+                actionCategory = "cat",
+                data = dataApiToDataClass(actions.date)
             )
-        }
     }
 
-    return res.toTypedArray()
+    return res
 }
 
+
+
+
 class CalendarGroupRepository(private var db: FinansticsDatabase) {
-    @Suppress("TooGenericExceptionCaught")
+//    @Suppress("TooGenericExceptionCaught")
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    suspend fun getGroupActionDays(groupId: Int, data: DataClass): Array<ActionDataClass?>? {
+//        var res: Array<ActionDataClass?>? = null
+//        val apiRep = ApiRepository()
+//        try {
+//            val response = apiRep.getGroupActionsByDate(
+//                groupId,
+//                data.getYear(),
+//                data.getMonth().number,
+//                data.getDay()
+//            )
+//
+//            if (!response.isSuccessful) {
+//                res = null
+//            } else {
+//                val actions = response.body()
+//
+//                if (actions != null) {
+//                    res = getArrayActionDataClass(actions)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            Log.e("getGroupActionDays ERROR", e.toString())
+//        }
+//        return res
+//    }
+
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getGroupActionDays(groupId: Int, data: DataClass): Array<ActionDataClass?>? {
-        var res: Array<ActionDataClass?>? = null
+    suspend fun getGroupActionByDataMonth(
+        groupId: Int,
+        dataFirst: DataClass,
+        dataSecond: DataClass
+    ): Map<DataClass, Array<ActionDataClass?>?>? {
+        val tempMap = mutableMapOf<DataClass, MutableList<ActionDataClass?>>()
+
         val apiRep = ApiRepository()
         try {
-            val response = apiRep.getGroupActionsByDate(
-                groupId,
-                data.getYear(),
-                data.getMonth().number,
-                data.getDay()
-            )
+            val response = apiRep.getGroupActions(groupId)
+            if (!response.isSuccessful) return null
 
-            if (!response.isSuccessful) {
-                res = null
-            } else {
-                val actions = response.body()
+            val actions = response.body() ?: return null
 
-                if (actions != null) {
-                    res = getArrayActionDataClass(actions)
+            for (el in actions) {
+                val date = dataApiToDataClass(el.date)
+                Log.d("InfoEl", el.id.toString() + " " +  el.name + " " + el.userId.toString())
+                if (dataFirst <= date && date <= dataSecond) {
+                    val list = tempMap.getOrPut(date) { mutableListOf() }
+                    val actionsData = getArrayDataClass(el)
+                    Log.d("dataApiToDataClass", (actionsData == null).toString())
+                    if (actionsData != null)
+                        list.add(actionsData)
                 }
             }
         } catch (e: Exception) {
             Log.e("getGroupActionDays ERROR", e.toString())
+            return null
         }
-        return res
+        return tempMap.mapValues { it.value.toTypedArray() }
     }
 }
