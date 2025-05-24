@@ -170,4 +170,11 @@ interface NetworkService {
         @Part("token") token: RequestBody,
         @Part image: MultipartBody.Part
     ): Response<BaseResponse>
+
+    @POST("/groups/create")
+    suspend fun createGroup(
+        @Query("token") token: String,
+        @Query("group_name") groupName: String,
+        @Query("group_data") groupData: String
+    ): Response<BaseResponse>
 }
