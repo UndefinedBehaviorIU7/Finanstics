@@ -41,7 +41,7 @@ sealed class AddActionGroupUiState {
         val duplication: Boolean
     ) : AddActionGroupUiState()
 
-    data class СhoiceType(
+    data class SelectType(
         var typeAction: ActionType,
     ) : AddActionGroupUiState()
 

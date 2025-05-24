@@ -23,7 +23,7 @@ class AddActionGroupViewModel(
     private val categoryDao = db.categoryDao()
 
     private val _uiState = MutableStateFlow<AddActionGroupUiState>(
-        AddActionGroupUiState.СhoiceType(typeAction = ActionType.NULL)
+        AddActionGroupUiState.SelectType(typeAction = ActionType.NULL)
     )
 
     val uiState = _uiState.asStateFlow()
@@ -41,7 +41,7 @@ class AddActionGroupViewModel(
 //    }
 
     fun chooseTypeAndLoad(type: ActionType) {
-        _uiState.value = AddActionGroupUiState.СhoiceType(type)
+        _uiState.value = AddActionGroupUiState.SelectType(type)
 
         viewModelScope.launch {
             _uiState.value = AddActionGroupUiState.Loading(

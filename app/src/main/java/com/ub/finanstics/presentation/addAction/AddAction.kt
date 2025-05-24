@@ -532,7 +532,7 @@ fun AddAction(
 
             is AddActionUiState.Ok -> {}
 
-            is AddActionUiState.СhoiceType -> {
+            is AddActionUiState.SelectType -> {
                 Text(
                     text = "Выберете тип действия",
                     color = MaterialTheme.colorScheme.primary,

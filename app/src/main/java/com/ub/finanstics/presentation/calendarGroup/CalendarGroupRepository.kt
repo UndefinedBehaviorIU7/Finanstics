@@ -94,6 +94,14 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
 //    }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    @Suppress(
+        "MagicNumber",
+        "LongParameterList",
+        "LongMethod",
+        "ComplexMethod",
+        "TooGenericExceptionCaught",
+        "NestedBlockDepth"
+    )
     suspend fun getGroupActionByDataMonth(
         groupId: Int,
         dataFirst: DataClass,

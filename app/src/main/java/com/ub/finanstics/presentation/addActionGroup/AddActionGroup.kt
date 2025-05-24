@@ -304,7 +304,7 @@ fun AddActionGroup(
 
             is AddActionGroupUiState.Ok -> {}
 
-            is AddActionGroupUiState.СhoiceType -> {
+            is AddActionGroupUiState.SelectType -> {
                 Text(
                     text = "Выберете тип действия",
                     color = MaterialTheme.colorScheme.primary,

@@ -30,6 +30,8 @@ enum class Error(val str: String) {
     OK("ok"),
     UISTATE("uiState")
 }
+private const val TIME = 3000L
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataForApi(dataStr: String): String {
@@ -50,7 +52,7 @@ class AddActionViewModel(
     private val categoryDao = db.categoryDao()
 
     private val _uiState = MutableStateFlow<AddActionUiState>(
-        AddActionUiState.СhoiceType(typeAction = ActionType.NULL)
+        AddActionUiState.SelectType(typeAction = ActionType.NULL)
     )
 
     val uiState = _uiState.asStateFlow()
@@ -81,7 +83,7 @@ class AddActionViewModel(
     }
 
     fun chooseTypeAndLoad(type: ActionType) {
-        _uiState.value = AddActionUiState.СhoiceType(type)
+        _uiState.value = AddActionUiState.SelectType(type)
 
         viewModelScope.launch {
             _uiState.value = AddActionUiState.Loading(
@@ -102,7 +104,7 @@ class AddActionViewModel(
             val categories = repository.getCategoriesNames(type.toInt())
 
             try {
-                val timeout = 3000L
+                val timeout = TIME
                 withTimeout(timeout) {
                     val groups = async { repository.getUserGroup() }
                     val groupResult = groups.await()

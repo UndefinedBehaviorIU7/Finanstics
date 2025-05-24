@@ -49,7 +49,7 @@ sealed class AddActionUiState {
         val menuExpandedGroup: Boolean,
     ) : AddActionUiState()
 
-    data class СhoiceType(
+    data class SelectType(
         var typeAction: ActionType,
     ) : AddActionUiState()
 
