@@ -12,7 +12,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Streaming
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 interface NetworkService {
     @GET("users/{user_id}")
     suspend fun getUser(
