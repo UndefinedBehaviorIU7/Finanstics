@@ -100,7 +100,8 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
         "LongMethod",
         "ComplexMethod",
         "TooGenericExceptionCaught",
-        "NestedBlockDepth"
+        "NestedBlockDepth",
+        "ReturnCount"
     )
     suspend fun getGroupActionByDataMonth(
         groupId: Int,
