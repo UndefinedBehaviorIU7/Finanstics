@@ -23,7 +23,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
     suspend fun getCategoriesNames(type: Int): List<String> {
         val categories = if (type == 2)
             categoryDao.getIncomesCategories()
-        else 
+        else
             categoryDao.getExpensesCategories()
         return categories.map { it.name }
     }
