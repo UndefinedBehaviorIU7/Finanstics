@@ -45,7 +45,6 @@ class GroupDetailsViewModel(
         _all.value = !current
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun autoUpdate() {
         syncJob = viewModelScope.launch {

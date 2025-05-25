@@ -171,7 +171,6 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                             )
                         }
                     }
-
                 }
             } catch (e: HttpException) {
                 res = GroupStatsUiState.Error(" ${e.localizedMessage}")
