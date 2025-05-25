@@ -155,13 +155,14 @@ fun GroupDetailsPieChartItem(
                     widthSize = widthSize,
                     color = color
                 )
-
+                val value = data.second.toString()
                 Column(modifier = Modifier.weight(2f)) {
                     Text(
                         modifier = Modifier.padding(start = 15.dp),
-                        text = data.second.toString(),
+                        text = value,
                         fontWeight = FontWeight.Medium,
-                        fontSize = 16.sp,
+                        fontSize = if (value.length < 6) 16.sp
+                        else (16 - (value.length - 6) * 3).sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }

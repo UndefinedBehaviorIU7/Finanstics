@@ -44,22 +44,16 @@ fun BottomBar(
     screens: List<BottomBarScreen>,
     vm: BottomBarViewModel = viewModel()
 ) {
-    when (vm.uiState.collectAsState().value) {
-        is BottomBarUiState.Visible -> {
-            Box(
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                BarPanel(
-                    pagerState = pagerState,
-                    screens = screens,
-                    vm = vm
-                )
-                VisiblePanel(vm)
-            }
-        }
-
-        is BottomBarUiState.Hidden -> {
-            HiddenPanel(vm)
+    if (vm.uiState.collectAsState().value is BottomBarUiState.Visible) {
+        Box(
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BarPanel(
+                pagerState = pagerState,
+                screens = screens,
+                vm = vm
+            )
+            VisiblePanel(vm)
         }
     }
 }
@@ -104,58 +98,21 @@ fun BarPanel(
 
 @Suppress("MagicNumber")
 @Composable
-fun HiddenPanel(
-    vm: BottomBarViewModel = viewModel()
-) {
-    Row(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
-            )
-            .height(10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(
-            modifier = Modifier.weight(2.5f)
-        )
-        Icon(
-            imageVector = UpIcon,
-            modifier = Modifier
-                .clickable {
-                    vm.show(
-                        offset = OFFSET_BAR
-                    )
-                },
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.secondary,
-        )
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
 fun VisiblePanel(
     vm: BottomBarViewModel = viewModel()
 ) {
     Row(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
-            .height(10.dp)
+            .height(20.dp + OFFSET_BAR * 2)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(
-            modifier = Modifier.weight(2.5f)
+            modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = DownIcon,
@@ -164,7 +121,7 @@ fun VisiblePanel(
                     vm.hide()
                 },
             contentDescription = "",
-            tint = MaterialTheme.colorScheme.secondary,
+            tint = MaterialTheme.colorScheme.tertiary,
         )
         Spacer(
             modifier = Modifier.weight(1f)

@@ -2,6 +2,7 @@ package com.ub.finanstics.presentation.statsGroup
 
 import android.content.res.Configuration
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +82,7 @@ fun GroupStats(
                 color = MaterialTheme.colorScheme.background
             )
             .padding(
-                top = 40.dp,
+                top = 25.dp,
                 start = 20.dp,
                 end = 20.dp,
             )
@@ -210,7 +215,7 @@ fun Header(
             Text(
                 color = if (!isClicked) MaterialTheme.colorScheme.primary
                 else MaterialTheme.colorScheme.background,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 text = stringResource(R.string.All_time)
             )
         }
@@ -252,6 +257,7 @@ fun GroupStatsView(
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -262,6 +268,22 @@ fun GroupStatsViewVertical(
     dvm: GroupDetailsViewModel,
 ) {
     val uiState = vm.uiState.collectAsState().value
+    val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+
+    val radiusPie = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 80.dp
+        WindowWidthSizeClass.Medium -> 85.dp
+        WindowWidthSizeClass.Expanded -> 90.dp
+        else -> 80.dp
+    }
+
+    val charWidth = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 20.dp
+        WindowWidthSizeClass.Medium -> 22.dp
+        WindowWidthSizeClass.Expanded -> 26.dp
+        else -> 20.dp
+    }
+
     if (uiState is GroupStatsUiState.Done) {
         LazyColumn(
             modifier = Modifier
@@ -273,17 +295,17 @@ fun GroupStatsViewVertical(
                     Column(modifier = Modifier.weight(1f)) {
                         PieChart(
                             data = incomes,
-                            radiusOuter = 90.dp,
+                            radiusOuter = radiusPie,
                             expenses = false,
-                            chartBarWidth = 26.dp,
+                            chartBarWidth = charWidth,
                         )
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         PieChart(
                             data = expenses,
-                            radiusOuter = 90.dp,
+                            radiusOuter = radiusPie,
                             expenses = true,
-                            chartBarWidth = 26.dp,
+                            chartBarWidth = charWidth,
                         )
                     }
                 }

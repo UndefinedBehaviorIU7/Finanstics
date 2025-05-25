@@ -2,11 +2,13 @@ package com.ub.finanstics.presentation.stats
 
 import android.content.res.Configuration
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -71,8 +77,8 @@ fun Stats(
             .background(
                 color = MaterialTheme.colorScheme.background
             )
-            .systemBarsPadding()
             .padding(
+                top = 25.dp,
                 start = 20.dp,
                 end = 20.dp,
             )
@@ -169,6 +175,7 @@ fun StatsView(
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -180,7 +187,21 @@ fun StatsViewVertical(
 ) {
     val uiState = vm.uiState.collectAsState().value
     val date by vm.date.collectAsState()
-    println(date.getData().getMonth())
+    val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+
+    val radiusPie = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 80.dp
+        WindowWidthSizeClass.Medium -> 85.dp
+        WindowWidthSizeClass.Expanded -> 90.dp
+        else -> 80.dp
+    }
+
+    val charWidth = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 20.dp
+        WindowWidthSizeClass.Medium -> 22.dp
+        WindowWidthSizeClass.Expanded -> 26.dp
+        else -> 20.dp
+    }
 
     if (uiState is StatsUiState.Done) {
         LazyColumn(
@@ -189,21 +210,21 @@ fun StatsViewVertical(
                 .padding(top = 5.dp)
         ) {
             item {
-                Row() {
+                Row {
                     Column(modifier = Modifier.weight(1f)) {
                         PieChart(
                             data = incomes,
-                            radiusOuter = 90.dp,
+                            radiusOuter = radiusPie,
                             expenses = false,
-                            chartBarWidth = 26.dp,
+                            chartBarWidth = charWidth,
                         )
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         PieChart(
                             data = expenses,
-                            radiusOuter = 90.dp,
+                            radiusOuter = radiusPie,
                             expenses = true,
-                            chartBarWidth = 26.dp,
+                            chartBarWidth = charWidth,
                         )
                     }
                 }

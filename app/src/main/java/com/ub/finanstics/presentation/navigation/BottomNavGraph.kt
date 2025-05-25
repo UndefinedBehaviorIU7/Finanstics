@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -40,9 +42,11 @@ import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesMan
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
 import com.ub.finanstics.presentation.stats.Stats
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.GroupsIcon
+import com.ub.finanstics.ui.theme.icons.MenuIcon
 import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 import kotlin.math.abs
 
@@ -54,8 +58,10 @@ fun BottomNavGraph(
     pagerState: PagerState,
     navController: NavController,
     offsetIcons: Dp,
+    vm: BottomBarViewModel = viewModel(),
     themeVm: ThemeViewModel
 ) {
+    val uiState = vm.uiState.collectAsState().value
     Box(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -105,13 +111,19 @@ fun BottomNavGraph(
                             horizontal = 20.dp
                         )
                         .height(60.dp),
-                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    GroupsButton(
-                        navController = navController,
-                        offsetX = -offsetX
-                    )
+                    if (uiState is BottomBarUiState.Visible) {
+                        GroupsButton(
+                            navController = navController,
+                            offsetX = -offsetX
+                        )
+                    } else {
+                        MenuButton(
+                            onClick = { vm.show(offset = OFFSET_BAR) },
+                            offsetX = -offsetX
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier
@@ -120,6 +132,7 @@ fun BottomNavGraph(
                             horizontal = 20.dp
                         )
                         .height(60.dp),
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.Bottom
                 ) {
                     PlusActionButton(
@@ -141,7 +154,7 @@ fun PlusActionButton(
     addActionNavigate: String
 ) {
     Box(
-        modifier = Modifier.offset(x = offsetX)
+        modifier = Modifier.offset(x = -offsetX)
     ) {
         Icon(
             imageVector = CircleIcon,
@@ -173,7 +186,7 @@ fun GroupsButton(
     val application = context.applicationContext as Application
     var showLoginDialog by remember { mutableStateOf(false) }
     Box(
-        modifier = Modifier.offset(x = offsetX)
+        modifier = Modifier.offset(x = -offsetX)
     ) {
         Icon(
             imageVector = CircleIcon,
@@ -214,6 +227,34 @@ fun GroupsButton(
             .width(350.dp)
             .height(290.dp)
     )
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun MenuButton(
+    onClick: () -> Unit,
+    offsetX: Dp,
+) {
+    Box(
+        modifier = Modifier.offset(x = -offsetX),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable { onClick() }
+        )
+        Icon(
+            imageVector = MenuIcon,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(35.dp)
+        )
+    }
 }
 
 fun isAuth(application: Application): Boolean {
