@@ -9,10 +9,13 @@ import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.db.Action
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.DataClass
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -27,6 +30,8 @@ enum class Error(val str: String) {
     OK("ok"),
     UISTATE("uiState")
 }
+private const val TIME = 3000L
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataForApi(dataStr: String): String {
@@ -47,35 +52,22 @@ class AddActionViewModel(
     private val categoryDao = db.categoryDao()
 
     private val _uiState = MutableStateFlow<AddActionUiState>(
-        AddActionUiState.Idle(
-            typeAction = ActionType.NULL,
-            nameAction = "",
-            moneyAction = -1,
-            data = "",
-            category = "",
-            description = "",
-            allCategory = listOf(),
-            allGroup = listOf(),
-            groups = listOf(),
-            menuExpandedType = false,
-            menuExpandedCategory = false,
-            menuExpandedGroup = false
-        )
+        AddActionUiState.SelectType(typeAction = ActionType.NULL)
     )
 
     val uiState = _uiState.asStateFlow()
 
-    fun getCategoriesList() {
-        viewModelScope.launch {
-            val categoryNames = repository.getCategoriesNames()
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is AddActionUiState.Idle -> currentState.copy(allCategory = categoryNames)
-                    else -> currentState
-                }
-            }
-        }
-    }
+//    fun getCategoriesList() {
+//        viewModelScope.launch {
+//            val categoryNames = repository.getCategoriesNames()
+//            _uiState.update { currentState ->
+//                when (currentState) {
+//                    is AddActionUiState.Idle -> currentState.copy(allCategory = categoryNames)
+//                    else -> currentState
+//                }
+//            }
+//        }
+//    }
 
     fun getUserGroupsList() {
         viewModelScope.launch {
@@ -90,9 +82,65 @@ class AddActionViewModel(
         }
     }
 
-    init {
-        getCategoriesList()
-        getUserGroupsList()
+    fun chooseTypeAndLoad(type: ActionType) {
+        _uiState.value = AddActionUiState.SelectType(type)
+
+        viewModelScope.launch {
+            _uiState.value = AddActionUiState.Loading(
+                typeAction = type,
+                nameAction = "",
+                moneyAction = -1,
+                data = "",
+                category = "",
+                description = "",
+                allCategory = listOf(),
+                menuExpandedType = false,
+                menuExpandedCategory = false,
+                allGroup = listOf(),
+                groups = listOf(),
+                menuExpandedGroup = false
+            )
+
+            val categories = repository.getCategoriesNames(type.toInt())
+
+            try {
+                val timeout = TIME
+                withTimeout(timeout) {
+                    val groups = async { repository.getUserGroup() }
+                    val groupResult = groups.await()
+
+                    _uiState.value = AddActionUiState.Idle(
+                        typeAction = type,
+                        nameAction = "",
+                        moneyAction = -1,
+                        data = "",
+                        category = "",
+                        description = "",
+                        allCategory = categories,
+                        menuExpandedType = false,
+                        menuExpandedCategory = false,
+                        allGroup = groupResult ?: emptyList(),
+                        groups = listOf(),
+                        menuExpandedGroup = false
+                    )
+                }
+            } catch (e: TimeoutCancellationException) {
+                _uiState.value = AddActionUiState.Idle(
+                    typeAction = type,
+                    nameAction = "",
+                    moneyAction = -1,
+                    data = "",
+                    category = "",
+                    description = "",
+                    allCategory = categories,
+                    menuExpandedType = false,
+                    menuExpandedCategory = false,
+                    allGroup = emptyList(),
+                    groups = listOf(),
+                    menuExpandedGroup = false
+                )
+            }
+        }
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
@@ -188,35 +236,6 @@ class AddActionViewModel(
         )
     }
 
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    fun addAction() {
-//        val current = uiState.value
-//        if (current is AddActionUiState.Idle) {
-//            viewModelScope.launch {
-//                val error = validateIdle(current)
-//                if (error == null) {
-//                    val data = DataClass.getDataByString(current.data)
-//                    val action = Action(
-//                        name = current.nameAction,
-//                        type = current.typeAction.ordinal,
-//                        description = current.description,
-//                        value = current.moneyAction,
-//                        date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
-//                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
-//                        createdAt = "2025-04-22T14:30:00"
-//                    )
-//                    actionDao.insertAction(action)
-//                    _uiState.value = AddActionUiState.Ok
-//                } else {
-//                    _uiState.value = createErrorState(
-//                        current = current,
-//                        error = error
-//                    )
-//                }
-//            }
-//        }
-//    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun addAction(): Error {
         val current = uiState.value
@@ -228,7 +247,7 @@ class AddActionViewModel(
                     val data = DataClass.getDataByString(current.data)
                     val action = Action(
                         name = current.nameAction,
-                        type = current.typeAction.ordinal,
+                        type = current.typeAction.toInt(),
                         description = current.description,
                         value = current.moneyAction,
                         date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
@@ -238,7 +257,7 @@ class AddActionViewModel(
 
                     val resApi = repository.addActionApi(
                         actionName = current.nameAction,
-                        type = current.typeAction.ordinal,
+                        type = current.typeAction.toInt(),
                         value = current.moneyAction,
                         date = dataForApi(current.data),
                         categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,

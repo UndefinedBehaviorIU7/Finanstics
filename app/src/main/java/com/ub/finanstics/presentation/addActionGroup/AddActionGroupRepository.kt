@@ -19,8 +19,11 @@ class AddActionGroupRepository(
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
-    suspend fun getCategoriesNames(): List<String> {
-        val categories = categoryDao.getAllCategories()
+    suspend fun getCategoriesNames(type: Int): List<String> {
+        val categories = if (type == 2)
+            categoryDao.getIncomesCategories()
+        else
+            categoryDao.getExpensesCategories()
         return categories.map { it.name }
     }
 
@@ -47,6 +50,8 @@ class AddActionGroupRepository(
 
         val groupId = preferencesManager.getInt("groupId", -1)
         val token = encryptedPrefManager.getString("token", "-1")
+
+        Log.d("duplicationqqqq", duplication.toString())
 
         if (userId < 0 || token == "-1") {
             res = ErrorAddActionGroupApi.Error

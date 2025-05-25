@@ -1,9 +1,11 @@
 package com.ub.finanstics.api.models
 
+import com.google.gson.annotations.SerializedName
+
 @Suppress("ConstructorParameterNaming")
 data class Action(
     val id: Int,
-    val user_id: Int,
+    @SerializedName("user_id") val userId: Int,
     val type: Int,
     val name: String,
     val value: Int,
