@@ -445,6 +445,7 @@ fun DrawCalendarWithoutAction(
 @Composable
 fun Calendar(
     navController: NavController,
+    isVisible: Boolean = false
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
