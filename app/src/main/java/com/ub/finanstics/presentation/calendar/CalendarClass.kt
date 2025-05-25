@@ -27,7 +27,7 @@ private const val NUM_400 = 400
 private const val ZERO = 0
 
 private const val COUNT_ACTION = 20
-private const val COUNT_MONEY = 100
+private const val COUNT_MONEY = 0
 
 @Suppress("MagicNumber")
 enum class MonthNameClass(val number: Int) {
@@ -152,6 +152,14 @@ data class DataClass(
         this.day = lastDate.getDay()
         this.month = lastDate.getMonth()
         this.year = lastDate.getYear()
+    }
+
+    operator fun compareTo(other: DataClass): Int {
+        return when {
+            this.year != other.year -> this.year - other.year
+            this.month.number != other.month.number -> this.month.number - other.month.number
+            else -> this.day - other.day
+        }
     }
 }
 
@@ -370,11 +378,24 @@ class GridDatas(
     ) {
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarGroupRepository(db)
-        for (el in days) {
-            val actions = repository.getGroupActionDays(groupId, el!!.getData())
-            if (actions != null) {
-                el.initActions(actions)
-                el.updateMoney()
+
+        // Получаем весь нужный период, чтобы сразу не плодить запросы
+        val dataFirst = days[0]!!.getData() // начало периода, например месяц назад
+        val dataSecond = days.last()!!.getData() // конец периода, например месяц вперёд
+
+        val actionsMap = repository.getGroupActionByDataMonth(
+            groupId,
+            dataFirst,
+            dataSecond) ?: return
+
+        // Пробегаем по дням, и если для дня есть массив экшенов — забиваем его
+        for (day in days) {
+            val date = day!!.getData()
+            val actionsForDay = actionsMap[date]
+            if (actionsForDay != null) {
+                Log.d("actionsForDay", actionsForDay[0]!!.getActionName())
+                day.initActions(actionsForDay)
+                day.updateMoney()
             }
         }
     }

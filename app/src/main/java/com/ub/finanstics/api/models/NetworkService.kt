@@ -17,7 +17,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Streaming
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 interface NetworkService {
     @GET("users/{user_id}")
     suspend fun getUser(
@@ -173,6 +173,40 @@ interface NetworkService {
     suspend fun updateUserImage(
         @Path("user_id") userId: String,
         @Part("token") token: RequestBody,
+        @Part image: MultipartBody.Part
+    ): Response<BaseResponse>
+
+    @GET("/groups/{group_id}/categories")
+    suspend fun getGroupCategories(
+        @Path("group_id") groupId: Int
+    ): Response<List<Category>>
+
+    @GET("/groups/{group_id}/actions/category")
+    suspend fun getGroupActionsByCategory(
+        @Path("group_id") groupId: Int,
+        @Query("category_name") categoryName: String,
+        @Query("type") type: Int
+    ): Response<List<Action>>
+
+    @GET("/groups/{group_id}/actions/category/date")
+    suspend fun getGroupActionsByCategoryAndDate(
+        @Path("group_id") groupId: Int,
+        @Query("category_name") categoryName: String,
+        @Query("type") type: Int,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int?
+    ): Response<List<Action>>
+
+    @POST("groups/update_data")
+    @Multipart
+    suspend fun updateGroupData(
+        @Part("group_id") groupId: RequestBody,
+        @Part("token") token: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("group_data") groupData: RequestBody,
+        @Part("users") users: RequestBody,
+        @Part("admins") admins: RequestBody,
         @Part image: MultipartBody.Part
     ): Response<BaseResponse>
 

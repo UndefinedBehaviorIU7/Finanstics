@@ -28,6 +28,8 @@
     <string name="unknown_server_error">Неизвестная ошибка сервера</string>
     <string name="incomes">Доходы</string>
     <string name="expenses">Расходы</string>
+    <string name="income">Доход</string>
+    <string name="expense">Расход</string>
     <string name="logIn">Вход</string>
     <string name="registration">Регистрация</string>
     <string name="log_out">Выход</string>

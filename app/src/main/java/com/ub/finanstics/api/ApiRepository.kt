@@ -183,4 +183,30 @@ class ApiRepository {
     suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
         return RetrofitInstance.api.registerFCMToken(token, fcmToken)
     }
+
+    suspend fun getGroupCategories(groupId: Int): Response<List<Category>> {
+        return RetrofitInstance.api.getGroupCategories(groupId)
+    }
+
+    suspend fun getGroupActionsByCategory(
+        groupId: Int,
+        categoryName: String,
+        type: Int
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByCategory(groupId, categoryName, type)
+    }
+
+    @Suppress("LongParameterList")
+    suspend fun getGroupActionsByCategoryAndDate(
+        groupId: Int,
+        categoryName: String,
+        type: Int,
+        year: Int,
+        month: Int,
+        day: Int? = null
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByCategoryAndDate(
+            groupId, categoryName, type, year, month, day
+        )
+    }
 }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-private const val TIME_UPDATE = 1000L
+const val TIME_UPDATE = 1000L
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("TooGenericExceptionCaught")
