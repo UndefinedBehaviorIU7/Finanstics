@@ -6,6 +6,7 @@ import android.app.Application
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.MonthNameClass.APRIL
 import com.ub.finanstics.presentation.calendar.MonthNameClass.DECEMBER
@@ -14,6 +15,7 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass.JANUARY
 import com.ub.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.ub.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
+import dataClassToApiString
 
 private const val DAYS_IN_MONTH_28 = 28
 private const val DAYS_IN_MONTH_29 = 29
@@ -165,11 +167,13 @@ data class DataClass(
 
 data class ActionDataClass(
     private var userName: String,
+    private var userId: Int,
     private var actionName: String,
     private var actionType: Int,
     private var actionMoney: Int,
     private var actionCategory: String,
-    private var data: DataClass
+    private var data: DataClass,
+    private var description: String?
 ) {
 
     fun getMoney(): Int {
@@ -190,6 +194,21 @@ data class ActionDataClass(
 
     fun getActionCategory(): String {
         return actionCategory
+    }
+
+    fun getActionAPI(): Action {
+        return Action(
+            id = 1,
+            userId = userId,
+            type = actionType,
+            name = actionName,
+            value = actionMoney,
+            date = dataClassToApiString(data),
+            category_id = 1,
+            description = description,
+            created_at = "ub",
+            groups = emptyList()
+        )
     }
 }
 

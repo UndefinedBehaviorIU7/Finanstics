@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.ui.theme.ColorsExpenses
+import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
@@ -131,7 +133,9 @@ private fun CalendarDayItem(
 
                 Text(
                     text = "${kotlin.math.abs(day.getDayMoney())}",
-                    color = if (day.getDayMoney() < 0) Color.Red else Color.Green,
+                    color = if (day.getDayMoney() < 0) ColorsExpenses[0]
+                    else if (day.getDayMoney() > 0) ColorsIncomes[1]
+                    else MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp
                 )

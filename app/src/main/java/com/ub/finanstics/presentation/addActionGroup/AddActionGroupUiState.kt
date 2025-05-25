@@ -1,5 +1,7 @@
 package com.ub.finanstics.presentation.addAction
 
+import com.ub.finanstics.api.models.Category
+
 sealed class AddActionGroupUiState {
     data class Idle(
         var typeAction: ActionType,
@@ -8,7 +10,7 @@ sealed class AddActionGroupUiState {
         var data: String,
         var category: String,
         var description: String,
-        var allCategory: List<String>,
+        var allCategory: List<Category>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean,
         val duplication: Boolean
@@ -22,7 +24,7 @@ sealed class AddActionGroupUiState {
         var category: String,
         var description: String,
         val error: com.ub.finanstics.presentation.addAction.Error,
-        var allCategory: List<String>,
+        var allCategory: List<Category>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean,
         val duplication: Boolean
@@ -35,7 +37,7 @@ sealed class AddActionGroupUiState {
         var data: String,
         var category: String,
         var description: String,
-        var allCategory: List<String>,
+        var allCategory: List<Category>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean,
         val duplication: Boolean

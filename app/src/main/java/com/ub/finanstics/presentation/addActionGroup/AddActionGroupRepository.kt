@@ -3,6 +3,7 @@ package com.ub.finanstics.presentation.addAction
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.db.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
@@ -19,13 +20,32 @@ class AddActionGroupRepository(
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
-    suspend fun getCategoriesNames(type: Int): List<String> {
-        val categories = if (type == 2)
-            categoryDao.getIncomesCategories()
-        else
-            categoryDao.getExpensesCategories()
-        return categories.map { it.name }
+    suspend fun getCategoriesNames(type: Int): List<com.ub.finanstics.api.models.Category>? {
+        val apiRep = ApiRepository()
+        var categories: MutableList<com.ub.finanstics.api.models.Category>? = null
+        val preferencesManager = PreferencesManager(context)
+        val groupId = preferencesManager.getInt("groupId", -1)
+
+        try {
+            val response = apiRep.getGroupCategories(groupId)
+            if (response.isSuccessful) {
+                val allCategories = response.body()
+                if (allCategories != null) {
+                    for (el in allCategories) {
+                        if (el.type == type) {
+                            if (categories == null) categories = mutableListOf()
+                            categories.add(el)
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("addActionGroupApi ERROR", e.toString())
+        }
+
+        return categories
     }
+
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "TooGenericExceptionCaught")
     suspend fun addActionApi(
@@ -61,7 +81,7 @@ class AddActionGroupRepository(
                     userId = userId,
                     token = token,
                     actionName = actionName,
-                    type = type,
+                    type = if (type == 2) 1 else type,
                     value = value,
                     date = date,
                     categoryId = categoryId,

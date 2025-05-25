@@ -122,7 +122,7 @@ fun DrawIdleGroup(
         value = uiState.category,
         label = "Категория",
         expanded = uiState.menuExpandedCategory,
-        allElements = uiState.allCategory,
+        allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
         selected = { vm.updateUIState(newCategory = it) },
         isError = false
@@ -201,7 +201,7 @@ fun DrawErrorGroup(
         value = uiState.category,
         label = "Категория",
         expanded = uiState.menuExpandedCategory,
-        allElements = uiState.allCategory,
+        allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
         selected = { vm.updateUIState(newCategory = it) },
         isError = false

@@ -2,6 +2,7 @@ package com.ub.finanstics.presentation.addAction
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -60,6 +61,8 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.ui.theme.ColorsExpenses
+import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.icons.CalendarIcon
 import java.util.Calendar
 
@@ -329,6 +332,14 @@ fun DrawIdle(
     vm: AddActionViewModel,
     navController: NavController
 ) {
+    Divider(
+        color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
+        else ColorsIncomes[1],
+        thickness = 1.dp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
     Text(
         text = "Тип действия: ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
@@ -410,6 +421,14 @@ fun DrawError(
     vm: AddActionViewModel,
     error: Error
 ) {
+    Divider(
+        color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
+        else ColorsIncomes[1],
+        thickness = 1.dp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
     Text(
         text = "Тип действия: ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
@@ -514,13 +533,6 @@ fun AddAction(
             }
         }
 
-        Divider(
-            color = MaterialTheme.colorScheme.outline,
-            thickness = 1.dp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         when (val uiState = vm.uiState.collectAsState().value) {
             is AddActionUiState.Idle -> {
                 DrawIdle(uiState, vm, navController)
@@ -549,11 +561,17 @@ fun AddAction(
                         onClick = { vm.chooseTypeAndLoad(ActionType.EXPENSE) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(56.dp),
+                            .height(56.dp)
+                            .border(
+                                width = 2.dp,
+                                color = ColorsExpenses[0],
+                                shape = RoundedCornerShape(20.dp)
+                            ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.primary
-                        )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
                             stringResource(R.string.expense),
@@ -565,11 +583,17 @@ fun AddAction(
                         onClick = { vm.chooseTypeAndLoad(ActionType.INCOME) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(56.dp),
+                            .height(56.dp)
+                            .border(
+                                width = 2.dp,
+                                color = ColorsIncomes[1],
+                                shape = RoundedCornerShape(20.dp)
+                            ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.primary
-                        )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
                             stringResource(R.string.income),
