@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.api.models.Action
+import com.ub.finanstics.presentation.statsGroup.GroupDetailsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,6 +28,31 @@ class CalendarViewModel(
             calendar.initActionsDay(application)
             loadCalendar()
         }
+    }
+
+    fun viewAction(action: ActionDataClass) {
+        val uiState = _uiState.value
+        if (uiState is CalendarUiState.DrawActions) {
+            _uiState.value = CalendarUiState.DrawActionDetail(
+                calendar = calendar,
+                day = uiState.day,
+                action = action.getActionBD(),
+                category = action.getActionCategory(),
+                type = action.getActionType()
+            )
+        }
+
+    }
+
+    fun hideAction() {
+        val uiState = _uiState.value
+        if (uiState is CalendarUiState.DrawActionDetail) {
+            _uiState.value = CalendarUiState.DrawActions(
+                calendar = calendar,
+                day = uiState.day
+            )
+        }
+
     }
 
     @Suppress("TooGenericExceptionCaught")
