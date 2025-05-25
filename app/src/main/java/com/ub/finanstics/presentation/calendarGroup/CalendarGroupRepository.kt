@@ -51,6 +51,7 @@ suspend fun getUserName(
     return res
 }
 
+@Suppress("ReturnCount", "TooGenericExceptionCaught")
 suspend fun getCategoriesById(
     groupId: Int
 ): Array<Category>? {

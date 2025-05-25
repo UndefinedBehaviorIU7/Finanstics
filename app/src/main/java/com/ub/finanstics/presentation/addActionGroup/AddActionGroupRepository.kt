@@ -13,6 +13,7 @@ enum class ErrorAddActionGroupApi(val str: String) {
     Ok("ок")
 }
 
+@Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
 class AddActionGroupRepository(
     private var db: FinansticsDatabase,
     private val context: Context
