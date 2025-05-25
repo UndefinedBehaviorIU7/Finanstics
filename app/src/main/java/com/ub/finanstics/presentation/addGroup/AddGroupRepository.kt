@@ -7,7 +7,6 @@ import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesMan
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-
 class AddGroupRepository(context: Context) {
     private val enPrefs = EncryptedPreferencesManager(context)
 
