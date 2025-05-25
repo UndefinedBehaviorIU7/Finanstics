@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,24 +32,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.presentation.actionView.LocalActionView
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
+import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
@@ -135,7 +135,7 @@ private fun CalendarDayItem(
                 )
 
                 Text(
-                    text = "${kotlin.math.abs(day.getDayMoney())}",
+                    text = "${abs(day.getDayMoney())}",
                     color = if (day.getDayMoney() < 0) ColorsExpenses[0]
                     else if (day.getDayMoney() > 0) ColorsIncomes[1]
                             else MaterialTheme.colorScheme.secondary,
@@ -259,13 +259,15 @@ fun CalendarDraw(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun DrawAction(
-    actionDataClass: ActionDataClass
+    actionDataClass: ActionDataClass,
+    vm: CalendarViewModel
 ) {
     Button(
-        onClick = { },
+        onClick = { vm.viewAction(action = actionDataClass) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
@@ -320,10 +322,12 @@ fun DrawAction(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
 fun ActionsDraw(
-    actionDataClasses: Array<ActionDataClass?>
+    actionDataClasses: Array<ActionDataClass?>,
+    vm: CalendarViewModel
 ) {
 
     LazyColumn(
@@ -339,7 +343,7 @@ fun ActionsDraw(
                     .padding(vertical = 4.dp)
             ) {
                 if (action != null) {
-                    DrawAction(action)
+                    DrawAction(action, vm)
                 }
             }
         }
@@ -375,7 +379,7 @@ fun DrawCalendarWithAction(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                ActionsDraw(actionDataClasses)
+                ActionsDraw(actionDataClasses, vm)
             }
         }
     } else {
@@ -391,7 +395,7 @@ fun DrawCalendarWithAction(
             space = 20.dp,
             after = 0.dp
         )
-        ActionsDraw(actionDataClasses)
+        ActionsDraw(actionDataClasses, vm)
     }
 }
 
@@ -447,12 +451,6 @@ fun Calendar(
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
 
-    LaunchedEffect(Unit) { }
-
-    DisposableEffect(Unit) {
-        onDispose { }
-    }
-
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -484,6 +482,26 @@ fun Calendar(
                 if (action != null) {
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
                 }
+            }
+
+            is CalendarUiState.DrawActionDetail -> {
+                val action = uiState.day?.getActions()
+                if (action != null) {
+                    DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
+                }
+                LocalActionView(
+                    action = uiState.action,
+                    category = uiState.category,
+                    isVisible = true,
+                    onDismiss = {
+                        vm.hideAction()
+                    },
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(250.dp),
+                    color = if (uiState.type == 0) ColorsExpenses[0]
+                    else ColorsIncomes[1]
+                )
             }
 
             else -> {}

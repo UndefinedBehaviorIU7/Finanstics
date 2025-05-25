@@ -16,6 +16,7 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.ub.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
 import dataClassToApiString
+import dataClassToLocalDate
 
 private const val DAYS_IN_MONTH_28 = 28
 private const val DAYS_IN_MONTH_29 = 29
@@ -208,6 +209,20 @@ data class ActionDataClass(
             description = description,
             created_at = "ub",
             groups = emptyList()
+        )
+    }
+
+    fun getActionBD(): com.ub.finanstics.db.Action {
+        return com.ub.finanstics.db.Action(
+            actionId = 1,
+            type = actionType,
+            name = actionName,
+            value = actionMoney,
+            date = dataClassToLocalDate(data),
+            categoryId = 1,
+            description = description,
+            createdAt = null,
+            serverId = null
         )
     }
 }

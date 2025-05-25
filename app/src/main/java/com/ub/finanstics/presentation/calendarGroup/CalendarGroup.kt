@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,18 +36,158 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.presentation.actionView.ApiActionView
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun DrawActionGroup(
+    actionDataClass: ActionDataClass,
+    vm: CalendarGroupViewModel
+) {
+    Button(
+        onClick = { vm.viewAction(action = actionDataClass) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        colors = ButtonDefaults.buttonColors(
+            MaterialTheme.colorScheme.onBackground,
+            MaterialTheme.colorScheme.primary
+        ),
+        contentPadding = PaddingValues(8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = actionDataClass.getActionName(),
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = actionDataClass.getActionCategory(),
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "${actionDataClass.getMoney()}",
+                    color = if (actionDataClass.getActionType() == 0) ColorsExpenses[0]
+                    else ColorsIncomes[1],
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("MagicNumber")
+@Composable
+fun ActionsGroupDraw(
+    actionDataClasses: Array<ActionDataClass?>,
+    vm: CalendarGroupViewModel
+) {
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(actionDataClasses.size) { index ->
+            val action = actionDataClasses[index]
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                if (action != null) {
+                    DrawActionGroup(action, vm)
+                }
+            }
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("MagicNumber")
+@Composable
+fun DrawCalendarGroupWithAction(
+    calendar: CalendarClass,
+    actionDataClasses: Array<ActionDataClass?>,
+    isLandscape: Boolean,
+    vm: CalendarGroupViewModel,
+) {
+    if (isLandscape) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                CalendarDraw(calendar, vm)
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                ActionsGroupDraw(actionDataClasses, vm)
+            }
+        }
+    } else {
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Календарь финансов",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 26.sp
+        )
+        CalendarDraw(calendar, vm)
+        Divider(
+            stroke = 2.dp,
+            space = 20.dp,
+            after = 0.dp
+        )
+        ActionsGroupDraw(actionDataClasses, vm)
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
@@ -265,7 +407,7 @@ fun DrawCalendarWithAction(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                ActionsDraw(actionDataClasses)
+                ActionsGroupDraw(actionDataClasses, vm)
             }
         }
     } else {
@@ -281,7 +423,7 @@ fun DrawCalendarWithAction(
             space = 20.dp,
             after = 0.dp
         )
-        ActionsDraw(actionDataClasses)
+        ActionsGroupDraw(actionDataClasses, vm)
     }
 }
 
@@ -367,6 +509,26 @@ fun CalendarGroup(
                 if (action != null) {
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
                 }
+            }
+
+            is CalendarGroupUiState.DrawActionDetail -> {
+                val action = uiState.day?.getActions()
+                if (action != null) {
+                    DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
+                }
+                ApiActionView(
+                    action = uiState.action,
+                    category = uiState.category,
+                    isVisible = true,
+                    onDismiss = {
+                        vm.hideAction()
+                    },
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(250.dp),
+                    color = if (uiState.type == 0) ColorsExpenses[0]
+                    else ColorsIncomes[1]
+                )
             }
 
             else -> {}

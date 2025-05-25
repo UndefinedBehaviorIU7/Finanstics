@@ -545,6 +545,14 @@ fun AddAction(
             is AddActionUiState.Ok -> {}
 
             is AddActionUiState.SelectType -> {
+
+                Divider(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = 1.dp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = "Выберете тип действия",
                     color = MaterialTheme.colorScheme.primary,

@@ -28,6 +28,29 @@ class CalendarViewModel(
         }
     }
 
+    fun viewAction(action: ActionDataClass) {
+        val uiState = _uiState.value
+        if (uiState is CalendarUiState.DrawActions) {
+            _uiState.value = CalendarUiState.DrawActionDetail(
+                calendar = calendar,
+                day = uiState.day,
+                action = action.getActionBD(),
+                category = action.getActionCategory(),
+                type = action.getActionType()
+            )
+        }
+    }
+
+    fun hideAction() {
+        val uiState = _uiState.value
+        if (uiState is CalendarUiState.DrawActionDetail) {
+            _uiState.value = CalendarUiState.DrawActions(
+                calendar = calendar,
+                day = uiState.day
+            )
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun loadCalendar() {
         try {

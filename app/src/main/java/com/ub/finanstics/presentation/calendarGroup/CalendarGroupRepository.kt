@@ -31,6 +31,14 @@ fun dataClassToApiString(data: DataClass): String {
     return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
+fun dataClassToLocalDate(data: DataClass): LocalDate {
+    return LocalDate.of(
+        data.getYear(),
+        data.getMonth().number,
+        data.getDay()
+    )
+}
+
 @Suppress("TooGenericExceptionCaught")
 suspend fun getUserName(
     userId: Int
