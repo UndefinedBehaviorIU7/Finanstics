@@ -39,7 +39,6 @@ class CalendarGroupViewModel(
                 type = action.getActionType()
             )
         }
-
     }
 
     fun hideAction() {

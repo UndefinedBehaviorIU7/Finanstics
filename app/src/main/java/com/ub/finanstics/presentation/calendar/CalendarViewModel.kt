@@ -7,8 +7,6 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.api.models.Action
-import com.ub.finanstics.presentation.statsGroup.GroupDetailsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -41,7 +39,6 @@ class CalendarViewModel(
                 type = action.getActionType()
             )
         }
-
     }
 
     fun hideAction() {
@@ -52,7 +49,6 @@ class CalendarViewModel(
                 day = uiState.day
             )
         }
-
     }
 
     @Suppress("TooGenericExceptionCaught")

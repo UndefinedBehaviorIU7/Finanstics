@@ -15,7 +15,6 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass.JANUARY
 import com.ub.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.ub.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
-import dataApiToDataClass
 import dataClassToApiString
 import dataClassToLocalDate
 
