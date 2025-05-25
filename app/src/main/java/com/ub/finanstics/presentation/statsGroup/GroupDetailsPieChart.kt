@@ -44,7 +44,6 @@ import com.ub.finanstics.presentation.stats.animateDp
 import com.ub.finanstics.presentation.stats.statsColors
 import com.ub.finanstics.presentation.stats.statsLabelId
 import com.ub.finanstics.ui.theme.Blue
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")

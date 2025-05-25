@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.stats
 
 import com.ub.finanstics.db.Action
 
-
 sealed class DetailsUiState {
     object Default : DetailsUiState()
 
