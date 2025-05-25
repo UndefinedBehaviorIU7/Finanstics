@@ -33,7 +33,7 @@ val ColorsIncomes = mutableListOf(
 
 val Yellow = Color(0xFFFFEB3B)
 val Orange = Color(0xFFFF9800)
-val Red = Color(0xFFF22B2B)
+val Red = Color(0xFFA82828)
 val Purple = Color(0xFF912EFA)
 val Pink = Color(0xFFF149E9)
 

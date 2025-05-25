@@ -1,11 +1,8 @@
 package com.ub.finanstics.presentation.addGroup
 
 import android.app.Application
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentCompositionErrors
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -28,7 +25,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                     groupName = newName ?: current.groupName,
                     groupData = newData ?: current.groupData,
                     userInput = newUserInput ?: current.userInput,
-                    tagInputErr = newTagErr ?: current.tagInputErr
+                    inputError = newTagErr ?: current.inputError
                 )
             }
 
@@ -42,16 +39,10 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun deleteTag(tag: String) {
-        when (val current = _uiState.value) {
-            is AddGroupUiState.Idle -> {
-                for (i in current.users.indices) {
-                    if (current.users[i].tag == tag) {
-                        current.users.removeAt(i)
-                    }
-                }
-            }
-
-            else -> Unit
+        val current = _uiState.value
+        if (current is AddGroupUiState.Idle) {
+            val updated = current.users.filter { it.tag != tag }.toList()
+            _uiState.value = current.copy(users = updated)
         }
     }
 
@@ -59,10 +50,10 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
         when (val current = _uiState.value) {
             is AddGroupUiState.Idle -> {
                 viewModelScope.launch {
-                    val res = repository.getUserByTag(tag)
-                    if (res == -1) {
+                    val userId = repository.getUserByTag(tag)
+                    if (userId == -1) {
                         _uiState.value = current.copy(
-                            tagInputErr = true,
+                            inputError = true,
                             errorMsg = "Пользователь не найден"
                         )
                     } else {
@@ -71,7 +62,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                             if (item.tag == tag) {
                                 unique = false
                                 _uiState.value = current.copy(
-                                    tagInputErr = true,
+                                    inputError = true,
                                     errorMsg = "Пользователь уже добавлен"
                                 )
                                 break
@@ -79,8 +70,8 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                         }
 
                         if (unique) {
-                            current.users.add(User(res, tag))
-                            _uiState.value = current.copy()
+                            val updatedUsers = current.users + User(userId, tag)
+                            _uiState.value = current.copy(users = updatedUsers, userInput = "")
                         }
                     }
                 }

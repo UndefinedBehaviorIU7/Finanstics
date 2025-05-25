@@ -2,6 +2,7 @@ package com.ub.finanstics.presentation.addGroup
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,8 +34,11 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -175,6 +179,7 @@ fun IdleContent(
         else -> 18.sp
     }
 
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(verticalGap),
@@ -183,24 +188,24 @@ fun IdleContent(
         Form(
             value = uiState.groupName,
             label = stringResource(R.string.group_name),
-            isError = false,
+            isError = uiState.inputError,
             lambda = { vm.updateUiState(newName = it) }
         )
         Form(
             value = uiState.groupData,
             label = stringResource(R.string.group_data),
-            isError = false,
+            isError = uiState.inputError,
             lambda = { vm.updateUiState(newData = it) }
         )
         Form(
             value = uiState.userInput,
             label = stringResource(R.string.users),
-            isError = false,
+            isError = uiState.inputError,
             lambda = { vm.updateUiState(newUserInput = it) },
             icon = {
                 if (uiState.userInput.isNotEmpty()) {
                     IconButton(onClick = {
-
+                        vm.addTag(uiState.userInput)
                     }) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -211,11 +216,13 @@ fun IdleContent(
             }
         )
 
-        FlowRow {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             uiState.users.forEach { user ->
                 Chip(onClick = { vm.deleteTag(user.tag) }) {
                     Text(user.tag)
-                    Icon(Icons.Default.Close, contentDescription = "")
+                    Icon(Icons.Default.Close, contentDescription = null)
                 }
             }
         }
