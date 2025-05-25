@@ -16,6 +16,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
 import java.io.File
 import java.net.URLConnection
 
@@ -186,5 +188,17 @@ class ApiRepository {
 
     suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
         return RetrofitInstance.api.registerFCMToken(token, fcmToken)
+    }
+
+    suspend fun getGroupCategories(groupId: Int): Response<List<Category>> {
+        return RetrofitInstance.api.getGroupCategories(groupId)
+    }
+
+    suspend fun getGroupActionsByCategory(
+        groupId: Int,
+        categoryName: String,
+        type: Int
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByCategory(groupId, categoryName, type)
     }
 }

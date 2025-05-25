@@ -3,7 +3,7 @@ package com.ub.finanstics.api.models
 @Suppress("ConstructorParameterNaming")
 data class Action(
     val id: Int,
-    val userId: Int,
+    val user_id: Int,
     val type: Int,
     val name: String,
     val value: Int,

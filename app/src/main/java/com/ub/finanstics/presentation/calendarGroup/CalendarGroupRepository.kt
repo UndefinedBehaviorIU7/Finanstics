@@ -47,7 +47,7 @@ suspend fun getArrayActionDataClass(
 ): Array<ActionDataClass?> {
     val res = mutableListOf<ActionDataClass>()
     for (el in actions) {
-        val userName = getUserName(el.userId)
+        val userName = getUserName(el.user_id)
         Log.d("getArrayActionDataClass", "for")
         if (userName != null) {
             Log.d("getArrayActionDataClass", el.name)

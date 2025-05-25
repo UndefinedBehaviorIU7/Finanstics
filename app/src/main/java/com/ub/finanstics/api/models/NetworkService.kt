@@ -170,4 +170,16 @@ interface NetworkService {
         @Part("token") token: RequestBody,
         @Part image: MultipartBody.Part
     ): Response<BaseResponse>
+
+    @GET("/groups/{group_id}/categories")
+    suspend fun getGroupCategories(
+        @Path("group_id") groupId: Int
+    ): Response<List<Category>>
+
+    @GET("/groups/{group_id}/actions/category")
+    suspend fun getGroupActionsByCategory(
+        @Path("group_id") groupId: Int,
+        @Query("category_name") categoryName: String,
+        @Query("type") type: Int
+    ): Response<List<Action>>
 }

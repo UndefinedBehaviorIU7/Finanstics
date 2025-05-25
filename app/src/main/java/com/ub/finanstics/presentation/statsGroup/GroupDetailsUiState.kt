@@ -1,21 +1,20 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.statsGroup
 
-import com.ub.finanstics.db.Action
+import com.ub.finanstics.api.models.Action
 
-
-sealed class DetailsUiState {
-    object Default : DetailsUiState()
+sealed class GroupDetailsUiState {
+    object Default : GroupDetailsUiState()
 
     data class Detailed(
         val actions: List<Action>,
         val chosen: String,
         val type: Int
-    ) : DetailsUiState()
+    ) : GroupDetailsUiState()
 
     data class DetailedAction(
         val actions: List<Action>,
         val chosen: String,
         val action: Action,
         val type: Int
-    ) : DetailsUiState()
+    ) : GroupDetailsUiState()
 }

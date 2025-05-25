@@ -1,12 +1,12 @@
 package com.ub.finanstics.presentation.statsGroup
 
+import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.ui.theme.GROUP_ID
-import com.ub.finanstics.ui.theme.USER_ID
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 
 fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
     return list.groupBy { it.first }
@@ -15,25 +15,32 @@ fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
         .sortedByDescending { it.second }
 }
 
-class GroupStatsRepository {
+class GroupStatsRepository(private val context: Context) {
+    val preferencesManager = PreferencesManager(context)
+
     @Suppress("TooGenericExceptionCaught")
     suspend fun getIncomes(
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>>? {
+        val groupId = preferencesManager.getInt("groupId", -1)
+        val userId = preferencesManager.getInt("id", -1)
+        if (userId < 0 || groupId < 0) return null
+
         val apiRep = ApiRepository()
         var incomes: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActionsByDate(
-                groupId = GROUP_ID,
+                groupId = groupId,
                 year = year,
                 month = month.number
             )
-            val respCat = apiRep.getUserCategories(USER_ID)
+            val respCat = apiRep.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
+                Log.d("DATA", "$categories")
 
                 if (actions != null && categories != null) {
                     incomes = actionsToPairs(
@@ -50,6 +57,7 @@ class GroupStatsRepository {
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
         }
+        Log.d("DATA", "$incomes")
         return incomes
     }
 
@@ -58,19 +66,24 @@ class GroupStatsRepository {
         month: MonthNameClass,
         year: Int
     ): List<Pair<String, Int>>? {
+        val groupId = preferencesManager.getInt("groupId", -1)
+        val userId = preferencesManager.getInt("id", -1)
+        if (userId < 0 || groupId < 0) return null
+
         val apiRep = ApiRepository()
         var expenses: List<Pair<String, Int>>? = null
         try {
             val respAct = apiRep.getGroupActionsByDate(
-                groupId = GROUP_ID,
+                groupId = groupId,
                 year = year,
                 month = month.number
             )
-            val respCat = apiRep.getUserCategories(USER_ID)
+            val respCat = apiRep.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
+                Log.d("DATA", "$categories")
 
                 if (actions != null && categories != null) {
                     expenses = actionsToPairs(
@@ -85,18 +98,22 @@ class GroupStatsRepository {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActions ERROR", e.toString())
+            Log.e("getGroupActions ERROR", "$e")
         }
         return expenses
     }
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun getAllIncomes(): List<Pair<String, Int>>? {
+        val groupId = preferencesManager.getInt("groupId", -1)
+        val userId = preferencesManager.getInt("id", -1)
+        if (userId < 0 || groupId < 0) return null
+
         val apiRep = ApiRepository()
         var incomes: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActions(GROUP_ID)
-            val respCat = apiRep.getUserCategories(USER_ID)
+            val respAct = apiRep.getGroupActions(groupId)
+            val respCat = apiRep.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
@@ -122,11 +139,15 @@ class GroupStatsRepository {
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun getAllExpenses(): List<Pair<String, Int>>? {
+        val groupId = preferencesManager.getInt("groupId", -1)
+        val userId = preferencesManager.getInt("id", -1)
+        if (userId < 0 || groupId < 0) return null
+
         val apiRep = ApiRepository()
         var expenses: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActions(GROUP_ID)
-            val respCat = apiRep.getUserCategories(USER_ID)
+            val respAct = apiRep.getGroupActions(groupId)
+            val respCat = apiRep.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
