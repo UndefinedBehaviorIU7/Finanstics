@@ -12,7 +12,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Streaming
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 interface NetworkService {
     @GET("users/{user_id}")
     suspend fun getUser(
@@ -182,4 +182,16 @@ interface NetworkService {
         @Query("category_name") categoryName: String,
         @Query("type") type: Int
     ): Response<List<Action>>
+
+    @POST("groups/update_data")
+    @Multipart
+    suspend fun updateGroupData(
+        @Part("group_id") groupId: RequestBody,
+        @Part("token") token: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("group_data") groupData: RequestBody,
+        @Part("users") users: RequestBody,
+        @Part("admins") admins: RequestBody,
+        @Part image: MultipartBody.Part
+    ): Response<BaseResponse>
 }

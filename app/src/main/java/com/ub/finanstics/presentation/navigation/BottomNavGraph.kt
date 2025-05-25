@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,24 +27,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.calendar.Calendar
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
 import com.ub.finanstics.presentation.stats.Stats
+import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.GroupsIcon
 import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
-import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -80,7 +80,6 @@ fun BottomNavGraph(
         }
 
         val (currentPage, targetPage, offset) = pageInfo
-        val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
         val offsetX by animateDpAsState(
             targetValue = when {
@@ -94,7 +93,8 @@ fun BottomNavGraph(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = offsetIcons),
+                .padding(bottom = offsetIcons)
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.Bottom
         ) {
             Box {
@@ -109,7 +109,8 @@ fun BottomNavGraph(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     GroupsButton(
-                        navController = navController
+                        navController = navController,
+                        offsetX = -offsetX
                     )
                 }
                 Row(
@@ -165,12 +166,15 @@ fun PlusActionButton(
 @Suppress("MagicNumber")
 @Composable
 fun GroupsButton(
-    navController: NavController
+    navController: NavController,
+    offsetX: Dp
 ) {
     val context = LocalContext.current
     val application = context.applicationContext as Application
     var showLoginDialog by remember { mutableStateOf(false) }
-    Box() {
+    Box(
+        modifier = Modifier.offset(x = offsetX)
+    ) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",
