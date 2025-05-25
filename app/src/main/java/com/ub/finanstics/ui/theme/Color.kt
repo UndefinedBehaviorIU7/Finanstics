@@ -41,6 +41,8 @@ val YellowSoftDark = Color(0xFFFEE06B)
 val BackLight = Color(0xFFEAEAEA)
 val BackDark = Color(0xFF212121)
 
+val Background2 = Color(0xFF171717)
+
 fun generateWarmColor(): Color {
     val red = Random.nextInt(200, 255)
     val green = Random.nextInt(50, 200)

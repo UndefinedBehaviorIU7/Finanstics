@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.actionView.LocalActionView
+import com.ub.finanstics.ui.theme.Background2
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
@@ -112,7 +113,9 @@ private fun CalendarDayItem(
             modifier = Modifier
                 .fillMaxSize(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onBackground,
+                containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
+                    MaterialTheme.colorScheme.onBackground
+                else Background2,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -133,14 +136,15 @@ private fun CalendarDayItem(
                     textAlign = TextAlign.Center,
                     fontSize = 12.sp
                 )
-
+                val value = abs(day.getDayMoney()).toString()
                 Text(
-                    text = "${abs(day.getDayMoney())}",
+                    text = value,
                     color = if (day.getDayMoney() < 0) ColorsExpenses[0]
                     else if (day.getDayMoney() > 0) ColorsIncomes[1]
                             else MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
-                    fontSize = 10.sp
+                    fontSize = if (value.length < 5) 12.sp
+                    else (12 - (value.length - 5) * 3).sp
                 )
             }
         }
@@ -329,7 +333,6 @@ fun ActionsDraw(
     actionDataClasses: Array<ActionDataClass?>,
     vm: CalendarViewModel
 ) {
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -393,7 +396,7 @@ fun DrawCalendarWithAction(
         Divider(
             stroke = 2.dp,
             space = 20.dp,
-            after = 0.dp
+            after = 10.dp
         )
         ActionsDraw(actionDataClasses, vm)
     }
