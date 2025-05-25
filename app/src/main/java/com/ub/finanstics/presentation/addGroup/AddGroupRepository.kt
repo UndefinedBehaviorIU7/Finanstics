@@ -7,6 +7,7 @@ import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesMan
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
+@Suppress("TooGenericExceptionCaught")
 class AddGroupRepository(context: Context) {
     private val enPrefs = EncryptedPreferencesManager(context)
 
@@ -30,6 +31,7 @@ class AddGroupRepository(context: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     suspend fun getUserByTag(tag: String): Int {
         try {
             val response = RetrofitInstance.api.getUserByTag(tag)

@@ -15,6 +15,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
 
     val uiState: StateFlow<AddGroupUiState> = _uiState
 
+    @Suppress("LongParameterList")
     fun updateUiState(
         newName: String? = null,
         newData: String? = null,
@@ -87,6 +88,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    @Suppress("MagicNumber")
     fun addTag(tag: String) {
         when (val current = _uiState.value) {
             is AddGroupUiState.Idle -> {

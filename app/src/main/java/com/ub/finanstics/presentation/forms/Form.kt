@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import com.ub.finanstics.R
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongParameterList")
 @Composable
 fun Form(
     value: String,

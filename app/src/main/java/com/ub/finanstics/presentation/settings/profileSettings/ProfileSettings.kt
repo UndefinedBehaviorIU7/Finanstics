@@ -72,11 +72,8 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
-// TODO: переписать на констреинты, добавить масштабирование
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("ForbiddenComment", "MagicNumber")
-
 @Composable
 fun ProfileSettingsScreen(
     navController: NavController,

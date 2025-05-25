@@ -58,6 +58,7 @@ import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 
+@Suppress("MagicNumber", "ComplexMethod", "LongMethod")
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun AddGroupScreen(
@@ -163,6 +164,7 @@ fun AddGroupScreen(
     }
 }
 
+@Suppress("MagicNumber", "ComplexMethod", "LongMethod")
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterialApi::class,
     ExperimentalMaterial3Api::class
 )
@@ -288,6 +290,7 @@ fun IdleContent(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun Header(
     navController: NavController,
@@ -352,6 +355,7 @@ fun Header(
     }
 }
 
+@Suppress("MagicNumber")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ErrorAlertDialog(
@@ -364,6 +368,7 @@ fun ErrorAlertDialog(
     )
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun ErrorDialogContent(
     msg: String,
