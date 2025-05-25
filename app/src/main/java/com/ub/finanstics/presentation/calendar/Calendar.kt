@@ -452,18 +452,10 @@ fun DrawCalendarWithoutAction(
 @Composable
 fun Calendar(
     navController: NavController,
-    isVisible: Boolean = false
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
-    var showAction by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) { }
-
-    DisposableEffect(Unit) {
-        onDispose { }
-    }
 
     Column(
         modifier = Modifier
@@ -508,7 +500,6 @@ fun Calendar(
                     category = uiState.category,
                     isVisible = true,
                     onDismiss = {
-                        showAction = false
                         vm.hideAction()
                     },
                     modifier = Modifier
