@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.Chip
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -36,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.helper.widget.Flow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
@@ -127,21 +135,24 @@ fun AddGroupScreen(
                 is AddGroupUiState.Idle -> IdleContent(
                     vm = vm,
                     verticalGap = verticalGap,
-                    windowSizeClass = windowSize.widthSizeClass
+                    windowSizeClass = windowSize.widthSizeClass,
+                    uiState = uiState as AddGroupUiState.Idle
                 )
-                is AddGroupUiState.Error -> ErrorContent { vm.retry() }
+                is AddGroupUiState.Error -> ErrorContent { vm.createGroup() }
                 is AddGroupUiState.Loading -> LoadingContent()
             }
         }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun IdleContent(
     vm: AddGroupViewModel,
     verticalGap: Dp,
     windowSizeClass: WindowWidthSizeClass,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiState: AddGroupUiState.Idle
 ) {
     val buttonHeight = when (windowSizeClass) {
         WindowWidthSizeClass.Compact -> 56.dp
@@ -170,29 +181,45 @@ fun IdleContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Form(
-            value = "",
+            value = uiState.groupName,
             label = stringResource(R.string.group_name),
             isError = false,
-            lambda = {}
+            lambda = { vm.updateUiState(newName = it) }
         )
         Form(
-            value = "",
+            value = uiState.groupData,
             label = stringResource(R.string.group_data),
             isError = false,
-            lambda = {}
+            lambda = { vm.updateUiState(newData = it) }
         )
         Form(
-            value = "",
-            label = stringResource(R.string.admins),
-            isError = false,
-            lambda = {}
-        )
-        Form(
-            value = "",
+            value = uiState.userInput,
             label = stringResource(R.string.users),
             isError = false,
-            lambda = {}
+            lambda = { vm.updateUiState(newUserInput = it) },
+            icon = {
+                if (uiState.userInput.isNotEmpty()) {
+                    IconButton(onClick = {
+
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.save)
+                        )
+                    }
+                }
+            }
         )
+
+        FlowRow {
+            uiState.users.forEach { user ->
+                Chip(onClick = { vm.deleteTag(user.tag) }) {
+                    Text(user.tag)
+                    Icon(Icons.Default.Close, contentDescription = "")
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {},

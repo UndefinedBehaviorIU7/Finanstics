@@ -21,11 +21,11 @@ class AddGroupRepository(private val context: Context) {
         val gson = Gson()
         val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
+        // TODO: сериалайзер юзер
         val response = RetrofitInstance.api.createGroup(
             token = enPrefs.getString("token", "").toRequestBody(),
             groupName = state.groupName.toRequestBody("text/plain".toMediaType()),
             groupData = state.groupData.toRequestBody("text/plain".toMediaType()),
-            admins = gson.toJson(state.admins).toRequestBody(jsonMediaType),
             users = gson.toJson(state.users).toRequestBody(jsonMediaType),
         )
 
@@ -35,10 +35,10 @@ class AddGroupRepository(private val context: Context) {
     suspend fun getUserByTag(tag: String): Int {
         val response = RetrofitInstance.api.getUserByTag(tag)
 
-        if (response.isSuccessful) {
-            return response.body()!!.id
+        return if (response.isSuccessful) {
+            response.body()!!.id
         } else {
-            return -1
+            -1
         }
     }
 }

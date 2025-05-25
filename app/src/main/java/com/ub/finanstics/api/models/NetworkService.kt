@@ -182,7 +182,6 @@ interface NetworkService {
         @Part("token") token: RequestBody,
         @Part("group_name") groupName: RequestBody,
         @Part("group_data") groupData: RequestBody,
-        @Part("admins") admins: RequestBody,
         @Part("users") users: RequestBody
     ): Response<BaseResponse>
 }

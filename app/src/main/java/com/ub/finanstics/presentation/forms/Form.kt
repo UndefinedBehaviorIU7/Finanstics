@@ -37,27 +37,29 @@ fun Form(
     label: String,
     isError: Boolean,
     lambda: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit = {}
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = lambda,
         label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor    = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor  = if (isError)
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = if (isError)
                 MaterialTheme.colorScheme.error
             else
                 MaterialTheme.colorScheme.secondary,
-            focusedTextColor      = MaterialTheme.colorScheme.primary,
-            focusedLabelColor     = MaterialTheme.colorScheme.primary,
-            cursorColor           = MaterialTheme.colorScheme.primary
+            focusedTextColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            cursorColor = MaterialTheme.colorScheme.primary
         ),
         readOnly = false,
         modifier = modifier
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        trailingIcon = { icon() }
     )
 }
 
