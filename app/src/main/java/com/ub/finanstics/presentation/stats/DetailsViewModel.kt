@@ -34,7 +34,6 @@ class DetailsViewModel(
         category: String,
         type: Int
     ) {
-        println("month ${date.getData().getMonth().number} year ${date.getData().getYear()}")
         viewModelScope.launch {
             val cat = categoryDao.getCategoryByName(category)
             if (cat != null) {

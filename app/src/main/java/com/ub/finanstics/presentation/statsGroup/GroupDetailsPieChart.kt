@@ -1,7 +1,6 @@
 package com.ub.finanstics.presentation.statsGroup
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,6 +54,15 @@ fun GroupDetailsPieChart(
     date: CalendarClass,
     expenses: Boolean
 ) {
+    LaunchedEffect(Unit) {
+        vm.autoUpdate()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.cancelUpdate()
+        }
+    }
     val colors = statsColors(
         expenses,
         data.size
@@ -62,7 +71,6 @@ fun GroupDetailsPieChart(
     vm.date = date
 
     val chosen by vm.chosenCategory.collectAsState()
-    Log.d("DETAILS", "$chosen")
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {

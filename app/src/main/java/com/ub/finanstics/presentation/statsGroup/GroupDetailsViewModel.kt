@@ -10,6 +10,9 @@ import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +26,9 @@ class GroupDetailsViewModel(
     private val _uiState = MutableStateFlow<GroupDetailsUiState>(GroupDetailsUiState.Default)
     val uiState = _uiState.asStateFlow()
 
+    private val _all = MutableStateFlow(false)
+    val all = _all.asStateFlow()
+
     var date = CalendarClass()
 
     private val _chosenCategory = MutableStateFlow(Pair("", -1))
@@ -32,13 +38,46 @@ class GroupDetailsViewModel(
     val prefManager = PreferencesManager(application)
     val groupId = prefManager.getInt("groupId", -1)
 
+    var syncJob: Job? = null
+
+    fun changeAllTime() {
+        val current = _all.value
+        _all.value = !current
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                val current = _uiState.value
+                _uiState.value = GroupDetailsUiState.Default
+                _uiState.value = current
+                delay(TIME_UPDATE)
+            }
+        }
+    }
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
     fun getDetailedActions(
         category: String,
         type: Int
     ) {
         viewModelScope.launch {
             try {
-                val actResp = apiRep.getGroupActionsByCategory(groupId, category, type)
+                val actResp = if (_all.value) apiRep.getGroupActionsByCategory(
+                    groupId,
+                    category,
+                    type
+                ) else apiRep.getGroupActionsByCategoryAndDate(
+                    groupId, category,
+                    type,
+                    date.getData().getYear(),
+                    date.getData().getMonth().number
+                )
                 if (actResp.isSuccessful) {
                     val actionsR = actResp.body()
                     if (actionsR != null) {

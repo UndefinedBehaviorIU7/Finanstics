@@ -21,7 +21,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,12 +48,28 @@ import com.ub.finanstics.ui.theme.Loader
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupStats(
-    navController: NavController
+    navController: NavController,
+    isVisible: Boolean = true
 ) {
     val vm: GroupStatsViewModel = viewModel()
     val dvm: GroupDetailsViewModel = viewModel()
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            vm.autoUpdate()
+        } else {
+            vm.cancelUpdate()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.cancelUpdate()
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -136,8 +155,6 @@ fun GroupStats(
                             dvm = dvm
                         )
                         GroupStatsView(
-                            uiState.incomes,
-                            uiState.expenses,
                             vm,
                             dvm
                         )
@@ -178,6 +195,7 @@ fun Header(
         Button(
             onClick = {
                 vm.switchAll()
+                dvm.changeAllTime()
                 dvm.hideDetailedActions()
                 vm.fetchData()
             },
@@ -204,11 +222,12 @@ fun Header(
 @Suppress("MagicNumber")
 @Composable
 fun GroupStatsView(
-    incomes: List<Pair<String, Int>>,
-    expenses: List<Pair<String, Int>>,
     vm: GroupStatsViewModel = viewModel(),
     dvm: GroupDetailsViewModel
 ) {
+    val incomes by vm.incomes.collectAsState()
+    val expenses by vm.expenses.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {

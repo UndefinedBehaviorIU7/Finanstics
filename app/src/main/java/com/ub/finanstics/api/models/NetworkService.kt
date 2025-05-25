@@ -183,6 +183,16 @@ interface NetworkService {
         @Query("type") type: Int
     ): Response<List<Action>>
 
+    @GET("/groups/{group_id}/actions/category/date")
+    suspend fun getGroupActionsByCategoryAndDate(
+        @Path("group_id") groupId: Int,
+        @Query("category_name") categoryName: String,
+        @Query("type") type: Int,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int?
+    ): Response<List<Action>>
+
     @POST("groups/update_data")
     @Multipart
     suspend fun updateGroupData(
