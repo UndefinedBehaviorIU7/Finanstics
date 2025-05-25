@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
+@Suppress("TooManyFunctions")
 class GroupStatsViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<GroupStatsUiState>(GroupStatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -116,6 +117,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    @Suppress("LongMethod")
     fun getData(): GroupStatsUiState {
         var res: GroupStatsUiState? = null
         res = GroupStatsUiState.LoadingData(calendar, all, 0)

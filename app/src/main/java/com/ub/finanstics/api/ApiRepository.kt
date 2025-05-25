@@ -196,6 +196,7 @@ class ApiRepository {
         return RetrofitInstance.api.getGroupActionsByCategory(groupId, categoryName, type)
     }
 
+    @Suppress("LongParameterList")
     suspend fun getGroupActionsByCategoryAndDate(
         groupId: Int,
         categoryName: String,
