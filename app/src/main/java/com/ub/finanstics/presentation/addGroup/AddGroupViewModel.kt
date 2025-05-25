@@ -47,7 +47,6 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
 
             else -> Unit
         }
-
     }
 
     fun createGroup() {

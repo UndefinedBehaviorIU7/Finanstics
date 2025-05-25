@@ -2,11 +2,11 @@ package com.ub.finanstics.presentation.addGroup
 
 import android.content.Context
 import com.google.gson.Gson
-
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+
 
 class AddGroupRepository(context: Context) {
     private val enPrefs = EncryptedPreferencesManager(context)

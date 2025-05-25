@@ -6,7 +6,7 @@ data class User(
 )
 
 sealed class AddGroupUiState {
-    data class Idle (
+    data class Idle(
         val groupName: String = "",
         val groupData: String = "",
         val userInput: String = "",
@@ -16,13 +16,13 @@ sealed class AddGroupUiState {
         val tagError: Boolean = false,
         val errorMsg: String = "",
         val showDialog: Boolean = false
-    ): AddGroupUiState()
+    ) : AddGroupUiState()
 
-    data class Error (
+    data class Error(
         val msg: String
-    ): AddGroupUiState()
+    ) : AddGroupUiState()
 
-    data object Loading: AddGroupUiState()
+    data object Loading : AddGroupUiState()
 
-    data object Success: AddGroupUiState()
+    data object Success : AddGroupUiState()
 }
