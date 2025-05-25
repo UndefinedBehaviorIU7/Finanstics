@@ -34,19 +34,19 @@ import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
-enum class Navigation(val route: String) {
-    STATS("stats"),
-    ADD_ACTION("add_action"),
-    ADD_ACTION_GROUPS("add_action_groups"),
-    ADD_GROUP("add_group"),
-    GROUPS("groups"),
-    CALENDAR("calendar"),
-    LOGIN("login"),
-    REGISTER("register"),
-    SETTINGS("settings"),
-    GROUP_STATS("group_stats"),
-    GROUP_CALENDAR("group_calendar"),
-    GROUP_SETTINGS("group_settings")
+enum class Navigation {
+    STATS,
+    ADD_ACTION,
+    ADD_ACTION_GROUPS,
+    ADD_GROUP,
+    GROUPS,
+    CALENDAR,
+    LOGIN,
+    REGISTER,
+    SETTINGS,
+    GROUP_STATS,
+    GROUP_CALENDAR,
+    GROUP_SETTINGS
 }
 
 @Suppress("LongMethod")
