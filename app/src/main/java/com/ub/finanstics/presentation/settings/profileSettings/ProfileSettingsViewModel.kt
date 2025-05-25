@@ -97,7 +97,6 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
                 }
 
                 val newBitmap = uriToBitmap(getApplication(), uri)
-
                 viewModelScope.launch {
                     val success = repository.updateImage(imagePart)
                     if (success) {
