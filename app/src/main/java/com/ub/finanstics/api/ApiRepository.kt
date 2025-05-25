@@ -1,14 +1,14 @@
 package com.ub.finanstics.api
 
 import com.ub.finanstics.api.models.Action
-import com.ub.finanstics.api.models.ActionResponse
-import com.ub.finanstics.api.models.BaseResponse
+import com.ub.finanstics.api.responses.ActionResponse
+import com.ub.finanstics.api.responses.BaseResponse
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.api.models.CategoryResponse
+import com.ub.finanstics.api.responses.CategoryResponse
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.User
-import com.ub.finanstics.api.models.UserResponse
-import com.ub.finanstics.api.models.VKUserResponse
+import com.ub.finanstics.api.responses.UserResponse
+import com.ub.finanstics.api.responses.VKUserResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody

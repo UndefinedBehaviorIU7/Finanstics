@@ -120,7 +120,7 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                 horizontalArrangement = Arrangement.End
             ) {
                 PlusActionButton(
-                    onClick = {},
+                    onClick = { navController.navigate(Navigation.ADD_GROUP.toString()) },
                     offsetX = 0.dp
                 )
             }
@@ -197,7 +197,7 @@ fun PlusActionButton(
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
                 .size(50.dp)
-                .clickable { onClick }
+                .clickable { onClick() }
         )
         Icon(
             imageVector = PlusCircleIcon,

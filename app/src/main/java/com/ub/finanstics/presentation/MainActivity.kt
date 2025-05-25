@@ -25,6 +25,7 @@ import com.google.firebase.FirebaseApp
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.addAction.AddAction
 import com.ub.finanstics.presentation.addAction.AddActionGroup
+import com.ub.finanstics.presentation.addGroup.AddGroupScreen
 import com.ub.finanstics.presentation.group.GroupMainScreen
 import com.ub.finanstics.presentation.groups.Groups
 import com.ub.finanstics.presentation.login.Login
@@ -33,18 +34,19 @@ import com.ub.finanstics.presentation.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
-enum class Navigation(val route: String) {
-    STATS("stats"),
-    ADD_ACTION("add_action"),
-    ADD_ACTION_GROUPS("add_action_groups"),
-    GROUPS("groups"),
-    CALENDAR("calendar"),
-    LOGIN("login"),
-    REGISTER("register"),
-    SETTINGS("settings"),
-    GROUP_STATS("group_stats"),
-    GROUP_CALENDAR("group_calendar"),
-    GROUP_SETTINGS("group_settings")
+enum class Navigation {
+    STATS,
+    ADD_ACTION,
+    ADD_ACTION_GROUPS,
+    ADD_GROUP,
+    GROUPS,
+    CALENDAR,
+    LOGIN,
+    REGISTER,
+    SETTINGS,
+    GROUP_STATS,
+    GROUP_CALENDAR,
+    GROUP_SETTINGS
 }
 
 @Suppress("LongMethod")
@@ -136,6 +138,9 @@ class MainActivity : ComponentActivity() {
                             initialPage = 2,
                             themeVm
                         )
+                    }
+                    composable(Navigation.ADD_GROUP.toString()) {
+                        AddGroupScreen(navController)
                     }
                 }
             }

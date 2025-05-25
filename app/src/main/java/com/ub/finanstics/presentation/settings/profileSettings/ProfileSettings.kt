@@ -74,7 +74,6 @@ import com.ub.finanstics.ui.theme.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("ForbiddenComment", "MagicNumber")
-
 @Composable
 fun ProfileSettingsScreen(
     navController: NavController,

@@ -30,26 +30,36 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
 import com.ub.finanstics.R
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongParameterList")
 @Composable
-fun Form(value: String, label: String, isError: Boolean, lambda: (String) -> Unit) {
+fun Form(
+    value: String,
+    label: String,
+    isError: Boolean,
+    lambda: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit = {},
+) {
     OutlinedTextField(
         value = value,
         onValueChange = lambda,
         label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.secondary,
+            unfocusedBorderColor = if (isError)
+                MaterialTheme.colorScheme.error
+            else
+                MaterialTheme.colorScheme.secondary,
             focusedTextColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             cursorColor = MaterialTheme.colorScheme.primary
         ),
         readOnly = false,
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 10.dp)
             .fillMaxWidth(),
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        trailingIcon = { icon() }
     )
 }
 
