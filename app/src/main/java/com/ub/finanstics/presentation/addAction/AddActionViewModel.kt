@@ -260,7 +260,8 @@ class AddActionViewModel(
                         type = current.typeAction.toInt(),
                         value = current.moneyAction,
                         date = dataForApi(current.data),
-                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.serverId!!,
+                        categoryId = categoryDao.getCategoryByName(
+                            name = current.category)!!.serverId!!,
                         description = current.description,
                         groups = current.groups
                     )

@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.calendar
 
 import com.ub.finanstics.db.Action
 
-
 sealed class CalendarUiState {
     data object Idle : CalendarUiState()
     data object Loading : CalendarUiState()

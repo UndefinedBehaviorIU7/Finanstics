@@ -1,14 +1,12 @@
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.application
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

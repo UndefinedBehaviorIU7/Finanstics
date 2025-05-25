@@ -46,7 +46,6 @@ class AddActionGroupRepository(
         return categories
     }
 
-
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "TooGenericExceptionCaught")
     suspend fun addActionApi(
         actionName: String,
