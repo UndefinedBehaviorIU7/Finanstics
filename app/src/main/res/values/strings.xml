@@ -59,4 +59,5 @@
     <string name="users">Пользователи</string>
     <string name="add_group">Добавить</string>
     <string name="add_group_title">Добавление группы</string>
+    <string name="ok">Ок</string>
 </resources>

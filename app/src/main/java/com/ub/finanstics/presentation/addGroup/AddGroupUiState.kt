@@ -23,4 +23,6 @@ sealed class AddGroupUiState {
     ): AddGroupUiState()
 
     data object Loading: AddGroupUiState()
+
+    data object Success: AddGroupUiState()
 }

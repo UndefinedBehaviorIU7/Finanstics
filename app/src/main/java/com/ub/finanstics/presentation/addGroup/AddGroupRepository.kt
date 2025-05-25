@@ -13,33 +13,37 @@ class AddGroupRepository(private val context: Context) {
     private val prefs = PreferencesManager(context)
     private val enPrefs = EncryptedPreferencesManager(context)
 
-    fun isAuth(): Boolean {
-        return enPrefs.getString("token", "").isNotEmpty()
-    }
-
     suspend fun createGroup(state: AddGroupUiState.Idle): Boolean {
-        val gson = Gson()
-        val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+        try {
+            val gson = Gson()
+            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
-        val users: List<Int> = state.users.map { it.id } + prefs.getInt("id", 0)
+            val users: List<Int> = state.users.map { it.id }
 
-        val response = RetrofitInstance.api.createGroup(
-            token = enPrefs.getString("token", "").toRequestBody(),
-            groupName = state.groupName.toRequestBody("text/plain".toMediaType()),
-            groupData = state.groupData.toRequestBody("text/plain".toMediaType()),
-            users = gson.toJson(users).toRequestBody(jsonMediaType),
-        )
+            val response = RetrofitInstance.api.createGroup(
+                token = enPrefs.getString("token", "").toRequestBody(),
+                groupName = state.groupName.toRequestBody("text/plain".toMediaType()),
+                groupData = state.groupData.toRequestBody("text/plain".toMediaType()),
+                users = gson.toJson(users).toRequestBody(jsonMediaType),
+            )
 
-        return response.isSuccessful
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
     }
 
     suspend fun getUserByTag(tag: String): Int {
-        val response = RetrofitInstance.api.getUserByTag(tag)
+        try {
+            val response = RetrofitInstance.api.getUserByTag(tag)
 
-        return if (response.isSuccessful) {
-            response.body()!!.id
-        } else {
-            -1
+            return if (response.isSuccessful) {
+                response.body()!!.id
+            } else {
+                -1
+            }
+        } catch (e: Exception) {
+            return -2
         }
     }
 }

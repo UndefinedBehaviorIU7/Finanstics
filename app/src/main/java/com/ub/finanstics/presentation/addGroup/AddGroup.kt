@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.addGroup
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,33 +14,35 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Chip
+import com.ub.finanstics.presentation.Navigation
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.helper.widget.Flow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
@@ -58,9 +58,8 @@ import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 import com.ub.finanstics.ui.theme.ThemeViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 
-// TODO: передача высоты форм через модификаторы, докрутить функционал
+// TODO: передача высоты форм через модификаторы
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -140,20 +139,37 @@ fun AddGroupScreen(
                 .padding(horizontal = horizontalPadding)
         ) {
             when (uiState) {
-                is AddGroupUiState.Idle -> IdleContent(
-                    vm = vm,
-                    verticalGap = verticalGap,
-                    windowSizeClass = windowSize.widthSizeClass,
-                    uiState = uiState as AddGroupUiState.Idle
-                )
-                is AddGroupUiState.Error -> ErrorContent { vm.createGroup() }
-                is AddGroupUiState.Loading -> LoadingContent()
+                is AddGroupUiState.Idle -> {
+                    IdleContent(
+                        vm = vm,
+                        verticalGap = verticalGap,
+                        windowSizeClass = windowSize.widthSizeClass,
+                        uiState = uiState as AddGroupUiState.Idle
+                    )
+                }
+
+                is AddGroupUiState.Loading -> {
+                    LoadingContent()
+                }
+
+                is AddGroupUiState.Error -> {
+                    ErrorContent(onRetry = { vm.createGroup() })
+                }
+
+                is AddGroupUiState.Success -> {
+                    LaunchedEffect(uiState) {
+                        navController.navigateUp()
+                        vm.clearSuccessFlag()
+                    }
+                }
             }
         }
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun IdleContent(
     vm: AddGroupViewModel,
@@ -183,6 +199,32 @@ fun IdleContent(
         else -> 18.sp
     }
 
+    key(uiState.showDialog) {
+        if (uiState.showDialog) {
+            if (uiState.nameError || uiState.tagError) {
+                ErrorAlertDialog(
+                    onDismissRequest = { vm.dismissErrorDialog() },
+                    content = { ErrorDialogContent(
+                        uiState.errorMsg,
+                        buttonText = stringResource(R.string.ok),
+                        action = { vm.dismissErrorDialog() },
+                        onClose = { vm.dismissErrorDialog() }
+                    ) }
+                )
+            } else {
+                ErrorAlertDialog(
+                    onDismissRequest = { vm.dismissErrorDialog() },
+                    content = { ErrorDialogContent(
+                        uiState.errorMsg,
+                        buttonText = stringResource(R.string.retry),
+                        action = { vm.createGroup() },
+                        onClose = { vm.dismissErrorDialog() }
+                    ) }
+                )
+            }
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(verticalGap),
@@ -192,13 +234,13 @@ fun IdleContent(
             value = uiState.groupName,
             label = stringResource(R.string.group_name),
             isError = uiState.nameError,
-            lambda = { vm.updateUiState(newName = it) }
+            lambda = { vm.updateUiState(newName = it, newNameErr = false) }
         )
         Form(
             value = uiState.groupData,
             label = stringResource(R.string.group_data),
             isError = uiState.dataError,
-            lambda = { vm.updateUiState(newData = it) }
+            lambda = { vm.updateUiState(newData = it, newDataErr = false) }
         )
         Form(
             value = uiState.userInput,
@@ -314,44 +356,73 @@ fun Header(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlertDialogExample(
+fun ErrorAlertDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector,
+    content: @Composable () -> Unit
 ) {
-    AlertDialog(
-        icon = {
-            Icon(icon, contentDescription = null)
-        },
-        title = {
-            Text(text = dialogTitle)
-        },
-        text = {
-            Text(text = dialogText)
-        },
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}
+
+@Composable
+fun ErrorDialogContent(
+    msg: String,
+    action: () -> Unit,
+    buttonText: String,
+    onClose: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(20.dp),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            IconButton(
+                onClick = { onClose() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
             ) {
-                Text("Confirm")
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Закрыть",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Dismiss")
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = null
+                )
+                Text(
+                    text = msg,
+                    modifier = Modifier.padding(12.dp),
+                    textAlign = TextAlign.Center
+                )
+                Button(
+                    onClick = { action() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(text = buttonText)
+                }
             }
         }
-    )
+    }
 }
