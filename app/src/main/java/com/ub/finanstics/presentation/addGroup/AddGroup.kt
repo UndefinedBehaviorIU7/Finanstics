@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.addGroup
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,9 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Chip
-import com.ub.finanstics.presentation.Navigation
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -58,8 +57,6 @@ import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 import com.ub.finanstics.ui.theme.ThemeViewModel
-
-// TODO: передача высоты форм через модификаторы
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable

@@ -5,12 +5,10 @@ import com.google.gson.Gson
 
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class AddGroupRepository(private val context: Context) {
-    private val prefs = PreferencesManager(context)
+class AddGroupRepository(context: Context) {
     private val enPrefs = EncryptedPreferencesManager(context)
 
     suspend fun createGroup(state: AddGroupUiState.Idle): Boolean {
