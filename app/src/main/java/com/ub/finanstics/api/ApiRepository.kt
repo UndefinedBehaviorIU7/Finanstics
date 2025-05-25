@@ -14,6 +14,9 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 // Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
@@ -194,5 +197,18 @@ class ApiRepository {
         type: Int
     ): Response<List<Action>> {
         return RetrofitInstance.api.getGroupActionsByCategory(groupId, categoryName, type)
+    }
+
+    suspend fun getGroupActionsByCategoryAndDate(
+        groupId: Int,
+        categoryName: String,
+        type: Int,
+        year: Int,
+        month: Int,
+        day: Int? = null
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByCategoryAndDate(
+            groupId, categoryName, type, year, month, day
+        )
     }
 }

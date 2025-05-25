@@ -40,7 +40,6 @@ class GroupStatsRepository(private val context: Context) {
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
-                Log.d("DATA", "$categories")
 
                 if (actions != null && categories != null) {
                     incomes = actionsToPairs(
@@ -57,7 +56,6 @@ class GroupStatsRepository(private val context: Context) {
         } catch (e: Exception) {
             Log.e("getGroupActions ERROR", e.toString())
         }
-        Log.d("DATA", "$incomes")
         return incomes
     }
 
@@ -83,7 +81,6 @@ class GroupStatsRepository(private val context: Context) {
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
                 val categories = respCat.body()
-                Log.d("DATA", "$categories")
 
                 if (actions != null && categories != null) {
                     expenses = actionsToPairs(
@@ -121,7 +118,7 @@ class GroupStatsRepository(private val context: Context) {
 
                 if (actions != null && categories != null) {
                     incomes = actionsToPairs(
-                        actions.filter { it.type == 1 },
+                        actions.filter { it.type == 2 },
                         categories
                     )
                         .groupBy { it.first }
