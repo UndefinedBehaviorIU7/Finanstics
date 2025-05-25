@@ -43,7 +43,7 @@ class GroupsViewModel(application: Application) : AndroidViewModel(application) 
             }
 
             val filteredGroups = groups.filter {
-                it.name.contains(query, ignoreCase = true)
+                it.group.name.contains(query, ignoreCase = true)
             }
 
             _uiState.value = GroupsUiState.Search(groups, filteredGroups)

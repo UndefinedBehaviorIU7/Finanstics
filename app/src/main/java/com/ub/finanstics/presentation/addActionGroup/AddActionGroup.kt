@@ -3,6 +3,7 @@ package com.ub.finanstics.presentation.addAction
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,6 +40,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.ui.theme.ColorsExpenses
+import com.ub.finanstics.ui.theme.ColorsIncomes
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
@@ -90,6 +93,14 @@ fun DrawIdleGroup(
     vm: AddActionGroupViewModel,
     navController: NavController
 ) {
+
+    Divider(
+        color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
+        else ColorsIncomes[1],
+        thickness = 1.dp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
 
     Text(
         text = "Тип действия: ${ uiState.typeAction.label }",
@@ -170,6 +181,14 @@ fun DrawErrorGroup(
     vm: AddActionGroupViewModel,
     error: Error
 ) {
+    Divider(
+        color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
+        else ColorsIncomes[1],
+        thickness = 1.dp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
     Text(
         text = "Тип действия: ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
@@ -286,13 +305,6 @@ fun AddActionGroup(
             }
         }
 
-        Divider(
-            color = MaterialTheme.colorScheme.outline,
-            thickness = 1.dp
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         when (val uiState = vm.uiState.collectAsState().value) {
             is AddActionGroupUiState.Idle -> {
                 DrawIdleGroup(uiState, vm, navController)
@@ -305,6 +317,12 @@ fun AddActionGroup(
             is AddActionGroupUiState.Ok -> {}
 
             is AddActionGroupUiState.SelectType -> {
+
+                Divider(
+                    color = MaterialTheme.colorScheme.primary,
+                    thickness = 1.dp
+                )
+
                 Text(
                     text = "Выберете тип действия",
                     color = MaterialTheme.colorScheme.primary,
@@ -321,11 +339,17 @@ fun AddActionGroup(
                         onClick = { vm.chooseTypeAndLoad(ActionType.EXPENSE) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(56.dp),
+                            .height(56.dp)
+                            .border(
+                                width = 2.dp,
+                                color = ColorsExpenses[0],
+                                shape = RoundedCornerShape(20.dp)
+                            ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.primary
-                        )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
                             stringResource(R.string.expense),
@@ -337,11 +361,17 @@ fun AddActionGroup(
                         onClick = { vm.chooseTypeAndLoad(ActionType.INCOME) },
                         modifier = Modifier
                             .weight(1f)
-                            .height(56.dp),
+                            .height(56.dp)
+                            .border(
+                                width = 2.dp,
+                                color = ColorsIncomes[1],
+                                shape = RoundedCornerShape(20.dp)
+                            ),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.onBackground,
                             contentColor = MaterialTheme.colorScheme.primary
-                        )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
                     ) {
                         Text(
                             stringResource(R.string.income),

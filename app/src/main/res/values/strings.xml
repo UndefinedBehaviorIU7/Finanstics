@@ -61,6 +61,8 @@
     <string name="users">Пользователи</string>
     <string name="add_group">Добавить</string>
     <string name="add_group_title">Добавление группы</string>
+    <string name="search">Поиск</string>
+    <string name="clear">Очистить</string>
     <string name="ok">Ок</string>
     <string name="offline">Офлайн режим</string>
 </resources>
