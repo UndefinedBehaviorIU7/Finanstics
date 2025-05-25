@@ -64,4 +64,5 @@
     <string name="search">Поиск</string>
     <string name="clear">Очистить</string>
     <string name="ok">Ок</string>
+    <string name="offline">Офлайн режим</string>
 </resources>

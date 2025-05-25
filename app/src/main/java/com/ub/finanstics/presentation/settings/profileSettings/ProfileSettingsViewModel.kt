@@ -141,4 +141,11 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
             ImageDecoder.decodeBitmap(source)
         }
     }
+
+    fun offlineMode(isDark: Boolean) {
+        _uiState.value = ProfileSettingsUiState.NotAuth(
+            nightMode = isDark,
+            notifications = false
+        )
+    }
 }
