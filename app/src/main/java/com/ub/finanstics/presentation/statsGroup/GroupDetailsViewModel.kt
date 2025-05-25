@@ -1,0 +1,105 @@
+package com.ub.finanstics.presentation.statsGroup
+
+import android.app.Application
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.api.models.Action
+import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("TooGenericExceptionCaught")
+class GroupDetailsViewModel(
+    application: Application
+) : AndroidViewModel(application) {
+    private val _uiState = MutableStateFlow<GroupDetailsUiState>(GroupDetailsUiState.Default)
+    val uiState = _uiState.asStateFlow()
+
+    var date = CalendarClass()
+
+    private val _chosenCategory = MutableStateFlow(Pair("", -1))
+    val chosenCategory: StateFlow<Pair<String, Int>> = _chosenCategory.asStateFlow()
+
+    val apiRep = ApiRepository()
+    val prefManager = PreferencesManager(application)
+    val groupId = prefManager.getInt("groupId", -1)
+
+    fun getDetailedActions(
+        category: String,
+        type: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                val actResp = apiRep.getGroupActionsByCategory(groupId, category, type)
+                if (actResp.isSuccessful) {
+                    val actionsR = actResp.body()
+                    if (actionsR != null) {
+                        val actions = actionsR.sortedByDescending { it.value }
+                        _uiState.value = GroupDetailsUiState.Detailed(
+                            chosen = category,
+                            type = type,
+                            actions = actions
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("DETAILS", "$e")
+            }
+        }
+    }
+
+    fun hideDetailedActions() {
+        _chosenCategory.value = Pair("", -1)
+        _uiState.value = GroupDetailsUiState.Default
+    }
+
+    fun viewAction(action: Action) {
+        val uiState = _uiState.value
+        if (uiState is GroupDetailsUiState.Detailed) {
+            _uiState.value = GroupDetailsUiState.DetailedAction(
+                actions = uiState.actions,
+                chosen = uiState.chosen,
+                action = action,
+                type = uiState.type
+            )
+        }
+    }
+
+    fun hideAction() {
+        val uiState = _uiState.value
+        if (uiState is GroupDetailsUiState.DetailedAction) {
+            _uiState.value = GroupDetailsUiState.Detailed(
+                actions = uiState.actions,
+                chosen = uiState.chosen,
+                type = uiState.type
+            )
+        }
+    }
+
+    fun changeState(
+        categoryName: String,
+        type: Int
+    ) {
+        if (_uiState.value is GroupDetailsUiState.Detailed) {
+            val detailedUiState = _uiState.value as GroupDetailsUiState.Detailed
+            if (categoryName == detailedUiState.chosen && type == detailedUiState.type) {
+                _chosenCategory.value = Pair("", -1)
+                hideDetailedActions()
+            } else {
+                _chosenCategory.value = Pair(categoryName, type)
+                getDetailedActions(categoryName, type)
+            }
+        } else {
+            _chosenCategory.value = Pair(categoryName, type)
+            getDetailedActions(categoryName, type)
+        }
+    }
+}

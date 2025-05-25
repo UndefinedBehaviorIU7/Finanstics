@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.stats.DetailsViewModel
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 
@@ -30,7 +29,7 @@ import com.ub.finanstics.ui.theme.icons.RightIcon
 fun GroupCalendarSwitch(
     calendar: CalendarClass,
     vm: GroupStatsViewModel = viewModel(),
-    dvm: DetailsViewModel
+    dvm: GroupDetailsViewModel
 ) {
     val data = calendar.getData()
     Row(

@@ -10,14 +10,10 @@ import com.ub.finanstics.api.models.User
 import com.ub.finanstics.api.models.UserResponse
 import com.ub.finanstics.api.models.VKUserResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.io.File
-import java.net.URLConnection
 
 // Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
@@ -186,5 +182,17 @@ class ApiRepository {
 
     suspend fun registerFCMToken(token: String, fcmToken: String): Response<ResponseBody> {
         return RetrofitInstance.api.registerFCMToken(token, fcmToken)
+    }
+
+    suspend fun getGroupCategories(groupId: Int): Response<List<Category>> {
+        return RetrofitInstance.api.getGroupCategories(groupId)
+    }
+
+    suspend fun getGroupActionsByCategory(
+        groupId: Int,
+        categoryName: String,
+        type: Int
+    ): Response<List<Action>> {
+        return RetrofitInstance.api.getGroupActionsByCategory(groupId, categoryName, type)
     }
 }

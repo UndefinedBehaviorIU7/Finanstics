@@ -13,7 +13,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     private val _uiState = MutableStateFlow<GroupStatsUiState>(GroupStatsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val repository = GroupStatsRepository()
+    private val repository = GroupStatsRepository(application)
     private var calendar = CalendarClass()
     private var all = false
     private var totalBalance: Int = 0
@@ -47,6 +47,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                     totalIncomes,
                     totalExpenses
                 )
+
                 if (totalBalance == null) {
                     _uiState.value = GroupStatsUiState.LoadingData(
                         calendar = calendar,
@@ -103,7 +104,6 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
             is GroupStatsUiState.Done -> current.calendar.deepCopy().apply { lastMonth() }
             else -> return
         }
-        println("month ${newCalendar.getData().getMonth()}")
         all = false
         calendar = calendar.deepCopy()
         _uiState.value = GroupStatsUiState.Calendar(newCalendar, all, totalBalance)
