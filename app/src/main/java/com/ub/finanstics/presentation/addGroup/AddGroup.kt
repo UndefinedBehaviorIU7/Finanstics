@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -56,14 +57,12 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
-import com.ub.finanstics.ui.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun AddGroupScreen(
     navController: NavController,
-    vm: AddGroupViewModel = viewModel(),
-    vmTheme: ThemeViewModel
+    vm: AddGroupViewModel = viewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
 

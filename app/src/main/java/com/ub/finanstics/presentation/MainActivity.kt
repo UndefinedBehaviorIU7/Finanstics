@@ -140,7 +140,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(Navigation.ADD_GROUP.toString()) {
-                        AddGroupScreen(navController, vmTheme = themeVm)
+                        AddGroupScreen(navController)
                     }
                 }
             }
