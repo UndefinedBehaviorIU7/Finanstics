@@ -3,8 +3,10 @@ package com.ub.finanstics.presentation.addGroup
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class AddGroupViewModel(application: Application) : AndroidViewModel(application) {
@@ -17,7 +19,10 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
         newName: String? = null,
         newData: String? = null,
         newUserInput: String? = null,
-        newTagErr: Boolean? = null
+        newTagErr: Boolean? = null,
+        newNameErr: Boolean? = null,
+        newDataErr: Boolean? = null,
+        newShow: Boolean? = null
     ) {
         when (val current = _uiState.value) {
             is AddGroupUiState.Idle -> {
@@ -25,7 +30,10 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                     groupName = newName ?: current.groupName,
                     groupData = newData ?: current.groupData,
                     userInput = newUserInput ?: current.userInput,
-                    inputError = newTagErr ?: current.inputError
+                    tagError = newTagErr ?: current.tagError,
+                    nameError = newNameErr ?: current.nameError,
+                    dataError = newDataErr ?: current.dataError,
+                    showDialog = newShow ?: current.showDialog
                 )
             }
 
@@ -34,8 +42,24 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun createGroup() {
-        _uiState.value = AddGroupUiState.Loading
+        when (val current = _uiState.value) {
+            is AddGroupUiState.Idle -> {
+                _uiState.value = AddGroupUiState.Loading
+                if (current.groupName.isEmpty()) {
+                    _uiState.value = current.copy(
+                        nameError = true,
+                        errorMsg = "Имя группы не может быть пустым"
+                    )
+                    return
+                }
 
+                viewModelScope.launch {
+                    val response = repository.createGroup(current)
+                }
+            }
+
+            else -> Unit
+        }
     }
 
     fun deleteTag(tag: String) {
@@ -53,7 +77,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                     val userId = repository.getUserByTag(tag)
                     if (userId == -1) {
                         _uiState.value = current.copy(
-                            inputError = true,
+                            tagError = true,
                             errorMsg = "Пользователь не найден"
                         )
                     } else {
@@ -62,7 +86,7 @@ class AddGroupViewModel(application: Application) : AndroidViewModel(application
                             if (item.tag == tag) {
                                 unique = false
                                 _uiState.value = current.copy(
-                                    inputError = true,
+                                    tagError = true,
                                     errorMsg = "Пользователь уже добавлен"
                                 )
                                 break

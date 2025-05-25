@@ -22,12 +22,14 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -38,6 +40,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -55,6 +58,7 @@ import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 import com.ub.finanstics.ui.theme.ThemeViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 // TODO: передача высоты форм через модификаторы, докрутить функционал
 
@@ -179,7 +183,6 @@ fun IdleContent(
         else -> 18.sp
     }
 
-
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(verticalGap),
@@ -188,19 +191,19 @@ fun IdleContent(
         Form(
             value = uiState.groupName,
             label = stringResource(R.string.group_name),
-            isError = uiState.inputError,
+            isError = uiState.nameError,
             lambda = { vm.updateUiState(newName = it) }
         )
         Form(
             value = uiState.groupData,
             label = stringResource(R.string.group_data),
-            isError = uiState.inputError,
+            isError = uiState.dataError,
             lambda = { vm.updateUiState(newData = it) }
         )
         Form(
             value = uiState.userInput,
             label = stringResource(R.string.users),
-            isError = uiState.inputError,
+            isError = uiState.tagError,
             lambda = { vm.updateUiState(newUserInput = it) },
             icon = {
                 if (uiState.userInput.isNotEmpty()) {
@@ -229,7 +232,7 @@ fun IdleContent(
 
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = {},
+            onClick = { vm.createGroup() },
             modifier = Modifier
                 .fillMaxWidth(buttonWidthFraction)
                 .height(buttonHeight),
@@ -309,4 +312,46 @@ fun Header(
             }
         )
     }
+}
+
+@Composable
+fun AlertDialogExample(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector,
+) {
+    AlertDialog(
+        icon = {
+            Icon(icon, contentDescription = null)
+        },
+        title = {
+            Text(text = dialogTitle)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
 }

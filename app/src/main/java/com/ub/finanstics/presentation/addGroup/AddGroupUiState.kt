@@ -11,8 +11,11 @@ sealed class AddGroupUiState {
         val groupData: String = "",
         val userInput: String = "",
         val users: List<User> = emptyList(),
-        val inputError: Boolean = false,
-        val errorMsg: String = ""
+        val nameError: Boolean = false,
+        val dataError: Boolean = false,
+        val tagError: Boolean = false,
+        val errorMsg: String = "",
+        val showDialog: Boolean = false
     ): AddGroupUiState()
 
     data class Error (

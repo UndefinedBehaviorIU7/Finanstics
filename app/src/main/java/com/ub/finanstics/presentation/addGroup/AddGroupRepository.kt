@@ -21,7 +21,7 @@ class AddGroupRepository(private val context: Context) {
         val gson = Gson()
         val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
-        val users: List<Int> = state.users.map { it.id }
+        val users: List<Int> = state.users.map { it.id } + prefs.getInt("id", 0)
 
         val response = RetrofitInstance.api.createGroup(
             token = enPrefs.getString("token", "").toRequestBody(),
