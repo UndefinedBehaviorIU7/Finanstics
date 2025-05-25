@@ -265,7 +265,7 @@ fun DrawAction(
     actionDataClass: ActionDataClass
 ) {
     Button(
-        onClick = {  },
+        onClick = { },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
