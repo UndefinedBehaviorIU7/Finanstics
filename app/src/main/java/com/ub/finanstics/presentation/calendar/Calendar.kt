@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.ui.theme.ColorsExpenses
+import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
@@ -134,7 +136,9 @@ private fun CalendarDayItem(
 
                 Text(
                     text = "${kotlin.math.abs(day.getDayMoney())}",
-                    color = if (day.getDayMoney() < 0) Color.Red else Color.Green,
+                    color = if (day.getDayMoney() < 0) ColorsExpenses[0]
+                    else if (day.getDayMoney() > 0) ColorsIncomes[1]
+                            else MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp
                 )
@@ -290,12 +294,6 @@ fun DrawAction(
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Text(
-                    text = actionDataClass.getUserName(),
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
-                )
             }
             Column(
                 modifier = Modifier
@@ -312,7 +310,8 @@ fun DrawAction(
                 )
                 Text(
                     text = "${actionDataClass.getMoney()}",
-                    color = if (actionDataClass.getActionType() == 0) Color.Red else Color.Green,
+                    color = if (actionDataClass.getActionType() == 0) ColorsExpenses[0]
+                    else ColorsIncomes[1],
                     textAlign = TextAlign.End,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -486,6 +485,8 @@ fun Calendar(
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
                 }
             }
+
+            else -> {}
         }
     }
 }

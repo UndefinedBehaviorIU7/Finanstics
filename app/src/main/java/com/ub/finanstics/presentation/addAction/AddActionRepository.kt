@@ -107,7 +107,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                     userId = userId,
                     token = token,
                     actionName = actionName,
-                    type = type,
+                    type = if (type == 2) 1 else type,
                     value = value,
                     date = date,
                     categoryId = categoryId,

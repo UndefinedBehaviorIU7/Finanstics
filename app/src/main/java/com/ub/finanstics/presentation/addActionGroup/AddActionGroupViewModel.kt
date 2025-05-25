@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,7 +60,9 @@ class AddActionGroupViewModel(
 
             val categories = repository.getCategoriesNames(type.toInt())
 
-            Log.d("categoriesRes", categories.size.toString())
+            if (categories != null) {
+                Log.d("categoriesRES", categories.size.toString())
+            } else Log.d("categoriesRES", "eroijguidfjg")
 
             _uiState.value = AddActionGroupUiState.Idle(
                 typeAction = type,
@@ -68,7 +71,7 @@ class AddActionGroupViewModel(
                 data = "",
                 category = "",
                 description = "",
-                allCategory = categories,
+                allCategory = categories ?: emptyList(),
                 menuExpandedType = false,
                 menuExpandedCategory = false,
                 duplication = false,
@@ -196,6 +199,16 @@ class AddActionGroupViewModel(
 //        }
 //    }
 
+    private fun getCategoryIdByName(
+        name: String, allCategory: List<Category>
+    ): Int? {
+        for (el in allCategory) {
+            if (el.name == name)
+                return el.id
+        }
+        return null
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun addAction(): Error {
         val current = uiState.value
@@ -205,12 +218,13 @@ class AddActionGroupViewModel(
                 error = validateIdle(current)
                 if (error == Error.OK) {
                     val data = DataClass.getDataByString(current.data)
+                    val categoryId = getCategoryIdByName(current.category, current.allCategory)
                     val res = repository.addActionApi(
                         actionName = current.nameAction,
                         type = current.typeAction.toInt(),
                         value = current.moneyAction,
                         date = dataForApi(current.data),
-                        categoryId = 1,
+                        categoryId = categoryId ?: 1,
                         description = current.description,
                         duplication = current.duplication
                     )

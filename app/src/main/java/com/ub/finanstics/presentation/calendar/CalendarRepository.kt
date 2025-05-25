@@ -29,7 +29,9 @@ class CalendarRepository(private var db: FinansticsDatabase) {
                         el.date.dayOfMonth,
                         MonthNameClass.fromInt(el.date.monthValue),
                         el.date.year
-                    )
+                    ),
+                    userId = 1,
+                    description = el.description
                 )
             )
         }

@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +24,6 @@ class CalendarGroupViewModel(
 
     init {
         viewModelScope.launch {
-            calendar.initActionsDayByApi(application, 2)
             loadCalendar()
         }
     }
@@ -32,7 +32,9 @@ class CalendarGroupViewModel(
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
-                calendar.initActionsDayByApi(application, 1)
+                val preferencesManager = PreferencesManager(application.applicationContext)
+                val groupId = preferencesManager.getInt("groupId", -1)
+                calendar.initActionsDayByApi(application, groupId)
                 _uiState.value = CalendarGroupUiState.Loading
                 _uiState.value = CalendarGroupUiState.DrawActions(
                     calendar,

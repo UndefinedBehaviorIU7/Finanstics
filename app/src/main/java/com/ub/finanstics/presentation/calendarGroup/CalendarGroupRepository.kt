@@ -2,6 +2,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
@@ -19,6 +20,15 @@ fun dataApiToDataClass(
         MonthNameClass.fromInt(dataLocal.monthValue),
         dataLocal.year
     )
+}
+
+fun dataClassToApiString(data: DataClass): String {
+    val localDate = LocalDate.of(
+        data.getYear(),
+        data.getMonth().number,
+        data.getDay()
+    )
+    return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }
 
 @Suppress("TooGenericExceptionCaught")
@@ -41,25 +51,46 @@ suspend fun getUserName(
     return res
 }
 
+@Suppress("ReturnCount", "TooGenericExceptionCaught")
+suspend fun getCategoriesById(
+    groupId: Int
+): Array<Category>? {
+    val apiRep = ApiRepository()
+    try {
+        val response = apiRep.getGroupCategories(groupId)
+        if (!response.isSuccessful) return null
+
+        val categories = response.body() ?: return null
+        return categories.toTypedArray()
+    } catch (e: Exception) {
+        Log.e("getGroupActionDays ERROR", e.toString())
+        return null
+    }
+}
+
 @Suppress("TooGenericExceptionCaught")
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getArrayDataClass(
-    actions: com.ub.finanstics.api.models.Action
+    actions: com.ub.finanstics.api.models.Action,
+    categories: Array<Category>?
 ): ActionDataClass? {
-    val userName = getUserName(actions.userId)
+//    val userName = getUserName(actions.userId)
     var res: ActionDataClass? = null
     Log.d("getArrayActionDataClassid", actions.userId.toString())
-    if (userName != null) {
-        Log.d("getArrayActionDataClassok", actions.name)
-        res = ActionDataClass(
-                userName = userName,
-                actionName = actions.name,
-                actionType = actions.type,
-                actionMoney = actions.value,
-                actionCategory = actions.category_id.toString(),
-                data = dataApiToDataClass(actions.date)
-            )
-    }
+
+    res = ActionDataClass(
+            userName = "skip skipish",
+            actionName = actions.name,
+            actionType = actions.type,
+            actionMoney = actions.value,
+            actionCategory = if (categories != null)
+                categories[actions.category_id].name
+            else actions.category_id.toString(),
+            data = dataApiToDataClass(actions.date),
+            userId = actions.userId,
+            description = actions.description
+        )
+
 
     return res
 }
@@ -117,11 +148,13 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
 
             val actions = response.body() ?: return null
 
+            val categories = getCategoriesById(groupId)
+
             for (el in actions) {
                 val date = dataApiToDataClass(el.date)
                 if (dataFirst <= date && date <= dataSecond) {
                     val list = tempMap.getOrPut(date) { mutableListOf() }
-                    val actionsData = getArrayDataClass(el)
+                    val actionsData = getArrayDataClass(el, categories)
                     Log.d("dataApiToDataClass", (actionsData == null).toString())
                     if (actionsData != null)
                         list.add(actionsData)
