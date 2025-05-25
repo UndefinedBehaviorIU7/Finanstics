@@ -23,9 +23,12 @@ class CalendarViewModel(
 
     init {
         viewModelScope.launch {
-            calendar.initActionsDay(application)
             loadCalendar()
         }
+    }
+
+    fun getCalendarMonth(): MonthNameClass {
+        return calendar.getData().getMonth()
     }
 
     fun viewAction(action: ActionDataClass) {
@@ -57,7 +60,8 @@ class CalendarViewModel(
             viewModelScope.launch {
                 calendar.initActionsDay(application)
                 _uiState.value = CalendarUiState.Loading
-                _uiState.value = CalendarUiState.DrawActions(calendar, CalendarClass.getNowDay())
+                _uiState.value = CalendarUiState.DrawActions(calendar, calendar.getNowDataClass())
+                Log.d("CalendarClass", CalendarClass.getNowDay().getActions().size.toString())
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -79,9 +83,11 @@ class CalendarViewModel(
                 newCalendar.copy(calendar)
                 newCalendar.initActionsDay(application)
                 _uiState.value = CalendarUiState.Default(newCalendar)
-                val day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth())
+                var day = CalendarClass.getNowDay()
+                if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                    day = calendar.getNowDataClass()
                     _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+                }
                 else
                     _uiState.value = CalendarUiState.Default(newCalendar)
             }
@@ -98,9 +104,11 @@ class CalendarViewModel(
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
                 newCalendar.initActionsDay(application)
-                val day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth())
+                var day = CalendarClass.getNowDay()
+                if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                    day = calendar.getNowDataClass()
                     _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
+                }
                 else
                     _uiState.value = CalendarUiState.Default(newCalendar)
             }
