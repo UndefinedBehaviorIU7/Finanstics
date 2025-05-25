@@ -12,7 +12,7 @@ import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import retrofit2.Response
 
 class GroupsRepository(private val context: Context) {
-    @Suppress("TooGenericExceptionCaught")
+    @Suppress("TooGenericExceptionCaught", "MagicNumber")
     suspend fun getGroups(): GroupsUiState {
         return try {
             val preferencesManager = PreferencesManager(context)
@@ -57,6 +57,7 @@ class GroupsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
     suspend fun getGroupImage(groupId: Int): Bitmap? {
         return try {
             val response = RetrofitInstance.api.getGroupImage(groupId)
