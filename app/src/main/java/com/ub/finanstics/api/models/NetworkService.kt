@@ -16,6 +16,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Streaming
+import java.util.stream.IntStream.IntMapMultiConsumer
 
 @Suppress("TooManyFunctions", "LongParameterList")
 interface NetworkService {
@@ -232,5 +233,14 @@ interface NetworkService {
     suspend fun deleteGroup(
         @Path("group_id") groupId: Int,
         @Query("token") token: String,
+    ): Response<BaseResponse>
+
+    @POST("/users/{user_id}/change_password")
+    @Streaming
+    suspend fun passwordChange(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("old_password") oldPassword: String,
+        @Query("new_password") newPassword: String
     ): Response<BaseResponse>
 }
