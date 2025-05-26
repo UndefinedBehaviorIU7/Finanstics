@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -581,6 +582,7 @@ fun AddAction(
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 20.dp,
                 start = 15.dp,
