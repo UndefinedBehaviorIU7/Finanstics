@@ -22,10 +22,13 @@ class CalendarGroupViewModel(
     val preferencesManager = PreferencesManager(application.applicationContext)
     val groupId = preferencesManager.getInt("groupId", -1)
 
+
+
     //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
     init {
+        Log.d("groupId", groupId.toString())
         viewModelScope.launch {
             loadCalendar()
         }
@@ -66,7 +69,7 @@ class CalendarGroupViewModel(
                 _uiState.value = CalendarGroupUiState.Loading
                 _uiState.value = CalendarGroupUiState.DrawActions(
                     calendar,
-                    CalendarClass.getNowDay()
+                    calendar.getNowDataClass()
                 )
             }
         } catch (e: NullPointerException) {

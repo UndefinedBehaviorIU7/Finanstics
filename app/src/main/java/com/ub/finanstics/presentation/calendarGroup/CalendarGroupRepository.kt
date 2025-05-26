@@ -39,6 +39,19 @@ fun dataClassToLocalDate(data: DataClass): LocalDate {
     )
 }
 
+fun getCategoryById(
+    id: Int,
+    categories: Array<Category>?
+): Category? {
+    if (categories != null)
+        for (el in categories) {
+            if (el.id == id) {
+                return el
+            }
+        }
+    return null
+}
+
 @Suppress("TooGenericExceptionCaught")
 suspend fun getUserName(
     userId: Int
@@ -69,6 +82,9 @@ suspend fun getCategoriesById(
         if (!response.isSuccessful) return null
 
         val categories = response.body() ?: return null
+
+        Log.d("sizeCategories", categories.size.toString())
+
         return categories.toTypedArray()
     } catch (e: Exception) {
         Log.e("getGroupActionDays ERROR", e.toString())
@@ -85,52 +101,21 @@ suspend fun getArrayDataClass(
 //    val userName = getUserName(actions.userId)
     var res: ActionDataClass? = null
     Log.d("getArrayActionDataClassid", actions.userId.toString())
-
+    val category: Category? = getCategoryById(actions.category_id, categories)
     res = ActionDataClass(
             userName = "skip skipish",
             actionName = actions.name,
             actionType = actions.type,
             actionMoney = actions.value,
-            actionCategory = if (categories != null)
-                categories[actions.category_id].name
-            else actions.category_id.toString(),
+            actionCategory = category?.name ?: actions.category_id.toString(),
             data = dataApiToDataClass(actions.date),
             userId = actions.userId,
             description = actions.description
         )
-
-
     return res
 }
 
 class CalendarGroupRepository(private var db: FinansticsDatabase) {
-//    @Suppress("TooGenericExceptionCaught")
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    suspend fun getGroupActionDays(groupId: Int, data: DataClass): Array<ActionDataClass?>? {
-//        var res: Array<ActionDataClass?>? = null
-//        val apiRep = ApiRepository()
-//        try {
-//            val response = apiRep.getGroupActionsByDate(
-//                groupId,
-//                data.getYear(),
-//                data.getMonth().number,
-//                data.getDay()
-//            )
-//
-//            if (!response.isSuccessful) {
-//                res = null
-//            } else {
-//                val actions = response.body()
-//
-//                if (actions != null) {
-//                    res = getArrayActionDataClass(actions)
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.e("getGroupActionDays ERROR", e.toString())
-//        }
-//        return res
-//    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @Suppress(
@@ -169,7 +154,7 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActionDays ERROR", e.toString())
+            Log.e("getGroupActionDays ERROR2", e.toString())
             return null
         }
         return tempMap.mapValues { it.value.toTypedArray() }

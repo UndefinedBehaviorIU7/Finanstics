@@ -404,6 +404,7 @@ class GridDatas(
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarRepository(db)
         for (el in days) {
+            Log.d("elel", "")
             el?.initActions(repository.getActionDays(el.getData()))
             el?.updateMoney()
         }
