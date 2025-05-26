@@ -1,7 +1,6 @@
 package com.ub.finanstics.presentation.addAction
 
 import android.os.Build
-
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -66,17 +65,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.icons.CalendarIcon
-
 import java.time.Instant
 import java.time.ZoneId
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("MagicNumber", "LongMethod")
