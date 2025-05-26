@@ -32,8 +32,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -116,10 +119,14 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else averageColor(listOf(MaterialTheme.colorScheme.onBackground,
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.colorScheme.background)),
+                else averageColor(
+                    listOf(
+                        MaterialTheme.colorScheme.onBackground,
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background
+                    )
+                ),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -145,7 +152,7 @@ private fun CalendarDayItem(
                     text = value,
                     color = if (day.getDayMoney() < 0) ColorsExpenses[0]
                     else if (day.getDayMoney() > 0) ColorsIncomes[1]
-                            else MaterialTheme.colorScheme.secondary,
+                    else MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontSize = if (value.length < 5) 12.sp
                     else (12 - (value.length - 5) * 3).sp
@@ -277,12 +284,12 @@ fun DrawAction(
     Button(
         onClick = { vm.viewAction(action = actionDataClass) },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             MaterialTheme.colorScheme.onBackground,
             MaterialTheme.colorScheme.primary
         ),
+        shape = RoundedCornerShape(20.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
         Row(
@@ -370,7 +377,7 @@ fun DrawCalendarWithAction(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
@@ -455,6 +462,8 @@ fun Calendar() {
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
 
+    val uiState by vm.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -464,7 +473,11 @@ fun Calendar() {
                 start = 20.dp,
                 end = 20.dp
             )
-            .fillMaxSize(),
+            .fillMaxSize()
+            .blur(
+                if (uiState is CalendarUiState.DrawActionDetail) 10.dp else 0.dp,
+                edgeTreatment = BlurredEdgeTreatment.Unbounded
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (val uiState = vm.uiState.collectAsState().value) {
