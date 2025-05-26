@@ -96,8 +96,8 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
-            .background(color = MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier

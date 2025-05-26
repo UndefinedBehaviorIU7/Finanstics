@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -435,6 +436,7 @@ fun CalendarGroup() {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 20.dp,
                 start = 20.dp,
