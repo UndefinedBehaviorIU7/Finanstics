@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -118,27 +119,28 @@ fun VisiblePanel(
             modifier = Modifier.weight(1f)
         )
         Box(
-//            contentAlignment = Alignment.Center
+            modifier = Modifier.size(160.dp),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = MinimizeButtonBg,
-                modifier = Modifier
-                    .size(160.dp)
-                    .clickable {
-                        vm.hide()
-                    },
+                modifier = Modifier.size(160.dp),
                 tint = MaterialTheme.colorScheme.background,
-                contentDescription = "",
+                contentDescription = null
             )
+
             Icon(
                 imageVector = MinimizeButton,
-                modifier = Modifier
-                    .size(160.dp)
-                    .clickable {
-                        vm.hide()
-                    },
+                modifier = Modifier.size(160.dp),
                 tint = MaterialTheme.colorScheme.tertiary,
-                contentDescription = "",
+                contentDescription = null
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(35.dp)
+                    .clickable { vm.hide() }
+                    .background(Color.Transparent)
             )
         }
         Spacer(

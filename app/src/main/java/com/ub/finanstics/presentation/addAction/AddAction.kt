@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.addAction
 
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,6 +44,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -556,12 +561,22 @@ fun DrawError(
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(
     navController: NavController
 ) {
+    val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+
+    val charWidth = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 20.sp
+        WindowWidthSizeClass.Medium -> 24.sp
+        WindowWidthSizeClass.Expanded -> 26.sp
+        else -> 26.sp
+    }
+
     val vm: AddActionViewModel = viewModel()
     Column(
         modifier = Modifier
@@ -583,7 +598,7 @@ fun AddAction(
             Text(
                 text = stringResource(R.string.add_action_text),
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 24.sp
+                fontSize = charWidth
             )
 
             IconButton(

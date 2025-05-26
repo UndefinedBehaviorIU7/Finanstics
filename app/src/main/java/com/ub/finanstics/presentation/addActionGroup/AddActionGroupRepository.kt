@@ -26,7 +26,6 @@ class AddActionGroupRepository(
         var categories: MutableList<com.ub.finanstics.api.models.Category>? = null
         val preferencesManager = PreferencesManager(context)
         val groupId = preferencesManager.getInt("groupId", -1)
-
         try {
             val response = apiRep.getGroupCategories(groupId)
             if (response.isSuccessful) {

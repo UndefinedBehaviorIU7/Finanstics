@@ -84,8 +84,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         description: String?,
         groups: List<Group>
     ): ErrorAddActionApi {
-        Log.d("addActionApi", "enterF")
-
         var res = ErrorAddActionApi.Ok
 
         val apiRep = ApiRepository()
@@ -102,7 +100,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                 ErrorAddActionApi.ERROR_USER_TOKEN
         } else {
             try {
-                Log.d("addActionApi", "enter apiGo")
                 val response = apiRep.addAction(
                     userId = userId,
                     token = token,
