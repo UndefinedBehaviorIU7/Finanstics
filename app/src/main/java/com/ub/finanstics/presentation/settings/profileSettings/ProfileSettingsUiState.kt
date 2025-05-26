@@ -7,6 +7,7 @@ sealed class ProfileSettingsUiState {
     data class Auth(
         val userId: Int,
         val username: String,
+        val tag: String,
         val token: String,
         val userData: String,
         val imageUri: Uri?,
