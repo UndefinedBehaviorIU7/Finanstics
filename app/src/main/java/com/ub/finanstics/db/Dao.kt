@@ -45,7 +45,7 @@ interface ActionDao {
         "SELECT * FROM actions " +
             "WHERE strftime('%m', date) = printf('%02d', :month) " +
             "AND strftime('%Y', date) = printf('%d', :year) " +
-            "AND type = 1"
+            "AND type = 2"
     )
     suspend fun getIncomesByMonthYear(month: Int, year: Int): List<Action>
 
