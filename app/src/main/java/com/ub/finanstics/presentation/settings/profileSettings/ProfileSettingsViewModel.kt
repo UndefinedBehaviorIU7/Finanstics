@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
@@ -16,7 +15,6 @@ import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
