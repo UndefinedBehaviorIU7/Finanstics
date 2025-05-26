@@ -133,7 +133,9 @@ fun ProfileSettingsScreen(
                         onDarkModeToggle = themeVm::toggleDarkMode
                     )
 
-                    is ProfileSettingsUiState.Error -> ErrorContent(onRetry = vm::load)
+                    is ProfileSettingsUiState.Error -> ErrorContent(onRetry = vm::load,
+                        { vm.offlineMode(isDark) },
+                        isDark = isDark)
 
                     is ProfileSettingsUiState.Loading -> LoadingContent()
                 }
@@ -285,7 +287,10 @@ private fun NotAuthContent(
 
 @Suppress("MagicNumber")
 @Composable
-private fun ErrorContent(onRetry: () -> Unit) {
+private fun ErrorContent(onRetry: () -> Unit,
+                         onClick: (Boolean) -> Unit,
+                         isDark: Boolean,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -302,6 +307,12 @@ private fun ErrorContent(onRetry: () -> Unit) {
             text = stringResource(R.string.no_internet),
             fontSize = 22.sp,
             textAlign = TextAlign.Center
+        )
+        Text(
+            text = stringResource(R.string.offline),
+            fontSize = 18.sp,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable(onClick = { onClick(isDark) })
         )
         Button(
             onClick = onRetry,

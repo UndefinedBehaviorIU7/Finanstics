@@ -279,6 +279,10 @@ data class DayClass(
         return dayOfWeek
     }
 
+    fun getDayMonth(): MonthNameClass {
+        return data.getMonth()
+    }
+
     fun updateMoney() {
         var res = 0
         for (el in actionDataClasses) {
@@ -413,25 +417,29 @@ class GridDatas(
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarGroupRepository(db)
 
-        // Получаем весь нужный период, чтобы сразу не плодить запросы
-        val dataFirst = days[0]!!.getData() // начало периода, например месяц назад
-        val dataSecond = days.last()!!.getData() // конец периода, например месяц вперёд
+        val dataFirst = days[0]!!.getData()
+        val dataSecond = days.last()!!.getData()
 
         val actionsMap = repository.getGroupActionByDataMonth(
             groupId,
             dataFirst,
             dataSecond) ?: return
 
-        // Пробегаем по дням, и если для дня есть массив экшенов — забиваем его
         for (day in days) {
             val date = day!!.getData()
             val actionsForDay = actionsMap[date]
             if (actionsForDay != null) {
-                Log.d("actionsForDay", actionsForDay[0]!!.getActionName())
                 day.initActions(actionsForDay)
                 day.updateMoney()
             }
         }
+    }
+
+    fun getDayByData(data: DataClass): DayClass? {
+        for (el in days)
+            if (el!!.getData() == data)
+                return el
+        return null
     }
 }
 
@@ -462,6 +470,10 @@ class CalendarClass {
         fun getNowDay(): DayClass {
             return DayClass(getNowData())
         }
+    }
+
+    fun getNowDataClass(): DayClass {
+        return gridDatas.getDayByData(getNowData())!!
     }
 
     fun getDays(): Array<DayClass?> {
