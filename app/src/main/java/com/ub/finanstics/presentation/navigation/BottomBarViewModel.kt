@@ -12,6 +12,9 @@ class BottomBarViewModel(
     private val _uiState = MutableStateFlow<BottomBarUiState>(BottomBarUiState.Hidden)
     val uiState = _uiState.asStateFlow()
 
+    private val _blocked = MutableStateFlow(false)
+    val blocked = _blocked.asStateFlow()
+
     fun hide() {
         if (uiState.value is BottomBarUiState.Visible) {
             _uiState.value = BottomBarUiState.Hidden
@@ -24,5 +27,13 @@ class BottomBarViewModel(
         if (uiState.value is BottomBarUiState.Hidden) {
             _uiState.value = BottomBarUiState.Visible(offset)
         }
+    }
+
+    fun block() {
+        _blocked.value = true
+    }
+
+    fun unblock() {
+        _blocked.value = false
     }
 }

@@ -6,7 +6,6 @@ sealed class RegisterUiState {
         val username: String = "",
         val password: String = "",
         val passwordRepeat: String = "",
-        val image: String = ""
     ) : RegisterUiState()
 
     data class Loading(
@@ -23,7 +22,6 @@ sealed class RegisterUiState {
         val username: String,
         val password: String,
         val passwordRepeat: String,
-        val image: String,
         val errorMsg: String
     ) : RegisterUiState()
 

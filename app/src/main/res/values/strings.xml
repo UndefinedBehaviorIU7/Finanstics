@@ -14,7 +14,7 @@
     <string name="select_img">Выберите изображение</string>
     <string name="selected_img">Выбранное изображение</string>
     <string name="img_placeholder">Стандартное изображение</string>
-    <string name="register">Зарегистрироваться</string>
+    <string name="register">Создать аккаунт</string>
     <string name="registered">Пользователь успешно зарегистрирован</string>
     <string name="already_registered">Пользователь уже существует</string>
     <string name="tag_exists">Данный тег уже занят</string>
@@ -25,6 +25,7 @@
     <string name="server_error_401">Ошибка 401</string>
     <string name="server_error_404">Ошибка 404</string>
     <string name="server_error_409">Ошибка 409</string>
+    <string name="invalid_login_or_password">Неверный логин или пароль</string>
     <string name="unknown_server_error">Неизвестная ошибка сервера</string>
     <string name="incomes">Доходы</string>
     <string name="expenses">Расходы</string>
@@ -64,6 +65,7 @@
     <string name="search">Поиск</string>
     <string name="clear">Очистить</string>
     <string name="ok">Ок</string>
+    <string name="close">Закрыть</string>
     <string name="offline">Офлайн режим</string>
     <string name="type_action">Тип действия:</string>
     <string name="name_action">Название действия</string>
