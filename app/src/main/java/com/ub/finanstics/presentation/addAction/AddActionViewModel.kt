@@ -236,7 +236,7 @@ class AddActionViewModel(
         )
     }
 
-    @Suppress("TooGe")
+    @Suppress("TooGenericExceptionCaught")
     @RequiresApi(Build.VERSION_CODES.O)
     fun addAction(): Error {
         val current = uiState.value
