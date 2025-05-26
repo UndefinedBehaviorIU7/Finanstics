@@ -426,7 +426,7 @@ private fun ProfileHeader(
 
     CenteredEditableText(
         currentName = editableName,
-        onNameChanged = {editableName = it},
+        onNameChanged = { editableName = it },
         isEditing = isEditing,
         onEditClick = {
             isEditing = true
