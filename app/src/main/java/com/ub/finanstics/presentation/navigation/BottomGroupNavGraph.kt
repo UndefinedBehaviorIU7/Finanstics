@@ -61,7 +61,7 @@ fun BottomGroupNavGraph(
             val isVisible = page == pagerState.currentPage
             when (page) {
                 0 -> GroupStats(navController, isVisible)
-                1 -> CalendarGroup(navController)
+                1 -> CalendarGroup()
                 2 -> ProfileSettingsScreen(navController, themeVm = themeVm)
             }
             if (pagerState.currentPage == 2) {

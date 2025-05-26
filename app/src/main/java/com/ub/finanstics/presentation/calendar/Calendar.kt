@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.ub.finanstics.presentation.calendar
 
 import android.content.res.Configuration
@@ -37,13 +35,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.LocalActionView
-import com.ub.finanstics.ui.theme.Background2
+import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
@@ -115,7 +115,10 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else Background2,
+                else averageColor(listOf(MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background)),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -388,7 +391,7 @@ fun DrawCalendarWithAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = stringResource(R.string.calendar),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -435,7 +438,7 @@ fun DrawCalendarWithoutAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = stringResource(R.string.calendar),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -446,10 +449,7 @@ fun DrawCalendarWithoutAction(
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
-fun Calendar(
-    navController: NavController,
-    isVisible: Boolean = false
-) {
+fun Calendar() {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
@@ -506,8 +506,6 @@ fun Calendar(
                     else ColorsIncomes[1]
                 )
             }
-
-            else -> {}
         }
     }
 }

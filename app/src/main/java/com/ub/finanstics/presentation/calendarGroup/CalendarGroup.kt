@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.ub.finanstics.presentation.calendar
 
 import android.content.res.Configuration
@@ -37,13 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.ApiActionView
-import com.ub.finanstics.ui.theme.Background2
+import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
@@ -255,7 +254,8 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else Background2,
+                else averageColor(listOf(MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.colorScheme.background)),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -386,55 +386,6 @@ fun CalendarDraw(
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
-fun DrawCalendarWithAction(
-    calendar: CalendarClass,
-    actionDataClasses: Array<ActionDataClass?>,
-    isLandscape: Boolean,
-    vm: CalendarGroupViewModel,
-) {
-    if (isLandscape) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                CalendarDraw(calendar, vm)
-            }
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                ActionsGroupDraw(actionDataClasses, vm)
-            }
-        }
-    } else {
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "Календарь группы",
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 26.sp
-        )
-        CalendarDraw(calendar, vm)
-        Divider(
-            stroke = 2.dp,
-            space = 20.dp,
-            after = 10.dp
-        )
-        ActionsGroupDraw(actionDataClasses, vm)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
-@Composable
 fun DrawCalendarWithoutAction(
     calendar: CalendarClass,
     isLandscape: Boolean,
@@ -465,7 +416,7 @@ fun DrawCalendarWithoutAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь группы",
+            text = stringResource(R.string.calendar_group),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -476,9 +427,7 @@ fun DrawCalendarWithoutAction(
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
-fun CalendarGroup(
-    navController: NavController
-) {
+fun CalendarGroup() {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarGroupViewModel = viewModel()
@@ -512,14 +461,14 @@ fun CalendarGroup(
             is CalendarGroupUiState.DrawActions -> {
                 val action = uiState.day?.getActions()
                 if (action != null) {
-                    DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
+                    DrawCalendarGroupWithAction(uiState.calendar, action, isLandscape, vm)
                 }
             }
 
             is CalendarGroupUiState.DrawActionDetail -> {
                 val action = uiState.day?.getActions()
                 if (action != null) {
-                    DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
+                    DrawCalendarGroupWithAction(uiState.calendar, action, isLandscape, vm)
                 }
                 ApiActionView(
                     action = uiState.action,
