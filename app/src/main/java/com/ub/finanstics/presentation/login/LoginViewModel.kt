@@ -18,7 +18,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val uiState = _uiState.asStateFlow()
 
     private val _vk = MutableStateFlow<AccessToken?>(null)
-    val vk = _vk.asStateFlow()
 
     fun updateField(field: String, newValue: String) {
         val current = _uiState.value
@@ -35,6 +34,16 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             )
 
             else -> current
+        }
+    }
+
+    fun resetToIdle() {
+        val current = _uiState.value
+        if (current is LoginUiState.Error){
+            _uiState.value = LoginUiState.Idle(
+                login = current.login,
+                password = current.password
+            )
         }
     }
 

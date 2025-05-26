@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
@@ -23,11 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +50,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
+import com.ub.finanstics.dialogs.ErrorAlertDialog
+import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
@@ -352,78 +350,5 @@ fun Header(
                 bottom.linkTo(parent.bottom)
             }
         )
-    }
-}
-
-@Suppress("MagicNumber")
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ErrorAlertDialog(
-    onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
-        content = content
-    )
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun ErrorDialogContent(
-    msg: String,
-    action: () -> Unit,
-    buttonText: String,
-    onClose: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .padding(20.dp),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            IconButton(
-                onClick = { onClose() },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Закрыть",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(6.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = null
-                )
-                Text(
-                    text = msg,
-                    modifier = Modifier.padding(12.dp),
-                    textAlign = TextAlign.Center
-                )
-                Button(
-                    onClick = { action() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.onBackground,
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Text(text = buttonText)
-                }
-            }
-        }
     }
 }

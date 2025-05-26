@@ -16,7 +16,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     val uiState = _uiState.asStateFlow()
 
     private val _vk = MutableStateFlow<AccessToken?>(null)
-    val vk = _vk.asStateFlow()
 
     @Suppress("ComplexMethod")
     fun updateField(field: String, value: Any?) {
@@ -27,7 +26,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     "username" -> current.copy(username = value as String)
                     "password" -> current.copy(password = value as String)
                     "passwordRepeat" -> current.copy(passwordRepeat = value as String)
-                    "image" -> current.copy(image = value as String)
                     else -> current
                 }
             }
@@ -46,7 +44,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     password = if (field == "password") value as String else current.password,
                     passwordRepeat = if (field == "passwordRepeat") value as String
                     else current.passwordRepeat,
-                    image = if (field == "image") value as String else current.image
                 )
             }
 
@@ -61,6 +58,31 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun resetToIdle() {
+        val current = _uiState.value
+        if (current is RegisterUiState.Error){
+            _uiState.value = RegisterUiState.Idle(
+                login = current.login,
+                username = current.username,
+                password = "",
+                passwordRepeat = "",
+            )
+        }
+    }
+
+    fun resetToVkIdle() {
+        val current = _uiState.value
+        if (current is RegisterUiState.VKError){
+            _uiState.value = RegisterUiState.VKIdle(
+                login = current.login,
+                username = current.username,
+                password = "",
+                image = "",
+                vkId = current.vkId
+            )
+        }
+    }
+
     fun register() {
         val current = _uiState.value
 
@@ -70,7 +92,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 username = current.username,
                 password = current.password,
                 passwordRepeat = "",
-                image = current.image
             )
         }
 
@@ -79,7 +100,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             val username = current.username
             val password = current.password
             val passwordRepeat = current.passwordRepeat
-            val image = current.image
 
             if (login.isBlank() || username.isBlank() || password.isBlank()) {
                 _uiState.value = RegisterUiState.Error(
@@ -87,7 +107,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     username = username,
                     password = password,
                     passwordRepeat = "",
-                    image = image,
                     errorMsg = getApplication<Application>().getString(R.string.empty_fields)
                 )
                 return
@@ -98,7 +117,6 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                     username = username,
                     password = password,
                     passwordRepeat = "",
-                    image = image,
                     errorMsg = getApplication<Application>()
                         .getString(R.string.passwords_do_not_match)
                 )
@@ -110,11 +128,11 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
                 username = username,
                 password = password,
                 passwordRepeat = passwordRepeat,
-                image = image
+                image = ""
             )
 
             viewModelScope.launch {
-                val result = repository.register(username, password, login, image)
+                val result = repository.register(username, password, login)
                 _uiState.value = result
             }
         }
@@ -122,7 +140,20 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
     fun registerVK() {
         val current = _uiState.value
+
         if (current is RegisterUiState.VKIdle) {
+            if (current.login.isBlank()) {
+                _uiState.value = RegisterUiState.VKError(
+                    login = current.login,
+                    username = current.username,
+                    password = current.password,
+                    image = "",
+                    vkId = current.vkId,
+                    errorMsg = getApplication<Application>().getString(R.string.empty_fields)
+                )
+                return
+            }
+
             val vkId = current.vkId
             val login = current.login
             val username = current.username

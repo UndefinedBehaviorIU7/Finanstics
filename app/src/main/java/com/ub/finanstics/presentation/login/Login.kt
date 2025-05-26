@@ -7,33 +7,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
+import com.ub.finanstics.dialogs.ErrorAlertDialog
+import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.forms.ButtonForm
 import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.presentation.forms.PasswordForm
 import com.vk.id.onetap.compose.onetap.OneTap
 import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 
@@ -45,22 +43,32 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .statusBarsPadding(),
-        contentAlignment = Alignment.Center,
+            .systemBarsPadding()
+            .background(MaterialTheme.colorScheme.background),
+    contentAlignment = Alignment.Center,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                    top = 10.dp,
+                    bottom = 10.dp
+                ),
+        ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                IconButton(onClick = { navController.navigateUp() }) {
+                IconButton(
+                    onClick = { navController.navigate(Navigation.STATS.toString()) }
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.step_back),
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.fillMaxSize(),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -70,15 +78,16 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
 
             when (uiState) {
                 is LoginUiState.Idle -> {
-                    Column(modifier = Modifier.padding(horizontal = 60.dp)) {
-                        Spacer(modifier = Modifier.weight(0.5f))
+                    Column(
+                        modifier = Modifier.padding(horizontal = 40.dp)
+                    ) {
+                        Spacer(modifier = Modifier.weight(0.3f))
                         Image(
                             painter = painterResource(R.drawable.logo),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .size(280.dp)
-                                .weight(0.5f),
-                            contentDescription = "Finanstics"
+                                .weight(1.2f),
+                            contentDescription = stringResource(R.string.app_name)
                         )
 
                         Form(
@@ -88,14 +97,14 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             lambda = { vm.updateField("login", it) }
                         )
 
-                        Form(
+                        PasswordForm(
                             value = uiState.password,
                             label = stringResource(R.string.password),
                             isError = false,
                             lambda = { vm.updateField("password", it) }
                         )
 
-                        Spacer(modifier = Modifier.weight(0.5f))
+                        Spacer(modifier = Modifier.weight(0.1f))
 
                         ButtonForm(
                             modifier = Modifier
@@ -106,8 +115,6 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             navigate = { navController.navigate(Navigation.REGISTER.toString()) }
                         )
 
-                        Spacer(modifier = Modifier.height(10.dp))
-
                         OneTap(
                             onAuth = { oAuth, token ->
                                 vm.handleOneTapAuth(token)
@@ -115,20 +122,21 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             scenario = OneTapTitleScenario.SignIn,
                         )
 
-                        Spacer(modifier = Modifier.weight(0.6f))
+                        Spacer(modifier = Modifier.weight(0.25f))
                     }
                 }
 
                 is LoginUiState.Error -> {
-                    Column(modifier = Modifier.padding(horizontal = 60.dp)) {
-                        Spacer(modifier = Modifier.weight(0.5f))
+                    Column(
+                        modifier = Modifier.padding(horizontal = 40.dp)
+                    ) {
+                        Spacer(modifier = Modifier.weight(0.3f))
                         Image(
                             painter = painterResource(R.drawable.logo),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .size(280.dp)
-                                .weight(0.5f),
-                            contentDescription = "Finanstics"
+                                .weight(1.2f),
+                            contentDescription = stringResource(R.string.app_name)
                         )
 
                         Form(
@@ -145,16 +153,22 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             lambda = { vm.updateField("password", it) }
                         )
 
-                        Box(
-                            modifier = Modifier.weight(0.5f),
-                            contentAlignment = Alignment.TopCenter
+                        ErrorAlertDialog(
+                            onDismissRequest = { vm.resetToIdle() }
                         ) {
-                            Text(
-                                text = uiState.errorMsg,
-                                color = Color.Red,
-                                textAlign = TextAlign.Center
+                            ErrorDialogContent(
+                                msg = uiState.errorMsg,
+                                action = {
+                                    vm.resetToIdle()
+                                },
+                                buttonText = stringResource(R.string.ok),
+                                onClose = {
+                                    vm.resetToIdle()
+                                }
                             )
                         }
+
+                        Spacer(modifier = Modifier.weight(0.1f))
 
                         ButtonForm(
                             modifier = Modifier
@@ -164,9 +178,7 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             action = { vm.logIn() },
                             navigate = { navController.navigate(Navigation.REGISTER.toString()) }
                         )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
+                        
                         OneTap(
                             onAuth = { oAuth, token ->
                                 vm.handleOneTapAuth(token)
@@ -174,9 +186,8 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             scenario = OneTapTitleScenario.SignIn,
                         )
 
-                        Spacer(modifier = Modifier.weight(0.6f))
+                        Spacer(modifier = Modifier.weight(0.25f))
                     }
-
                 }
 
                 is LoginUiState.Loading -> {
