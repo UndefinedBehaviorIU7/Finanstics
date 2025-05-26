@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
+import com.ub.finanstics.ui.theme.Loader
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 import kotlin.math.abs
@@ -450,6 +452,14 @@ fun CalendarGroup() {
             }
 
             is CalendarGroupUiState.Loading -> {
+                BoxWithConstraints {
+                    val width = maxWidth
+                    Loader(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(width / 3)
+                    )
+                }
             }
 
             is CalendarGroupUiState.Error -> {

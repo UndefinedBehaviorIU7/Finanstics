@@ -22,9 +22,6 @@ class CalendarGroupViewModel(
     val preferencesManager = PreferencesManager(application.applicationContext)
     val groupId = preferencesManager.getInt("groupId", -1)
 
-
-
-    //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
     init {
@@ -32,6 +29,7 @@ class CalendarGroupViewModel(
         viewModelScope.launch {
             loadCalendar()
         }
+        startAutoRefresh()
     }
 
     fun getCalendarMonth(): MonthNameClass {
@@ -62,15 +60,33 @@ class CalendarGroupViewModel(
     }
 
     @Suppress("TooGenericExceptionCaught")
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    if (calendar.initActionsDayByApi(application, groupId)
+                        == ErrorCalendar.ERRORSERVER)
+                        _uiState.value = CalendarGroupUiState.Loading
+                } catch (e: Exception) {
+                    Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
+                }
+                kotlinx.coroutines.delay(5000L)
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
-                calendar.initActionsDayByApi(application, groupId)
                 _uiState.value = CalendarGroupUiState.Loading
-                _uiState.value = CalendarGroupUiState.DrawActions(
-                    calendar,
-                    calendar.getNowDataClass()
-                )
+                if (calendar.initActionsDayByApi(application, groupId) != ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.DrawActions(
+                        calendar,
+                        calendar.getNowDataClass()
+                    )
+                else
+                    _uiState.value = CalendarGroupUiState.Loading
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarGroupUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -90,15 +106,19 @@ class CalendarGroupViewModel(
                 calendar.nextMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, groupId)
-                _uiState.value = CalendarGroupUiState.Default(newCalendar)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
-                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
-                }
-                else
+                if (calendar.initActionsDayByApi(application, groupId) == ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.Loading
+                else {
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                    var day = CalendarClass.getNowDay()
+                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                        day = calendar.getNowDataClass()
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                    }
+                    else
+                        _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                }
+
             }
         }
     }
@@ -112,14 +132,16 @@ class CalendarGroupViewModel(
                 calendar.lastMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, groupId)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
-                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                if (calendar.initActionsDayByApi(application, groupId) == ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.Loading
+                else {
+                    var day = CalendarClass.getNowDay()
+                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                        day = calendar.getNowDataClass()
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                    } else
+                        _uiState.value = CalendarGroupUiState.Default(newCalendar)
                 }
-                else
-                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
             }
         }
     }

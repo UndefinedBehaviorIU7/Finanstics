@@ -25,6 +25,7 @@ class CalendarViewModel(
         viewModelScope.launch {
             loadCalendar()
         }
+        startAutoRefresh()
     }
 
     fun getCalendarMonth(): MonthNameClass {
@@ -51,6 +52,19 @@ class CalendarViewModel(
                 calendar = calendar,
                 day = uiState.day
             )
+        }
+    }
+
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    calendar.initActionsDay(application)
+                } catch (e: Exception) {
+                    Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
+                }
+                kotlinx.coroutines.delay(5000L)
+            }
         }
     }
 

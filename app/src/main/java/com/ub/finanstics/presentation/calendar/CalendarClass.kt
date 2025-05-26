@@ -18,6 +18,11 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
 import dataClassToApiString
 import dataClassToLocalDate
 
+enum class ErrorCalendar(val str: String) {
+    ERRORSERVER("ошибка сервера"),
+    OK("ok")
+}
+
 private const val DAYS_IN_MONTH_28 = 28
 private const val DAYS_IN_MONTH_29 = 29
 private const val DAYS_IN_MONTH_30 = 30
@@ -414,7 +419,7 @@ class GridDatas(
     suspend fun initActionsByApi(
         application: Application,
         groupId: Int
-    ) {
+    ): ErrorCalendar {
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarGroupRepository(db)
 
@@ -424,7 +429,10 @@ class GridDatas(
         val actionsMap = repository.getGroupActionByDataMonth(
             groupId,
             dataFirst,
-            dataSecond) ?: return
+            dataSecond)
+
+        if (actionsMap == null)
+            return ErrorCalendar.ERRORSERVER
 
         for (day in days) {
             val date = day!!.getData()
@@ -434,6 +442,7 @@ class GridDatas(
                 day.updateMoney()
             }
         }
+        return ErrorCalendar.OK
     }
 
     fun getDayByData(data: DataClass): DayClass? {
@@ -520,7 +529,7 @@ class CalendarClass {
     suspend fun initActionsDayByApi(
         application: Application,
         groupId: Int
-    ) {
-        gridDatas.initActionsByApi(application, groupId)
+    ): ErrorCalendar {
+        return gridDatas.initActionsByApi(application, groupId)
     }
 }
