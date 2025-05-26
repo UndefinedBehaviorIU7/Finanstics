@@ -86,7 +86,7 @@ fun Stats(
 
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
-                    Column() {
+                    Column {
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -248,7 +248,7 @@ fun StatsViewVertical(
                     expenses = true
                 )
             }
-            item { Spacer(modifier = Modifier.height(50.dp)) }
+            item { Spacer(modifier = Modifier.height(60.dp)) }
         }
     }
 }
