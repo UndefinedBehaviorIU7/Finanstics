@@ -21,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ fun BottomBar(
     screens: List<BottomBarScreen>,
     vm: BottomBarViewModel = viewModel()
 ) {
+    val blocked by vm.blocked.collectAsState()
     if (vm.uiState.collectAsState().value is BottomBarUiState.Visible) {
         Box(
             contentAlignment = Alignment.BottomCenter
@@ -53,7 +55,9 @@ fun BottomBar(
                 screens = screens,
                 vm = vm
             )
-            VisiblePanel(vm)
+            if (!blocked) {
+                VisiblePanel(vm)
+            }
         }
     }
 }
@@ -69,9 +73,6 @@ fun BarPanel(
     Row(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .clickable {
-                vm.hide()
-            }
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )

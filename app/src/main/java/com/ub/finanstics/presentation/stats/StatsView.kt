@@ -83,7 +83,7 @@ fun Stats(
                 end = 20.dp,
             )
     ) {
-        Row() {
+        Row {
             when (val uiState = vm.uiState.collectAsState().value) {
                 StatsUiState.Loading -> {
                     Loader(
@@ -198,9 +198,9 @@ fun StatsViewVertical(
 
     val charWidth = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 20.dp
-        WindowWidthSizeClass.Medium -> 22.dp
+        WindowWidthSizeClass.Medium -> 24.dp
         WindowWidthSizeClass.Expanded -> 26.dp
-        else -> 20.dp
+        else -> 26.dp
     }
 
     if (uiState is StatsUiState.Done) {

@@ -66,6 +66,12 @@ fun BottomGroupNavGraph(
                 1 -> CalendarGroup(navController)
                 2 -> ProfileSettingsScreen(navController, themeVm = themeVm)
             }
+            if (pagerState.currentPage == 2) {
+                vm.show(OFFSET_BAR)
+                vm.block()
+            } else {
+                vm.unblock()
+            }
         }
 
         val pageInfo by remember {
