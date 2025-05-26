@@ -52,6 +52,7 @@ fun Form(
     )
 }
 
+@Suppress("MagicNumber", "LongParameterList")
 @Composable
 fun PasswordForm(
     value: String,
