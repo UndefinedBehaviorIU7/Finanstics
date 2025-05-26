@@ -19,6 +19,9 @@ class CalendarGroupViewModel(
     private val _uiState = MutableStateFlow<CalendarGroupUiState>(CalendarGroupUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
+    val preferencesManager = PreferencesManager(application.applicationContext)
+    val groupId = preferencesManager.getInt("groupId", -1)
+
     //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
@@ -26,6 +29,10 @@ class CalendarGroupViewModel(
         viewModelScope.launch {
             loadCalendar()
         }
+    }
+
+    fun getCalendarMonth(): MonthNameClass {
+        return calendar.getData().getMonth()
     }
 
     fun viewAction(action: ActionDataClass) {
@@ -55,8 +62,6 @@ class CalendarGroupViewModel(
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
-                val preferencesManager = PreferencesManager(application.applicationContext)
-                val groupId = preferencesManager.getInt("groupId", -1)
                 calendar.initActionsDayByApi(application, groupId)
                 _uiState.value = CalendarGroupUiState.Loading
                 _uiState.value = CalendarGroupUiState.DrawActions(
@@ -82,11 +87,13 @@ class CalendarGroupViewModel(
                 calendar.nextMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, 1)
+                calendar.initActionsDayByApi(application, groupId)
                 _uiState.value = CalendarGroupUiState.Default(newCalendar)
-                val day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth())
+                var day = CalendarClass.getNowDay()
+                if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                    day = calendar.getNowDataClass()
                     _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                }
                 else
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
             }
@@ -102,10 +109,12 @@ class CalendarGroupViewModel(
                 calendar.lastMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, 1)
-                val day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth())
+                calendar.initActionsDayByApi(application, groupId)
+                var day = CalendarClass.getNowDay()
+                if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                    day = calendar.getNowDataClass()
                     _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                }
                 else
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
             }

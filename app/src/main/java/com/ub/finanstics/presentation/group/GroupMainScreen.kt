@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.isIn
@@ -105,7 +106,8 @@ fun GroupMainScreen(
                 pagerState = pagerState,
                 navController = navController,
                 offsetIcons = if (vm.uiState.collectAsState().value is BottomBarUiState.Hidden)
-                    OFFSET_BAR / 2 else OFFSET_BAR * 3 / 2,
+                    10.dp else OFFSET_BAR + 10.dp,
+                vm = vm,
                 themeVm = themeVm
             )
 

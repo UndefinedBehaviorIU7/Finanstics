@@ -64,7 +64,10 @@ fun PieChart(
     animDuration: Int = STATS_ANIMATE_DURATION,
 ) {
     val totalSum = data.sumOf { it.second }
-    val floatValue = calculateFloatValues(data, totalSum)
+    val floatValue = calculateFloatValues(data, totalSum).toMutableList()
+    if (floatValue[0] == 0f) {
+        floatValue[0] = 360f
+    }
     val colors = statsColors(
         expenses,
         data.size
@@ -128,5 +131,11 @@ private fun calculateFloatValues(
     data: List<Pair<String, Int>>,
     totalSum: Int
 ): List<Float> {
-    return data.map { (_, value) -> DEGREES_MAX * value / totalSum.toFloat() }
+    if (totalSum <= 0) return emptyList()
+
+    return data.map { (_, value) ->
+        val safeValue = value.coerceAtLeast(0)
+        (DEGREES_MAX * safeValue / totalSum.toFloat()).coerceIn(0f, DEGREES_MAX.toFloat())
+    }
 }
+

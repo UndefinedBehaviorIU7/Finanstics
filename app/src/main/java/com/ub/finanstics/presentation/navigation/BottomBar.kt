@@ -21,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,22 +45,19 @@ fun BottomBar(
     screens: List<BottomBarScreen>,
     vm: BottomBarViewModel = viewModel()
 ) {
-    when (vm.uiState.collectAsState().value) {
-        is BottomBarUiState.Visible -> {
-            Box(
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                BarPanel(
-                    pagerState = pagerState,
-                    screens = screens,
-                    vm = vm
-                )
+    val blocked by vm.blocked.collectAsState()
+    if (vm.uiState.collectAsState().value is BottomBarUiState.Visible) {
+        Box(
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BarPanel(
+                pagerState = pagerState,
+                screens = screens,
+                vm = vm
+            )
+            if (!blocked) {
                 VisiblePanel(vm)
             }
-        }
-
-        is BottomBarUiState.Hidden -> {
-            HiddenPanel(vm)
         }
     }
 }
@@ -75,9 +73,6 @@ fun BarPanel(
     Row(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .clickable {
-                vm.hide()
-            }
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
@@ -104,58 +99,21 @@ fun BarPanel(
 
 @Suppress("MagicNumber")
 @Composable
-fun HiddenPanel(
-    vm: BottomBarViewModel = viewModel()
-) {
-    Row(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
-            )
-            .height(10.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Spacer(
-            modifier = Modifier.weight(2.5f)
-        )
-        Icon(
-            imageVector = UpIcon,
-            modifier = Modifier
-                .clickable {
-                    vm.show(
-                        offset = OFFSET_BAR
-                    )
-                },
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.secondary,
-        )
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
 fun VisiblePanel(
     vm: BottomBarViewModel = viewModel()
 ) {
     Row(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
-            .height(10.dp)
+            .height(20.dp + OFFSET_BAR * 2)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(
-            modifier = Modifier.weight(2.5f)
+            modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = DownIcon,
@@ -164,7 +122,7 @@ fun VisiblePanel(
                     vm.hide()
                 },
             contentDescription = "",
-            tint = MaterialTheme.colorScheme.secondary,
+            tint = MaterialTheme.colorScheme.tertiary,
         )
         Spacer(
             modifier = Modifier.weight(1f)
