@@ -39,7 +39,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun resetToIdle() {
         val current = _uiState.value
-        if (current is LoginUiState.Error){
+        if (current is LoginUiState.Error) {
             _uiState.value = LoginUiState.Idle(
                 login = current.login,
                 password = current.password

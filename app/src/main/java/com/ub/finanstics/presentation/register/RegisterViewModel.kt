@@ -60,7 +60,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
     fun resetToIdle() {
         val current = _uiState.value
-        if (current is RegisterUiState.Error){
+        if (current is RegisterUiState.Error) {
             _uiState.value = RegisterUiState.Idle(
                 login = current.login,
                 username = current.username,
@@ -72,7 +72,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
 
     fun resetToVkIdle() {
         val current = _uiState.value
-        if (current is RegisterUiState.VKError){
+        if (current is RegisterUiState.VKError) {
             _uiState.value = RegisterUiState.VKIdle(
                 login = current.login,
                 username = current.username,

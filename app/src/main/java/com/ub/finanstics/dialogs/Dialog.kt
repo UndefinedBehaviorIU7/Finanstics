@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ub.finanstics.R
 
-
 @Suppress("MagicNumber")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
