@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.addAction
 
 import android.os.Build
+
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +25,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -42,6 +42,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -65,14 +66,17 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.icons.CalendarIcon
+
 import java.time.Instant
 import java.time.ZoneId
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("MagicNumber", "LongMethod")
@@ -192,7 +196,6 @@ fun FormAddData(
         }
     }
 }
-
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod")
 @Composable

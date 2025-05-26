@@ -254,7 +254,8 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else averageColor(listOf(MaterialTheme.colorScheme.onBackground, MaterialTheme.colorScheme.background)),
+                else averageColor(listOf(MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.colorScheme.background)),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
