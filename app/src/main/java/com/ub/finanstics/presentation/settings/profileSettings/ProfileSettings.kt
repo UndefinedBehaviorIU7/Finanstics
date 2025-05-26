@@ -5,9 +5,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,15 +25,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -41,6 +51,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -49,6 +60,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -58,6 +70,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -66,6 +79,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
@@ -180,6 +195,29 @@ private fun AuthContent(
     val currentData = state.userData
     val isDataChanged = currentData != lastSavedData
 
+    key(state.showPasswordDialog) {
+        if (state.showPasswordDialog) {
+            BasicDialog(
+                onDismissRequest = { vm.onShowPasswordChange(false) },
+                content = { PasswordChangeDialog(
+                    onClose = { vm.onShowPasswordChange(false) },
+                    onChange = { oldPwd, newPwd -> vm.changePassword(oldPwd, newPwd) },
+                    isError = state.passwordChangeError
+                ) }
+            )
+        }
+    }
+
+    key(state.showPasswordChangeToast) {
+        if (state.showPasswordChangeToast) {
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(R.string.password_change_success),
+                Toast.LENGTH_SHORT).show()
+                vm.onShowPasswordToastChange(false)
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -230,6 +268,13 @@ private fun AuthContent(
                 }
             },
             fontSize = 20.sp
+        )
+
+        Text(
+            text = stringResource(R.string.change_password),
+            fontSize = 18.sp,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable(onClick = { vm.onShowPasswordChange(true) })
         )
 
         Button(
@@ -532,6 +577,141 @@ fun CenteredEditableText(
                     .padding(end = 8.dp)
             ) {
                 Icon(Icons.Default.Edit, contentDescription = null)
+            }
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BasicDialog(
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}
+
+@Composable
+fun PasswordChangeDialog(
+    onClose: () -> Unit,
+    onChange: (oldPassword: String, newPassword: String) -> Unit,
+    isError: Boolean
+) {
+    var oldPassword by rememberSaveable { mutableStateOf("") }
+    var newPassword by rememberSaveable { mutableStateOf("") }
+    var oldPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    var newPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        shape = RoundedCornerShape(16.dp),
+        border = if (isError) BorderStroke(width = 2.dp, color = Color.Red) else
+            BorderStroke(width = 2.dp, color = Color.Transparent)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                IconButton(onClick = onClose) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.close)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = oldPassword,
+                onValueChange = { oldPassword = it },
+                label = { Text(stringResource(R.string.current_password)) },
+                singleLine = true,
+                visualTransformation = if (oldPasswordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { oldPasswordVisible = !oldPasswordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (oldPasswordVisible)
+                                Icons.Default.VisibilityOff
+                            else
+                                Icons.Default.Visibility,
+                            contentDescription = if (oldPasswordVisible)
+                                stringResource(R.string.hide_password)
+                            else
+                                stringResource(R.string.show_password)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text(stringResource(R.string.new_password)) },
+                singleLine = true,
+                visualTransformation = if (newPasswordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { newPasswordVisible = !newPasswordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (newPasswordVisible)
+                                Icons.Default.VisibilityOff
+                            else
+                                Icons.Default.Visibility,
+                            contentDescription = if (newPasswordVisible)
+                                stringResource(R.string.hide_password)
+                            else
+                                stringResource(R.string.show_password)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextButton(onClick = onClose) {
+                    Text(stringResource(R.string.cancellation))
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.primary),
+                    onClick = { onChange(oldPassword, newPassword) },
+                    enabled = oldPassword.isNotBlank() && newPassword.isNotBlank()
+                ) {
+                    Text(stringResource(R.string.save))
+                }
             }
         }
     }

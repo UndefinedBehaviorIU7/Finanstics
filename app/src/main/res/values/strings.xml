@@ -54,8 +54,8 @@
     <string name="retry">Повторить попытку</string>
     <string name="not_aut">Вы не вошли в аккаунт</string>
     <string name="profile_image_desc">profile image</string>
-    <string name="save">Save</string>
-    <string name="edit">Edit</string>
+    <string name="save">Сохранить</string>
+    <string name="edit">Изменить</string>
     <string name="group_name">Название группы</string>
     <string name="group_data">Описание группы</string>
     <string name="admins">Администраторы</string>
@@ -83,4 +83,11 @@
     <string name="off">Выключено</string>
     <string name="calendar">Календарь финансов</string>
     <string name="calendar_group">Календарь группы</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="new_password">Новый пароль</string>
+    <string name="old_password">Старый пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="show_password">Показать пароль</string>
+    <string name="current_password">Текущий пароль</string>
+    <string name="password_change_success">Пароль успешно изменен</string>
 </resources>

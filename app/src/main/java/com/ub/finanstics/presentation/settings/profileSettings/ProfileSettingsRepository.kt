@@ -85,7 +85,10 @@ class ProfileSettingsRepository(private val context: Context) {
                 nightMode = night,
                 notifications = notify,
                 userId = prefs.getInt("id", 0),
-                tag = prefs.getString("tag", "")
+                tag = prefs.getString("tag", ""),
+                showPasswordDialog = false,
+                passwordChangeError = false,
+                showPasswordChangeToast = false
             )
         }
 
@@ -148,6 +151,21 @@ class ProfileSettingsRepository(private val context: Context) {
                 userId = prefs.getInt("id", 0).toString(),
                 token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
                 image = image
+            )
+
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    suspend fun changePassword(oldPassword: String, newPassword: String): Boolean {
+        try {
+            val response = RetrofitInstance.api.passwordChange(
+                newPassword = newPassword,
+                oldPassword = oldPassword,
+                userId = prefs.getInt("id", 0),
+                token = EncryptedPreferencesManager(context).getString("token", "")
             )
 
             return response.isSuccessful

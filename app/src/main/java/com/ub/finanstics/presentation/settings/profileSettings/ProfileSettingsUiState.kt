@@ -13,7 +13,10 @@ sealed class ProfileSettingsUiState {
         val imageUri: Uri?,
         val imageBitmap: Bitmap?,
         val nightMode: Boolean,
-        val notifications: Boolean
+        val notifications: Boolean,
+        val showPasswordDialog: Boolean,
+        val passwordChangeError: Boolean,
+        val showPasswordChangeToast: Boolean
     ) : ProfileSettingsUiState()
 
     data class NotAuth(
