@@ -28,6 +28,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +52,8 @@ fun Stats(
     val dvm: DetailsViewModel = viewModel()
     val incomes by vm.incomes.collectAsState()
     val expenses by vm.expenses.collectAsState()
+
+    val detState by dvm.uiState.collectAsState()
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
@@ -76,7 +80,10 @@ fun Stats(
                 end = 20.dp,
             )
     ) {
-        Row {
+        Row(
+            modifier = if (detState is DetailsUiState.DetailedAction)
+                Modifier.blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded) else Modifier
+        ) {
             when (val uiState = vm.uiState.collectAsState().value) {
                 StatsUiState.Loading -> {
                     Loader(
