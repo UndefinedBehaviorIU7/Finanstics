@@ -108,7 +108,7 @@ class LoginRepository(private val context: Context) {
             val errorMsgResource = when (response.code()) {
                 400 -> R.string.server_error_400
                 401 -> R.string.server_error_401
-                404 -> R.string.server_error_404
+                404 -> R.string.invalid_login_or_password
                 409 -> R.string.server_error_409
                 else -> R.string.unknown_server_error
             }

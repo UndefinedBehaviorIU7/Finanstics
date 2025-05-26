@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,8 +66,6 @@ import com.ub.finanstics.R
 import com.ub.finanstics.api.models.GroupWithImage
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.ui.theme.icons.CircleIcon
-import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 
 @ExperimentalMaterial3Api
 @Suppress("MagicNumber", "LongMethod")
@@ -289,25 +288,15 @@ fun PlusActionButton(
     onClick: () -> Unit,
     offsetX: Dp
 ) {
-    Box(
-        modifier = Modifier.offset(x = offsetX)
-    ) {
-        Icon(
-            imageVector = CircleIcon,
-            contentDescription = "Add",
-            tint = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier
-                .size(50.dp)
-                .clickable { onClick() }
-        )
-        Icon(
-            imageVector = PlusCircleIcon,
-            contentDescription = "Add",
-            tint = MaterialTheme.colorScheme.background,
-            modifier = Modifier
-                .size(50.dp)
-        )
-    }
+    Icon(
+        imageVector = Icons.Default.AddCircle,
+        contentDescription = "Add",
+        tint = MaterialTheme.colorScheme.tertiary,
+        modifier = Modifier
+            .offset(x = offsetX)
+            .size(50.dp)
+            .clickable { onClick() }
+    )
 }
 
 @Suppress("MagicNumber")

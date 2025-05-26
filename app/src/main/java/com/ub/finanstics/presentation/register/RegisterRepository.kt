@@ -17,7 +17,6 @@ class RegisterRepository(private val context: Context) {
         username: String,
         password: String,
         tag: String,
-        image: String,
     ): RegisterUiState {
         return try {
             val response = RetrofitInstance.api.register(
@@ -25,14 +24,13 @@ class RegisterRepository(private val context: Context) {
                 password = password,
                 tag = tag,
             )
-            handleResponse(response, username, password, tag, image)
+            handleResponse(response, username, password, tag)
         } catch (e: Exception) {
             RegisterUiState.Error(
                 login = tag,
                 username = username,
                 password = password,
                 passwordRepeat = "",
-                image = image,
                 errorMsg = context.getString(R.string.unknown_error)
             )
         }
@@ -44,7 +42,6 @@ class RegisterRepository(private val context: Context) {
         username: String,
         password: String,
         tag: String,
-        image: String
     ): RegisterUiState {
         return if (response.isSuccessful) {
             val body = response.body()
@@ -63,7 +60,6 @@ class RegisterRepository(private val context: Context) {
                     username = username,
                     password = password,
                     passwordRepeat = "",
-                    image = image,
                     errorMsg = context.getString(R.string.unknown_server_error)
                 )
             }
@@ -81,7 +77,6 @@ class RegisterRepository(private val context: Context) {
                 username = username,
                 password = password,
                 passwordRepeat = "",
-                image = image,
                 errorMsg = context.getString(errorMsgResource)
             )
         }
