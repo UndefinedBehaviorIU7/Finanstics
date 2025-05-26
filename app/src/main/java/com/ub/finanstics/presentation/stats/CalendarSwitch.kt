@@ -43,7 +43,7 @@ fun CalendarSwitch(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .size(30.dp)
+                .size(20.dp)
                 .clickable {
                     vm.lastMonth()
                     dvm.hideDetailedActions()
@@ -62,7 +62,7 @@ fun CalendarSwitch(
         ) {
             Text(
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 text = MonthNameClass.str(data.getMonth())
             )
         }
@@ -77,7 +77,7 @@ fun CalendarSwitch(
         ) {
             Text(
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 text = data.getYear().toString()
             )
         }
@@ -87,7 +87,7 @@ fun CalendarSwitch(
             contentDescription = "",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier
-                .size(30.dp)
+                .size(20.dp)
                 .clickable {
                     vm.nextMonth()
                     dvm.hideDetailedActions()
