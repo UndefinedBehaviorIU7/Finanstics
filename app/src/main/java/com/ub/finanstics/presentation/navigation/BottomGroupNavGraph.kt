@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -25,21 +24,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.calendar.CalendarGroup
-import com.ub.finanstics.presentation.statsGroup.GroupStats
-import com.ub.finanstics.ui.theme.icons.CircleIcon
-import com.ub.finanstics.ui.theme.icons.PersonIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.ub.finanstics.presentation.Navigation
+import com.ub.finanstics.presentation.calendar.CalendarGroup
 import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
+import com.ub.finanstics.presentation.statsGroup.GroupStats
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
+import com.ub.finanstics.ui.theme.icons.CircleIcon
+import com.ub.finanstics.ui.theme.icons.PersonIcon
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.util.Log
 import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
@@ -66,7 +65,7 @@ fun PieChart(
 ) {
     val totalSum = data.sumOf { it.second }
     val floatValue = calculateFloatValues(data, totalSum).toMutableList()
-    if (floatValue[0] == 0f){
+    if (floatValue[0] == 0f) {
         floatValue[0] = 360f
     }
     val colors = statsColors(
