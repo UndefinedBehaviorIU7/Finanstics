@@ -236,6 +236,7 @@ class AddActionViewModel(
         )
     }
 
+    @Suppress("TooGe")
     @RequiresApi(Build.VERSION_CODES.O)
     fun addAction(): Error {
         val current = uiState.value
@@ -255,26 +256,30 @@ class AddActionViewModel(
                         createdAt = "2025-04-22T14:30:00"
                     )
 
-                    val resApi = repository.addActionApi(
-                        actionName = current.nameAction,
-                        type = current.typeAction.toInt(),
-                        value = current.moneyAction,
-                        date = dataForApi(current.data),
-                        categoryId = categoryDao.getCategoryByName(
-                            name = current.category)!!.serverId!!,
-                        description = current.description,
-                        groups = current.groups
-                    )
-                    if (resApi != ErrorAddActionApi.Ok) {
+                    try {
+                        val resApi = repository.addActionApi(
+                            actionName = current.nameAction,
+                            type = current.typeAction.toInt(),
+                            value = current.moneyAction,
+                            date = dataForApi(current.data),
+                            categoryId = categoryDao.getCategoryByName(
+                                name = current.category)!!.serverId!!,
+                            description = current.description,
+                            groups = current.groups
+                        )
+                        if (resApi != ErrorAddActionApi.Ok) {
+                            actionDao.insertAction(action)
+                        }
+                        if (resApi == ErrorAddActionApi.Ok)
+                            _uiState.value = AddActionUiState.Ok
+                        else
+                            _uiState.value = createErrorState(
+                                current = current,
+                                error = Error.SERVER
+                            )
+                    } catch (e: Exception) {
                         actionDao.insertAction(action)
                     }
-                    if (resApi == ErrorAddActionApi.Ok)
-                        _uiState.value = AddActionUiState.Ok
-                    else
-                        _uiState.value = createErrorState(
-                            current = current,
-                            error = Error.SERVER
-                        )
                 } else {
                     _uiState.value = createErrorState(
                         current = current,

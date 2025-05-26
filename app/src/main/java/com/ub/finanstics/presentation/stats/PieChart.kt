@@ -65,7 +65,8 @@ fun PieChart(
 ) {
     val totalSum = data.sumOf { it.second }
     val floatValue = calculateFloatValues(data, totalSum).toMutableList()
-    if (floatValue[0] == 0f) {
+
+    if (floatValue.size > 0 && floatValue[0] == 0f) {
         floatValue[0] = 360f
     }
     val colors = statsColors(
