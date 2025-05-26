@@ -32,7 +32,6 @@ val ColorsExpenses = mutableListOf(
 val GreyDark = Color(0xFF303030)
 val GreyLight = Color(0xFFB9B9B9)
 
-val WhiteSoft = Color(0xFFF7F7F7)
 val BlackSoft = Color(0xFF121212)
 
 val YellowSoftLight = Color(0xFFFFC934)
@@ -40,8 +39,6 @@ val YellowSoftDark = Color(0xFFFEE06B)
 
 val BackLight = Color(0xFFEAEAEA)
 val BackDark = Color(0xFF212121)
-
-val Background2 = Color(0xFF171717)
 
 fun generateWarmColor(): Color {
     val red = Random.nextInt(200, 255)

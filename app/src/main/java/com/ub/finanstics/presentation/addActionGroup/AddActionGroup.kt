@@ -16,13 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -94,10 +94,10 @@ fun DrawIdleGroup(
     navController: NavController
 ) {
 
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -159,7 +159,7 @@ fun DrawIdleGroup(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
@@ -187,10 +187,10 @@ fun DrawErrorGroup(
     vm: AddActionGroupViewModel,
     error: Error
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -245,7 +245,7 @@ fun DrawErrorGroup(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
@@ -330,9 +330,9 @@ fun AddActionGroup(
 
             is AddActionGroupUiState.SelectType -> {
 
-                Divider(
-                    color = MaterialTheme.colorScheme.primary,
-                    thickness = 1.dp
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Text(

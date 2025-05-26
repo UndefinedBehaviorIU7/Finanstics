@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.addAction
 
-import android.app.DatePickerDialog
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,8 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.TextButton
+import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -34,6 +34,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -368,6 +369,7 @@ fun MultiTypeSelector(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawIdle(
@@ -375,10 +377,10 @@ fun DrawIdle(
     vm: AddActionViewModel,
     navController: NavController
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -443,7 +445,7 @@ fun DrawIdle(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
@@ -463,6 +465,7 @@ fun DrawIdle(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawError(
@@ -470,10 +473,10 @@ fun DrawError(
     vm: AddActionViewModel,
     error: Error
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -538,7 +541,7 @@ fun DrawError(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
@@ -554,6 +557,7 @@ fun DrawError(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(
@@ -611,9 +615,9 @@ fun AddAction(
 
             is AddActionUiState.SelectType -> {
 
-                Divider(
-                    color = MaterialTheme.colorScheme.primary,
-                    thickness = 1.dp
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.ub.finanstics.presentation.calendar
 
 import android.content.res.Configuration
@@ -451,10 +449,7 @@ fun DrawCalendarWithoutAction(
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber")
 @Composable
-fun Calendar(
-    navController: NavController,
-    isVisible: Boolean = false
-) {
+fun Calendar() {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
@@ -511,8 +506,6 @@ fun Calendar(
                     else ColorsIncomes[1]
                 )
             }
-
-            else -> {}
         }
     }
 }
