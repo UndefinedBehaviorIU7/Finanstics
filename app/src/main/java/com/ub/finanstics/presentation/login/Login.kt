@@ -178,7 +178,6 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
                             action = { vm.logIn() },
                             navigate = { navController.navigate(Navigation.REGISTER.toString()) }
                         )
-                        
                         OneTap(
                             onAuth = { oAuth, token ->
                                 vm.handleOneTapAuth(token)
