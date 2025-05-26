@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,18 +41,23 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -59,6 +65,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
@@ -158,7 +165,7 @@ private fun AuthContent(
     vm: ProfileSettingsViewModel
 ) {
     val context = LocalContext.current
-    val focusRequester = remember { FocusRequester() }
+    remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     val notificationsEnabled by remember {
@@ -178,7 +185,7 @@ private fun AuthContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        ProfileHeader(username = state.username, image = state.imageBitmap, vm)
+        ProfileHeader(username = state.username, tag = state.tag, image = state.imageBitmap, vm)
 
         OutlinedTextField(
             value = state.userData,
@@ -355,7 +362,22 @@ private fun LoadingContent() {
 
 @Suppress("MagicNumber")
 @Composable
-private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsViewModel) {
+private fun ProfileHeader(
+    username: String,
+    tag: String,
+    image: Bitmap?,
+    vm: ProfileSettingsViewModel,
+) {
+    var isEditing by rememberSaveable { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    var editableName by rememberSaveable { mutableStateOf(username) }
+
+    LaunchedEffect(isEditing) {
+        if (isEditing) {
+            focusRequester.requestFocus()
+        }
+    }
+
     val painter = image?.asImageBitmap()?.let { BitmapPainter(it) }
         ?: painterResource(R.drawable.profile_placeholder)
 
@@ -402,9 +424,24 @@ private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsV
         }
     }
 
+    CenteredEditableText(
+        currentName = editableName,
+        onNameChanged = { editableName = it },
+        isEditing = isEditing,
+        onEditClick = {
+            isEditing = true
+        },
+        onSaveClick = {
+            isEditing = false
+            vm.onUsernameChange(editableName)
+            vm.saveUsername(editableName)
+        },
+        focusRequester = focusRequester,
+    )
+
     Text(
-        text = username,
-        fontSize = 28.sp,
+        text = tag,
+        fontSize = 20.sp,
         textAlign = TextAlign.Center
     )
 }
@@ -439,5 +476,63 @@ fun Toggler(
                 uncheckedTrackColor = MaterialTheme.colorScheme.background
             )
         )
+    }
+}
+
+@Composable
+fun CenteredEditableText(
+    currentName: String,
+    onNameChanged: (String) -> Unit,
+    isEditing: Boolean,
+    onEditClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    focusRequester: FocusRequester,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = TextStyle(
+        fontSize = 28.sp,
+        textAlign = TextAlign.Center
+    )
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+    ) {
+        if (isEditing) {
+            TextField(
+                value = currentName,
+                onValueChange = onNameChanged,
+                singleLine = true,
+                textStyle = textStyle,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .focusRequester(focusRequester),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background
+                )
+            )
+            IconButton(
+                onClick = onSaveClick,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                Icon(Icons.Default.Save, contentDescription = null)
+            }
+        } else {
+            Text(
+                text = currentName,
+                style = textStyle,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            IconButton(
+                onClick = onEditClick,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                Icon(Icons.Default.Edit, contentDescription = null)
+            }
+        }
     }
 }
