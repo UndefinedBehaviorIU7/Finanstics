@@ -32,7 +32,7 @@ class AddActionGroupRepository(
                 val allCategories = response.body()
                 if (allCategories != null) {
                     for (el in allCategories) {
-                        if (el.type == type) {
+                        if (el.type == 1 || (el.type == type) || (el.type == 2 && type == 1)) {
                             if (categories == null) categories = mutableListOf()
                             categories.add(el)
                         }
@@ -80,7 +80,7 @@ class AddActionGroupRepository(
                     userId = userId,
                     token = token,
                     actionName = actionName,
-                    type = if (type == 2) 1 else type,
+                    type = type,
                     value = value,
                     date = date,
                     categoryId = categoryId,

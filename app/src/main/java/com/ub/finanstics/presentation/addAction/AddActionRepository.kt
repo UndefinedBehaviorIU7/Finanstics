@@ -21,7 +21,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
     private val categoryDao = db.categoryDao()
 
     suspend fun getCategoriesNames(type: Int): List<String> {
-        val categories = if (type == 2)
+        val categories = if (type == 1)
             categoryDao.getIncomesCategories()
         else
             categoryDao.getExpensesCategories()
@@ -104,7 +104,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                     userId = userId,
                     token = token,
                     actionName = actionName,
-                    type = if (type == 2) 1 else type,
+                    type = type,
                     value = value,
                     date = date,
                     categoryId = categoryId,

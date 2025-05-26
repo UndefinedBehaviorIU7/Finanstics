@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -18,7 +19,6 @@ class CalendarViewModel(
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
     init {
