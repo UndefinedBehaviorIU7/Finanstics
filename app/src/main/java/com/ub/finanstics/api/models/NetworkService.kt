@@ -218,4 +218,11 @@ interface NetworkService {
         @Part("group_data") groupData: RequestBody,
         @Part("users") users: RequestBody
     ): Response<BaseResponse>
+
+    @POST("/groups/delete/{group_id}")
+    @Streaming
+    suspend fun deleteGroup(
+        @Path("group_id") groupId: Int,
+        @Query("token") token: String,
+    ): Response<BaseResponse>
 }
