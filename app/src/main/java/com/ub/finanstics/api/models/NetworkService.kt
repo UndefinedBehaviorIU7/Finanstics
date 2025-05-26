@@ -167,6 +167,14 @@ interface NetworkService {
         @Query("user_data") userData: String
     ): Response<BaseResponse>
 
+    @POST("/users/{user_id}/update_username")
+    @Streaming
+    suspend fun updateUsername(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("username") username: String
+    ): Response<BaseResponse>
+
     @POST("/users/{user_id}/update_image")
     @Multipart
     @Streaming

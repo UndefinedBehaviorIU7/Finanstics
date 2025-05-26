@@ -60,10 +60,36 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
         encryptedPrefManager.saveData("token", "")
     }
 
+    fun saveUsername(newUsername: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                viewModelScope.launch {
+                    if (repository.updateUsername(newUsername)) {
+                        _uiState.value = current.copy()
+                    } else {
+                        _uiState.value = ProfileSettingsUiState.Error("Неизвестная ошибка")
+                    }
+                }
+            }
+
+            else -> Unit
+        }
+    }
+
     fun onDataChange(newData: String) {
         when (val current = _uiState.value) {
             is ProfileSettingsUiState.Auth -> {
                 _uiState.value = current.copy(userData = newData)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun onUsernameChange(newUsername: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                _uiState.value = current.copy(username = newUsername)
             }
 
             else -> Unit
