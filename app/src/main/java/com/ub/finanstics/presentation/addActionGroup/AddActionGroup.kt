@@ -52,7 +52,7 @@ fun BooleanFormCheckboxField(
     onCheckedChange: (Boolean) -> Unit
 ) {
     OutlinedTextField(
-        value = if (value) "Включено" else "Выключено",
+        value = if (value) stringResource(R.string.on) else stringResource(R.string.off),
         onValueChange = {},
         readOnly = true,
         label = { Text(label) },
@@ -103,35 +103,35 @@ fun DrawIdleGroup(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
-        fontSize = 26.sp
+        fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = false,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = false,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = false,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Категория",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
@@ -141,17 +141,19 @@ fun DrawIdleGroup(
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = false,
         lambda = { vm.updateUIState(newDescription = it) }
     )
 
     BooleanFormCheckboxField(
         value = uiState.duplication,
-        label = "продублировать к себе",
+        label = stringResource(R.string.duplication_my),
         isError = false,
         onCheckedChange = { vm.updateUIState(newDuplication = it) },
     )
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
@@ -159,6 +161,10 @@ fun DrawIdleGroup(
     ) {
         val width = maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = {
                 vm.addAction()
                 navController.popBackStack()
@@ -166,7 +172,7 @@ fun DrawIdleGroup(
             enabled = vm.validateIdle(uiState) == Error.OK
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
@@ -190,35 +196,35 @@ fun DrawErrorGroup(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
-        fontSize = 26.sp
+        fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = error == Error.NAME,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = error == Error.MONEY,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = error == Error.DATE,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Категория",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
@@ -228,10 +234,12 @@ fun DrawErrorGroup(
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = error == Error.DESCRIPTION,
         lambda = { vm.updateUIState(newDescription = it) }
     )
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
@@ -239,10 +247,14 @@ fun DrawErrorGroup(
     ) {
         val width = maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = { vm.addAction() },
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
@@ -265,8 +277,8 @@ fun AddActionGroup(
             .background(MaterialTheme.colorScheme.background)
             .padding(
                 top = 20.dp,
-                start = 5.dp,
-                end = 5.dp
+                start = 15.dp,
+                end = 15.dp
             )
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -284,7 +296,7 @@ fun AddActionGroup(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Добавление действия",
+                    text = stringResource(R.string.add_action_text),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 24.sp
                 )
@@ -324,7 +336,7 @@ fun AddActionGroup(
                 )
 
                 Text(
-                    text = "Выберете тип действия",
+                    text = stringResource(R.string.select_type_action),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 26.sp
                 )

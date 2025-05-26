@@ -65,4 +65,20 @@
     <string name="clear">Очистить</string>
     <string name="ok">Ок</string>
     <string name="offline">Офлайн режим</string>
+    <string name="type_action">Тип действия:</string>
+    <string name="name_action">Название действия</string>
+    <string name="sum">Сумма</string>
+    <string name="data">Дата</string>
+    <string name="duplication_group">Продублировать в группы</string>
+    <string name="duplication_my">Продублировать к себе</string>
+    <string name="description">Описание</string>
+    <string name="add_action">Добавить</string>
+    <string name="add_action_text">Добавление действия</string>
+    <string name="category">Категория</string>
+    <string name="cancellation">Отмена</string>
+    <string name="select_type_action">Выберете тип действия</string>
+    <string name="on">Включено</string>
+    <string name="off">Выключено</string>
+    <string name="calendar">Календарь финансов</string>
+    <string name="calendar_group">Календарь группы</string>
 </resources>

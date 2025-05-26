@@ -37,13 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.ApiActionView
-import com.ub.finanstics.ui.theme.Background2
+import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
@@ -255,7 +257,7 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else Background2,
+                else averageColor(listOf(MaterialTheme.colorScheme.onBackground, MaterialTheme.colorScheme.background)),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -418,7 +420,7 @@ fun DrawCalendarWithAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь группы",
+            text = stringResource(R.string.calendar_group),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -465,7 +467,7 @@ fun DrawCalendarWithoutAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь группы",
+            text = stringResource(R.string.calendar_group),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )

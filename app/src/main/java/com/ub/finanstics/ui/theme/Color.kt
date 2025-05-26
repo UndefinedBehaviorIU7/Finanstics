@@ -58,3 +58,27 @@ fun generateColdColor(): Color {
 
     return Color(red, green, blue)
 }
+
+fun averageColor(colors: List<Color>): Color {
+    if (colors.isEmpty()) return Color.Transparent
+
+    var totalAlpha = 0f
+    var totalRed = 0f
+    var totalGreen = 0f
+    var totalBlue = 0f
+
+    for (color in colors) {
+        totalAlpha += color.alpha
+        totalRed += color.red
+        totalGreen += color.green
+        totalBlue += color.blue
+    }
+
+    val count = colors.size
+    return Color(
+        alpha = totalAlpha / count,
+        red = totalRed / count,
+        green = totalGreen / count,
+        blue = totalBlue / count
+    )
+}
