@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
@@ -375,7 +373,7 @@ fun EditableTextField(
         }
     }
 
-    Box (
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
@@ -515,22 +513,24 @@ fun ComposeUserList(
                                 expanded = showMenu,
                                 onDismissRequest = { showMenu = false }
                             ) {
-                                if (!isAdmin) {
-                                    DropdownMenuItem(
-                                        text = { Text(text = stringResource(R.string.promote)) },
-                                        onClick = {
-                                            onToggleAdmin(user.id)
-                                            showMenu = false
-                                        }
-                                    )
-                                } else {
-                                    DropdownMenuItem(
-                                        text = { Text(text = stringResource(R.string.demote)) },
-                                        onClick = {
-                                            onToggleAdmin(user.id)
-                                            showMenu = false
-                                        }
-                                    )
+                                if (currentUserId == owner.id) {
+                                    if (!isAdmin) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = stringResource(R.string.promote)) },
+                                            onClick = {
+                                                onToggleAdmin(user.id)
+                                                showMenu = false
+                                            }
+                                        )
+                                    } else {
+                                        DropdownMenuItem(
+                                            text = { Text(text = stringResource(R.string.demote)) },
+                                            onClick = {
+                                                onToggleAdmin(user.id)
+                                                showMenu = false
+                                            }
+                                        )
+                                    }
                                 }
 
                                 DropdownMenuItem(

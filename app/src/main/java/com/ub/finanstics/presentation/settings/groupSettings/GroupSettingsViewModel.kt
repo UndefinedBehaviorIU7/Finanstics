@@ -7,7 +7,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -100,7 +99,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
             else -> Unit
         }
     }
-    
+
     fun changeGroupData(groupData: String?) {
         when (val current = _uiState.value) {
             is GroupSettingsUiState.Idle -> {
@@ -200,7 +199,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                             admins = updatedAdmins
                         )
                     } else {
-                        _uiState.value = GroupSettingsUiState.Error("Не удалось удалить пользователя")
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка")
                     }
                 }
             }
@@ -218,7 +217,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
             is GroupSettingsUiState.Idle -> {
                 viewModelScope.launch {
                     val userId = repository.getUserByTag(tag) ?: run {
-                        _uiState.value = GroupSettingsUiState.Error("Пользователь с таким тегом не найден")
+                        _uiState.value = GroupSettingsUiState.Error("Пользователь не найден")
                         return@launch
                     }
 
@@ -228,7 +227,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                     }
 
                     val user = repository.getUserById(userId) ?: run {
-                        _uiState.value = GroupSettingsUiState.Error("Не удалось получить данные пользователя")
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка")
                         return@launch
                     }
 
@@ -249,7 +248,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                             members = updatedMembers
                         )
                     } else {
-                        _uiState.value = GroupSettingsUiState.Error("Ошибка при добавлении пользователя")
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка добавления")
                     }
                 }
             }

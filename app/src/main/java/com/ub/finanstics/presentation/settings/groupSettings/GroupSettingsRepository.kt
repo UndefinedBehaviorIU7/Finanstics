@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.settings.groupSettings
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.util.Log
 import coil3.Bitmap
 import com.google.gson.Gson
 import com.ub.finanstics.R
@@ -102,10 +101,10 @@ class GroupSettingsRepository(private val context: Context) {
                             errorMsg = context.getString(R.string.unknown_server_error)
                         )
                     } else {
-                        val members = getUsersByIds(group.users) ?:
-                        return@coroutineScope GroupSettingsUiState.Error(
-                            errorMsg = context.getString(R.string.unknown_server_error)
-                        )
+                        val members = getUsersByIds(group.users)
+                            ?: return@coroutineScope GroupSettingsUiState.Error(
+                                errorMsg = context.getString(R.string.unknown_server_error)
+                            )
 
                         val bitmapDeferred = async(Dispatchers.IO) {
                             getGroupImage(group.id)
