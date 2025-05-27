@@ -16,14 +16,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import java.io.File
+import java.io.FileOutputStream
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-import java.io.FileOutputStream
 
 class GroupSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GroupSettingsRepository(application.applicationContext)
