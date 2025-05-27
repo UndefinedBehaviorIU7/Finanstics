@@ -10,6 +10,6 @@ data class Group(
     @SerializedName("group_data") val groupData: String?,
     val image: String?,
     @SerializedName("created_at") val createdAt: String?,
-    val users: List<Int>?,
+    val users: List<Int>,
     val admins: List<Int>?
 )

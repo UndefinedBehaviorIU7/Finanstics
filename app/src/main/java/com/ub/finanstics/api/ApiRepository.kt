@@ -15,7 +15,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 
-// Мультипарт конвертер
 fun String.toPlainPart(): RequestBody =
     this.toRequestBody("text/plain".toMediaTypeOrNull())
 

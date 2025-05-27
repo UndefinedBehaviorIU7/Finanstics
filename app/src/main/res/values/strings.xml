@@ -107,4 +107,7 @@
     <string name="show_password">Показать пароль</string>
     <string name="current_password">Текущий пароль</string>
     <string name="password_change_success">Пароль успешно изменен</string>
+    <string name="add_user_by_tag">Добавить пользователя</string>
+    <string name="user_tag">Тег пользователя</string>
+    <string name="add">Добавить</string>
 </resources>
