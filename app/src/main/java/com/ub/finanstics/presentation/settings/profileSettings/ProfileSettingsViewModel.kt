@@ -22,7 +22,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "TooManyFunctions")
 class ProfileSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ProfileSettingsRepository(application.applicationContext)
     private val _uiState = MutableStateFlow<ProfileSettingsUiState>(ProfileSettingsUiState.Loading)
@@ -60,10 +60,74 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
         encryptedPrefManager.saveData("token", "")
     }
 
+    fun saveUsername(newUsername: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                viewModelScope.launch {
+                    if (repository.updateUsername(newUsername)) {
+                        _uiState.value = current.copy()
+                    } else {
+                        _uiState.value = ProfileSettingsUiState.Error("Неизвестная ошибка")
+                    }
+                }
+            }
+
+            else -> Unit
+        }
+    }
+
     fun onDataChange(newData: String) {
         when (val current = _uiState.value) {
             is ProfileSettingsUiState.Auth -> {
                 _uiState.value = current.copy(userData = newData)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun onUsernameChange(newUsername: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                _uiState.value = current.copy(username = newUsername)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun onShowPasswordChange(value: Boolean) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                _uiState.value = current.copy(showPasswordDialog = value)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun onShowPasswordToastChange(value: Boolean) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                _uiState.value = current.copy(showPasswordChangeToast = value)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun changePassword(oldPassword: String, newPassword: String) {
+        when (val current = _uiState.value) {
+            is ProfileSettingsUiState.Auth -> {
+                viewModelScope.launch {
+                    val response = repository.changePassword(oldPassword, newPassword)
+                    if (response) {
+                        _uiState.value = current.copy(showPasswordChangeToast = true,
+                            showPasswordDialog = false)
+                    } else {
+                        _uiState.value = current.copy(passwordChangeError = true)
+                    }
+                }
             }
 
             else -> Unit

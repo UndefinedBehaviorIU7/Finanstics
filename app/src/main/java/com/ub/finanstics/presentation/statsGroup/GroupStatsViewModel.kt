@@ -193,7 +193,6 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
-
     fun cancelUpdate() {
         syncJob?.cancel()
         syncJob = null

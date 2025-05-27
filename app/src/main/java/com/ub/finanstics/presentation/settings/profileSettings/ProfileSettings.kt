@@ -5,31 +5,43 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -39,23 +51,36 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
@@ -155,6 +180,8 @@ private fun AuthContent(
     vm: ProfileSettingsViewModel
 ) {
     val context = LocalContext.current
+    remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     val notificationsEnabled by remember {
         mutableStateOf(
@@ -168,15 +195,38 @@ private fun AuthContent(
     val currentData = state.userData
     val isDataChanged = currentData != lastSavedData
 
+    key(state.showPasswordDialog) {
+        if (state.showPasswordDialog) {
+            BasicDialog(
+                onDismissRequest = { vm.onShowPasswordChange(false) },
+                content = { PasswordChangeDialog(
+                    onClose = { vm.onShowPasswordChange(false) },
+                    onChange = { oldPwd, newPwd -> vm.changePassword(oldPwd, newPwd) },
+                    isError = state.passwordChangeError
+                ) }
+            )
+        }
+    }
+
+    key(state.showPasswordChangeToast) {
+        if (state.showPasswordChangeToast) {
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(R.string.password_change_success),
+                Toast.LENGTH_SHORT).show()
+                vm.onShowPasswordToastChange(false)
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        ProfileHeader(username = state.username, image = state.imageBitmap, vm)
+        ProfileHeader(username = state.username, tag = state.tag, image = state.imageBitmap, vm)
 
         OutlinedTextField(
-            value = state.userData ?: stringResource(R.string.empty_user_data),
+            value = state.userData,
             onValueChange = { vm.onDataChange(it) },
             label = { Text(stringResource(R.string.about)) },
             singleLine = false,
@@ -190,6 +240,7 @@ private fun AuthContent(
                     IconButton(onClick = {
                         vm.saveUserData(currentData)
                         lastSavedData = currentData
+                        focusManager.clearFocus()
                     }) {
                         Icon(
                             imageVector = Icons.Default.Save,
@@ -219,6 +270,13 @@ private fun AuthContent(
             fontSize = 20.sp
         )
 
+        Text(
+            text = stringResource(R.string.change_password),
+            fontSize = 18.sp,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable(onClick = { vm.onShowPasswordChange(true) })
+        )
+
         Button(
             onClick = onLogout,
             modifier = Modifier
@@ -234,6 +292,8 @@ private fun AuthContent(
                 fontSize = 22.sp
             )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -345,9 +405,24 @@ private fun LoadingContent() {
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
-private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsViewModel) {
+private fun ProfileHeader(
+    username: String,
+    tag: String,
+    image: Bitmap?,
+    vm: ProfileSettingsViewModel,
+) {
+    var isEditing by rememberSaveable { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    var editableName by rememberSaveable { mutableStateOf(username) }
+
+    LaunchedEffect(isEditing) {
+        if (isEditing) {
+            focusRequester.requestFocus()
+        }
+    }
+
     val painter = image?.asImageBitmap()?.let { BitmapPainter(it) }
         ?: painterResource(R.drawable.profile_placeholder)
 
@@ -394,9 +469,24 @@ private fun ProfileHeader(username: String, image: Bitmap?, vm: ProfileSettingsV
         }
     }
 
+    CenteredEditableText(
+        currentName = editableName,
+        onNameChanged = { editableName = it },
+        isEditing = isEditing,
+        onEditClick = {
+            isEditing = true
+        },
+        onSaveClick = {
+            isEditing = false
+            vm.onUsernameChange(editableName)
+            vm.saveUsername(editableName)
+        },
+        focusRequester = focusRequester,
+    )
+
     Text(
-        text = username,
-        fontSize = 28.sp,
+        text = tag,
+        fontSize = 20.sp,
         textAlign = TextAlign.Center
     )
 }
@@ -431,5 +521,200 @@ fun Toggler(
                 uncheckedTrackColor = MaterialTheme.colorScheme.background
             )
         )
+    }
+}
+
+@Suppress("MagicNumber", "LongParameterList")
+@Composable
+fun CenteredEditableText(
+    currentName: String,
+    onNameChanged: (String) -> Unit,
+    isEditing: Boolean,
+    onEditClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    focusRequester: FocusRequester,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = TextStyle(
+        fontSize = 28.sp,
+        textAlign = TextAlign.Center
+    )
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+    ) {
+        if (isEditing) {
+            TextField(
+                value = currentName,
+                onValueChange = onNameChanged,
+                singleLine = true,
+                textStyle = textStyle,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .focusRequester(focusRequester),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.background
+                )
+            )
+            IconButton(
+                onClick = onSaveClick,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                Icon(Icons.Default.Save, contentDescription = null)
+            }
+        } else {
+            Text(
+                text = currentName,
+                style = textStyle,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            IconButton(
+                onClick = onEditClick,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                Icon(Icons.Default.Edit, contentDescription = null)
+            }
+        }
+    }
+}
+
+@Suppress("MagicNumber")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BasicDialog(
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}
+
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun PasswordChangeDialog(
+    onClose: () -> Unit,
+    onChange: (oldPassword: String, newPassword: String) -> Unit,
+    isError: Boolean
+) {
+    var oldPassword by rememberSaveable { mutableStateOf("") }
+    var newPassword by rememberSaveable { mutableStateOf("") }
+    var oldPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    var newPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        shape = RoundedCornerShape(16.dp),
+        border = if (isError) BorderStroke(width = 2.dp, color = Color.Red) else
+            BorderStroke(width = 2.dp, color = Color.Transparent)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = MaterialTheme.typography.titleLarge
+                )
+                IconButton(onClick = onClose) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.close)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = oldPassword,
+                onValueChange = { oldPassword = it },
+                label = { Text(stringResource(R.string.current_password)) },
+                singleLine = true,
+                visualTransformation = if (oldPasswordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { oldPasswordVisible = !oldPasswordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (oldPasswordVisible)
+                                Icons.Default.VisibilityOff
+                            else
+                                Icons.Default.Visibility,
+                            contentDescription = if (oldPasswordVisible)
+                                stringResource(R.string.hide_password)
+                            else
+                                stringResource(R.string.show_password)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text(stringResource(R.string.new_password)) },
+                singleLine = true,
+                visualTransformation = if (newPasswordVisible)
+                    VisualTransformation.None
+                else
+                    PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { newPasswordVisible = !newPasswordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (newPasswordVisible)
+                                Icons.Default.VisibilityOff
+                            else
+                                Icons.Default.Visibility,
+                            contentDescription = if (newPasswordVisible)
+                                stringResource(R.string.hide_password)
+                            else
+                                stringResource(R.string.show_password)
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextButton(onClick = onClose) {
+                    Text(stringResource(R.string.cancellation))
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onBackground,
+                        contentColor = MaterialTheme.colorScheme.primary),
+                    onClick = { onChange(oldPassword, newPassword) },
+                    enabled = oldPassword.isNotBlank() && newPassword.isNotBlank()
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+            }
+        }
     }
 }

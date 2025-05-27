@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +28,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +53,8 @@ fun Stats(
     val incomes by vm.incomes.collectAsState()
     val expenses by vm.expenses.collectAsState()
 
+    val detState by dvm.uiState.collectAsState()
+
     LaunchedEffect(isVisible) {
         if (isVisible) {
             vm.autoUpdate()
@@ -67,16 +72,18 @@ fun Stats(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                color = MaterialTheme.colorScheme.background
-            )
+            .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 25.dp,
                 start = 20.dp,
                 end = 20.dp,
             )
     ) {
-        Row {
+        Row(
+            modifier = if (detState is DetailsUiState.DetailedAction)
+                Modifier.blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded) else Modifier
+        ) {
             when (val uiState = vm.uiState.collectAsState().value) {
                 StatsUiState.Loading -> {
                     Loader(

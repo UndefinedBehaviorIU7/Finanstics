@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.navigation
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -13,10 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -30,11 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ub.finanstics.ui.theme.OFFSET_BAR
-import com.ub.finanstics.ui.theme.icons.DownIcon
-import com.ub.finanstics.ui.theme.icons.UpIcon
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.ui.theme.icons.MinimizeButton
+import com.ub.finanstics.ui.theme.icons.MinimizeButtonBg
 import kotlinx.coroutines.launch
 
 @Suppress("MagicNumber")
@@ -76,6 +77,9 @@ fun BarPanel(
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
+            .background(MaterialTheme.colorScheme.tertiary)
+            .padding(top = 1.5.dp)
+            .background(color = MaterialTheme.colorScheme.background)
             .height(60.dp)
             .fillMaxWidth()
             .pointerInput(Unit) {
@@ -107,23 +111,38 @@ fun VisiblePanel(
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(WindowInsetsSides.Bottom)
             )
-            .height(20.dp + OFFSET_BAR * 2)
+            .height(OFFSET_BAR * 2 + 24.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Spacer(
             modifier = Modifier.weight(1f)
         )
-        Icon(
-            imageVector = DownIcon,
-            modifier = Modifier
-                .clickable {
-                    vm.hide()
-                },
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.tertiary,
-        )
+        Box(
+            modifier = Modifier.size(160.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = MinimizeButtonBg,
+                modifier = Modifier.size(160.dp),
+                tint = MaterialTheme.colorScheme.background,
+                contentDescription = null
+            )
+
+            Icon(
+                imageVector = MinimizeButton,
+                modifier = Modifier.size(160.dp),
+                tint = MaterialTheme.colorScheme.tertiary,
+                contentDescription = null
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(35.dp)
+                    .clickable { vm.hide() }
+                    .background(Color.Transparent)
+            )
+        }
         Spacer(
             modifier = Modifier.weight(1f)
         )

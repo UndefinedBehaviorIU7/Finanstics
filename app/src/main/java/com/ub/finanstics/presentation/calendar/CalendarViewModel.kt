@@ -7,10 +7,14 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarViewModel(
     application: Application
@@ -18,8 +22,34 @@ class CalendarViewModel(
     private val _uiState = MutableStateFlow<CalendarUiState>(CalendarUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
+
+    var syncJob: Job? = null
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                val uiState = _uiState.value
+                val newCalendar = CalendarClass()
+                calendar.initActionsDay(application)
+                newCalendar.copy(calendar)
+                if (uiState is CalendarUiState.Default) {
+                    _uiState.value = CalendarUiState.Default(newCalendar)
+                } else {
+                    if (uiState is CalendarUiState.DrawActions)
+                        _uiState.value = CalendarUiState.DrawActions(newCalendar, uiState.day)
+                }
+                Log.d("work1111", "work")
+                delay(TIME_UPDATE)
+            }
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -51,6 +81,20 @@ class CalendarViewModel(
                 calendar = calendar,
                 day = uiState.day
             )
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    calendar.initActionsDay(application)
+                } catch (e: Exception) {
+                    Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
+                }
+                delay(TIME_UPDATE)
+            }
         }
     }
 

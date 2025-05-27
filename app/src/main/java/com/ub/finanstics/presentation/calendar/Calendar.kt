@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.ub.finanstics.presentation.calendar
 
 import android.content.res.Configuration
@@ -20,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -32,21 +31,29 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.LocalActionView
-import com.ub.finanstics.ui.theme.Background2
+import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 import kotlin.math.abs
@@ -89,7 +96,7 @@ fun CalendarDay(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun CalendarDayItem(
     day: DayClass,
@@ -115,7 +122,14 @@ private fun CalendarDayItem(
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (day.getDayMonth() == vm.getCalendarMonth())
                     MaterialTheme.colorScheme.onBackground
-                else Background2,
+                else averageColor(
+                    listOf(
+                        MaterialTheme.colorScheme.onBackground,
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.background
+                    )
+                ),
                 contentColor = MaterialTheme.colorScheme.primary
             ),
             contentPadding = PaddingValues(4.dp),
@@ -141,7 +155,7 @@ private fun CalendarDayItem(
                     text = value,
                     color = if (day.getDayMoney() < 0) ColorsExpenses[0]
                     else if (day.getDayMoney() > 0) ColorsIncomes[1]
-                            else MaterialTheme.colorScheme.secondary,
+                    else MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Center,
                     fontSize = if (value.length < 5) 12.sp
                     else (12 - (value.length - 5) * 3).sp
@@ -273,12 +287,12 @@ fun DrawAction(
     Button(
         onClick = { vm.viewAction(action = actionDataClass) },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             MaterialTheme.colorScheme.onBackground,
             MaterialTheme.colorScheme.primary
         ),
+        shape = RoundedCornerShape(20.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
         Row(
@@ -350,6 +364,9 @@ fun ActionsDraw(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(OFFSET_BAR + 50.dp))
+        }
     }
 }
 
@@ -366,7 +383,7 @@ fun DrawCalendarWithAction(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
@@ -388,7 +405,7 @@ fun DrawCalendarWithAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = stringResource(R.string.calendar),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -435,7 +452,7 @@ fun DrawCalendarWithoutAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = stringResource(R.string.calendar),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )
@@ -444,25 +461,45 @@ fun DrawCalendarWithoutAction(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Calendar(
-    navController: NavController,
-    isVisible: Boolean = false
+    isVisible: Boolean = true
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarViewModel = viewModel()
 
+    val uiState by vm.uiState.collectAsState()
+
+    LaunchedEffect(isVisible) {
+        if (isVisible) {
+            vm.autoUpdate()
+        } else {
+            vm.cancelUpdate()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            vm.cancelUpdate()
+        }
+    }
+
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 20.dp,
                 start = 20.dp,
                 end = 20.dp
             )
-            .fillMaxSize(),
+            .fillMaxSize()
+            .blur(
+                if (uiState is CalendarUiState.DrawActionDetail) 10.dp else 0.dp,
+                edgeTreatment = BlurredEdgeTreatment.Unbounded
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (val uiState = vm.uiState.collectAsState().value) {
@@ -482,9 +519,8 @@ fun Calendar(
 
             is CalendarUiState.DrawActions -> {
                 val action = uiState.day?.getActions()
-                if (action != null) {
+                if (action != null)
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
-                }
             }
 
             is CalendarUiState.DrawActionDetail -> {
@@ -506,8 +542,6 @@ fun Calendar(
                     else ColorsIncomes[1]
                 )
             }
-
-            else -> {}
         }
     }
 }

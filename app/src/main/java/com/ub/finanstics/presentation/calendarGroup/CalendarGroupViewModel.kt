@@ -8,11 +8,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
+@Suppress("TooManyFunctions")
 class CalendarGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -22,10 +26,36 @@ class CalendarGroupViewModel(
     val preferencesManager = PreferencesManager(application.applicationContext)
     val groupId = preferencesManager.getInt("groupId", -1)
 
-    //    private val calendardata = java.util.Calendar.getInstance()
     private var calendar = CalendarClass()
 
+    var syncJob: Job? = null
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                val uiState = _uiState.value
+                val newCalendar = CalendarClass()
+                calendar.initActionsDayByApi(application, groupId)
+                newCalendar.copy(calendar)
+                if (uiState is CalendarGroupUiState.Default) {
+                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                } else {
+                    if (uiState is CalendarGroupUiState.DrawActions)
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, uiState.day)
+                }
+                delay(TIME_UPDATE)
+            }
+        }
+    }
+
     init {
+        Log.d("groupId", groupId.toString())
         viewModelScope.launch {
             loadCalendar()
         }
@@ -62,12 +92,14 @@ class CalendarGroupViewModel(
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
-                calendar.initActionsDayByApi(application, groupId)
                 _uiState.value = CalendarGroupUiState.Loading
-                _uiState.value = CalendarGroupUiState.DrawActions(
-                    calendar,
-                    CalendarClass.getNowDay()
-                )
+                if (calendar.initActionsDayByApi(application, groupId) != ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.DrawActions(
+                        calendar,
+                        calendar.getNowDataClass()
+                    )
+                else
+                    _uiState.value = CalendarGroupUiState.Loading
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarGroupUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -87,15 +119,19 @@ class CalendarGroupViewModel(
                 calendar.nextMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, groupId)
-                _uiState.value = CalendarGroupUiState.Default(newCalendar)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
-                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
-                }
-                else
+                if (calendar.initActionsDayByApi(application, groupId) == ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.Loading
+                else {
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                    var day = CalendarClass.getNowDay()
+                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                        day = calendar.getNowDataClass()
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                    }
+                    else
+                        _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                }
+
             }
         }
     }
@@ -109,14 +145,16 @@ class CalendarGroupViewModel(
                 calendar.lastMonth()
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
-                calendar.initActionsDayByApi(application, groupId)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
-                    _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                if (calendar.initActionsDayByApi(application, groupId) == ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.Loading
+                else {
+                    var day = CalendarClass.getNowDay()
+                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
+                        day = calendar.getNowDataClass()
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
+                    } else
+                        _uiState.value = CalendarGroupUiState.Default(newCalendar)
                 }
-                else
-                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
             }
         }
     }
