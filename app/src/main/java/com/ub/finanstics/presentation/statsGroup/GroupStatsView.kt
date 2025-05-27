@@ -47,7 +47,6 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.stats.DetailsUiState
 import com.ub.finanstics.presentation.stats.PieChart
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.Loader
