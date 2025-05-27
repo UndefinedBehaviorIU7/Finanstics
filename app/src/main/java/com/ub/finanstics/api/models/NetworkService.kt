@@ -10,6 +10,8 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -207,18 +209,6 @@ interface NetworkService {
         @Query("day") day: Int?
     ): Response<List<Action>>
 
-    @POST("groups/update_data")
-    @Multipart
-    suspend fun updateGroupData(
-        @Part("group_id") groupId: RequestBody,
-        @Part("token") token: RequestBody,
-        @Part("name") name: RequestBody,
-        @Part("group_data") groupData: RequestBody,
-        @Part("users") users: RequestBody,
-        @Part("admins") admins: RequestBody,
-        @Part image: MultipartBody.Part? = null
-    ): Response<BaseResponse>
-
     @POST("/groups/create")
     @Multipart
     suspend fun createGroup(
@@ -249,5 +239,24 @@ interface NetworkService {
         @Query("token") token: String,
         @Query("old_password") oldPassword: String,
         @Query("new_password") newPassword: String
+    ): Response<BaseResponse>
+
+    @Multipart
+    @POST("groups/update_image")
+    suspend fun updateGroupImage(
+        @Part("group_id") groupId: RequestBody,
+        @Part("token") token: RequestBody,
+        @Part image: MultipartBody.Part
+    ): Response<BaseResponse>
+
+    @FormUrlEncoded
+    @POST("groups/update_info")
+    suspend fun updateGroupInfo(
+        @Field("group_id") groupId: Int,
+        @Field("token") token: String,
+        @Field("name") name: String,
+        @Field("group_data") groupData: String?,
+        @Field("users") users: String,
+        @Field("admins") admins: String
     ): Response<BaseResponse>
 }

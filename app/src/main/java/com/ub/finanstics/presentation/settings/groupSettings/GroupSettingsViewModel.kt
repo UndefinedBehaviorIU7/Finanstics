@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsUiState
 import java.io.File
 import java.io.FileOutputStream
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +63,40 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun onDataChange(newData: String) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                _uiState.value = current.copy(groupData = newData)
+            }
+
+            else -> Unit
+        }
+    }
+    
+    fun changeGroupData(groupData: String?) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = groupData,
+                        users = current.users!!,
+                        admins = current.admins ?: emptyList<Int>()
+                    )
+                    if (success) {
+                        _uiState.value = current.copy(
+                            groupData = groupData
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
     fun getUserId(): Int {
         val prefManager = PreferencesManager(application)
         return prefManager.getInt("id", -1)
@@ -87,12 +122,8 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
 
                 val newBitmap = uriToBitmap(getApplication(), uri)
                 viewModelScope.launch {
-                    val success = repository.updateGroup(
+                    val success = repository.updateGroupImage(
                         groupId = current.groupId,
-                        name = current.groupName,
-                        data = current.groupData.toString(),
-                        users = current.users,
-                        admins = current.admins,
                         image = imagePart
                     )
                     if (success) {
@@ -100,41 +131,6 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                             imageUri = uri,
                             imageBitmap = newBitmap
                         )
-                    } else {
-                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
-                    }
-                }
-            }
-            else -> Unit
-        }
-    }
-
-    fun removeUser(userId: Int) {
-        when (val current = _uiState.value) {
-            is GroupSettingsUiState.Idle -> {
-                if (current.imageUri == null) return
-
-                val imagePart = createMultipartBodyPart(current.imageUri) ?: run {
-                    _uiState.value = GroupSettingsUiState.Error("Не удалось подготовить файл")
-                    return
-                }
-
-                val newUsers = current.users?.filter { it != userId } ?: emptyList()
-                viewModelScope.launch {
-                    val success = repository.updateGroup(
-                        groupId = current.groupId,
-                        name = current.groupName,
-                        data = current.groupData.toString(),
-                        users = current.users,
-                        admins = current.admins,
-                        image = imagePart
-                    )
-                    if (success) {
-//                        _uiState.value = current.copy(
-//                            users = newUsers,
-//                            members = current.members?.filter { it.id != userId }
-//                        )
-                        fetchGroupData()
                     } else {
                         _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
                     }

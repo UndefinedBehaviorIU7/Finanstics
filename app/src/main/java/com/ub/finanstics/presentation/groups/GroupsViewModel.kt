@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 class GroupsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GroupsRepository(application.applicationContext)
 
-    private val _uiState = MutableStateFlow<GroupsUiState>(GroupsUiState.Idle)
+    private val _uiState = MutableStateFlow<GroupsUiState>(GroupsUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
     fun fetchGroups() {

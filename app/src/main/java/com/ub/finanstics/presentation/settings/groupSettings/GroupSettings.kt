@@ -11,10 +11,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -25,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +37,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -48,10 +53,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -77,7 +85,8 @@ fun GroupSettings(navController: NavController, vm: GroupSettingsViewModel = vie
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .systemBarsPadding(),
+            .systemBarsPadding()
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center,
     ) {
         when (uiState) {
@@ -101,13 +110,9 @@ fun GroupSettings(navController: NavController, vm: GroupSettingsViewModel = vie
             }
             is GroupSettingsUiState.Error -> {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            horizontal = 32.dp
-                        ),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     Spacer(modifier = Modifier.weight(0.2f))
 
@@ -155,12 +160,116 @@ fun GroupSettings(navController: NavController, vm: GroupSettingsViewModel = vie
     }
 }
 
+@Suppress("MagicNumber", "LongMethod", "LongParameterList")
+@Composable
+private fun GroupSettingsColumn(
+    vm: GroupSettingsViewModel,
+    navController: NavController,
+    userId: Int,
+    groupName: String,
+    groupData: String?,
+    imageUri: Uri?,
+    imageBitmap: Bitmap?,
+    owner: User,
+    users: List<Int>?,
+    admins: List<Int>?,
+    members: List<User>?
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp, vertical = 100.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        remember { FocusRequester() }
+        val focusManager = LocalFocusManager.current
+        val initialUserData = remember { groupData }
+        var lastSavedData by remember { mutableStateOf(initialUserData) }
+        val currentData = groupData
+        val isDataChanged = currentData != lastSavedData
+
+        val isOwner = userId == owner.id
+        val isAdmin = admins?.contains(userId) == true
+
+        GroupImage(vm, imageBitmap, isAdmin || isOwner)
+
+        EditableTextField(
+            currentName = groupName,
+            isEditable = (isOwner || isAdmin),
+            onNameChanged = { },
+        )
+
+        OutlinedTextField(
+            value = groupData.toString(),
+            onValueChange = { vm.onDataChange(it) },
+            label = { Text(stringResource(R.string.about)) },
+            singleLine = false,
+            maxLines = 3,
+            textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 120.dp),
+            trailingIcon = {
+                if (isDataChanged) {
+                    IconButton(onClick = {
+                        vm.changeGroupData(currentData)
+                        lastSavedData = currentData
+                        focusManager.clearFocus()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Save,
+                            contentDescription = stringResource(R.string.save)
+                        )
+                    }
+                }
+            }
+        )
+
+        ComposeUserList(
+            owner = owner,
+            currentUserId = userId,
+            memberList = members,
+            userList = users,
+            adminList = admins,
+            onRemoveUser = {  },
+            onToggleAdmin = {}
+//            onRemoveUser = { userId ->
+//                users = users.filter { it.id != userId }
+//                users = users.filter { it != userId }
+//                admins = admins.filter { it != userId }
+//            },
+//            onToggleAdmin = { userId ->
+//                adminList = if (adminList.contains(userId)) {
+//                    adminList.filter { it != userId }
+//                } else {
+//                    adminList + userId
+//                }
+//            }
+        )
+
+        if (isAdmin || isOwner) {
+            Button(
+                onClick = {}
+            ) {
+                Text(text = stringResource(R.string.add_user))
+            }
+        }
+
+        LeaveButton(
+            vm = vm,
+            navController = navController,
+            isOwner = isOwner
+        )
+    }
+}
+
 @Suppress("MagicNumber")
 @Composable
-private fun GroupImage(vm: GroupSettingsViewModel, image: Bitmap?) {
+private fun GroupImage(vm: GroupSettingsViewModel, image: Bitmap?, isEditable: Boolean) {
 
     val painter = image?.asImageBitmap()?.let { BitmapPainter(it) }
-    ?: painterResource(R.drawable.placeholder)
+        ?: painterResource(R.drawable.placeholder)
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -181,111 +290,31 @@ private fun GroupImage(vm: GroupSettingsViewModel, image: Bitmap?) {
             modifier = Modifier
                 .fillMaxSize()
                 .clip(CircleShape)
-                .clickable(onClick = {
+        )
+
+        if (isEditable) {
+            IconButton(
+                onClick = {
                     launcher.launch("image/*")
-                }
-            )
-        )
-
-        IconButton(
-            onClick = {
-                launcher.launch("image/*")
-            },
-            modifier = Modifier
-                .padding(8.dp)
-                .size(32.dp)
-                .zIndex(1f)
-                .background(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    shape = CircleShape
-                )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = stringResource(R.string.edit),
+                },
                 modifier = Modifier
-                    .size(30.dp),
-                tint = MaterialTheme.colorScheme.background
-            )
-        }
-    }
-}
-
-@Suppress("MagicNumber", "LongMethod", "LongParameterList")
-@Composable
-private fun GroupSettingsColumn(
-    vm: GroupSettingsViewModel,
-    navController: NavController,
-    userId: Int,
-    groupName: String,
-    groupData: String?,
-    imageUri: Uri?,
-    imageBitmap: Bitmap?,
-    owner: User,
-    users: List<Int>?,
-    admins: List<Int>?,
-    members: List<User>?
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                vertical = 100.dp,
-                horizontal = 32.dp
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        GroupImage(vm, imageBitmap)
-
-        EditableTextField(
-            currentName = groupName,
-            onNameChanged = { },
-        )
-
-        EditableTextField(
-            currentName = groupData,
-            onNameChanged = {},
-        )
-
-        ComposeUserList(
-            owner = owner,
-            currentUserId = userId,
-            memberList = members,
-            userList = users,
-            adminList = admins,
-            onRemoveUser = { userId -> vm.removeUser(userId) },
-            onToggleAdmin = {}
-//            onRemoveUser = { userId ->
-//                users = users.filter { it.id != userId }
-//                users = users.filter { it != userId }
-//                admins = admins.filter { it != userId }
-//            },
-//            onToggleAdmin = { userId ->
-//                adminList = if (adminList.contains(userId)) {
-//                    adminList.filter { it != userId }
-//                } else {
-//                    adminList + userId
-//                }
-//            }
-        )
-
-        val isOwner = userId == owner.id
-        val isAdmin = admins?.contains(userId) == true
-
-        if (isAdmin || isOwner) {
-            Button(
-                onClick = {}
+                    .padding(8.dp)
+                    .size(32.dp)
+                    .zIndex(1f)
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiary,
+                        shape = CircleShape
+                    )
             ) {
-                Text(text = stringResource(R.string.add_user))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit),
+                    modifier = Modifier
+                        .size(30.dp),
+                    tint = MaterialTheme.colorScheme.background
+                )
             }
         }
-
-        LeaveButton(
-            vm = vm,
-            navController = navController,
-            isOwner = isOwner
-        )
     }
 }
 
@@ -293,6 +322,7 @@ private fun GroupSettingsColumn(
 @Composable
 fun EditableTextField(
     currentName: String?,
+    isEditable: Boolean,
     onNameChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(
@@ -309,46 +339,58 @@ fun EditableTextField(
         }
     }
 
-    if (isEditing) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-        ) {
-            OutlinedTextField(
-                value = editableName ?: "",
-                onValueChange = { editableName = it },
-                singleLine = true,
-                modifier = Modifier.weight(1f),
-                textStyle = textStyle
-            )
+    Box (
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)
+    ) {
+        if (isEditable) {
+            if (isEditing) {
+                OutlinedTextField(
+                    value = editableName ?: "",
+                    onValueChange = { editableName = it },
+                    singleLine = true,
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    textStyle = textStyle
+                )
 
-            IconButton(
-                onClick = {
-                    isEditing = false
-                    editableName?.let { onNameChanged(it) }
+                IconButton(
+                    onClick = {
+                        isEditing = false
+                        editableName?.let { onNameChanged(it) }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
                 }
-            ) {
-                Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
+            } else {
+                Text(
+                    text = editableName ?: "",
+                    modifier = Modifier.align(Alignment.Center),
+                    style = textStyle
+                )
+
+                IconButton(
+                    onClick = { isEditing = true },
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 8.dp)
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
+                }
             }
-        }
-    } else {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-        ) {
+        } else {
             Text(
                 text = editableName ?: "",
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.align(Alignment.Center),
                 style = textStyle
             )
-
-            IconButton(
-                onClick = { isEditing = true }
-            ) {
-                Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
-            }
         }
     }
+
 }
 
 @Suppress("LongParameterList", "LongMethod", "MagicNumber", "ComplexCondition")
@@ -380,7 +422,6 @@ fun ComposeUserList(
     ) {
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
         ) {
             sortedUsers.forEach { user ->
@@ -480,7 +521,8 @@ fun LeaveButton(
         onClick = { vm.showConfirmation(isOwner) },
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isOwner) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.onBackground
+            else MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.primary
         )
     ) {
         Text(if (isOwner) stringResource(R.string.delete_group)
