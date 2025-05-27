@@ -7,7 +7,9 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.presentation.stats.TIME_UPDATE
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -55,6 +57,7 @@ class CalendarViewModel(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun startAutoRefresh() {
         viewModelScope.launch {
             while (true) {
@@ -63,7 +66,7 @@ class CalendarViewModel(
                 } catch (e: Exception) {
                     Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
                 }
-                kotlinx.coroutines.delay(5000L)
+                delay(TIME_UPDATE)
             }
         }
     }

@@ -428,7 +428,7 @@ fun DrawCalendarWithoutAction(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun CalendarGroup() {
     val configuration = LocalConfiguration.current

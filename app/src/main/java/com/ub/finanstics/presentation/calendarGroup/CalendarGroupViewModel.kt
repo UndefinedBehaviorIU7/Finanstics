@@ -92,7 +92,7 @@ class CalendarGroupViewModel(
                 } catch (e: Exception) {
                     Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
                 }
-                kotlinx.coroutines.delay(5000L)
+                delay(TIME_UPDATE)
             }
         }
     }
