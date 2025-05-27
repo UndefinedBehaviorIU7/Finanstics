@@ -352,7 +352,7 @@ private fun GroupImage(vm: GroupSettingsViewModel, image: Bitmap?, isEditable: B
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun EditableTextField(
     currentName: String?,
@@ -434,7 +434,7 @@ fun EditableTextField(
     }
 }
 
-@Suppress("LongParameterList", "LongMethod", "MagicNumber", "ComplexCondition")
+@Suppress("LongParameterList", "LongMethod", "MagicNumber", "ComplexCondition", "ComplexMethod")
 @Composable
 fun ComposeUserList(
     owner: User,

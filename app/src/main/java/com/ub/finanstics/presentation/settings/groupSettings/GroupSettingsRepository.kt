@@ -232,7 +232,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")
     suspend fun getUserByTag(tag: String): Int? {
         try {
             val response = RetrofitInstance.api.getUserByTag(tag)
