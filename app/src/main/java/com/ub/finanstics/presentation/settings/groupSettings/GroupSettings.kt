@@ -64,7 +64,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.User
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun GroupSettings(navController: NavController, vm: GroupSettingsViewModel = viewModel()) {
     val uiState = vm.uiState.collectAsState().value
@@ -351,7 +351,7 @@ fun EditableTextField(
     }
 }
 
-@Suppress("LongParameterList", "LongMethod", "MagicNumber")
+@Suppress("LongParameterList", "LongMethod", "MagicNumber", "ComplexCondition")
 @Composable
 fun ComposeUserList(
     owner: User,

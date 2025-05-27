@@ -33,6 +33,7 @@ class GroupsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     private suspend fun handleGetGroups(response: Response<List<Group>>): GroupsUiState =
         coroutineScope {
             if (response.isSuccessful) {
