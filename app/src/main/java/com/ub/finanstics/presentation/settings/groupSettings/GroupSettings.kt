@@ -211,7 +211,7 @@ private fun GroupImage(vm: GroupSettingsViewModel, image: Bitmap?) {
     }
 }
 
-@Suppress("MagicNumber", "LongMethod")
+@Suppress("MagicNumber", "LongMethod", "LongParameterList")
 @Composable
 private fun GroupSettingsColumn(
     vm: GroupSettingsViewModel,
@@ -289,6 +289,7 @@ private fun GroupSettingsColumn(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun EditableTextField(
     currentName: String?,
@@ -350,6 +351,7 @@ fun EditableTextField(
     }
 }
 
+@Suppress("LongParameterList", "LongMethod", "MagicNumber")
 @Composable
 fun ComposeUserList(
     owner: User,
@@ -467,6 +469,7 @@ fun ComposeUserList(
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 fun LeaveButton(
     vm: GroupSettingsViewModel,

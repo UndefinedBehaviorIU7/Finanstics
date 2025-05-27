@@ -18,6 +18,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 class GroupSettingsRepository(private val context: Context) {
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getUserById(userId: Int): User? {
         return try {
             val response = RetrofitInstance.api.getUser(userId)
@@ -32,6 +33,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getUsersByIds(users: List<Int>): List<User>? = coroutineScope {
         try {
             val deferredResults = users.map { userId ->
@@ -50,7 +52,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
+    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "TooGenericExceptionCaught")
     suspend fun getGroupImage(groupId: Int): Bitmap? {
         return try {
             val response = RetrofitInstance.api.getGroupImage(groupId)
@@ -70,6 +72,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun getGroup(groupId: Int): GroupSettingsUiState {
         return try {
             val response = RetrofitInstance.api.getGroupById(groupId)
@@ -81,6 +84,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("LongMethod", "MagicNumber")
     private suspend fun handleGetGroup(response: Response<Group>): GroupSettingsUiState =
         coroutineScope {
             if (response.isSuccessful) {
@@ -157,6 +161,7 @@ class GroupSettingsRepository(private val context: Context) {
             }
         }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun leaveGroup(groupId: Int): Boolean {
         return try {
             val token = EncryptedPreferencesManager(context).getString("token", "")
@@ -167,6 +172,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun deleteGroup(groupId: Int): Boolean {
         return try {
             val token = EncryptedPreferencesManager(context).getString("token", "")
@@ -177,6 +183,7 @@ class GroupSettingsRepository(private val context: Context) {
         }
     }
 
+    @Suppress("LongParameterList", "TooGenericExceptionCaught")
     suspend fun updateGroup(
         groupId: Int,
         name: String,
