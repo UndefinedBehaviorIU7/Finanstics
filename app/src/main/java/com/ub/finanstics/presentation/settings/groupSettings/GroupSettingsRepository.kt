@@ -232,4 +232,19 @@ class GroupSettingsRepository(private val context: Context) {
             false
         }
     }
+
+    @Suppress("MagicNumber")
+    suspend fun getUserByTag(tag: String): Int? {
+        try {
+            val response = RetrofitInstance.api.getUserByTag(tag)
+
+            return if (response.isSuccessful) {
+                response.body()!!.id
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            return null
+        }
+    }
 }

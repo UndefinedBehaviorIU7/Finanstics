@@ -7,7 +7,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +20,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -43,6 +43,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,7 +60,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -178,7 +179,7 @@ private fun GroupSettingsColumn(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp, vertical = 100.dp),
+            .padding(horizontal = 32.dp, vertical = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
@@ -188,6 +189,8 @@ private fun GroupSettingsColumn(
         var lastSavedData by remember { mutableStateOf(initialUserData) }
         val currentData = groupData
         val isDataChanged = currentData != lastSavedData
+        var showAddUserDialog by remember { mutableStateOf(false) }
+        var tagInput by remember { mutableStateOf("") }
 
         val isOwner = userId == owner.id
         val isAdmin = admins?.contains(userId) == true
@@ -197,13 +200,14 @@ private fun GroupSettingsColumn(
         EditableTextField(
             currentName = groupName,
             isEditable = (isOwner || isAdmin),
-            onNameChanged = { },
+            onNameChanged = { vm.changeGroupName(it) },
         )
 
         OutlinedTextField(
             value = groupData.toString(),
             onValueChange = { vm.onDataChange(it) },
-            label = { Text(stringResource(R.string.about)) },
+            label = { Text("Описание группы") },
+            enabled = isOwner || isAdmin,
             singleLine = false,
             maxLines = 3,
             textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
@@ -232,28 +236,60 @@ private fun GroupSettingsColumn(
             memberList = members,
             userList = users,
             adminList = admins,
-            onRemoveUser = {  },
-            onToggleAdmin = {}
-//            onRemoveUser = { userId ->
-//                users = users.filter { it.id != userId }
-//                users = users.filter { it != userId }
-//                admins = admins.filter { it != userId }
-//            },
-//            onToggleAdmin = { userId ->
-//                adminList = if (adminList.contains(userId)) {
-//                    adminList.filter { it != userId }
-//                } else {
-//                    adminList + userId
-//                }
-//            }
+            onRemoveUser = { userId ->
+                vm.removeUser(userId)
+            },
+            onToggleAdmin = { userId ->
+                if ((admins ?: emptyList()).contains(userId)) {
+                    vm.demoteUser(userId)
+                } else {
+                    vm.promoteUser(userId)
+                }
+            }
         )
 
         if (isAdmin || isOwner) {
             Button(
-                onClick = {}
+                onClick = { showAddUserDialog = true }
             ) {
                 Text(text = stringResource(R.string.add_user))
             }
+        }
+
+        if (showAddUserDialog) {
+            AlertDialog(
+                onDismissRequest = { showAddUserDialog = false },
+                title = { Text(text = stringResource(R.string.add_user_by_tag)) },
+                text = {
+                    TextField(
+                        value = tagInput,
+                        onValueChange = { tagInput = it },
+                        label = { Text(stringResource(R.string.user_tag)) },
+                        placeholder = { Text("@username") }
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            vm.addUserByTag(tagInput)
+                            showAddUserDialog = false
+                            tagInput = ""
+                        }
+                    ) {
+                        Text(stringResource(R.string.add))
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            showAddUserDialog = false
+                            tagInput = ""
+                        }
+                    ) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
         }
 
         LeaveButton(
@@ -346,13 +382,21 @@ fun EditableTextField(
     ) {
         if (isEditable) {
             if (isEditing) {
-                OutlinedTextField(
+                TextField(
                     value = editableName ?: "",
                     onValueChange = { editableName = it },
                     singleLine = true,
                     modifier = Modifier
                         .align(Alignment.Center),
-                    textStyle = textStyle
+                    textStyle = textStyle,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                        disabledContainerColor = MaterialTheme.colorScheme.background,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    )
                 )
 
                 IconButton(
@@ -364,7 +408,7 @@ fun EditableTextField(
                         .align(Alignment.CenterEnd)
                         .padding(end = 8.dp)
                 ) {
-                    Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
+                    Icon(Icons.Default.Save, contentDescription = stringResource(R.string.save))
                 }
             } else {
                 Text(
@@ -390,7 +434,6 @@ fun EditableTextField(
             )
         }
     }
-
 }
 
 @Suppress("LongParameterList", "LongMethod", "MagicNumber", "ComplexCondition")
@@ -409,9 +452,10 @@ fun ComposeUserList(
         val safeAdminList = adminList ?: emptyList()
         val safeUserList = userList ?: emptyList()
 
-        safeMemberList.filter { user -> safeAdminList.contains(user.id) } +
+        listOf(owner) +
+        safeMemberList.filter { user -> safeAdminList.contains(user.id) && user != owner } +
         safeMemberList.filter { user ->
-            safeUserList.contains(user.id) && !safeAdminList.contains(user.id)
+            safeUserList.contains(user.id) && !safeAdminList.contains(user.id) && user != owner
         }
     }
 

@@ -7,6 +7,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,7 +17,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsUiState
 import java.io.File
 import java.io.FileOutputStream
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,6 +63,34 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun changeGroupName(groupName: String) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                if (groupName == "") {
+                    _uiState.value = GroupSettingsUiState.Error("Имя группы не должно быть пустым")
+                } else {
+                    viewModelScope.launch {
+                        val success = repository.updateGroupInfo(
+                            groupId = current.groupId,
+                            name = groupName,
+                            groupData = current.groupData,
+                            users = current.users,
+                            admins = current.admins ?: emptyList<Int>()
+                        )
+                        if (success) {
+                            _uiState.value = current.copy(
+                                groupData = groupName
+                            )
+                        } else {
+                            _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                        }
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
     fun onDataChange(newData: String) {
         when (val current = _uiState.value) {
             is GroupSettingsUiState.Idle -> {
@@ -81,7 +109,7 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                         groupId = current.groupId,
                         name = current.groupName,
                         groupData = groupData,
-                        users = current.users!!,
+                        users = current.users,
                         admins = current.admins ?: emptyList<Int>()
                     )
                     if (success) {
@@ -90,6 +118,138 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                         )
                     } else {
                         _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun promoteUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedAdmins = (current.admins ?: emptyList()).toMutableList().apply {
+                        if (!contains(userId)) add(userId)
+                    }
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = current.users,
+                        admins = updatedAdmins
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun demoteUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedAdmins = (current.admins ?: emptyList()).minus(userId)
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = current.users,
+                        admins = updatedAdmins
+                    )
+                    if (success) {
+                        _uiState.value = current.copy(
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun removeUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedUsers = current.users.minus(userId)
+                    val updatedAdmins = current.admins?.minus(userId)
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = updatedUsers,
+                        admins = updatedAdmins ?: emptyList<Int>()
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            users = updatedUsers,
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Не удалось удалить пользователя")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun addUserByTag(tag: String) {
+        if (tag.isBlank()) {
+            _uiState.value = GroupSettingsUiState.Error("Тег пользователя не может быть пустым")
+            return
+        }
+
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val userId = repository.getUserByTag(tag) ?: run {
+                        _uiState.value = GroupSettingsUiState.Error("Пользователь с таким тегом не найден")
+                        return@launch
+                    }
+
+                    if (current.users.contains(userId)) {
+                        _uiState.value = GroupSettingsUiState.Error("Пользователь уже в группе")
+                        return@launch
+                    }
+
+                    val user = repository.getUserById(userId) ?: run {
+                        _uiState.value = GroupSettingsUiState.Error("Не удалось получить данные пользователя")
+                        return@launch
+                    }
+
+                    val updatedUsers = current.users + userId
+                    val updatedMembers = current.members + user
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = updatedUsers,
+                        admins = current.admins ?: emptyList<Int>()
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            users = updatedUsers,
+                            members = updatedMembers
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка при добавлении пользователя")
                     }
                 }
             }
