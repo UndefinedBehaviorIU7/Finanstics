@@ -74,7 +74,6 @@ class GroupSettingsRepository(private val context: Context) {
         return try {
             val response = RetrofitInstance.api.getGroupById(groupId)
             handleGetGroup(response)
-
         } catch (e: Exception) {
             GroupSettingsUiState.Error(
                 errorMsg = context.getString(R.string.unknown_error)

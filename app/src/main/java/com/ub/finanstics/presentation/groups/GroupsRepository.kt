@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.groups
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.util.Log
 import coil3.Bitmap
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository

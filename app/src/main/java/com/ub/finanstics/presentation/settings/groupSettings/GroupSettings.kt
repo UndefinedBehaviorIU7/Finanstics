@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.settings.groupSettings
 
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -415,7 +414,8 @@ fun ComposeUserList(
                         )
                     }
 
-                    if (!isOwner && (currentUserId == owner.id || (isCurrentUserAdmin && !isAdmin))) {
+                    if (!isOwner && (currentUserId == owner.id
+                                || (isCurrentUserAdmin && !isAdmin))) {
                         Box {
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
