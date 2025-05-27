@@ -33,8 +33,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -49,6 +52,7 @@ import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.Loader
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 import kotlin.math.abs
@@ -63,12 +67,12 @@ fun DrawActionGroup(
     Button(
         onClick = { vm.viewAction(action = actionDataClass) },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             MaterialTheme.colorScheme.onBackground,
             MaterialTheme.colorScheme.primary
         ),
+        shape = RoundedCornerShape(20.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
         Row(
@@ -141,6 +145,9 @@ fun ActionsGroupDraw(
                 }
             }
         }
+        item {
+            Spacer(modifier = Modifier.height(OFFSET_BAR + 50.dp))
+        }
     }
 }
 
@@ -187,7 +194,7 @@ fun DrawCalendarGroupWithAction(
         Divider(
             stroke = 2.dp,
             space = 20.dp,
-            after = 0.dp
+            after = 10.dp
         )
         ActionsGroupDraw(actionDataClasses, vm)
     }
@@ -434,6 +441,7 @@ fun CalendarGroup() {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val vm: CalendarGroupViewModel = viewModel()
+    val state by vm.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -444,7 +452,11 @@ fun CalendarGroup() {
                 start = 20.dp,
                 end = 20.dp
             )
-            .fillMaxSize(),
+            .fillMaxSize()
+            .blur(
+                if (state is CalendarGroupUiState.DrawActionDetail) 10.dp else 0.dp,
+                edgeTreatment = BlurredEdgeTreatment.Unbounded
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (val uiState = vm.uiState.collectAsState().value) {
