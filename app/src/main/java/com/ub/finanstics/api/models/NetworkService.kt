@@ -9,6 +9,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -148,10 +149,10 @@ interface NetworkService {
         @Path("user_id") userId: Int
     ): Response<ResponseBody>
 
-    @GET("/users/{group_id}/image")
+    @GET("/groups/{group_id}/image")
     @Streaming
     suspend fun getGroupImage(
-        @Path("group_id") userId: Int
+        @Path("group_id") groupId: Int
     ): Response<ResponseBody>
 
     @GET("/user_info")
@@ -215,7 +216,7 @@ interface NetworkService {
         @Part("group_data") groupData: RequestBody,
         @Part("users") users: RequestBody,
         @Part("admins") admins: RequestBody,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part? = null
     ): Response<BaseResponse>
 
     @POST("/groups/create")
@@ -227,9 +228,16 @@ interface NetworkService {
         @Part("users") users: RequestBody
     ): Response<BaseResponse>
 
-    @POST("/groups/delete/{group_id}")
+    @DELETE("/groups/delete/{group_id}")
     @Streaming
     suspend fun deleteGroup(
+        @Path("group_id") groupId: Int,
+        @Query("token") token: String,
+    ): Response<BaseResponse>
+
+    @POST("/groups/{group_id}/leave")
+    @Streaming
+    suspend fun leaveGroup(
         @Path("group_id") groupId: Int,
         @Query("token") token: String,
     ): Response<BaseResponse>
