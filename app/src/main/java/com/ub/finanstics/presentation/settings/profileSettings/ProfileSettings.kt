@@ -405,7 +405,7 @@ private fun LoadingContent() {
     }
 }
 
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun ProfileHeader(
     username: String,
@@ -524,6 +524,7 @@ fun Toggler(
     }
 }
 
+@Suppress("MagicNumber", "LongParameterList")
 @Composable
 fun CenteredEditableText(
     currentName: String,
@@ -595,6 +596,7 @@ fun BasicDialog(
     )
 }
 
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun PasswordChangeDialog(
     onClose: () -> Unit,

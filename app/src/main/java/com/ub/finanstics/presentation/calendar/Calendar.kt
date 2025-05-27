@@ -93,7 +93,7 @@ fun CalendarDay(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun CalendarDayItem(
     day: DayClass,
@@ -455,7 +455,7 @@ fun DrawCalendarWithoutAction(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Calendar() {
     val configuration = LocalConfiguration.current
@@ -497,9 +497,8 @@ fun Calendar() {
 
             is CalendarUiState.DrawActions -> {
                 val action = uiState.day?.getActions()
-                if (action != null) {
+                if (action != null)
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
-                }
             }
 
             is CalendarUiState.DrawActionDetail -> {

@@ -14,7 +14,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "TooManyFunctions")
 class ProfileSettingsRepository(private val context: Context) {
     private val prefs = PreferencesManager(context)
 

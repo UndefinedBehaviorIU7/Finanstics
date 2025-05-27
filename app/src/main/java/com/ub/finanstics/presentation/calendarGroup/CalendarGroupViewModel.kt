@@ -8,11 +8,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
+@Suppress("TooManyFunctions")
 class CalendarGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -23,6 +27,25 @@ class CalendarGroupViewModel(
     val groupId = preferencesManager.getInt("groupId", -1)
 
     private var calendar = CalendarClass()
+
+    var syncJob: Job? = null
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                if (calendar.initActionsDayByApi(application, groupId)
+                    == ErrorCalendar.ERRORSERVER)
+                    _uiState.value = CalendarGroupUiState.Loading
+                delay(TIME_UPDATE)
+            }
+        }
+    }
 
     init {
         Log.d("groupId", groupId.toString())
@@ -70,7 +93,7 @@ class CalendarGroupViewModel(
                 } catch (e: Exception) {
                     Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
                 }
-                kotlinx.coroutines.delay(5000L)
+                delay(TIME_UPDATE)
             }
         }
     }

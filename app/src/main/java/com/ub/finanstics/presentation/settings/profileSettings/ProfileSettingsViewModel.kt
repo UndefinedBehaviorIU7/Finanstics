@@ -22,7 +22,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "TooManyFunctions")
 class ProfileSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = ProfileSettingsRepository(application.applicationContext)
     private val _uiState = MutableStateFlow<ProfileSettingsUiState>(ProfileSettingsUiState.Loading)

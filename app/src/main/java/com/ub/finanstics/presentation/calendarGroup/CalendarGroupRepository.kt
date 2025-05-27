@@ -10,6 +10,8 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+@Suppress("TooManyFunctions")
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataApiToDataClass(
     dataApi: String
