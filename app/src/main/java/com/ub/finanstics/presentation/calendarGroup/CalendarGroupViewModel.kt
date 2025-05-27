@@ -39,9 +39,16 @@ class CalendarGroupViewModel(
     fun autoUpdate() {
         syncJob = viewModelScope.launch {
             while (true) {
-                if (calendar.initActionsDayByApi(application, groupId)
-                    == ErrorCalendar.ERRORSERVER)
-                    _uiState.value = CalendarGroupUiState.Loading
+                val uiState = _uiState.value
+                val newCalendar = CalendarClass()
+                calendar.initActionsDayByApi(application, groupId)
+                newCalendar.copy(calendar)
+                if (uiState is CalendarGroupUiState.Default) {
+                    _uiState.value = CalendarGroupUiState.Default(newCalendar)
+                } else {
+                    if (uiState is CalendarGroupUiState.DrawActions)
+                        _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, uiState.day)
+                }
                 delay(TIME_UPDATE)
             }
         }
@@ -78,22 +85,6 @@ class CalendarGroupViewModel(
                 calendar = calendar,
                 day = uiState.day
             )
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun startAutoRefresh() {
-        viewModelScope.launch {
-            while (true) {
-                try {
-                    if (calendar.initActionsDayByApi(application, groupId)
-                        == ErrorCalendar.ERRORSERVER)
-                        _uiState.value = CalendarGroupUiState.Loading
-                } catch (e: Exception) {
-                    Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
-                }
-                delay(TIME_UPDATE)
-            }
         }
     }
 

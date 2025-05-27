@@ -35,7 +35,17 @@ class CalendarViewModel(
     fun autoUpdate() {
         syncJob = viewModelScope.launch {
             while (true) {
+                val uiState = _uiState.value
+                val newCalendar = CalendarClass()
                 calendar.initActionsDay(application)
+                newCalendar.copy(calendar)
+                if (uiState is CalendarUiState.Default) {
+                    _uiState.value = CalendarUiState.Default(newCalendar)
+                } else {
+                    if (uiState is CalendarUiState.DrawActions)
+                        _uiState.value = CalendarUiState.DrawActions(newCalendar, uiState.day)
+                }
+                Log.d("work1111", "work")
                 delay(TIME_UPDATE)
             }
         }
