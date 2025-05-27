@@ -52,7 +52,6 @@ class CalendarGroupViewModel(
         viewModelScope.launch {
             loadCalendar()
         }
-        startAutoRefresh()
     }
 
     fun getCalendarMonth(): MonthNameClass {

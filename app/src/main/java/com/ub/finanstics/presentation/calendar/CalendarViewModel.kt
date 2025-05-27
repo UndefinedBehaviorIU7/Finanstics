@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarViewModel(
     application: Application
@@ -23,11 +24,27 @@ class CalendarViewModel(
 
     private var calendar = CalendarClass()
 
+    var syncJob: Job? = null
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                calendar.initActionsDay(application)
+                delay(TIME_UPDATE)
+            }
+        }
+    }
+
     init {
         viewModelScope.launch {
             loadCalendar()
         }
-        startAutoRefresh()
     }
 
     fun getCalendarMonth(): MonthNameClass {
