@@ -516,7 +516,7 @@ fun ComposeUserList(
                                 if (currentUserId == owner.id) {
                                     if (!isAdmin) {
                                         DropdownMenuItem(
-                                            text = { Text(text = stringResource(R.string.promote)) },
+                                            text = { Text(stringResource(R.string.promote)) },
                                             onClick = {
                                                 onToggleAdmin(user.id)
                                                 showMenu = false
