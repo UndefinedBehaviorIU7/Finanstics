@@ -219,18 +219,24 @@ class AddActionGroupViewModel(
                 if (error == Error.OK) {
                     val data = DataClass.getDataByString(current.data)
                     val categoryId = getCategoryIdByName(current.category, current.allCategory)
-                    val res = repository.addActionApi(
-                        actionName = current.nameAction,
-                        type = current.typeAction.toInt(),
-                        value = current.moneyAction,
-                        date = dataForApi(current.data),
-                        categoryId = categoryId ?: 1,
-                        description = current.description,
-                        duplication = current.duplication
-                    )
-                    if (res == ErrorAddActionGroupApi.Ok) {
-                        error = Error.SERVER
-                    }
+                    var res = if (categoryId == null)
+                        ErrorAddActionGroupApi.Error
+                    else
+                        ErrorAddActionGroupApi.Ok
+                    if (res == ErrorAddActionGroupApi.Ok)
+                        res = repository.addActionApi(
+                            actionName = current.nameAction,
+                            type = current.typeAction.toInt(),
+                            value = current.moneyAction,
+                            date = dataForApi(current.data),
+                            categoryId = categoryId ?: 1,
+                            description = current.description,
+                            duplication = current.duplication
+                        )
+                    error = if (res == ErrorAddActionGroupApi.Ok)
+                        Error.OK
+                    else
+                        Error.SERVER
                 } else {
                     _uiState.value = createErrorStateGroup(
                         current = current,

@@ -13,7 +13,7 @@ enum class ErrorAddActionGroupApi(val str: String) {
     Ok("ок")
 }
 
-@Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
+@Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexCondition")
 class AddActionGroupRepository(
     private var db: FinansticsDatabase,
     private val context: Context
@@ -26,14 +26,13 @@ class AddActionGroupRepository(
         var categories: MutableList<com.ub.finanstics.api.models.Category>? = null
         val preferencesManager = PreferencesManager(context)
         val groupId = preferencesManager.getInt("groupId", -1)
-
         try {
             val response = apiRep.getGroupCategories(groupId)
             if (response.isSuccessful) {
                 val allCategories = response.body()
                 if (allCategories != null) {
                     for (el in allCategories) {
-                        if (el.type == type) {
+                        if (el.type == 1 || (el.type == type) || (el.type == 2 && type == 1)) {
                             if (categories == null) categories = mutableListOf()
                             categories.add(el)
                         }
@@ -81,7 +80,7 @@ class AddActionGroupRepository(
                     userId = userId,
                     token = token,
                     actionName = actionName,
-                    type = if (type == 2) 1 else type,
+                    type = type,
                     value = value,
                     date = date,
                     categoryId = categoryId,

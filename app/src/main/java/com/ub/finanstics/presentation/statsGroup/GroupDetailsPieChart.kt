@@ -144,7 +144,8 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier.padding(end = 15.dp),
                         text = data.first,
                         fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = 16.sp,
+                        fontSize = if (data.first.length < 10) 16.sp
+                        else (16 - (data.first.length - 10) * 3).sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }

@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.addAction
 
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,24 +16,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +58,7 @@ fun BooleanFormCheckboxField(
     onCheckedChange: (Boolean) -> Unit
 ) {
     OutlinedTextField(
-        value = if (value) "Включено" else "Выключено",
+        value = if (value) stringResource(R.string.on) else stringResource(R.string.off),
         onValueChange = {},
         readOnly = true,
         label = { Text(label) },
@@ -94,44 +100,44 @@ fun DrawIdleGroup(
     navController: NavController
 ) {
 
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
-        fontSize = 26.sp
+        fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = false,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = false,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = false,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Категория",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
@@ -141,24 +147,30 @@ fun DrawIdleGroup(
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = false,
         lambda = { vm.updateUIState(newDescription = it) }
     )
 
     BooleanFormCheckboxField(
         value = uiState.duplication,
-        label = "продублировать к себе",
+        label = stringResource(R.string.duplication_my),
         isError = false,
         onCheckedChange = { vm.updateUIState(newDuplication = it) },
     )
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = {
                 vm.addAction()
                 navController.popBackStack()
@@ -166,7 +178,7 @@ fun DrawIdleGroup(
             enabled = vm.validateIdle(uiState) == Error.OK
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
@@ -181,44 +193,44 @@ fun DrawErrorGroup(
     vm: AddActionGroupViewModel,
     error: Error
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
-        fontSize = 26.sp
+        fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = error == Error.NAME,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = error == Error.MONEY,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = error == Error.DATE,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Категория",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory.map { it.name },
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
@@ -228,21 +240,27 @@ fun DrawErrorGroup(
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = error == Error.DESCRIPTION,
         lambda = { vm.updateUIState(newDescription = it) }
     )
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = { vm.addAction() },
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
@@ -253,20 +271,31 @@ fun DrawErrorGroup(
     )
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddActionGroup(
     navController: NavController
 ) {
+    val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+
+    val charWidth = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 20.sp
+        WindowWidthSizeClass.Medium -> 24.sp
+        WindowWidthSizeClass.Expanded -> 26.sp
+        else -> 26.sp
+    }
+
     val vm: AddActionGroupViewModel = viewModel()
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 20.dp,
-                start = 5.dp,
-                end = 5.dp
+                start = 15.dp,
+                end = 15.dp
             )
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -284,9 +313,9 @@ fun AddActionGroup(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Добавление действия",
+                    text = stringResource(R.string.add_action_text),
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = 24.sp
+                    fontSize = charWidth
                 )
 
                 IconButton(
@@ -318,13 +347,13 @@ fun AddActionGroup(
 
             is AddActionGroupUiState.SelectType -> {
 
-                Divider(
-                    color = MaterialTheme.colorScheme.primary,
-                    thickness = 1.dp
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Text(
-                    text = "Выберете тип действия",
+                    text = stringResource(R.string.select_type_action),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 26.sp
                 )

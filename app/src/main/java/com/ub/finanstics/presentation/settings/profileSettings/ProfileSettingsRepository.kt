@@ -14,7 +14,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "TooManyFunctions")
 class ProfileSettingsRepository(private val context: Context) {
     private val prefs = PreferencesManager(context)
 
@@ -84,7 +84,11 @@ class ProfileSettingsRepository(private val context: Context) {
                 userData = data,
                 nightMode = night,
                 notifications = notify,
-                userId = prefs.getInt("id", 0)
+                userId = prefs.getInt("id", 0),
+                tag = prefs.getString("tag", ""),
+                showPasswordDialog = false,
+                passwordChangeError = false,
+                showPasswordChangeToast = false
             )
         }
 
@@ -114,22 +118,59 @@ class ProfileSettingsRepository(private val context: Context) {
     }
 
     suspend fun updateData(newData: String): Boolean {
-        val response = RetrofitInstance.api.updateUserData(
-            token = EncryptedPreferencesManager(context).getString("token", ""),
-            userId = prefs.getInt("id", 0),
-            userData = newData
-        )
+        try {
+            val response = RetrofitInstance.api.updateUserData(
+                token = EncryptedPreferencesManager(context).getString("token", ""),
+                userId = prefs.getInt("id", 0),
+                userData = newData
+            )
 
-        return response.isSuccessful
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    suspend fun updateUsername(newUsername: String): Boolean {
+        try {
+            val response = RetrofitInstance.api.updateUsername(
+                userId = prefs.getInt("id", 0),
+                token = EncryptedPreferencesManager(context).getString("token", ""),
+                username = newUsername
+            )
+
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
     }
 
     suspend fun updateImage(image: MultipartBody.Part): Boolean {
-        val response = RetrofitInstance.api.updateUserImage(
-            userId = prefs.getInt("id", 0).toString(),
-            token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
-            image = image
-        )
+        try {
+            val response = RetrofitInstance.api.updateUserImage(
+                userId = prefs.getInt("id", 0).toString(),
+                token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
+                image = image
+            )
 
-        return response.isSuccessful
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    suspend fun changePassword(oldPassword: String, newPassword: String): Boolean {
+        try {
+            val response = RetrofitInstance.api.passwordChange(
+                newPassword = newPassword,
+                oldPassword = oldPassword,
+                userId = prefs.getInt("id", 0),
+                token = EncryptedPreferencesManager(context).getString("token", "")
+            )
+
+            return response.isSuccessful
+        } catch (e: Exception) {
+            return false
+        }
     }
 }

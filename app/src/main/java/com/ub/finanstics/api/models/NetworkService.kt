@@ -168,6 +168,14 @@ interface NetworkService {
         @Query("user_data") userData: String
     ): Response<BaseResponse>
 
+    @POST("/users/{user_id}/update_username")
+    @Streaming
+    suspend fun updateUsername(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("username") username: String
+    ): Response<BaseResponse>
+
     @POST("/users/{user_id}/update_image")
     @Multipart
     @Streaming
@@ -232,5 +240,14 @@ interface NetworkService {
     suspend fun leaveGroup(
         @Path("group_id") groupId: Int,
         @Query("token") token: String,
+    ): Response<BaseResponse>
+
+    @POST("/users/{user_id}/change_password")
+    @Streaming
+    suspend fun passwordChange(
+        @Path("user_id") userId: Int,
+        @Query("token") token: String,
+        @Query("old_password") oldPassword: String,
+        @Query("new_password") newPassword: String
     ): Response<BaseResponse>
 }

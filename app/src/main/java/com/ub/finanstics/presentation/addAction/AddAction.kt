@@ -1,6 +1,8 @@
 package com.ub.finanstics.presentation.addAction
 
-import android.app.DatePickerDialog
+import android.os.Build
+import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,25 +19,36 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,6 +69,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
@@ -64,8 +79,10 @@ import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.icons.CalendarIcon
-import java.util.Calendar
+import java.time.Instant
+import java.time.ZoneId
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun FormAddData(
@@ -125,8 +142,8 @@ fun FormAddData(
         trailingIcon = {
             IconButton(onClick = { showDatePicker = true }) {
                 Icon(
-                    imageVector = CalendarIcon,
-                    contentDescription = "",
+                    imageVector = Icons.Default.CalendarToday,
+                    contentDescription = null,
                     tint = MaterialTheme.colorScheme.secondary
                 )
             }
@@ -134,19 +151,82 @@ fun FormAddData(
     )
 
     if (showDatePicker) {
-        val calendar = Calendar.getInstance()
-        DatePickerDialog(
-            LocalContext.current,
-            { _, year, month, dayOfMonth ->
-                val formattedDate = String.format("%02d.%02d.%d", dayOfMonth, month + 1, year)
-                lambda(formattedDate)
-                onValueChange(formattedDate)
-                showDatePicker = false
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        Dialog(
+            onDismissRequest = { showDatePicker = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
+            )
+        ) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                tonalElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier
+                    .width(370.dp)
+                    .wrapContentHeight()
+            ) {
+                val datePickerState = rememberDatePickerState()
+                val density = LocalDensity.current
+
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .wrapContentHeight()
+                ) {
+                    DatePicker(
+                        state = datePickerState,
+                        modifier = Modifier
+                            .heightIn(max = with(density) { 500.dp.toPx() }.dp)
+                            .width(370.dp),
+                        title = {
+                            Text(
+                                text = "Выберите дату",
+                                modifier = Modifier.padding(8.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        },
+                        headline = null,
+                        showModeToggle = false
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = { showDatePicker = false },
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            Text(stringResource(R.string.cancellation))
+                        }
+                        TextButton(onClick = {
+                            val millis = datePickerState.selectedDateMillis
+                            if (millis != null) {
+                                val zonedDateTime = Instant.ofEpochMilli(millis)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                                val formattedDate = String.format(
+                                    "%02d.%02d.%04d",
+                                    zonedDateTime.dayOfMonth,
+                                    zonedDateTime.monthValue,
+                                    zonedDateTime.year
+                                )
+                                lambda(formattedDate)
+                                onValueChange(formattedDate)
+                            }
+                            showDatePicker = false
+                        }) {
+                            Text(stringResource(R.string.ok))
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -325,6 +405,7 @@ fun MultiTypeSelector(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawIdle(
@@ -332,44 +413,44 @@ fun DrawIdle(
     vm: AddActionViewModel,
     navController: NavController
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = false,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = false,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = false,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Категория",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory,
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
@@ -379,14 +460,14 @@ fun DrawIdle(
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = false,
         lambda = { vm.updateUIState(newDescription = it) }
     )
 
     MultiTypeSelector(
         selectedItems = uiState.groups,
-        label = "Продублировать в группы",
+        label = stringResource(R.string.duplication_group),
         expanded = uiState.menuExpandedGroup,
         allElements = uiState.allGroup,
         onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
@@ -394,12 +475,18 @@ fun DrawIdle(
         isError = false
     )
 
+    Spacer(modifier = Modifier.height(5.dp))
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = {
                 vm.addAction()
                 navController.popBackStack()
@@ -407,13 +494,14 @@ fun DrawIdle(
             enabled = vm.validateIdle(uiState) == Error.OK
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawError(
@@ -421,87 +509,115 @@ fun DrawError(
     vm: AddActionViewModel,
     error: Error
 ) {
-    Divider(
+    HorizontalDivider(
+        thickness = 1.dp,
         color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
-        else ColorsIncomes[1],
-        thickness = 1.dp
+        else ColorsIncomes[1]
     )
 
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "Тип действия: ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 22.sp
     )
 
     Form(
         value = uiState.nameAction,
-        label = "Название действия",
+        label = stringResource(R.string.name_action),
         isError = error == Error.NAME,
         lambda = { vm.updateUIState(newNameAction = it) }
     )
 
     Form(
         value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = "Сколько Бабла",
+        label = stringResource(R.string.sum),
         isError = error == Error.MONEY,
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
     FormAddData(
         value = uiState.data,
-        label = "Дата",
+        label = stringResource(R.string.data),
         isError = error == Error.DATE,
         lambda = { vm.updateUIState(newData = it) }
     )
 
     Selector(
         value = uiState.category,
-        label = "Продублировать в группы",
+        label = stringResource(R.string.category),
         expanded = uiState.menuExpandedCategory,
         allElements = uiState.allCategory,
         onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
         selected = { vm.updateUIState(newCategory = it) },
-        isError = false
+        isError = error == Error.CATEGORY
     )
 
     Form(
         value = uiState.description,
-        label = "Описание",
+        label = stringResource(R.string.description),
         isError = error == Error.DESCRIPTION,
         lambda = { vm.updateUIState(newDescription = it) }
     )
+
+    MultiTypeSelector(
+        selectedItems = uiState.groups,
+        label = stringResource(R.string.duplication_group),
+        expanded = uiState.menuExpandedGroup,
+        allElements = uiState.allGroup,
+        onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
+        onSelectionChanged = { vm.updateUIState(newGroups = it) },
+        isError = false
+    )
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        val width = maxWidth
+        maxWidth
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
             onClick = { vm.addAction() },
         ) {
             Text(
-                text = "Добавить",
+                text = stringResource(R.string.add_action),
                 fontSize = 28.sp
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun AddAction(
     navController: NavController
 ) {
+    val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+
+    val charWidth = when (windowSize.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 20.sp
+        WindowWidthSizeClass.Medium -> 24.sp
+        WindowWidthSizeClass.Expanded -> 26.sp
+        else -> 26.sp
+    }
+
     val vm: AddActionViewModel = viewModel()
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 20.dp,
-                start = 5.dp,
-                end = 5.dp
+                start = 15.dp,
+                end = 15.dp
             )
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -513,9 +629,9 @@ fun AddAction(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Добавление действия",
+                text = stringResource(R.string.add_action_text),
                 color = MaterialTheme.colorScheme.primary,
-                fontSize = 24.sp
+                fontSize = charWidth
             )
 
             IconButton(
@@ -546,15 +662,15 @@ fun AddAction(
 
             is AddActionUiState.SelectType -> {
 
-                Divider(
-                    color = MaterialTheme.colorScheme.primary,
-                    thickness = 1.dp
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Выберете тип действия",
+                    text = stringResource(R.string.select_type_action),
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 22.sp
                 )

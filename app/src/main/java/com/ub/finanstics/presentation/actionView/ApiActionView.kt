@@ -70,10 +70,6 @@ fun ApiActionView(
                     modifier = modifier.clickable { },
                     tonalElevation = 8.dp,
                     shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.secondary
-                    ),
                     color = MaterialTheme.colorScheme.onBackground
                 ) {
                     Column(

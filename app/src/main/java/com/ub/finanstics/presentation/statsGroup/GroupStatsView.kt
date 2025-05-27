@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +33,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,6 +63,8 @@ fun GroupStats(
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
 
+    val detState by dvm.uiState.collectAsState()
+
     LaunchedEffect(isVisible) {
         if (isVisible) {
             vm.autoUpdate()
@@ -77,16 +82,18 @@ fun GroupStats(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                color = MaterialTheme.colorScheme.background
-            )
+            .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
             .padding(
                 top = 25.dp,
                 start = 20.dp,
                 end = 20.dp,
             )
     ) {
-        Row() {
+        Row(
+            modifier = if (detState is GroupDetailsUiState.DetailedAction)
+                Modifier.blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded) else Modifier
+        ) {
             when (val uiState = vm.uiState.collectAsState().value) {
                 GroupStatsUiState.Loading -> {
                     BoxWithConstraints {

@@ -7,7 +7,7 @@ enum class ActionType(val label: String) {
 }
 
 fun ActionType.toInt(): Int = when (this) {
-    ActionType.INCOME -> 2
+    ActionType.INCOME -> 1
     ActionType.EXPENSE -> 0
     ActionType.NULL -> -1
 }
