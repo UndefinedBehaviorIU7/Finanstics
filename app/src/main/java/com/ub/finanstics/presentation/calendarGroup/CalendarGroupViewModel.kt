@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
+@Suppress("TooManyFunctions")
 class CalendarGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
