@@ -22,8 +22,8 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import java.io.FileOutputStream
+import java.io.File
 
 class GroupSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GroupSettingsRepository(application.applicationContext)
