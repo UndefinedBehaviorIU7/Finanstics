@@ -54,7 +54,7 @@
     <string name="retry">Повторить попытку</string>
     <string name="not_aut">Вы не вошли в аккаунт</string>
     <string name="profile_image_desc">profile image</string>
-    <string name="save">Save</string>
+    <string name="save">Сохранить</string>
     <string name="edit">Edit</string>
     <string name="group_name">Название группы</string>
     <string name="group_data">Описание группы</string>
@@ -67,4 +67,15 @@
     <string name="ok">Ок</string>
     <string name="close">Закрыть</string>
     <string name="offline">Офлайн режим</string>
+    <string name="group_picture">Аватара группы</string>
+    <string name="reset">Сбросить</string>
+    <string name="no_groups">Вы не состоите в группе</string>
+    <string name="leave_group">Покинуть группу</string>
+    <string name="delete_group">Удалить группу</string>
+    <string name="cancel">Отменить</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="confirmation">Подтверждение</string>
+    <string name="delete_group_msg">Удалить группу навсегда?</string>
+    <string name="leave_group_msg">Покинуть группу?</string>
+    <string name="add_user">Добавить пользователя</string>
 </resources>

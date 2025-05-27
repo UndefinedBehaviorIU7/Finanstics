@@ -43,9 +43,9 @@ fun Login(navController: NavController, vm: LoginViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
-            .background(MaterialTheme.colorScheme.background),
-    contentAlignment = Alignment.Center,
+            .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding(),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

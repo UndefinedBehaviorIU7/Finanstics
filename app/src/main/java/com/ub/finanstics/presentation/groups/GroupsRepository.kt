@@ -2,6 +2,7 @@ package com.ub.finanstics.presentation.groups
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import coil3.Bitmap
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
@@ -9,7 +10,11 @@ import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.GroupWithImage
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import retrofit2.Response
+import kotlin.collections.map
 
 class GroupsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught", "MagicNumber")
@@ -18,15 +23,28 @@ class GroupsRepository(private val context: Context) {
             val preferencesManager = PreferencesManager(context)
             val userId = preferencesManager.getInt("id", -1)
             val apiRepository = ApiRepository()
-
             val response = apiRepository.getUserGroups(userId)
+            handleGetGroups(response)
 
+        } catch (e: Exception) {
+            GroupsUiState.Error(
+                groups = emptyList(),
+                errorMsg = context.getString(R.string.no_internet)
+            )
+        }
+    }
+
+    private suspend fun handleGetGroups(response: Response<List<Group>>): GroupsUiState =
+        coroutineScope {
             if (response.isSuccessful) {
                 val groupList = response.body()
                 if (groupList != null) {
                     val groupsWithImages = groupList.map { group ->
-                        val image = getGroupImage(group.id)
-                        GroupWithImage(group = group, image = image)
+                        val bitmapDeferred = async(Dispatchers.IO) {
+                            getGroupImage(group.id)
+                        }
+                        val bitmap = bitmapDeferred.await()
+                        GroupWithImage(group = group, image = bitmap)
                     }
                     GroupsUiState.All(groups = groupsWithImages)
                 } else {
@@ -49,13 +67,7 @@ class GroupsRepository(private val context: Context) {
                     errorMsg = context.getString(errorMsgResource)
                 )
             }
-        } catch (e: Exception) {
-            GroupsUiState.Error(
-                groups = emptyList(),
-                errorMsg = context.getString(R.string.unknown_error)
-            )
         }
-    }
 
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
     suspend fun getGroupImage(groupId: Int): Bitmap? {

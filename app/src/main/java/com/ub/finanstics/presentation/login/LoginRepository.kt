@@ -23,7 +23,7 @@ class LoginRepository(private val context: Context) {
             LoginUiState.Error(
                 login = login,
                 password = password,
-                errorMsg = context.getString(R.string.unknown_error)
+                errorMsg = context.getString(R.string.no_internet)
             )
         }
     }
@@ -60,7 +60,7 @@ class LoginRepository(private val context: Context) {
             val errorMsgResource = when (response.code()) {
                 400 -> R.string.server_error_400
                 401 -> R.string.server_error_401
-                404 -> R.string.server_error_404
+                404 -> R.string.invalid_login_or_password
                 409 -> R.string.server_error_409
                 else -> R.string.unknown_server_error
             }
@@ -144,7 +144,7 @@ class LoginRepository(private val context: Context) {
             logInState = LoginUiState.Error(
                 login = "",
                 password = "",
-                errorMsg = context.getString(R.string.unknown_error)
+                errorMsg = context.getString(R.string.no_internet)
             )
         }
         return logInState

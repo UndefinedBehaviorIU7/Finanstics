@@ -32,7 +32,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.calendar.CalendarGroup
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
+import com.ub.finanstics.presentation.settings.groupSettings.GroupSettings
 import com.ub.finanstics.presentation.statsGroup.GroupStats
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
@@ -62,7 +62,7 @@ fun BottomGroupNavGraph(
             when (page) {
                 0 -> GroupStats(navController, isVisible)
                 1 -> CalendarGroup(navController)
-                2 -> ProfileSettingsScreen(navController, themeVm = themeVm)
+                2 -> GroupSettings(navController)
             }
             if (pagerState.currentPage == 2) {
                 vm.show(OFFSET_BAR)
