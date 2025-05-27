@@ -25,7 +25,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
-class GroupSettingsViewModel (application: Application) : AndroidViewModel(application) {
+class GroupSettingsViewModel(application: Application): AndroidViewModel(application) {
     private val repository = GroupSettingsRepository(application.applicationContext)
 
     private val _uiState = MutableStateFlow<GroupSettingsUiState>(GroupSettingsUiState.Loading)

@@ -414,8 +414,8 @@ fun ComposeUserList(
                         )
                     }
 
-                    if (!isOwner && (currentUserId == owner.id
-                                || (isCurrentUserAdmin && !isAdmin))) {
+                    if (!isOwner && (currentUserId == owner.id ||
+                                (isCurrentUserAdmin && !isAdmin))) {
                         Box {
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
