@@ -78,4 +78,10 @@
     <string name="delete_group_msg">Удалить группу навсегда?</string>
     <string name="leave_group_msg">Покинуть группу?</string>
     <string name="add_user">Добавить пользователя</string>
+    <string name="delete">Удалить</string>
+    <string name="promote">Повысить</string>
+    <string name="demote">Понизить</string>
+    <string name="actions">Действия</string>
+    <string name="owner">owner</string>
+    <string name="admin">admin</string>
 </resources>

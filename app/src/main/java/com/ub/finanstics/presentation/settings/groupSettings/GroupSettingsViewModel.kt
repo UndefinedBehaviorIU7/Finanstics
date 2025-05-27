@@ -73,20 +73,10 @@ class GroupSettingsViewModel (application: Application) : AndroidViewModel(appli
     }
 
     fun fetchGroupData() {
-//        _uiState.value = GroupSettingsUiState.Loading
-//        viewModelScope.launch {
-//            val sharedPrefs = PreferencesManager(getApplication())
-//            if (repository.isAuth()) {
-//                _uiState.value = repository.getGroup(sharedPrefs.getInt("groupId", -1))
-//            }
-//        }
-
+        _uiState.value = GroupSettingsUiState.Loading
         viewModelScope.launch {
             val sharedPrefs = PreferencesManager(getApplication())
-            val groupState = withContext(Dispatchers.IO) {
-                repository.getGroup(sharedPrefs.getInt("groupId", -1))
-            }
-            _uiState.value = groupState
+            _uiState.value = repository.getGroup(sharedPrefs.getInt("groupId", -1))
         }
     }
 
@@ -102,12 +92,6 @@ class GroupSettingsViewModel (application: Application) : AndroidViewModel(appli
 
                 val newBitmap = uriToBitmap(getApplication(), uri)
                 viewModelScope.launch {
-                    Log.d("sus", "${current.groupId}")
-                    Log.d("sus", current.groupName)
-                    Log.d("sus", "${current.groupData}")
-                    Log.d("sus", "${current.users}")
-                    Log.d("sus", "${current.admins}")
-
                     val success = repository.updateGroup(
                         groupId = current.groupId,
                         name = current.groupName,
@@ -121,6 +105,41 @@ class GroupSettingsViewModel (application: Application) : AndroidViewModel(appli
                             imageUri = uri,
                             imageBitmap = newBitmap
                         )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun removeUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                if (current.imageUri == null) return
+
+                val imagePart = createMultipartBodyPart(current.imageUri) ?: run {
+                    _uiState.value = GroupSettingsUiState.Error("Не удалось подготовить файл")
+                    return
+                }
+
+                val newUsers = current.users?.filter { it != userId } ?: emptyList()
+                viewModelScope.launch {
+                    val success = repository.updateGroup(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        data = current.groupData.toString(),
+                        users = current.users,
+                        admins = current.admins,
+                        image = imagePart
+                    )
+                    if (success) {
+//                        _uiState.value = current.copy(
+//                            users = newUsers,
+//                            members = current.members?.filter { it.id != userId }
+//                        )
+                        fetchGroupData()
                     } else {
                         _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
                     }

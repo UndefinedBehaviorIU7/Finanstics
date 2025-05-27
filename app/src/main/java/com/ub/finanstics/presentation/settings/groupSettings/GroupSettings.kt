@@ -255,7 +255,7 @@ private fun GroupSettingsColumn(
             memberList = members,
             userList = users,
             adminList = admins,
-            onRemoveUser = {},
+            onRemoveUser = { userId -> vm.removeUser(userId) },
             onToggleAdmin = {}
 //            onRemoveUser = { userId ->
 //                users = users.filter { it.id != userId }
@@ -395,13 +395,13 @@ fun ComposeUserList(
                     Text(
                         text = user.username.toString(),
                         modifier = Modifier.weight(1f),
-                        color = if (isOwner) MaterialTheme.colorScheme.primary else Color.Unspecified,
-                        style = if (isOwner) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
                     if (isOwner) {
                         Text(
-                            text = "(owner)",
+                            text = stringResource(R.string.owner),
                             color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
@@ -409,7 +409,7 @@ fun ComposeUserList(
 
                     if (isAdmin) {
                         Text(
-                            text = "(admin)",
+                            text = stringResource(R.string.admin),
                             color = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
@@ -420,7 +420,7 @@ fun ComposeUserList(
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
                                     Icons.Default.MoreVert,
-                                    contentDescription = "Действия"
+                                    contentDescription = stringResource(R.string.actions)
                                 )
                             }
 
@@ -430,7 +430,7 @@ fun ComposeUserList(
                             ) {
                                 if (!isAdmin) {
                                     DropdownMenuItem(
-                                        text = { Text("Сделать админом") },
+                                        text = { Text(text = stringResource(R.string.promote)) },
                                         onClick = {
                                             onToggleAdmin(user.id)
                                             showMenu = false
@@ -438,7 +438,7 @@ fun ComposeUserList(
                                     )
                                 } else {
                                     DropdownMenuItem(
-                                        text = { Text("Убрать из админов") },
+                                        text = { Text(text = stringResource(R.string.demote)) },
                                         onClick = {
                                             onToggleAdmin(user.id)
                                             showMenu = false
@@ -447,7 +447,12 @@ fun ComposeUserList(
                                 }
 
                                 DropdownMenuItem(
-                                    text = { Text("Удалить", color = MaterialTheme.colorScheme.error) },
+                                    text = {
+                                        Text(
+                                            text = stringResource(R.string.delete),
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    },
                                     onClick = {
                                         onRemoveUser(user.id)
                                         showMenu = false
