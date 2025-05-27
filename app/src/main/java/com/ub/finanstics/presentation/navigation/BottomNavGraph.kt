@@ -200,6 +200,13 @@ fun GroupsButton(
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
                 .size(50.dp)
+                .clickable {
+                    if (isAuth(application)) {
+                        navController.navigate(Navigation.GROUPS.toString())
+                    } else {
+                        showLoginDialog = true
+                    }
+                }
         )
 
         Icon(
@@ -209,13 +216,6 @@ fun GroupsButton(
             modifier = Modifier
                 .size(50.dp)
                 .padding(12.dp)
-                .clickable {
-                    if (isAuth(application)) {
-                        navController.navigate(Navigation.GROUPS.toString())
-                    } else {
-                        showLoginDialog = true
-                    }
-                }
         )
     }
     LogInRegisterDialog(

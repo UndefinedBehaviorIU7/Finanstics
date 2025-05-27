@@ -110,6 +110,10 @@ fun MainScreen(
 
     val vm: BottomBarViewModel = viewModel()
 
+    LaunchedEffect(Unit) {
+        vm.show(OFFSET_BAR)
+    }
+
     Scaffold(
         bottomBar = {}
     ) { innerPaddingValues ->

@@ -51,6 +51,7 @@ import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
 import com.ub.finanstics.ui.theme.Divider
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 import kotlin.math.abs
@@ -360,6 +361,9 @@ fun ActionsDraw(
                     DrawAction(action, vm)
                 }
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(OFFSET_BAR + 50.dp))
         }
     }
 }

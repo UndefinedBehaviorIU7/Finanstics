@@ -33,6 +33,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.stats.DetailsUiState
 import com.ub.finanstics.presentation.stats.PieChart
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.Loader
@@ -60,6 +63,8 @@ fun GroupStats(
     val dvm: GroupDetailsViewModel = viewModel()
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
+
+    val detState by dvm.uiState.collectAsState()
 
     LaunchedEffect(isVisible) {
         if (isVisible) {
@@ -86,7 +91,10 @@ fun GroupStats(
                 end = 20.dp,
             )
     ) {
-        Row() {
+        Row(
+            modifier = if (detState is GroupDetailsUiState.DetailedAction)
+                Modifier.blur(20.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded) else Modifier
+        ) {
             when (val uiState = vm.uiState.collectAsState().value) {
                 GroupStatsUiState.Loading -> {
                     BoxWithConstraints {
