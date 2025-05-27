@@ -23,11 +23,27 @@ class CalendarViewModel(
 
     private var calendar = CalendarClass()
 
+    var syncJob: Job? = null
+
+    fun cancelUpdate() {
+        syncJob?.cancel()
+        syncJob = null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun autoUpdate() {
+        syncJob = viewModelScope.launch {
+            while (true) {
+                calendar.initActionsDay(application)
+                delay(TIME_UPDATE)
+            }
+        }
+    }
+
     init {
         viewModelScope.launch {
             loadCalendar()
         }
-        startAutoRefresh()
     }
 
     fun getCalendarMonth(): MonthNameClass {

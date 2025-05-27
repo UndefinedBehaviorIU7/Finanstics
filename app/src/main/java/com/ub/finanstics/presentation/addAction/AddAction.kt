@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
@@ -140,7 +142,7 @@ fun FormAddData(
         trailingIcon = {
             IconButton(onClick = { showDatePicker = true }) {
                 Icon(
-                    imageVector = CalendarIcon,
+                    imageVector = Icons.Default.CalendarToday,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.secondary
                 )
@@ -149,28 +151,57 @@ fun FormAddData(
     )
 
     if (showDatePicker) {
-        Dialog(onDismissRequest = { showDatePicker = false }) {
+        Dialog(
+            onDismissRequest = { showDatePicker = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
+            )
+        ) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 tonalElevation = 8.dp,
-                color = MaterialTheme.colorScheme.surface
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier
+                    .width(370.dp)
+                    .wrapContentHeight()
             ) {
                 val datePickerState = rememberDatePickerState()
+                val density = LocalDensity.current
 
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .wrapContentHeight()
                 ) {
-                    DatePicker(state = datePickerState)
+                    DatePicker(
+                        state = datePickerState,
+                        modifier = Modifier
+                            .heightIn(max = with(density) { 500.dp.toPx() }.dp)
+                            .width(370.dp),
+                        title = {
+                            Text(
+                                text = "Выберите дату",
+                                modifier = Modifier.padding(8.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        },
+                        headline = null,
+                        showModeToggle = false
+                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        TextButton(onClick = { showDatePicker = false }) {
+                        TextButton(
+                            onClick = { showDatePicker = false },
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
                             Text(stringResource(R.string.cancellation))
                         }
                         TextButton(onClick = {
