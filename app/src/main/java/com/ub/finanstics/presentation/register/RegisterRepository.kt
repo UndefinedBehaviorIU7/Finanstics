@@ -31,7 +31,7 @@ class RegisterRepository(private val context: Context) {
                 username = username,
                 password = password,
                 passwordRepeat = "",
-                errorMsg = context.getString(R.string.unknown_error)
+                errorMsg = context.getString(R.string.no_internet)
             )
         }
     }
@@ -121,7 +121,7 @@ class RegisterRepository(private val context: Context) {
             }
         } else {
             val errorMsgResource = when (response.code()) {
-                400 -> R.string.server_error_400
+                400 -> R.string.already_registered
                 401 -> R.string.server_error_401
                 404 -> R.string.server_error_404
                 409 -> R.string.server_error_409
@@ -186,7 +186,7 @@ class RegisterRepository(private val context: Context) {
                 image = image,
                 username = username,
                 vkId = vkId,
-                errorMsg = context.getString(R.string.unknown_error)
+                errorMsg = context.getString(R.string.no_internet)
             )
         }
         return regState
