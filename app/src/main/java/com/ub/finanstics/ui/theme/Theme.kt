@@ -17,7 +17,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = YellowSoftDark,
     background = BlackSoft,
     onBackground = BackDark,
-    primaryContainer = YellowDark
+    primaryContainer = YellowDark,
     error = Red,
     onError = Color.White
 )
@@ -28,7 +28,7 @@ private val LightColorScheme = lightColorScheme(
     tertiary = YellowSoftLight,
     background = Color.White,
     onBackground = BackLight,
-    primaryContainer = YellowSoftLight
+    primaryContainer = YellowSoftLight,
     error = Red,
     onError = Color.White
 
