@@ -9,6 +9,7 @@ import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.converters.base64ToBitmap
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.TIME_UPDATE
@@ -41,7 +42,9 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     private val preferencesManager = PreferencesManager(application)
     val groupId = preferencesManager.getInt("groupId", 0)
     val groupName = preferencesManager.getString("groupName", "")
-    var groupImage: Bitmap? = null
+    var groupImage: Bitmap? = base64ToBitmap(
+        preferencesManager.getString("groupImage", "")
+    )
 
     init {
         loadCalendar()

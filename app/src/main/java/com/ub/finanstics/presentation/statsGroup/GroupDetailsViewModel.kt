@@ -109,16 +109,19 @@ class GroupDetailsViewModel(
     }
 
     fun viewAction(action: Action) {
-        val uiState = _uiState.value
-        if (uiState is GroupDetailsUiState.Detailed) {
-            _uiState.value = GroupDetailsUiState.DetailedAction(
-                actions = uiState.actions,
-                chosen = uiState.chosen,
-                action = action,
-                ownerName = _name.value,
-                type = uiState.type,
-                imageBitmap = _image.value
-            )
+        viewModelScope.launch {
+            _image.value = repository.getUserImage(action.userId)
+            val uiState = _uiState.value
+            if (uiState is GroupDetailsUiState.Detailed) {
+                _uiState.value = GroupDetailsUiState.DetailedAction(
+                    actions = uiState.actions,
+                    chosen = uiState.chosen,
+                    action = action,
+                    ownerName = _name.value,
+                    type = uiState.type,
+                    imageBitmap = _image.value
+                )
+            }
         }
     }
 

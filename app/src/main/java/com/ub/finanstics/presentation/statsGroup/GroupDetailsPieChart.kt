@@ -186,7 +186,6 @@ fun GroupDetailsPieChartItem(
                                         widthSize = widthSize,
                                         onClick = {
                                             vm.getActionOwner(action.userId)
-                                            vm.getUserImage(action.userId)
                                             showAction = true
                                             vm.viewAction(action)
                                         },

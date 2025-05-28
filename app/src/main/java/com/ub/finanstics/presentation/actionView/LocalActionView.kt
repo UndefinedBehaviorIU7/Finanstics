@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -94,7 +95,6 @@ fun LocalActionView(
                                 color = color,
                                 textAlign = TextAlign.Center
                             )
-
                             Spacer(Modifier.height(10.dp))
 
                             Text(
@@ -103,7 +103,15 @@ fun LocalActionView(
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.Center
                             )
+                            Spacer(Modifier.height(10.dp))
 
+                            Text(
+                                text = action.value.toString(),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                textAlign = TextAlign.Center
+                            )
                             Spacer(Modifier.height(10.dp))
 
                             if (action.description != null) {
