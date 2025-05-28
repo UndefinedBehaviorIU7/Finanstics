@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.presentation.calendar.CalendarClass
@@ -109,16 +110,19 @@ class GroupDetailsViewModel(
     }
 
     fun viewAction(action: Action) {
-        val uiState = _uiState.value
-        if (uiState is GroupDetailsUiState.Detailed) {
-            _uiState.value = GroupDetailsUiState.DetailedAction(
-                actions = uiState.actions,
-                chosen = uiState.chosen,
-                action = action,
-                ownerName = _name.value,
-                type = uiState.type,
-                imageBitmap = _image.value
-            )
+        viewModelScope.launch {
+            _image.value = repository.getUserImage(action.userId)
+            val uiState = _uiState.value
+            if (uiState is GroupDetailsUiState.Detailed) {
+                _uiState.value = GroupDetailsUiState.DetailedAction(
+                    actions = uiState.actions,
+                    chosen = uiState.chosen,
+                    action = action,
+                    ownerName = _name.value,
+                    type = uiState.type,
+                    imageBitmap = _image.value
+                )
+            }
         }
     }
 
