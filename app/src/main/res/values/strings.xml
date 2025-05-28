@@ -25,6 +25,7 @@
     <string name="server_error_401">Ошибка 401</string>
     <string name="server_error_404">Ошибка 404</string>
     <string name="server_error_409">Ошибка 409</string>
+    <string name="notifications_permission">Для уведомлений предоставьте разрешение в настройках</string>
     <string name="no_calendar">Ошибка: данные календаря отсутствуют</string>
     <string name="invalid_calendar_state">Ошибка: некорректное состояние календаря</string>
     <string name="invalid_login_or_password">Неверный логин или пароль</string>
@@ -113,4 +114,23 @@
     <string name="add_user_by_tag">Добавить пользователя</string>
     <string name="user_tag">Тег пользователя</string>
     <string name="add">Добавить</string>
+
+    <string name="food">"Еда"</string>
+    <string name="transport">"Транспорт"</string>
+    <string name="taxes">"Налоги/штрафы"</string>
+    <string name="shopping">"Покупки"</string>
+    <string name="sport">"Спорт"</string>
+    <string name="entertainments">"Развлечения"</string>
+    <string name="education">"Образование"</string>
+    <string name="self_care">"Уход за собой"</string>
+    <string name="health">"Здоровье"</string>
+    <string name="life">"Быт"</string>
+    <string name="other_expenses">"Прочие расходы"</string>
+
+    <string name="salary">"Зарплата"</string>
+    <string name="money_transfer">"Перевод"</string>
+    <string name="scholarship">"Стипендия"</string>
+    <string name="pension">"Пенсия"</string>
+    <string name="percents">"Проценты"</string>
+    <string name="other_incomes">"Прочие доходы"</string>
 </resources>

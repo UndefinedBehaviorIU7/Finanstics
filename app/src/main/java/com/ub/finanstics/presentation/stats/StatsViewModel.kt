@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.db.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.db.syncData
 import com.ub.finanstics.presentation.calendar.CalendarClass
@@ -36,7 +35,7 @@ class StatsViewModel(
     var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
-    private val repository = StatsRepository(db)
+    private val repository = StatsRepository(application)
 
     private var calendar = CalendarClass()
     private var totalBalance: Int = 0
@@ -61,28 +60,7 @@ class StatsViewModel(
     private fun initialisation() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
-            println(cats)
-            println(cats.size)
-            if (cats.size < MIN_CATEGORIES_SIZE) {
-                db.categoryDao().insertCategory(Category(name = "Еда", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Покупки", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Спорт", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Развлечения", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Образование", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Уход за собой", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Здоровье", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Быт", type = 0))
-                db.categoryDao().insertCategory(Category(name = "Прочие расходы", type = 0))
-
-                db.categoryDao().insertCategory(Category(name = "Зарплата", type = 2))
-                db.categoryDao().insertCategory(Category(name = "Перевод", type = 1))
-                db.categoryDao().insertCategory(Category(name = "Стипендия", type = 2))
-                db.categoryDao().insertCategory(Category(name = "Пенсия", type = 2))
-                db.categoryDao().insertCategory(Category(name = "Проценты", type = 2))
-                db.categoryDao().insertCategory(Category(name = "Прочие доходы", type = 2))
-            }
+            if (cats.size < MIN_CATEGORIES_SIZE) { repository.initCategories() }
         }
     }
 
@@ -193,7 +171,6 @@ class StatsViewModel(
             is StatsUiState.Done -> current.calendar.deepCopy().apply { lastMonth() }
             else -> return
         }
-        println("month ${newCalendar.getData().getMonth()}")
         _date.value = newCalendar
         _uiState.value = StatsUiState.Calendar(newCalendar, totalBalance)
     }
