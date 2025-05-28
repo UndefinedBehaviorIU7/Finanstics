@@ -10,8 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
+@Suppress("TooGenericExceptionCaught")
 class GroupDetailsRepository(private val context: Context) {
-    @Suppress("TooGenericExceptionCaught")
     suspend fun getUserName(userId: Int): String? {
         var res: String? = null
         try {
