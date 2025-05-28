@@ -111,10 +111,13 @@
     <string name="show_password">Показать пароль</string>
     <string name="current_password">Текущий пароль</string>
     <string name="password_change_success">Пароль успешно изменен</string>
+    <string name="error_load_group">Ошибка загрузки групп</string>
+    <string name="error_add_to_server">Ошибка загрузки данных на сервер</string>
+    <string name="сontinue_without_groups">Продолжить без групп</string>
+    <string name="add_only_locally">Добавить только локально</string>
     <string name="add_user_by_tag">Добавить пользователя</string>
     <string name="user_tag">Тег пользователя</string>
     <string name="add">Добавить</string>
-
     <string name="food">"Еда"</string>
     <string name="transport">"Транспорт"</string>
     <string name="taxes">"Налоги/штрафы"</string>
@@ -126,7 +129,6 @@
     <string name="health">"Здоровье"</string>
     <string name="life">"Быт"</string>
     <string name="other_expenses">"Прочие расходы"</string>
-
     <string name="salary">"Зарплата"</string>
     <string name="money_transfer">"Перевод"</string>
     <string name="scholarship">"Стипендия"</string>

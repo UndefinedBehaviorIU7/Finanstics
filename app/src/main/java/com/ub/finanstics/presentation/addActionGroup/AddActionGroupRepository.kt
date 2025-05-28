@@ -3,15 +3,10 @@ package com.ub.finanstics.presentation.addAction
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.db.Category
+import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-
-enum class ErrorAddActionGroupApi(val str: String) {
-    Error("ошибка сервера"),
-    Ok("ок")
-}
 
 @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexCondition")
 class AddActionGroupRepository(
@@ -21,29 +16,41 @@ class AddActionGroupRepository(
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
-    suspend fun getCategoriesNames(type: Int): List<com.ub.finanstics.api.models.Category>? {
+    private fun getCategoriesListByType(
+        allCategories: List<Category>,
+        type: Int
+    ): MutableList<Category>? {
+        val res: MutableList<Category> = mutableListOf()
+        for (el in allCategories) {
+            Log.e("add Category", "Ok")
+            if (el.type == 1 || (el.type == type) || (el.type == 2 && type == 1)) {
+                res.add(el)
+            }
+        }
+        return if (res.size == 0)
+            null
+        else
+            res
+    }
+
+    suspend fun getCategoriesByType(type: Int): List<Category>? {
         val apiRep = ApiRepository()
-        var categories: MutableList<com.ub.finanstics.api.models.Category>? = null
+        var res: MutableList<Category>? = null
         val preferencesManager = PreferencesManager(context)
         val groupId = preferencesManager.getInt("groupId", -1)
+        Log.e("add Category", groupId.toString())
         try {
             val response = apiRep.getGroupCategories(groupId)
             if (response.isSuccessful) {
                 val allCategories = response.body()
-                if (allCategories != null) {
-                    for (el in allCategories) {
-                        if (el.type == 1 || (el.type == type) || (el.type == 2 && type == 1)) {
-                            if (categories == null) categories = mutableListOf()
-                            categories.add(el)
-                        }
-                    }
-                }
+                if (allCategories != null)
+                    res = getCategoriesListByType(allCategories, type)
             }
         } catch (e: Exception) {
-            Log.e("addActionGroupApi ERROR", e.toString())
+            res = null
         }
 
-        return categories
+        return res
     }
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "TooGenericExceptionCaught")
@@ -55,10 +62,10 @@ class AddActionGroupRepository(
         categoryId: Int,
         description: String?,
         duplication: Boolean
-    ): ErrorAddActionGroupApi {
+    ): ErrorAddAction {
         Log.d("addActionGroupApi", "startF")
 
-        var res = ErrorAddActionGroupApi.Ok
+        var res = ErrorAddAction.OK
 
         val apiRep = ApiRepository()
 
@@ -73,7 +80,7 @@ class AddActionGroupRepository(
         Log.d("duplicationqqqq", duplication.toString())
 
         if (userId < 0 || token == "-1") {
-            res = ErrorAddActionGroupApi.Error
+            res = ErrorAddAction.ERROR_ADD_DATA_SERVER
         } else {
             try {
                 val response = apiRep.addAction(
@@ -89,15 +96,16 @@ class AddActionGroupRepository(
                 )
 
                 if (!response.isSuccessful) {
-                    res = ErrorAddActionGroupApi.Error
+                    res = ErrorAddAction.ERROR_ADD_DATA_SERVER
                 }
 
                 Log.d("addActionGroupApi", "res: ${res.str}")
             } catch (e: Exception) {
                 Log.e("addActionGroupApi ERROR", e.toString())
-                res = ErrorAddActionGroupApi.Error
+                res = ErrorAddAction.ERROR_ADD_DATA_SERVER
             }
         }
+        Log.d("addActionApi res", res.str)
         return res
     }
 }

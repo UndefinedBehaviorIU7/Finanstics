@@ -3,6 +3,7 @@ package com.ub.finanstics.presentation.addAction
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -62,6 +63,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,7 +80,7 @@ import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.icons.CalendarIcon
+import com.ub.finanstics.ui.theme.Loader
 import java.time.Instant
 import java.time.ZoneId
 
@@ -427,11 +429,14 @@ fun DrawIdle(
         fontSize = 22.sp
     )
 
-    Form(
-        value = uiState.nameAction,
-        label = stringResource(R.string.name_action),
-        isError = false,
-        lambda = { vm.updateUIState(newNameAction = it) }
+    Selector(
+        value = uiState.category,
+        label = stringResource(R.string.category),
+        expanded = uiState.menuExpandedCategory,
+        allElements = uiState.allCategory,
+        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
+        selected = { vm.updateUIState(newCategory = it) },
+        isError = false
     )
 
     Form(
@@ -441,21 +446,18 @@ fun DrawIdle(
         lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
     )
 
+    Form(
+        value = uiState.nameAction,
+        label = stringResource(R.string.name_action),
+        isError = false,
+        lambda = { vm.updateUIState(newNameAction = it) }
+    )
+
     FormAddData(
         value = uiState.data,
         label = stringResource(R.string.data),
         isError = false,
         lambda = { vm.updateUIState(newData = it) }
-    )
-
-    Selector(
-        value = uiState.category,
-        label = stringResource(R.string.category),
-        expanded = uiState.menuExpandedCategory,
-        allElements = uiState.allCategory,
-        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-        selected = { vm.updateUIState(newCategory = it) },
-        isError = false
     )
 
     Form(
@@ -489,9 +491,8 @@ fun DrawIdle(
             ),
             onClick = {
                 vm.addAction()
-                navController.popBackStack()
             },
-            enabled = vm.validateIdle(uiState) == Error.OK
+            enabled = vm.validateIdle(uiState) == ErrorAddAction.OK
         ) {
             Text(
                 text = stringResource(R.string.add_action),
@@ -507,7 +508,7 @@ fun DrawIdle(
 fun DrawError(
     uiState: AddActionUiState.Error,
     vm: AddActionViewModel,
-    error: Error
+    error: ErrorAddAction
 ) {
     HorizontalDivider(
         thickness = 1.dp,
@@ -523,71 +524,196 @@ fun DrawError(
         fontSize = 22.sp
     )
 
-    Form(
-        value = uiState.nameAction,
-        label = stringResource(R.string.name_action),
-        isError = error == Error.NAME,
-        lambda = { vm.updateUIState(newNameAction = it) }
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Text(
+        text = stringResource(R.string.error_add_to_server),
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 20.sp
     )
 
-    Form(
-        value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-        label = stringResource(R.string.sum),
-        isError = error == Error.MONEY,
-        lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
-    )
+    Spacer(modifier = Modifier.height(16.dp))
 
-    FormAddData(
-        value = uiState.data,
-        label = stringResource(R.string.data),
-        isError = error == Error.DATE,
-        lambda = { vm.updateUIState(newData = it) }
-    )
+    if (error == ErrorAddAction.ERROR_ADD_DATA_SERVER) {
+        Image(
+            painter = painterResource(R.drawable.connection_error),
+            contentDescription = stringResource(R.string.connection_error),
+            modifier = Modifier.size(120.dp)
+        )
 
-    Selector(
-        value = uiState.category,
-        label = stringResource(R.string.category),
-        expanded = uiState.menuExpandedCategory,
-        allElements = uiState.allCategory,
-        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-        selected = { vm.updateUIState(newCategory = it) },
-        isError = error == Error.CATEGORY
-    )
+        Spacer(modifier = Modifier.height(16.dp))
 
-    Form(
-        value = uiState.description,
-        label = stringResource(R.string.description),
-        isError = error == Error.DESCRIPTION,
-        lambda = { vm.updateUIState(newDescription = it) }
-    )
-
-    MultiTypeSelector(
-        selectedItems = uiState.groups,
-        label = stringResource(R.string.duplication_group),
-        expanded = uiState.menuExpandedGroup,
-        allElements = uiState.allGroup,
-        onExpandChange = { vm.updateUIState(newMenuExpandedGroup = it) },
-        onSelectionChanged = { vm.updateUIState(newGroups = it) },
-        isError = false
-    )
-
-    Spacer(modifier = Modifier.height(5.dp))
-
-    BoxWithConstraints(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = { vm.addAction() },
+            onClick = {
+                vm.addAction()
+            },
         ) {
             Text(
-                text = stringResource(R.string.add_action),
-                fontSize = 28.sp
+                text = stringResource(R.string.retry),
+                fontSize = 24.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
+            onClick = {
+                vm.addActionOnlyLocally()
+            },
+        ) {
+            Text(
+                text = stringResource(R.string.add_only_locally),
+                fontSize = 24.sp
+            )
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
+@Composable
+fun DrawErrorLoad(
+    uiState: AddActionUiState.ErrorLoad,
+    vm: AddActionViewModel,
+) {
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = if (uiState.typeAction == ActionType.EXPENSE) ColorsExpenses[0]
+        else ColorsIncomes[1]
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Text(
+        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 22.sp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Text(
+        text = stringResource(R.string.error_load_group),
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 22.sp
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Image(
+        painter = painterResource(R.drawable.connection_error),
+        contentDescription = stringResource(R.string.connection_error),
+        modifier = Modifier.size(120.dp)
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        onClick = {
+            vm.tryLoad(uiState.typeAction)
+        },
+    ) {
+        Text(
+            text = stringResource(R.string.retry),
+            fontSize = 24.sp
+        )
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        onClick = {
+            vm.withoutGroups(uiState.typeAction, uiState.allCategory)
+        },
+    ) {
+        Text(
+            text = stringResource(R.string.сontinue_without_groups),
+            fontSize = 24.sp
+        )
+    }
+}
+
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
+@Composable
+fun DrawSelect(
+    vm: AddActionViewModel,
+) {
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.primary
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Text(
+        text = stringResource(R.string.select_type_action),
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 22.sp
+    )
+    Row(
+        modifier = Modifier
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = { vm.tryLoad(ActionType.EXPENSE) },
+            modifier = Modifier
+                .weight(1f)
+                .height(56.dp)
+                .border(
+                    width = 2.dp,
+                    color = ColorsExpenses[0],
+                    shape = RoundedCornerShape(20.dp)
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Text(
+                stringResource(R.string.expense),
+                fontSize = 22.sp
+            )
+        }
+
+        Button(
+            onClick = { vm.tryLoad(ActionType.INCOME) },
+            modifier = Modifier
+                .weight(1f)
+                .height(56.dp)
+                .border(
+                    width = 2.dp,
+                    color = ColorsIncomes[1],
+                    shape = RoundedCornerShape(20.dp)
+                ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.primary
+            ),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Text(
+                stringResource(R.string.income),
+                fontSize = 22.sp
             )
         }
     }
@@ -601,6 +727,7 @@ fun AddAction(
     navController: NavController
 ) {
     val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
+    var hasNavigatedBack by remember { mutableStateOf(false) }
 
     val charWidth = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 20.sp
@@ -658,73 +785,30 @@ fun AddAction(
                 DrawError(uiState, vm, uiState.error)
             }
 
-            is AddActionUiState.Ok -> {}
+            is AddActionUiState.Ok -> {
+                if (!hasNavigatedBack) {
+                    hasNavigatedBack = true
+                    navController.popBackStack()
+                }
+            }
 
             is AddActionUiState.SelectType -> {
+                DrawSelect(vm)
+            }
 
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(R.string.select_type_action),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 22.sp
-                )
-                Row(
-                    modifier = Modifier
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        onClick = { vm.chooseTypeAndLoad(ActionType.EXPENSE) },
+            is AddActionUiState.Loading -> {
+                BoxWithConstraints {
+                    val width = maxWidth
+                    Loader(
                         modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                            .border(
-                                width = 2.dp,
-                                color = ColorsExpenses[0],
-                                shape = RoundedCornerShape(20.dp)
-                            ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onBackground,
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Text(
-                            stringResource(R.string.expense),
-                            fontSize = 22.sp
-                        )
-                    }
-
-                    Button(
-                        onClick = { vm.chooseTypeAndLoad(ActionType.INCOME) },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(56.dp)
-                            .border(
-                                width = 2.dp,
-                                color = ColorsIncomes[1],
-                                shape = RoundedCornerShape(20.dp)
-                            ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onBackground,
-                            contentColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    ) {
-                        Text(
-                            stringResource(R.string.income),
-                            fontSize = 22.sp
-                        )
-                    }
+                            .fillMaxSize()
+                            .padding(width / 3)
+                    )
                 }
+            }
+
+            is AddActionUiState.ErrorLoad -> {
+                DrawErrorLoad(uiState, vm)
             }
 
             else -> {}
