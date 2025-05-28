@@ -41,8 +41,9 @@ class AddActionGroupViewModel(
 
         return "%02d.%02d.%04d".format(day, month, year)
     }
-    fun tryLoad(type: ActionType) {
 
+    @Suppress("TooGenericExceptionCaught")
+    fun tryLoad(type: ActionType) {
         viewModelScope.launch {
 
             _uiState.value = AddActionGroupUiState.Loading(
@@ -204,6 +205,7 @@ class AddActionGroupViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    @Suppress("ReturnCount", "LongMethod")
     fun addAction() {
         val current = when (val state = _uiState.value) {
             is AddActionGroupUiState.Error -> {
