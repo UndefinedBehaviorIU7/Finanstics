@@ -60,7 +60,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    @Suppress("LongMethod ")
+    @Suppress("LongMethod")
     fun fetchData() {
         _uiState.value = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
