@@ -127,7 +127,7 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
         return res
     }
 
-    @Suppress("NestedBlockDepth")
+    @Suppress("NestedBlockDepth", "TooGenericExceptionCaught")
     suspend fun userImage(userId: Int): Bitmap? = withContext(Dispatchers.IO) {
         try {
             val response = RetrofitInstance.api.getUserImage(userId)
