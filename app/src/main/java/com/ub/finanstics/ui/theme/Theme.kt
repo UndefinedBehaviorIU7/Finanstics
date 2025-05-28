@@ -10,13 +10,16 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.ub.finanstics.ui.theme.Red
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color.White,
     secondary = GreyLight,
     tertiary = YellowSoftDark,
     background = BlackSoft,
-    onBackground = BackDark
+    onBackground = BackDark,
+    error = Red,
+    onError = Color.White,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -24,7 +27,9 @@ private val LightColorScheme = lightColorScheme(
     secondary = GreyDark,
     tertiary = YellowSoftLight,
     background = Color.White,
-    onBackground = BackLight
+    onBackground = BackLight,
+    error = Red,
+    onError = Color.White,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

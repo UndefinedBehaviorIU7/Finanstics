@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -55,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -248,7 +251,11 @@ private fun GroupSettingsColumn(
 
         if (isAdmin || isOwner) {
             Button(
-                onClick = { showAddUserDialog = true }
+                onClick = { showAddUserDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.onBackground,
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text(text = stringResource(R.string.add_user))
             }
@@ -272,7 +279,7 @@ private fun GroupSettingsColumn(
                             vm.addUserByTag(tagInput)
                             showAddUserDialog = false
                             tagInput = ""
-                        }
+                        },
                     ) {
                         Text(stringResource(R.string.add))
                     }
@@ -295,6 +302,8 @@ private fun GroupSettingsColumn(
             navController = navController,
             isOwner = isOwner
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -394,7 +403,7 @@ fun EditableTextField(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent
-                    )
+                    ),
                 )
 
                 IconButton(
@@ -406,29 +415,39 @@ fun EditableTextField(
                         .align(Alignment.CenterEnd)
                         .padding(end = 8.dp)
                 ) {
-                    Icon(Icons.Default.Save, contentDescription = stringResource(R.string.save))
+                    Icon(
+                        Icons.Default.Save,
+                        contentDescription = stringResource(R.string.save),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             } else {
                 Text(
                     text = editableName ?: "",
                     modifier = Modifier.align(Alignment.Center),
-                    style = textStyle
+                    style = textStyle,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 IconButton(
                     onClick = { isEditing = true },
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
+                        .padding(end = 8.dp),
                 ) {
-                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
+                    Icon(
+                        Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.edit),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         } else {
             Text(
                 text = editableName ?: "",
                 modifier = Modifier.align(Alignment.Center),
-                style = textStyle
+                style = textStyle,
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -457,7 +476,7 @@ fun ComposeUserList(
         }
     }
 
-    Surface(
+    Box(
         modifier = Modifier
             .border(1.dp, Color.Gray)
             .padding(8.dp)
@@ -499,13 +518,13 @@ fun ComposeUserList(
                         )
                     }
 
-                    if (!isOwner && (currentUserId == owner.id ||
-                                (isCurrentUserAdmin && !isAdmin))) {
-                        Box {
+                    Box(modifier = Modifier.size(24.dp)) {
+                        if (!isOwner && (currentUserId == owner.id || (isCurrentUserAdmin && !isAdmin))) {
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
                                     Icons.Default.MoreVert,
-                                    contentDescription = stringResource(R.string.actions)
+                                    contentDescription = stringResource(R.string.actions),
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
 
@@ -566,7 +585,8 @@ fun LeaveButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isOwner) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onBackground,
-            contentColor = MaterialTheme.colorScheme.primary
+            contentColor = if (isOwner) MaterialTheme.colorScheme.onError
+            else MaterialTheme.colorScheme.primary
         )
     ) {
         Text(if (isOwner) stringResource(R.string.delete_group)
