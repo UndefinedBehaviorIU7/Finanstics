@@ -127,7 +127,8 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                 ErrorAddAction.ERROR_ADD_DATA_SERVER
         } else {
             try {
-                val categoryId = getGroupCategoryIdByName(groups[0], category)
+                val categoryDao = db.categoryDao()
+                val categoryId = categoryDao.getCategoryByName(category)
                 if (categoryId != null) {
                     val response = apiRep.addAction(
                         userId = userId,
@@ -136,7 +137,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                         type = type,
                         value = value,
                         date = date,
-                        categoryId = categoryId,
+                        categoryId = categoryId.id,
                         description = description,
                         groupId = groups.map { it.id } + listOf(0)
                     )
