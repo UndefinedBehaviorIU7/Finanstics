@@ -25,8 +25,11 @@
     <string name="server_error_401">Ошибка 401</string>
     <string name="server_error_404">Ошибка 404</string>
     <string name="server_error_409">Ошибка 409</string>
+    <string name="no_calendar">Ошибка: данные календаря отсутствуют</string>
+    <string name="invalid_calendar_state">Ошибка: некорректное состояние календаря</string>
     <string name="invalid_login_or_password">Неверный логин или пароль</string>
     <string name="unknown_server_error">Неизвестная ошибка сервера</string>
+    <string name="from_user">От пользователя</string>
     <string name="incomes">Доходы</string>
     <string name="expenses">Расходы</string>
     <string name="income">Доход</string>

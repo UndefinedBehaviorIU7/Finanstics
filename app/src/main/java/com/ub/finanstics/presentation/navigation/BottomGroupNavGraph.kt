@@ -55,9 +55,7 @@ fun BottomGroupNavGraph(
     Box(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        HorizontalPager(
-            state = pagerState
-        ) { page ->
+        HorizontalPager(state = pagerState) { page ->
             val isVisible = page == pagerState.currentPage
             when (page) {
                 0 -> GroupStats(navController, isVisible)
@@ -128,9 +126,10 @@ fun BottomGroupNavGraph(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     PlusActionButton(
-                        navController = navController,
-                        offsetX = offsetX,
-                        Navigation.ADD_ACTION_GROUPS.toString()
+                        onClick = {
+                            navController.navigate(Navigation.ADD_ACTION_GROUPS.toString())
+                                  },
+                        offsetX = offsetX
                     )
                 }
             }
@@ -144,9 +143,7 @@ fun PersonButton(
     offsetX: Dp,
     navController: NavController
 ) {
-    Box(
-        modifier = Modifier.offset(offsetX)
-    ) {
+    Box(modifier = Modifier.offset(offsetX)) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",

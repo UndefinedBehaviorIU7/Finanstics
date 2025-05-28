@@ -21,9 +21,7 @@ class BottomBarViewModel(
         }
     }
 
-    fun show(
-        offset: Dp
-    ) {
+    fun show(offset: Dp) {
         if (uiState.value is BottomBarUiState.Hidden) {
             _uiState.value = BottomBarUiState.Visible(offset)
         }

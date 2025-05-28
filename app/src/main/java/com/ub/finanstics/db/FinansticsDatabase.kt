@@ -27,7 +27,7 @@ abstract class FinansticsDatabase : RoomDatabase() {
                     FinansticsDatabase::class.java,
                     "finanstics_database"
                 )
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 instance

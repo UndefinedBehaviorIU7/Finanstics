@@ -2,17 +2,17 @@ package com.ub.finanstics.presentation.actionView
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -50,6 +50,7 @@ fun ApiActionView(
     isVisible: Boolean,
     onDismiss: () -> Unit,
     color: Color,
+    name: String = "",
     modifier: Modifier
 ) {
     if (isVisible) {
@@ -81,17 +82,15 @@ fun ApiActionView(
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
-
                         Divider(
                             space = 10.dp,
                             after = 0.dp,
                             stroke = 1.dp,
                             color = MaterialTheme.colorScheme.background
                         )
-
                         Column(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .background(
                                     color = MaterialTheme.colorScheme.background
                                 )
@@ -104,7 +103,6 @@ fun ApiActionView(
                                 color = color,
                                 textAlign = TextAlign.Center
                             )
-
                             Spacer(Modifier.height(10.dp))
 
                             Text(
@@ -113,7 +111,6 @@ fun ApiActionView(
                                 color = MaterialTheme.colorScheme.primary,
                                 textAlign = TextAlign.Center
                             )
-
                             Spacer(Modifier.height(10.dp))
 
                             if (action.description != null) {
@@ -121,19 +118,34 @@ fun ApiActionView(
                                     text = action.description,
                                     style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.secondary,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 3
                                 )
                                 Spacer(Modifier.height(10.dp))
                             }
 
-                            Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.Bottom
-                            ) {
+                            if (name.isNotEmpty()) {
+                                Row {
+                                    Text(
+                                        text = stringResource(R.string.from_user),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Spacer(Modifier.width(10.dp))
+                                    Text(
+                                        text = name,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                Spacer(Modifier.height(10.dp))
+                            }
+
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 TextButton(
-                                    onClick = {
-                                        onDismiss()
-                                    },
+                                    onClick = { onDismiss() },
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.onBackground,

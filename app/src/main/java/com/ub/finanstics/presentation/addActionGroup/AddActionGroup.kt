@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.addActionGroup
 
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -45,6 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
+import com.ub.finanstics.presentation.addAction.ActionType
+import com.ub.finanstics.presentation.addAction.AddActionGroupUiState
+import com.ub.finanstics.presentation.addAction.AddActionGroupViewModel
+import com.ub.finanstics.presentation.addAction.Error
+import com.ub.finanstics.presentation.addAction.FormAddData
+import com.ub.finanstics.presentation.addAction.Selector
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
@@ -352,10 +358,12 @@ fun AddActionGroup(
                     color = MaterialTheme.colorScheme.primary
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = stringResource(R.string.select_type_action),
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = 26.sp
+                    fontSize = 22.sp
                 )
                 Row(
                     modifier = Modifier

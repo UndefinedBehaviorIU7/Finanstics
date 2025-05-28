@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.addAction.AddAction
-import com.ub.finanstics.presentation.addAction.AddActionGroup
+import com.ub.finanstics.presentation.addActionGroup.AddActionGroup
 import com.ub.finanstics.presentation.addGroup.AddGroupScreen
 import com.ub.finanstics.presentation.group.GroupMainScreen
 import com.ub.finanstics.presentation.groups.Groups

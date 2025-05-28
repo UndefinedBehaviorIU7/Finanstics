@@ -57,10 +57,6 @@ class StatsRepository(private var db: FinansticsDatabase) {
             .sortedByDescending { it.second }
     }
 
-    suspend fun getAllActions(): List<Triple<String, Int, Int>> {
-        return actionsToTriples(actionDao.getAllActions(), categoryDao.getAllCategories())
-    }
-
     suspend fun getAllCategories(): List<Category> {
         return categoryDao.getAllCategories()
     }
@@ -74,24 +70,11 @@ class StatsRepository(private var db: FinansticsDatabase) {
 
     fun actionsToPairs(actions: List<Action>, categories: List<Category>): List<Pair<String, Int>> {
         val categoryMap = categories.associateBy { it.id }
-
         return actions
             .map { action ->
                 val name = action.categoryId
                     .let { categoryMap[it]!!.name }
                 action.value.let { name to it }
             }
-    }
-
-    fun actionsToTriples(
-        actions: List<Action>,
-        categories: List<Category>
-    ): List<Triple<String, Int, Int>> {
-        val categoryMap = categories.associateBy { it.id }
-
-        return actions.map { action ->
-            val name = categoryMap[action.categoryId]?.name ?: "Unknown"
-            Triple(name, action.value, action.type)
-        }
     }
 }

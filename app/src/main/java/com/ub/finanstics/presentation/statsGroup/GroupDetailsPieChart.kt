@@ -126,6 +126,7 @@ fun GroupDetailsPieChartItem(
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
     var showAction by remember { mutableStateOf(false) }
+    val ownerName by vm.name.collectAsState()
     LaunchedEffect(Unit) { isAnimationPlayed = true }
 
     Surface(
@@ -185,6 +186,7 @@ fun GroupDetailsPieChartItem(
                                         totalSum = data.second,
                                         widthSize = widthSize,
                                         onClick = {
+                                            vm.getActionOwner(action.userId)
                                             showAction = true
                                             vm.viewAction(action)
                                         },
@@ -207,10 +209,7 @@ fun GroupDetailsPieChartItem(
                                         action = action,
                                         totalSum = data.second,
                                         widthSize = widthSize,
-                                        onClick = {
-                                            showAction = true
-                                            vm.viewAction(action)
-                                        },
+                                        onClick = { },
                                         color = color
                                     )
                                 }
@@ -225,20 +224,23 @@ fun GroupDetailsPieChartItem(
             val uiState by vm.uiState.collectAsState()
             if (uiState is GroupDetailsUiState.DetailedAction) {
                 val detState = uiState as GroupDetailsUiState.DetailedAction
-
-                ApiActionView(
-                    action = detState.action,
-                    category = detState.chosen,
-                    isVisible = showAction,
-                    onDismiss = {
-                        showAction = false
-                        vm.hideAction()
-                    },
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(250.dp),
-                    color = color
-                )
+                BoxWithConstraints {
+                    val width = maxWidth
+                    ApiActionView(
+                        action = detState.action,
+                        category = detState.chosen,
+                        isVisible = showAction,
+                        onDismiss = {
+                            showAction = false
+                            vm.forgetActionOwner()
+                            vm.hideAction()
+                        },
+                        modifier = Modifier
+                            .width(width - 20.dp),
+                        name = ownerName,
+                        color = color
+                    )
+                }
             }
         }
     }

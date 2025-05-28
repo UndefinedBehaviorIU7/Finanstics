@@ -23,8 +23,13 @@ import kotlinx.coroutines.launch
 class GroupDetailsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
+    private val repository = GroupDetailsRepository(application)
+
     private val _uiState = MutableStateFlow<GroupDetailsUiState>(GroupDetailsUiState.Default)
     val uiState = _uiState.asStateFlow()
+
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     private val _all = MutableStateFlow(false)
     val all = _all.asStateFlow()
@@ -107,9 +112,25 @@ class GroupDetailsViewModel(
                 actions = uiState.actions,
                 chosen = uiState.chosen,
                 action = action,
+                ownerName = _name.value,
                 type = uiState.type
             )
         }
+    }
+
+    fun getActionOwner(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val ownerName = repository.getUserName(userId)
+                if (ownerName != null) _name.value = ownerName
+            } catch (e: Exception) {
+                Log.e("ACTION", "$e")
+            }
+        }
+    }
+
+    fun forgetActionOwner() {
+        _name.value = ""
     }
 
     fun hideAction() {

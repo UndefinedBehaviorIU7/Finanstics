@@ -2,15 +2,14 @@ package com.ub.finanstics.presentation.actionView
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,7 +63,7 @@ fun LocalActionView(
                     color = MaterialTheme.colorScheme.onBackground
                 ) {
                     Column(
-                        modifier = Modifier.padding(top = 12.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -82,7 +81,7 @@ fun LocalActionView(
 
                         Column(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .background(
                                     color = MaterialTheme.colorScheme.background
                                 )
@@ -117,14 +116,9 @@ fun LocalActionView(
                                 Spacer(Modifier.height(10.dp))
                             }
 
-                            Row(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.Bottom
-                            ) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 TextButton(
-                                    onClick = {
-                                        onDismiss()
-                                    },
+                                    onClick = { onDismiss() },
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.onBackground,

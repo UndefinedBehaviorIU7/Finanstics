@@ -18,8 +18,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -40,16 +44,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
+import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.PieChart
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.Loader
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
@@ -74,9 +81,7 @@ fun GroupStats(
     }
 
     DisposableEffect(Unit) {
-        onDispose {
-            vm.cancelUpdate()
-        }
+        onDispose { vm.cancelUpdate() }
     }
 
     Box(
@@ -84,11 +89,7 @@ fun GroupStats(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
-            .padding(
-                top = 25.dp,
-                start = 20.dp,
-                end = 20.dp,
-            )
+            .padding(top = 13.dp),
     ) {
         Row(
             modifier = if (detState is GroupDetailsUiState.DetailedAction)
@@ -108,30 +109,34 @@ fun GroupStats(
 
                 is GroupStatsUiState.Calendar -> {
                     val calendar = uiState.calendar
-                    Column() {
+                    Column {
                         Header(
-                            preferencesManager.getString("groupName", ""),
-                            uiState.all,
-                            vm,
-                            dvm
+                            groupName = preferencesManager
+                                .getString("groupName", ""),
+                            isClicked = uiState.all,
+                            vm = vm,
+                            dvm = dvm,
+                            navController = navController
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
                             calendar = calendar,
                             vm = vm,
-                            dvm = dvm
+                            dvm = dvm,
                         )
                     }
                 }
 
                 is GroupStatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
-                    Column() {
+                    Column {
                         Header(
-                            preferencesManager.getString("groupName", ""),
-                            uiState.all,
-                            vm,
-                            dvm
+                            groupName = preferencesManager
+                                .getString("groupName", ""),
+                            isClicked = uiState.all,
+                            vm = vm,
+                            dvm = dvm,
+                            navController = navController
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
@@ -154,10 +159,12 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
                         Header(
-                            preferencesManager.getString("groupName", ""),
-                            uiState.all,
-                            vm,
-                            dvm
+                            groupName = preferencesManager
+                                .getString("groupName", ""),
+                            isClicked = uiState.all,
+                            vm = vm,
+                            dvm = dvm,
+                            navController = navController
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         GroupCalendarSwitch(
@@ -185,20 +192,39 @@ fun Header(
     groupName: String,
     isClicked: Boolean,
     vm: GroupStatsViewModel = viewModel(),
-    dvm: GroupDetailsViewModel
+    dvm: GroupDetailsViewModel,
+    navController: NavController
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 10.dp,
+                end = 20.dp
+            ),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        IconButton(
+            onClick = { navController.navigate(Navigation.GROUPS.toString()) },
+            modifier = Modifier
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         Spacer(modifier = Modifier.weight(0.1f))
         Text(
             text = groupName,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Spacer(modifier = Modifier.weight(0.2f))
@@ -240,7 +266,9 @@ fun GroupStatsView(
     val expenses by vm.expenses.collectAsState()
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
     ) {
         val configuration = LocalConfiguration.current
         val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -297,7 +325,7 @@ fun GroupStatsViewVertical(
                 .padding(top = 5.dp)
         ) {
             item {
-                Row() {
+                Row {
                     Column(modifier = Modifier.weight(1f)) {
                         PieChart(
                             data = incomes,
@@ -346,7 +374,7 @@ fun GroupStatsViewVertical(
                     vm = dvm
                 )
             }
-            item { Spacer(modifier = Modifier.height(50.dp)) }
+            item { Spacer(modifier = Modifier.height(OFFSET_BAR + 60.dp)) }
         }
     }
 }
@@ -362,10 +390,8 @@ fun GroupStatsViewHorizontal(
 ) {
     val uiState = vm.uiState.collectAsState().value
     if (uiState is GroupStatsUiState.Done) {
-        Row() {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+        Row {
+            Column(modifier = Modifier.weight(1f)) {
                 Row(
                     modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.CenterVertically
@@ -388,9 +414,7 @@ fun GroupStatsViewHorizontal(
                     }
                 }
             }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 LazyColumn {
                     item {
                         GroupDetailsPieChart(

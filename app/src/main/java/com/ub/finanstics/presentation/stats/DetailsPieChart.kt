@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.R
 import com.ub.finanstics.db.Action
 import com.ub.finanstics.presentation.actionView.LocalActionView
@@ -212,19 +211,20 @@ fun DetailsPieChartItem(
             val uiState by vm.uiState.collectAsState()
             if (uiState is DetailsUiState.DetailedAction) {
                 val detState = uiState as DetailsUiState.DetailedAction
-                LocalActionView(
-                    action = detState.action,
-                    category = detState.chosen,
-                    isVisible = showAction,
-                    onDismiss = {
-                        showAction = false
-                        vm.hideAction()
-                    },
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(250.dp),
-                    color = color
-                )
+                BoxWithConstraints {
+                    val width = maxWidth
+                    LocalActionView(
+                        action = detState.action,
+                        category = detState.chosen,
+                        isVisible = showAction,
+                        onDismiss = {
+                            showAction = false
+                            vm.hideAction()
+                        },
+                        modifier = Modifier.width(width - 20.dp),
+                        color = color
+                    )
+                }
             }
         }
     }

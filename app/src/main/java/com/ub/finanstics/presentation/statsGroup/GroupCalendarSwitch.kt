@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,7 +35,8 @@ fun GroupCalendarSwitch(
     val data = calendar.getData()
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -52,7 +54,7 @@ fun GroupCalendarSwitch(
         )
 
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
@@ -67,7 +69,7 @@ fun GroupCalendarSwitch(
             )
         }
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(

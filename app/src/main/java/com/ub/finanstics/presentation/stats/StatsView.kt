@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.ui.theme.Divider
 import com.ub.finanstics.ui.theme.Loader
+import com.ub.finanstics.ui.theme.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
@@ -75,7 +76,6 @@ fun Stats(
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
             .padding(
-                top = 25.dp,
                 start = 20.dp,
                 end = 20.dp,
             )
@@ -90,7 +90,6 @@ fun Stats(
                         modifier = Modifier
                     )
                 }
-
                 is StatsUiState.Calendar -> {
                     val calendar = uiState.calendar
                     Column {
@@ -102,7 +101,6 @@ fun Stats(
                         )
                     }
                 }
-
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
                     Column() {
@@ -117,7 +115,6 @@ fun Stats(
                         )
                     }
                 }
-
                 is StatsUiState.Done -> {
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
@@ -135,7 +132,6 @@ fun Stats(
                         )
                     }
                 }
-
                 is StatsUiState.Error -> StatsErrorView(uiState.message)
             }
         }
@@ -255,7 +251,7 @@ fun StatsViewVertical(
                     expenses = true
                 )
             }
-            item { Spacer(modifier = Modifier.height(60.dp)) }
+            item { Spacer(modifier = Modifier.height(OFFSET_BAR + 60.dp)) }
         }
     }
 }
