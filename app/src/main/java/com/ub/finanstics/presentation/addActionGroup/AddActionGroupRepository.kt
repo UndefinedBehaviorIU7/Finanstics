@@ -16,7 +16,10 @@ class AddActionGroupRepository(
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
-    private fun getCategoriesListByType(allCategories: List<Category>, type: Int): MutableList<Category>? {
+    private fun getCategoriesListByType(
+        allCategories: List<Category>,
+        type: Int
+    ): MutableList<Category>? {
         val res: MutableList<Category> = mutableListOf()
         for (el in allCategories) {
             Log.e("add Category", "Ok")

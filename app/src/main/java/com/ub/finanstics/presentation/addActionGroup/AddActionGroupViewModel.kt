@@ -5,19 +5,14 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.fcm.regFirebaseToken
-import com.ub.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Calendar
-
-
 
 class AddActionGroupViewModel(
     application: Application
@@ -102,8 +97,6 @@ class AddActionGroupViewModel(
             }
         }
     }
-
-
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
     fun updateUIState(
@@ -361,6 +354,4 @@ class AddActionGroupViewModel(
 //
 //        return error
 //    }
-
-
 }

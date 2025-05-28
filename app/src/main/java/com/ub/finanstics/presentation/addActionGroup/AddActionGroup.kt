@@ -1,7 +1,6 @@
 package com.ub.finanstics.presentation.addActionGroup
 
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -55,7 +54,7 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.addAction.ActionType
 import com.ub.finanstics.presentation.addAction.AddActionGroupUiState
 import com.ub.finanstics.presentation.addAction.AddActionGroupViewModel
-import com.ub.finanstics.presentation.addAction.Error
+import com.ub.finanstics.presentation.addAction.ErrorAddAction
 import com.ub.finanstics.presentation.addAction.FormAddData
 import com.ub.finanstics.presentation.addAction.Selector
 import com.ub.finanstics.presentation.forms.Form
@@ -230,8 +229,8 @@ fun DrawErrorGroup(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    if (error == ErrorAddAction.ERROR_LOADING_DATA_SERVER
-        || error == ErrorAddAction.ERROR_ADD_DATA_SERVER)
+    if (error == ErrorAddAction.ERROR_LOADING_DATA_SERVER ||
+        error == ErrorAddAction.ERROR_ADD_DATA_SERVER)
     {
         Image(
             painter = painterResource(R.drawable.connection_error),
