@@ -127,7 +127,7 @@ fun ApiActionView(
                             if (name.isNotEmpty()) {
                                 Row {
                                     Text(
-                                        text = "От пользователя",
+                                        text = stringResource(R.string.from_user),
                                         style = MaterialTheme.typography.titleLarge,
                                         color = MaterialTheme.colorScheme.primary,
                                         textAlign = TextAlign.Center
