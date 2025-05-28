@@ -25,6 +25,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 
+@Suppress("TooManyFunctions")
 class GroupSettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = GroupSettingsRepository(application.applicationContext)
 
@@ -62,6 +63,200 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
+    fun changeGroupName(groupName: String) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                if (groupName == "") {
+                    _uiState.value = GroupSettingsUiState.Error("Имя группы не должно быть пустым")
+                } else {
+                    viewModelScope.launch {
+                        val success = repository.updateGroupInfo(
+                            groupId = current.groupId,
+                            name = groupName,
+                            groupData = current.groupData,
+                            users = current.users,
+                            admins = current.admins ?: emptyList<Int>()
+                        )
+                        if (success) {
+                            _uiState.value = current.copy(
+                                groupData = groupName
+                            )
+                        } else {
+                            _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                        }
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun onDataChange(newData: String) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                _uiState.value = current.copy(groupData = newData)
+            }
+
+            else -> Unit
+        }
+    }
+
+    fun changeGroupData(groupData: String?) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = groupData,
+                        users = current.users,
+                        admins = current.admins ?: emptyList<Int>()
+                    )
+                    if (success) {
+                        _uiState.value = current.copy(
+                            groupData = groupData
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun promoteUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedAdmins = (current.admins ?: emptyList()).toMutableList().apply {
+                        if (!contains(userId)) add(userId)
+                    }
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = current.users,
+                        admins = updatedAdmins
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun demoteUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedAdmins = (current.admins ?: emptyList()).minus(userId)
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = current.users,
+                        admins = updatedAdmins
+                    )
+                    if (success) {
+                        _uiState.value = current.copy(
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun removeUser(userId: Int) {
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val updatedUsers = current.users.minus(userId)
+                    val updatedAdmins = current.admins?.minus(userId)
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = updatedUsers,
+                        admins = updatedAdmins ?: emptyList<Int>()
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            users = updatedUsers,
+                            admins = updatedAdmins
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
+    fun addUserByTag(tag: String) {
+        if (tag.isBlank()) {
+            _uiState.value = GroupSettingsUiState.Error("Тег пользователя не может быть пустым")
+            return
+        }
+
+        when (val current = _uiState.value) {
+            is GroupSettingsUiState.Idle -> {
+                viewModelScope.launch {
+                    val userId = repository.getUserByTag(tag) ?: run {
+                        _uiState.value = GroupSettingsUiState.Error("Пользователь не найден")
+                        return@launch
+                    }
+
+                    if (current.users.contains(userId)) {
+                        _uiState.value = GroupSettingsUiState.Error("Пользователь уже в группе")
+                        return@launch
+                    }
+
+                    val user = repository.getUserById(userId) ?: run {
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка")
+                        return@launch
+                    }
+
+                    val updatedUsers = current.users + userId
+                    val updatedMembers = current.members + user
+
+                    val success = repository.updateGroupInfo(
+                        groupId = current.groupId,
+                        name = current.groupName,
+                        groupData = current.groupData,
+                        users = updatedUsers,
+                        admins = current.admins ?: emptyList<Int>()
+                    )
+
+                    if (success) {
+                        _uiState.value = current.copy(
+                            users = updatedUsers,
+                            members = updatedMembers
+                        )
+                    } else {
+                        _uiState.value = GroupSettingsUiState.Error("Ошибка добавления")
+                    }
+                }
+            }
+            else -> Unit
+        }
+    }
+
     fun getUserId(): Int {
         val prefManager = PreferencesManager(application)
         return prefManager.getInt("id", -1)
@@ -87,12 +282,8 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
 
                 val newBitmap = uriToBitmap(getApplication(), uri)
                 viewModelScope.launch {
-                    val success = repository.updateGroup(
+                    val success = repository.updateGroupImage(
                         groupId = current.groupId,
-                        name = current.groupName,
-                        data = current.groupData.toString(),
-                        users = current.users,
-                        admins = current.admins,
                         image = imagePart
                     )
                     if (success) {
@@ -100,41 +291,6 @@ class GroupSettingsViewModel(application: Application) : AndroidViewModel(applic
                             imageUri = uri,
                             imageBitmap = newBitmap
                         )
-                    } else {
-                        _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
-                    }
-                }
-            }
-            else -> Unit
-        }
-    }
-
-    fun removeUser(userId: Int) {
-        when (val current = _uiState.value) {
-            is GroupSettingsUiState.Idle -> {
-                if (current.imageUri == null) return
-
-                val imagePart = createMultipartBodyPart(current.imageUri) ?: run {
-                    _uiState.value = GroupSettingsUiState.Error("Не удалось подготовить файл")
-                    return
-                }
-
-                val newUsers = current.users?.filter { it != userId } ?: emptyList()
-                viewModelScope.launch {
-                    val success = repository.updateGroup(
-                        groupId = current.groupId,
-                        name = current.groupName,
-                        data = current.groupData.toString(),
-                        users = current.users,
-                        admins = current.admins,
-                        image = imagePart
-                    )
-                    if (success) {
-//                        _uiState.value = current.copy(
-//                            users = newUsers,
-//                            members = current.members?.filter { it.id != userId }
-//                        )
-                        fetchGroupData()
                     } else {
                         _uiState.value = GroupSettingsUiState.Error("Сервер вернул ошибку")
                     }

@@ -80,10 +80,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
-    println(categoryDao.getAllCategories())
     val unsyncedCategories = categoryDao.getUnsyncedCategories()
-    println("Unsynced categories:")
-    println(unsyncedCategories)
 
     unsyncedCategories.forEach { category ->
         try {
@@ -140,18 +137,11 @@ suspend fun syncServerWithLocalActions(application: Application) {
         }
         val serverActions = response.body()
         val localActions = db.actionDao().getAllActions()
-        println(localActions)
-
         serverActions?.forEach { serverAction ->
             var new = true
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }
             if (!new) return@forEach
 
-            println(serverAction)
-            Log.i(
-                "Sync",
-                "Load action ${serverAction.name} from server"
-            )
             if (categoryDao.getCategoryByServerId(serverAction.category_id) == null) {
                 Log.e(
                     "Sync",
@@ -171,10 +161,6 @@ suspend fun syncServerWithLocalActions(application: Application) {
             )
             actionDao.insertAction(newAction)
         }
-        Log.i(
-            "Sync",
-            "Loaded actions from server to local db"
-        )
     } catch (e: Exception) {
         Log.e(
             "Sync",
@@ -223,10 +209,6 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     cat.id,
                     serverCategory.created_at!!
                 )
-                Log.i(
-                    "Sync",
-                    "Category ${cat.name} updated from server id"
-                )
                 return@forEach
             }
             categoryDao.insertCategory(
@@ -237,15 +219,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     createdAt = serverCategory.created_at
                 )
             )
-            Log.i(
-                "Sync",
-                "Category ${serverCategory.name} loaded from server"
-            )
         }
-        Log.i(
-            "Sync",
-            "Loaded categories from server to local db is done"
-        )
     } catch (e: Exception) {
         Log.e(
             "Sync",

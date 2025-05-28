@@ -34,21 +34,25 @@ class GroupSettingsRepository(private val context: Context) {
     }
 
     @Suppress("TooGenericExceptionCaught")
-    suspend fun getUsersByIds(users: List<Int>): List<User>? = coroutineScope {
-        try {
-            val deferredResults = users.map { userId ->
-                async { getUserById(userId) }
-            }
-
-            val result = mutableListOf<User>()
-            for (deferred in deferredResults) {
-                deferred.await()?.let { user ->
-                    result.add(user)
-                } ?: return@coroutineScope null
-            }
-            result
-        } catch (e: Exception) {
+    suspend fun getUsersByIds(users: List<Int>?): List<User>? = coroutineScope {
+        if (users == null) {
             null
+        } else {
+            try {
+                val deferredResults = users.map { userId ->
+                    async { getUserById(userId) }
+                }
+
+                val result = mutableListOf<User>()
+                for (deferred in deferredResults) {
+                    deferred.await()?.let { user ->
+                        result.add(user)
+                    } ?: return@coroutineScope null
+                }
+                result
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
@@ -97,49 +101,27 @@ class GroupSettingsRepository(private val context: Context) {
                             errorMsg = context.getString(R.string.unknown_server_error)
                         )
                     } else {
-                        if (group.users == null) {
-                            val bitmapDeferred = async(Dispatchers.IO) {
-                                getGroupImage(group.id)
-                            }
-                            val bitmap = bitmapDeferred.await()
-
-                            GroupSettingsUiState.Idle(
-                                groupId = group.id,
-                                groupName = group.name,
-                                groupData = group.groupData,
-                                imageUri = null,
-                                imageBitmap = bitmap,
-                                owner = owner,
-                                users = group.users,
-                                admins = group.admins,
-                                members = null
+                        val members = getUsersByIds(group.users)
+                            ?: return@coroutineScope GroupSettingsUiState.Error(
+                                errorMsg = context.getString(R.string.unknown_server_error)
                             )
-                        } else {
-                            val members = getUsersByIds(group.users)
 
-                            if (members == null) {
-                                GroupSettingsUiState.Error(
-                                    errorMsg = context.getString(R.string.unknown_server_error)
-                                )
-                            }
-
-                            val bitmapDeferred = async(Dispatchers.IO) {
-                                getGroupImage(group.id)
-                            }
-                            val bitmap = bitmapDeferred.await()
-
-                            GroupSettingsUiState.Idle(
-                                groupId = group.id,
-                                groupName = group.name,
-                                groupData = group.groupData,
-                                imageUri = null,
-                                imageBitmap = bitmap,
-                                owner = owner,
-                                users = group.users,
-                                admins = group.admins,
-                                members = members
-                            )
+                        val bitmapDeferred = async(Dispatchers.IO) {
+                            getGroupImage(group.id)
                         }
+                        val bitmap = bitmapDeferred.await()
+
+                        GroupSettingsUiState.Idle(
+                            groupId = group.id,
+                            groupName = group.name,
+                            groupData = group.groupData,
+                            imageUri = null,
+                            imageBitmap = bitmap,
+                            owner = owner,
+                            users = group.users,
+                            admins = group.admins,
+                            members = members
+                        )
                     }
                 } else {
                     GroupSettingsUiState.Error(
@@ -184,37 +166,58 @@ class GroupSettingsRepository(private val context: Context) {
     }
 
     @Suppress("LongParameterList", "TooGenericExceptionCaught")
-    suspend fun updateGroup(
+    suspend fun updateGroupInfo(
         groupId: Int,
         name: String,
-        data: String?,
-        users: List<Int>?,
-        admins: List<Int>?,
-        image: MultipartBody.Part?
+        groupData: String?,
+        users: List<Int>,
+        admins: List<Int>
     ): Boolean {
         return try {
             val gson = Gson()
+            val token = EncryptedPreferencesManager(context)
+                .getString("token", "")
+
+            val usersJson = gson.toJson(users)
+            val adminsJson = gson.toJson(admins)
+
+            val response = RetrofitInstance.api.updateGroupInfo(
+                groupId = groupId,
+                token = token,
+                name = name,
+                groupData = groupData ?: "",
+                users = usersJson,
+                admins = adminsJson
+            )
+
+            if (!response.isSuccessful) {
+                response.errorBody()?.close()
+                return false
+            }
+
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun updateGroupImage(
+        groupId: Int,
+        image: MultipartBody.Part
+    ): Boolean {
+        return try {
             val mediaTypeText = "text/plain".toMediaType()
-            val mediaTypeJson = "application/json; charset=utf-8".toMediaType()
 
             val token = EncryptedPreferencesManager(context)
                 .getString("token", "")
                 .toRequestBody(mediaTypeText)
 
             val groupIdBody = groupId.toString().toRequestBody(mediaTypeText)
-            val nameBody = name.toRequestBody(mediaTypeText)
-            val dataBody = (data ?: "").toRequestBody(mediaTypeText)
 
-            val usersBody = gson.toJson(users ?: emptyList<Int>()).toRequestBody(mediaTypeJson)
-            val adminsBody = gson.toJson(admins ?: emptyList<Int>()).toRequestBody(mediaTypeJson)
-
-            val response = RetrofitInstance.api.updateGroupData(
+            val response = RetrofitInstance.api.updateGroupImage(
                 groupId = groupIdBody,
                 token = token,
-                name = nameBody,
-                groupData = dataBody,
-                users = usersBody,
-                admins = adminsBody,
                 image = image
             )
 
@@ -226,6 +229,21 @@ class GroupSettingsRepository(private val context: Context) {
             true
         } catch (e: Exception) {
             false
+        }
+    }
+
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")
+    suspend fun getUserByTag(tag: String): Int? {
+        try {
+            val response = RetrofitInstance.api.getUserByTag(tag)
+
+            return if (response.isSuccessful) {
+                response.body()!!.id
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            return null
         }
     }
 }

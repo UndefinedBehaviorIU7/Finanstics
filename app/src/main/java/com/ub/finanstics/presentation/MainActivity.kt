@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,10 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.FirebaseApp
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.addAction.AddAction
-import com.ub.finanstics.presentation.addAction.AddActionGroup
+import com.ub.finanstics.presentation.addActionGroup.AddActionGroup
 import com.ub.finanstics.presentation.addGroup.AddGroupScreen
 import com.ub.finanstics.presentation.group.GroupMainScreen
 import com.ub.finanstics.presentation.groups.Groups
@@ -51,7 +49,6 @@ enum class Navigation {
 
 @Suppress("LongMethod")
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     companion object {
         private const val KEY_NOTIFICATIONS_ASKED = "notifications_asked"
     }
@@ -62,8 +59,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         askNotificationPermissionOnce()
         createNotificationChannel()
-        val initialized = FirebaseApp.getApps(this).isNotEmpty()
-        Log.d("FirebaseInit", "Is FirebaseApp initialized? $initialized")
         enableEdgeToEdge()
 
         setContent {
@@ -152,7 +147,7 @@ class MainActivity : ComponentActivity() {
             if (!isGranted) {
                 Toast.makeText(
                     this,
-                    "Для уведомлений предоставьте разрешение в настройках",
+                    getString(R.string.notifications_permission),
                     Toast.LENGTH_LONG
                 ).show()
             }

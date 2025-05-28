@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.addActionGroup
 
 import android.os.Build
 import android.util.Log
@@ -52,6 +52,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
+import com.ub.finanstics.presentation.addAction.ActionType
+import com.ub.finanstics.presentation.addAction.AddActionGroupUiState
+import com.ub.finanstics.presentation.addAction.AddActionGroupViewModel
+import com.ub.finanstics.presentation.addAction.Error
+import com.ub.finanstics.presentation.addAction.FormAddData
+import com.ub.finanstics.presentation.addAction.Selector
 import com.ub.finanstics.presentation.forms.Form
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes

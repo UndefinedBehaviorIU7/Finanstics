@@ -126,6 +126,7 @@ fun GroupDetailsPieChartItem(
 ) {
     var isAnimationPlayed by remember { mutableStateOf(false) }
     var showAction by remember { mutableStateOf(false) }
+    val ownerName by vm.name.collectAsState()
     LaunchedEffect(Unit) { isAnimationPlayed = true }
 
     Surface(
@@ -144,8 +145,7 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier.padding(end = 15.dp),
                         text = data.first,
                         fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = if (data.first.length < 10) 16.sp
-                        else (16 - (data.first.length - 10) * 3).sp,
+                        fontSize = 16.sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -162,8 +162,8 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier.padding(start = 15.dp),
                         text = value,
                         fontWeight = FontWeight.Medium,
-                        fontSize = if (value.length < 6) 16.sp
-                        else (16 - (value.length - 6) * 3).sp,
+                        fontSize = if (value.length < 5) 16.sp
+                        else (16 - (value.length - 5) * 3).sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -185,6 +185,7 @@ fun GroupDetailsPieChartItem(
                                         totalSum = data.second,
                                         widthSize = widthSize,
                                         onClick = {
+                                            vm.getActionOwner(action.userId)
                                             showAction = true
                                             vm.viewAction(action)
                                         },
@@ -207,10 +208,7 @@ fun GroupDetailsPieChartItem(
                                         action = action,
                                         totalSum = data.second,
                                         widthSize = widthSize,
-                                        onClick = {
-                                            showAction = true
-                                            vm.viewAction(action)
-                                        },
+                                        onClick = { },
                                         color = color
                                     )
                                 }
@@ -225,20 +223,23 @@ fun GroupDetailsPieChartItem(
             val uiState by vm.uiState.collectAsState()
             if (uiState is GroupDetailsUiState.DetailedAction) {
                 val detState = uiState as GroupDetailsUiState.DetailedAction
-
-                ApiActionView(
-                    action = detState.action,
-                    category = detState.chosen,
-                    isVisible = showAction,
-                    onDismiss = {
-                        showAction = false
-                        vm.hideAction()
-                    },
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(250.dp),
-                    color = color
-                )
+                BoxWithConstraints {
+                    val width = maxWidth
+                    ApiActionView(
+                        action = detState.action,
+                        category = detState.chosen,
+                        isVisible = showAction,
+                        onDismiss = {
+                            showAction = false
+                            vm.forgetActionOwner()
+                            vm.hideAction()
+                        },
+                        modifier = Modifier
+                            .width(width - 20.dp),
+                        name = ownerName,
+                        color = color
+                    )
+                }
             }
         }
     }
@@ -291,6 +292,8 @@ fun ActionInfo(
                 .weight(2f)
                 .padding(start = 15.dp),
             text = action.value.toString(),
+            fontSize = if (action.value.toString().length < 5) 16.sp
+            else (16 - (action.value.toString().length - 5) * 3).sp,
             color = MaterialTheme.colorScheme.primary
         )
     }

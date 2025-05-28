@@ -52,7 +52,7 @@ fun CalendarSwitch(
         )
 
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
@@ -67,7 +67,7 @@ fun CalendarSwitch(
             )
         }
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(

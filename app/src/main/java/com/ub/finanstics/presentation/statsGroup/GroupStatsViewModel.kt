@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.R
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
@@ -47,14 +48,19 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
             _uiState.value = GroupStatsUiState.Loading
             _uiState.value = GroupStatsUiState.Calendar(calendar, all, 0)
         } catch (e: NullPointerException) {
-            _uiState.value = GroupStatsUiState.Error("Ошибка: данные календаря отсутствуют")
+            _uiState.value = GroupStatsUiState.Error(application.getString(R.string.no_calendar))
         } catch (e: IllegalStateException) {
-            _uiState.value = GroupStatsUiState.Error("Ошибка: некорректное состояние календаря")
+            _uiState.value = GroupStatsUiState.Error(
+                application.getString(R.string.invalid_calendar_state)
+            )
         } catch (e: Exception) {
-            _uiState.value = GroupStatsUiState.Error("Неизвестная ошибка: ${e.message}")
+            _uiState.value = GroupStatsUiState.Error(
+                application.getString(R.string.unknown_error) + ": ${e.message}"
+            )
         }
     }
 
+    @Suppress("LongMethod")
     fun fetchData() {
         _uiState.value = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
@@ -81,6 +87,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                             all = all,
                             totalBalance = totalBalance
                         )
+                        _incomes.value = totalIncomes
+                        _expenses.value = totalExpenses
                     } else {
                         val incomes = repository.getIncomes(
                             calendar.getData().getMonth(),

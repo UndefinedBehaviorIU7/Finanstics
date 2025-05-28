@@ -15,6 +15,7 @@ sealed class GroupDetailsUiState {
         val actions: List<Action>,
         val chosen: String,
         val action: Action,
+        val ownerName: String,
         val type: Int
     ) : GroupDetailsUiState()
 }

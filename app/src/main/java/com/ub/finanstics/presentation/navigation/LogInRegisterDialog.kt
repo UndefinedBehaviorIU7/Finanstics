@@ -93,7 +93,7 @@ fun LogInRegisterDialog(
 
                         Spacer(Modifier.height(12.dp))
 
-                        Row() {
+                        Row {
                             TextButton(
                                 onClick = {
                                     onLoginPressed()
@@ -114,9 +114,7 @@ fun LogInRegisterDialog(
                             Spacer(Modifier.width(20.dp))
 
                             TextButton(
-                                onClick = {
-                                    onRegisterPressed()
-                                },
+                                onClick = { onRegisterPressed() },
                                 modifier = Modifier
                                     .background(
                                         color = MaterialTheme.colorScheme.background,

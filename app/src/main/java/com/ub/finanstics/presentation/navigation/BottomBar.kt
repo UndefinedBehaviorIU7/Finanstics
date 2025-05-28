@@ -48,17 +48,13 @@ fun BottomBar(
 ) {
     val blocked by vm.blocked.collectAsState()
     if (vm.uiState.collectAsState().value is BottomBarUiState.Visible) {
-        Box(
-            contentAlignment = Alignment.BottomCenter
-        ) {
+        Box(contentAlignment = Alignment.BottomCenter) {
             BarPanel(
                 pagerState = pagerState,
                 screens = screens,
                 vm = vm
             )
-            if (!blocked) {
-                VisiblePanel(vm)
-            }
+            if (!blocked) { VisiblePanel(vm) }
         }
     }
 }
@@ -84,9 +80,7 @@ fun BarPanel(
             .fillMaxWidth()
             .pointerInput(Unit) {
                 detectVerticalDragGestures { change, dragAmount ->
-                    if (dragAmount > 20f) {
-                        vm.hide()
-                    }
+                    if (dragAmount > 20f) { vm.hide() }
                 }
             },
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -115,9 +109,7 @@ fun VisiblePanel(
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
+        Spacer(modifier = Modifier.weight(1f))
         Box(
             modifier = Modifier.size(160.dp),
             contentAlignment = Alignment.Center
@@ -143,9 +135,7 @@ fun VisiblePanel(
                     .background(Color.Transparent)
             )
         }
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
