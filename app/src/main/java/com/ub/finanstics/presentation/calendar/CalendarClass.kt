@@ -190,6 +190,10 @@ data class ActionDataClass(
         return userName
     }
 
+    fun getUserId(): Int {
+        return userId
+    }
+
     fun getActionName(): String {
         return actionName
     }

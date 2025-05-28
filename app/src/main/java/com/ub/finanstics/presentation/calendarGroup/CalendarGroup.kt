@@ -519,6 +519,8 @@ fun CalendarGroup(
                     onDismiss = {
                         vm.hideAction()
                     },
+                    imageBitmap = uiState.imageBitmap,
+                    name = uiState.name,
                     modifier = Modifier
                         .width(380.dp)
                         .height(250.dp),

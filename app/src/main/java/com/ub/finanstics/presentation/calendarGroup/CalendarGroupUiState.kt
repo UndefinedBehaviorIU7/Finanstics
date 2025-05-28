@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.calendar
 
+import android.graphics.Bitmap
 import com.ub.finanstics.db.Action
 
 sealed class CalendarGroupUiState {
@@ -24,7 +25,9 @@ sealed class CalendarGroupUiState {
         val day: DayClass?,
         val action: com.ub.finanstics.api.models.Action,
         val category: String,
-        val type: Int
+        val type: Int,
+        val name: String,
+        val imageBitmap: Bitmap? = null,
     ) : CalendarGroupUiState()
 }
 

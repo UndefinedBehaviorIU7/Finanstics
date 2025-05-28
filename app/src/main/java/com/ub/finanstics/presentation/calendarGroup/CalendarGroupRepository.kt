@@ -1,12 +1,17 @@
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -54,25 +59,6 @@ fun getCategoryById(
     return null
 }
 
-@Suppress("TooGenericExceptionCaught")
-suspend fun getUserName(
-    userId: Int
-): String? {
-    var res: String? = null
-    Log.d("getUserNameuserId", userId.toString())
-    try {
-        val apiRep = ApiRepository()
-        val response = apiRep.getUser(userId)
-        if (!response.isSuccessful) {
-            Log.e("getUserName", "not isSuccessful")
-        } else {
-            res = response.body()?.username
-        }
-    } catch (e: Exception) {
-        Log.e("getUserName", e.toString())
-    }
-    return res
-}
 
 @Suppress("ReturnCount", "TooGenericExceptionCaught")
 suspend fun getCategoriesById(
@@ -118,6 +104,49 @@ suspend fun getArrayDataClass(
 }
 
 class CalendarGroupRepository(private var db: FinansticsDatabase) {
+
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun getUserName(
+        userId: Int
+    ): String? {
+        var res: String? = null
+        Log.d("getUserNameuserId", userId.toString())
+        try {
+            val apiRep = ApiRepository()
+            val response = apiRep.getUser(userId)
+            if (!response.isSuccessful) {
+                Log.e("getUserName", "not isSuccessful")
+            } else {
+                res = response.body()?.username
+            }
+        } catch (e: Exception) {
+            Log.e("getUserName", e.toString())
+        }
+        return res
+    }
+
+    @Suppress("NestedBlockDepth")
+    suspend fun userImage(userId: Int): Bitmap? = withContext(Dispatchers.IO) {
+        try {
+            val response = RetrofitInstance.api.getUserImage(userId)
+            if (response.isSuccessful) {
+                response.body()?.byteStream().use { stream ->
+                    if (stream != null) {
+                        BitmapFactory.decodeStream(stream)
+                    } else {
+                        Log.d("userImage", "1")
+                        null
+                    }
+                }
+            } else {
+                Log.d("userImage", "2")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("userImage", e.toString())
+            null
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @Suppress(

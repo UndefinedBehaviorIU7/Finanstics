@@ -1,5 +1,7 @@
 package com.ub.finanstics.presentation.calendar
 
+import CalendarGroupRepository
+import CalendarRepository
 import android.app.Application
 import android.os.Build
 import android.util.Log
@@ -7,6 +9,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.db.FinansticsDatabase
+import com.ub.finanstics.presentation.addAction.AddActionGroupRepository
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.TIME_UPDATE
 import kotlinx.coroutines.Job
@@ -22,6 +26,10 @@ class CalendarGroupViewModel(
 ) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<CalendarGroupUiState>(CalendarGroupUiState.Loading)
     val uiState = _uiState.asStateFlow()
+
+    val db = FinansticsDatabase.getDatabase(application)
+
+    private val repository = CalendarGroupRepository(db)
 
     val preferencesManager = PreferencesManager(application.applicationContext)
     val groupId = preferencesManager.getInt("groupId", -1)
@@ -66,15 +74,23 @@ class CalendarGroupViewModel(
     }
 
     fun viewAction(action: ActionDataClass) {
-        val uiState = _uiState.value
-        if (uiState is CalendarGroupUiState.DrawActions) {
-            _uiState.value = CalendarGroupUiState.DrawActionDetail(
-                calendar = calendar,
-                day = uiState.day,
-                action = action.getActionAPI(),
-                category = action.getActionCategory(),
-                type = action.getActionType()
-            )
+        viewModelScope.launch {
+            val userName = repository.getUserName(action.getUserId()) ?: ""
+
+            val image = repository.userImage(action.getUserId())
+
+            val uiState = _uiState.value
+            if (uiState is CalendarGroupUiState.DrawActions) {
+                _uiState.value = CalendarGroupUiState.DrawActionDetail(
+                    calendar = calendar,
+                    day = uiState.day,
+                    action = action.getActionAPI(),
+                    category = action.getActionCategory(),
+                    type = action.getActionType(),
+                    name = userName,
+                    imageBitmap = image
+                )
+            }
         }
     }
 
