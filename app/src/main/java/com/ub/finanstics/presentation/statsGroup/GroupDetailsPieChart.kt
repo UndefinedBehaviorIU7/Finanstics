@@ -145,8 +145,7 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier.padding(end = 15.dp),
                         text = data.first,
                         fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = if (data.first.length < 10) 16.sp
-                        else (16 - (data.first.length - 10) * 3).sp,
+                        fontSize = 16.sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -163,8 +162,8 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier.padding(start = 15.dp),
                         text = value,
                         fontWeight = FontWeight.Medium,
-                        fontSize = if (value.length < 6) 16.sp
-                        else (16 - (value.length - 6) * 3).sp,
+                        fontSize = if (value.length < 5) 16.sp
+                        else (16 - (value.length - 5) * 3).sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -293,6 +292,8 @@ fun ActionInfo(
                 .weight(2f)
                 .padding(start = 15.dp),
             text = action.value.toString(),
+            fontSize = if (action.value.toString().length < 5) 16.sp
+            else (16 - (action.value.toString().length - 5) * 3).sp,
             color = MaterialTheme.colorScheme.primary
         )
     }

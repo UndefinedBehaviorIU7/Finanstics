@@ -148,8 +148,8 @@ fun DetailsPieChartItem(
                         modifier = Modifier.padding(start = 15.dp),
                         text = data.second.toString(),
                         fontWeight = FontWeight.Medium,
-                        fontSize = if (value.length < 6) 16.sp
-                        else (16 - (value.length - 6) * 3).sp,
+                        fontSize = if (value.length < 5) 16.sp
+                        else (16 - (value.length - 5) * 3).sp,
                         color = if (chosen) color else MaterialTheme.colorScheme.primary
                     )
                 }
@@ -277,6 +277,8 @@ fun ActionInfo(
                 .weight(2f)
                 .padding(start = 15.dp),
             text = action.value.toString(),
+            fontSize = if (action.value.toString().length < 5) 16.sp
+            else (16 - (action.value.toString().length - 5) * 3).sp,
             color = MaterialTheme.colorScheme.primary
         )
     }
