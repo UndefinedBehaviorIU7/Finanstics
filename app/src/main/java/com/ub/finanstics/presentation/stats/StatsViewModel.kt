@@ -14,11 +14,9 @@ import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.ui.theme.MIN_CATEGORIES_SIZE
-import com.ub.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -35,7 +33,6 @@ class StatsViewModel(
     var tagStr: String = ""
 
     private val _isAuth = MutableStateFlow(false)
-    val isAuth: StateFlow<Boolean> = _isAuth.asStateFlow()
     var syncJob: Job? = null
 
     val db = FinansticsDatabase.getDatabase(application)
@@ -61,13 +58,13 @@ class StatsViewModel(
         loadCalendar()
     }
 
-    fun initialisation() {
+    private fun initialisation() {
         viewModelScope.launch {
             val cats = db.categoryDao().getAllCategories()
             println(cats)
             println(cats.size)
             if (cats.size < MIN_CATEGORIES_SIZE) {
-                db.categoryDao().insertCategory(Category(name = "Еда", type = 0, serverId = null))
+                db.categoryDao().insertCategory(Category(name = "Еда", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Транспорт", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Налоги/штрафы", type = 0))
                 db.categoryDao().insertCategory(Category(name = "Покупки", type = 0))
@@ -174,7 +171,6 @@ class StatsViewModel(
     private fun loginUpdate() {
         val prefManager = PreferencesManager(application)
         val encryptedPrefManager = EncryptedPreferencesManager(application)
-        val id = prefManager.getInt("id", 0)
         val tag = prefManager.getString("tag", "")
         val token = encryptedPrefManager.getString("token", "")
 
@@ -182,16 +178,6 @@ class StatsViewModel(
             _isAuth.value = true
             tagStr = tag
         }
-    }
-
-    fun logOut() {
-        val prefManager = PreferencesManager(application)
-        val encryptedPrefManager = EncryptedPreferencesManager(application)
-        prefManager.saveData("id", 0)
-        prefManager.saveData("tag", "")
-        prefManager.saveData("time_update", TIME_INIT)
-        encryptedPrefManager.saveData("token", "")
-        _isAuth.value = false
     }
 
     fun cancelUpdate() {

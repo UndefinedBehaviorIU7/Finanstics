@@ -22,9 +22,9 @@ fun Balance(
     period: String,
     totalBalance: Int
 ) {
-    Row() {
-        Column() {
-            Row() {
+    Row {
+        Column {
+            Row {
                 Text(
                     text = stringResource(R.string.balance_for) + " $period:",
                     fontWeight = FontWeight.Medium,

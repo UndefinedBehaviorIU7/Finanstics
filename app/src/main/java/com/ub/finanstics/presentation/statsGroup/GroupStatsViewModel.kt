@@ -81,6 +81,8 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
                             all = all,
                             totalBalance = totalBalance
                         )
+                        _incomes.value = totalIncomes
+                        _expenses.value = totalExpenses
                     } else {
                         val incomes = repository.getIncomes(
                             calendar.getData().getMonth(),

@@ -55,9 +55,7 @@ fun BottomGroupNavGraph(
     Box(
         modifier = Modifier.fillMaxWidth(),
     ) {
-        HorizontalPager(
-            state = pagerState
-        ) { page ->
+        HorizontalPager(state = pagerState) { page ->
             val isVisible = page == pagerState.currentPage
             when (page) {
                 0 -> GroupStats(navController, isVisible)
@@ -144,9 +142,7 @@ fun PersonButton(
     offsetX: Dp,
     navController: NavController
 ) {
-    Box(
-        modifier = Modifier.offset(offsetX)
-    ) {
+    Box(modifier = Modifier.offset(offsetX)) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",

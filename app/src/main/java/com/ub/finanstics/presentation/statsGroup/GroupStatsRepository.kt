@@ -54,7 +54,7 @@ class GroupStatsRepository(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActions ERROR", e.toString())
+            Log.e("getIncomes ERROR", e.toString())
         }
         return incomes
     }
@@ -95,7 +95,7 @@ class GroupStatsRepository(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActions ERROR", "$e")
+            Log.e("getExpenses ERROR", "$e")
         }
         return expenses
     }
@@ -118,7 +118,7 @@ class GroupStatsRepository(private val context: Context) {
 
                 if (actions != null && categories != null) {
                     incomes = actionsToPairs(
-                        actions.filter { it.type == 2 },
+                        actions.filter { it.type == 1 },
                         categories
                     )
                         .groupBy { it.first }
@@ -129,7 +129,7 @@ class GroupStatsRepository(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActions ERROR", e.toString())
+            Log.e("getAllIncomes ERROR", "$e")
         }
         return if (incomes != null) sumPairs(incomes) else null
     }
@@ -163,7 +163,7 @@ class GroupStatsRepository(private val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            Log.e("getGroupActions ERROR", e.toString())
+            Log.e("getAllExpenses ERROR", e.toString())
         }
         return if (expenses != null) sumPairs(expenses) else null
     }
@@ -173,7 +173,7 @@ class GroupStatsRepository(private val context: Context) {
         expenses: List<Pair<String, Int>>?
     ): Int? {
         if (incomes == null && expenses == null) return null
-        return incomes!!.sumOf { it.second } - expenses!!.sumOf { it.second }
+        return (incomes ?: emptyList()).sumOf { it.second } - (expenses ?: emptyList()).sumOf { it.second }
     }
 
     fun actionsToPairs(actions: List<Action>, categories: List<Category>): List<Pair<String, Int>> {

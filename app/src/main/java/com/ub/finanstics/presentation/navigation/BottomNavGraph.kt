@@ -62,12 +62,8 @@ fun BottomNavGraph(
     themeVm: ThemeViewModel
 ) {
     val uiState = vm.uiState.collectAsState().value
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        HorizontalPager(
-            state = pagerState
-        ) { page ->
+    Box(modifier = Modifier.fillMaxWidth()) {
+        HorizontalPager(state = pagerState) { page ->
             val isVisible = page == pagerState.currentPage
             when (page) {
                 0 -> Stats(navController, isVisible)
@@ -159,9 +155,7 @@ fun PlusActionButton(
     offsetX: Dp,
     addActionNavigate: String
 ) {
-    Box(
-        modifier = Modifier.offset(x = -offsetX)
-    ) {
+    Box(modifier = Modifier.offset(x = -offsetX)) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",
@@ -191,9 +185,7 @@ fun GroupsButton(
     val context = LocalContext.current
     val application = context.applicationContext as Application
     var showLoginDialog by remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier.offset(x = -offsetX)
-    ) {
+    Box(modifier = Modifier.offset(x = -offsetX)) {
         Icon(
             imageVector = CircleIcon,
             contentDescription = "",
