@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -178,20 +179,20 @@ fun DrawIdleGroup(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        maxWidth
+        val width = maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = {
-                vm.addAction()
-            },
+            modifier = Modifier.width(width),
+            shape = RoundedCornerShape(15.dp),
+            onClick = { vm.addAction() },
             enabled = vm.validateIdle(uiState) == ErrorAddAction.OK
         ) {
             Text(
                 text = stringResource(R.string.add_action),
-                fontSize = 28.sp
+                fontSize = 24.sp
             )
         }
     }
@@ -244,6 +245,8 @@ fun DrawErrorGroup(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
             onClick = {
                 if (error == ErrorAddAction.ERROR_LOADING_DATA_SERVER)
                     vm.tryLoad(uiState.typeAction)
@@ -252,6 +255,7 @@ fun DrawErrorGroup(
             },
         ) {
             Text(
+                color = MaterialTheme.colorScheme.primary,
                 text = stringResource(R.string.retry),
                 fontSize = 20.sp
             )
@@ -344,7 +348,7 @@ fun DrawSelectTypeGroup(
     )
     Row(
         modifier = Modifier
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -366,7 +370,8 @@ fun DrawSelectTypeGroup(
             shape = RoundedCornerShape(20.dp)
         ) {
             Text(
-                stringResource(R.string.expense),
+                color = MaterialTheme.colorScheme.primary,
+                text = stringResource(R.string.expense),
                 fontSize = 22.sp
             )
         }
@@ -403,7 +408,6 @@ fun AddActionGroup(
     navController: NavController
 ) {
     val windowSize = calculateWindowSizeClass(activity = LocalContext.current as ComponentActivity)
-
     var hasNavigatedBack by remember { mutableStateOf(false) }
 
     val charWidth = when (windowSize.widthSizeClass) {
@@ -446,9 +450,7 @@ fun AddActionGroup(
 
                 IconButton(
                     onClick = { navController.navigateUp() },
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 10.dp)
+                    modifier = Modifier.align(Alignment.CenterStart)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,

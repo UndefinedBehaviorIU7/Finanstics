@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -208,7 +209,7 @@ fun CalendarHeading(
         )
 
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
@@ -222,7 +223,7 @@ fun CalendarHeading(
             )
         }
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(
@@ -527,19 +528,18 @@ fun Calendar(
                 if (action != null) {
                     DrawCalendarWithAction(uiState.calendar, action, isLandscape, vm)
                 }
-                LocalActionView(
-                    action = uiState.action,
-                    category = uiState.category,
-                    isVisible = true,
-                    onDismiss = {
-                        vm.hideAction()
-                    },
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(250.dp),
-                    color = if (uiState.type == 0) ColorsExpenses[0]
-                    else ColorsIncomes[1]
-                )
+                BoxWithConstraints {
+                    val width = maxWidth
+                    LocalActionView(
+                        action = uiState.action,
+                        category = uiState.category,
+                        isVisible = true,
+                        onDismiss = { vm.hideAction() },
+                        modifier = Modifier.width(width - 20.dp),
+                        color = if (uiState.type == 0) ColorsExpenses[0]
+                        else ColorsIncomes[1]
+                    )
+                }
             }
         }
     }

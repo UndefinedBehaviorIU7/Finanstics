@@ -5,13 +5,11 @@ import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.responses.UserResponse
-import com.ub.finanstics.fcm.logFirebaseToken
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
-
     @Suppress("TooGenericExceptionCaught")
     suspend fun register(
         username: String,
@@ -147,7 +145,6 @@ class RegisterRepository(private val context: Context) {
         image: String,
         tag: String
     ): RegisterUiState {
-        logFirebaseToken(context)
         if (tagExists(tag)) {
             return RegisterUiState.VKError(
                 login = tag,
