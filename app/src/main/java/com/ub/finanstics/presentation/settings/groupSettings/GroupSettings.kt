@@ -519,7 +519,8 @@ fun ComposeUserList(
                     }
 
                     Box(modifier = Modifier.size(24.dp)) {
-                        if (!isOwner && (currentUserId == owner.id || (isCurrentUserAdmin && !isAdmin))) {
+                        if (!isOwner && (currentUserId == owner.id ||
+                                    (isCurrentUserAdmin && !isAdmin))) {
                             IconButton(onClick = { showMenu = true }) {
                                 Icon(
                                     Icons.Default.MoreVert,
