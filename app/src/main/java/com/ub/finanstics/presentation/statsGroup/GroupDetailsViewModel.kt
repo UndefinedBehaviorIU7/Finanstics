@@ -139,7 +139,6 @@ class GroupDetailsViewModel(
         }
     }
 
-
     fun forgetActionOwner() {
         _name.value = ""
     }
