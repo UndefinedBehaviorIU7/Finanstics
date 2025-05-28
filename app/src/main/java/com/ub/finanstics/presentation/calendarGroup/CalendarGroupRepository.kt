@@ -1,7 +1,7 @@
 package com.ub.finanstics.presentation.calendarGroup
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Suppress("TooManyFunctions")
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataApiToDataClass(
@@ -107,7 +106,6 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
         )
         return res
     }
-
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun getUserName(
