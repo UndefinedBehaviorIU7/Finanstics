@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -34,7 +35,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -52,10 +52,10 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.PieChart
-import com.ub.finanstics.ui.theme.Divider
-import com.ub.finanstics.ui.theme.Loader
+import com.ub.finanstics.presentation.templates.AvatarBitmap
+import com.ub.finanstics.presentation.templates.Divider
+import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -67,8 +67,6 @@ fun GroupStats(
 ) {
     val vm: GroupStatsViewModel = viewModel()
     val dvm: GroupDetailsViewModel = viewModel()
-    val context = LocalContext.current
-    val preferencesManager = remember { PreferencesManager(context) }
 
     val detState by dvm.uiState.collectAsState()
 
@@ -111,8 +109,6 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column {
                         Header(
-                            groupName = preferencesManager
-                                .getString("groupName", ""),
                             isClicked = uiState.all,
                             vm = vm,
                             dvm = dvm,
@@ -131,8 +127,6 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column {
                         Header(
-                            groupName = preferencesManager
-                                .getString("groupName", ""),
                             isClicked = uiState.all,
                             vm = vm,
                             dvm = dvm,
@@ -159,8 +153,6 @@ fun GroupStats(
                     val calendar = uiState.calendar
                     Column(modifier = Modifier) {
                         Header(
-                            groupName = preferencesManager
-                                .getString("groupName", ""),
                             isClicked = uiState.all,
                             vm = vm,
                             dvm = dvm,
@@ -189,7 +181,6 @@ fun GroupStats(
 @Suppress("MagicNumber")
 @Composable
 fun Header(
-    groupName: String,
     isClicked: Boolean,
     vm: GroupStatsViewModel = viewModel(),
     dvm: GroupDetailsViewModel,
@@ -216,9 +207,18 @@ fun Header(
                 modifier = Modifier.fillMaxSize()
             )
         }
+
+        val image = vm.groupImage
+        AvatarBitmap(
+            image = image,
+            contentStr = stringResource(R.string.group_picture),
+            modifier = Modifier.size(40.dp),
+            resource = R.drawable.placeholder
+        )
         Spacer(modifier = Modifier.weight(0.1f))
+
         Text(
-            text = groupName,
+            text = vm.groupName,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
@@ -227,7 +227,7 @@ fun Header(
             overflow = TextOverflow.Ellipsis
         )
 
-        Spacer(modifier = Modifier.weight(0.2f))
+        Spacer(modifier = Modifier.weight(0.1f))
 
         Button(
             onClick = {
@@ -251,7 +251,6 @@ fun Header(
                 text = stringResource(R.string.All_time)
             )
         }
-        Spacer(modifier = Modifier.weight(0.1f))
     }
 }
 

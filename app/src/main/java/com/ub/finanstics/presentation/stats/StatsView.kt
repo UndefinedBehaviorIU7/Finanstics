@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.ui.theme.Divider
-import com.ub.finanstics.ui.theme.Loader
+import com.ub.finanstics.presentation.templates.Divider
+import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)

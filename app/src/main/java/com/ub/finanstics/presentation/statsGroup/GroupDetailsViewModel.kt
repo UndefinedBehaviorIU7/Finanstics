@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.statsGroup
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -35,13 +36,15 @@ class GroupDetailsViewModel(
     val all = _all.asStateFlow()
 
     var date = CalendarClass()
-
     private val _chosenCategory = MutableStateFlow(Pair("", -1))
     val chosenCategory: StateFlow<Pair<String, Int>> = _chosenCategory.asStateFlow()
 
     val apiRep = ApiRepository()
     val prefManager = PreferencesManager(application)
     val groupId = prefManager.getInt("groupId", -1)
+
+    private val _image = MutableStateFlow<Bitmap?>(null)
+    val image = _image.asStateFlow()
 
     var syncJob: Job? = null
 
@@ -113,7 +116,8 @@ class GroupDetailsViewModel(
                 chosen = uiState.chosen,
                 action = action,
                 ownerName = _name.value,
-                type = uiState.type
+                type = uiState.type,
+                imageBitmap = _image.value
             )
         }
     }
@@ -128,6 +132,13 @@ class GroupDetailsViewModel(
             }
         }
     }
+
+    fun getUserImage(userId: Int) {
+        viewModelScope.launch {
+            _image.value = repository.getUserImage(userId)
+        }
+    }
+
 
     fun forgetActionOwner() {
         _name.value = ""

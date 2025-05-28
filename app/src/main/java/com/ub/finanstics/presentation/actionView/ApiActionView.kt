@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.actionView
 
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -29,7 +31,8 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Action
-import com.ub.finanstics.ui.theme.Divider
+import com.ub.finanstics.presentation.templates.AvatarBitmap
+import com.ub.finanstics.presentation.templates.Divider
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -51,6 +54,7 @@ fun ApiActionView(
     onDismiss: () -> Unit,
     color: Color,
     name: String = "",
+    imageBitmap: Bitmap? = null,
     modifier: Modifier
 ) {
     if (isVisible) {
@@ -125,13 +129,14 @@ fun ApiActionView(
                             }
 
                             if (name.isNotEmpty()) {
-                                Row {
-                                    Text(
-                                        text = stringResource(R.string.from_user),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        textAlign = TextAlign.Center
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    AvatarBitmap(
+                                        image = imageBitmap,
+                                        contentStr = stringResource(R.string.user_picture),
+                                        modifier = Modifier.size(25.dp),
+                                        resource = R.drawable.profile_placeholder
                                     )
+
                                     Spacer(Modifier.width(10.dp))
                                     Text(
                                         text = name,

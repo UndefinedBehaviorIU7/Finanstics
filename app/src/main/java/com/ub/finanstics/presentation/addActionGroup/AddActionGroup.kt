@@ -58,9 +58,9 @@ import com.ub.finanstics.presentation.addAction.ErrorAddAction
 import com.ub.finanstics.presentation.addAction.FormAddData
 import com.ub.finanstics.presentation.addAction.Selector
 import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.Loader
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable

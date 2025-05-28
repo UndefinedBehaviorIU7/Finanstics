@@ -186,6 +186,7 @@ fun GroupDetailsPieChartItem(
                                         widthSize = widthSize,
                                         onClick = {
                                             vm.getActionOwner(action.userId)
+                                            vm.getUserImage(action.userId)
                                             showAction = true
                                             vm.viewAction(action)
                                         },
@@ -209,7 +210,7 @@ fun GroupDetailsPieChartItem(
                                         totalSum = data.second,
                                         widthSize = widthSize,
                                         onClick = { },
-                                        color = color
+                                        color = color,
                                     )
                                 }
                             }
@@ -221,6 +222,7 @@ fun GroupDetailsPieChartItem(
             }
 
             val uiState by vm.uiState.collectAsState()
+            val image by vm.image.collectAsState()
             if (uiState is GroupDetailsUiState.DetailedAction) {
                 val detState = uiState as GroupDetailsUiState.DetailedAction
                 BoxWithConstraints {
@@ -237,7 +239,8 @@ fun GroupDetailsPieChartItem(
                         modifier = Modifier
                             .width(width - 20.dp),
                         name = ownerName,
-                        color = color
+                        color = color,
+                        imageBitmap = image
                     )
                 }
             }
