@@ -49,12 +49,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.ApiActionView
-import com.ub.finanstics.ui.theme.averageColor
+import com.ub.finanstics.presentation.templates.Divider
+import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.Divider
-import com.ub.finanstics.ui.theme.Loader
 import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 import kotlin.math.abs

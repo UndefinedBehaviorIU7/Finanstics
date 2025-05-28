@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,7 +32,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -70,6 +70,7 @@ import com.ub.finanstics.dialogs.ErrorAlertDialog
 import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 
@@ -165,7 +166,14 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
 
             when (uiState) {
                 is GroupsUiState.Loading -> {
-                    CircularProgressIndicator()
+                    BoxWithConstraints {
+                        val width = maxWidth
+                        Loader(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(width / 3)
+                        )
+                    }
                 }
 
                 is GroupsUiState.All -> {
@@ -345,8 +353,8 @@ fun GroupCard(navController: NavController, group: GroupWithImage) {
         }
     }
     HorizontalDivider(
-        thickness = 2.dp,
-        color = MaterialTheme.colorScheme.tertiary
+        thickness = 1.dp,
+        color = MaterialTheme.colorScheme.primaryContainer
     )
 }
 

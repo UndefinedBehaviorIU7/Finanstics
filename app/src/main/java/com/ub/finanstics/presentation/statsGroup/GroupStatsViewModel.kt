@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.statsGroup
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
@@ -37,6 +38,11 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     private val _expenses = MutableStateFlow<List<Pair<String, Int>>>(emptyList())
     val expenses = _expenses.asStateFlow()
 
+    private val preferencesManager = PreferencesManager(application)
+    val groupId = preferencesManager.getInt("groupId", 0)
+    val groupName = preferencesManager.getString("groupName", "")
+    var groupImage: Bitmap? = null
+
     init {
         loadCalendar()
         fetchData()
@@ -62,6 +68,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
 
     @Suppress("LongMethod")
     fun fetchData() {
+        updateGroupImage()
         _uiState.value = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
             try {
@@ -128,6 +135,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     @Suppress("LongMethod")
     fun getData(): GroupStatsUiState {
         var res: GroupStatsUiState? = null
+        updateGroupImage()
         res = GroupStatsUiState.LoadingData(calendar, all, 0)
         viewModelScope.launch {
             try {
@@ -207,7 +215,6 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun loginUpdate() {
-        val prefManager = PreferencesManager(application)
         val encryptedPrefManager = EncryptedPreferencesManager(application)
         val token = encryptedPrefManager.getString("token", "")
 
@@ -216,7 +223,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun updateData() {
+    private fun updateData() {
         val new = getData()
         if (new is GroupStatsUiState.Done) {
             _uiState.value = GroupStatsUiState.Loading
@@ -225,8 +232,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun lastMonth() {
-        val current = uiState.value
-        val newCalendar = when (current) {
+        val newCalendar = when (val current = uiState.value) {
             is GroupStatsUiState.Calendar -> current.calendar.deepCopy().apply { lastMonth() }
             is GroupStatsUiState.LoadingData -> current.calendar.deepCopy().apply { lastMonth() }
             is GroupStatsUiState.Done -> current.calendar.deepCopy().apply { lastMonth() }
@@ -238,8 +244,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun nextMonth() {
-        val current = uiState.value
-        val newCalendar = when (current) {
+        val newCalendar = when (val current = uiState.value) {
             is GroupStatsUiState.Calendar -> current.calendar.deepCopy().apply { nextMonth() }
             is GroupStatsUiState.LoadingData -> current.calendar.deepCopy().apply { nextMonth() }
             is GroupStatsUiState.Done -> current.calendar.deepCopy().apply { nextMonth() }
@@ -252,6 +257,7 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
 
     fun switchAll() {
         all = !all
+        updateGroupImage()
         _uiState.value = GroupStatsUiState.Calendar(calendar, all, totalBalance)
     }
 
@@ -260,5 +266,14 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         expenses: List<Pair<String, Int>>?
     ): Int? {
         return repository.balance(incomes, expenses)
+    }
+
+    private fun updateGroupImage() {
+        viewModelScope.launch {
+            val image = repository.getGroupImage(groupId)
+            if (image != null) {
+                groupImage = image
+            }
+        }
     }
 }

@@ -21,7 +21,6 @@ import com.ub.finanstics.presentation.MainActivity
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 
 class FinansticsFMS : FirebaseMessagingService() {
-
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {
             if (isLongRunningJob()) {

@@ -1,12 +1,18 @@
 package com.ub.finanstics.presentation.statsGroup
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
     return list.groupBy { it.first }
@@ -186,5 +192,30 @@ class GroupStatsRepository(private val context: Context) {
                     .let { categoryMap[it]!!.name }
                 action.value.let { name to it }
             }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
+    suspend fun groupImage(groupId: Int): Bitmap? {
+        return try {
+            val response = RetrofitInstance.api.getGroupImage(groupId)
+            if (response.isSuccessful) {
+                response.body()?.byteStream().use { stream ->
+                    if (stream != null) {
+                        BitmapFactory.decodeStream(stream)
+                    } else {
+                        null
+                    }
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getGroupImage(groupId: Int): Bitmap? = coroutineScope {
+        val bitmapDeferred = async(Dispatchers.IO) { groupImage(groupId) }
+        bitmapDeferred.await()
     }
 }

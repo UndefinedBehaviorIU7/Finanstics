@@ -71,7 +71,8 @@
     <string name="ok">Ок</string>
     <string name="close">Закрыть</string>
     <string name="offline">Офлайн режим</string>
-    <string name="group_picture">Аватара группы</string>
+    <string name="group_picture">Фото группы</string>
+    <string name="user_picture">Фото пользователя</string>
     <string name="reset">Сбросить</string>
     <string name="no_groups">Вы не состоите в группе</string>
     <string name="leave_group">Покинуть группу</string>

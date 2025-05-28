@@ -1,6 +1,7 @@
 package com.ub.finanstics.presentation.statsGroup
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "TooManyFunctions")
 class GroupDetailsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -35,13 +36,15 @@ class GroupDetailsViewModel(
     val all = _all.asStateFlow()
 
     var date = CalendarClass()
-
     private val _chosenCategory = MutableStateFlow(Pair("", -1))
     val chosenCategory: StateFlow<Pair<String, Int>> = _chosenCategory.asStateFlow()
 
     val apiRep = ApiRepository()
     val prefManager = PreferencesManager(application)
     val groupId = prefManager.getInt("groupId", -1)
+
+    private val _image = MutableStateFlow<Bitmap?>(null)
+    val image = _image.asStateFlow()
 
     var syncJob: Job? = null
 
@@ -113,7 +116,8 @@ class GroupDetailsViewModel(
                 chosen = uiState.chosen,
                 action = action,
                 ownerName = _name.value,
-                type = uiState.type
+                type = uiState.type,
+                imageBitmap = _image.value
             )
         }
     }
@@ -126,6 +130,12 @@ class GroupDetailsViewModel(
             } catch (e: Exception) {
                 Log.e("ACTION", "$e")
             }
+        }
+    }
+
+    fun getUserImage(userId: Int) {
+        viewModelScope.launch {
+            _image.value = repository.getUserImage(userId)
         }
     }
 

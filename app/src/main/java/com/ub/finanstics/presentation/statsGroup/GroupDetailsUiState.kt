@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.statsGroup
 
+import android.graphics.Bitmap
 import com.ub.finanstics.api.models.Action
 
 sealed class GroupDetailsUiState {
@@ -16,6 +17,7 @@ sealed class GroupDetailsUiState {
         val chosen: String,
         val action: Action,
         val ownerName: String,
+        val imageBitmap: Bitmap?,
         val type: Int
     ) : GroupDetailsUiState()
 }
