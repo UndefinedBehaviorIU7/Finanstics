@@ -178,7 +178,7 @@ fun GroupStats(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("MagicNumber", "LongMethod ")
+@Suppress("MagicNumber", "LongMethod")
 @Composable
 fun Header(
     isClicked: Boolean,

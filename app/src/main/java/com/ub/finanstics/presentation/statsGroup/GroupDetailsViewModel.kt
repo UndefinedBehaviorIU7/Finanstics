@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("TooGenericExceptionCaught", "TooManyFunctions ")
+@Suppress("TooGenericExceptionCaught", "TooManyFunctions")
 class GroupDetailsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
