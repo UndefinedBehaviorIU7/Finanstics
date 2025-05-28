@@ -126,9 +126,10 @@ fun BottomGroupNavGraph(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     PlusActionButton(
-                        navController = navController,
-                        offsetX = offsetX,
-                        Navigation.ADD_ACTION_GROUPS.toString()
+                        onClick = {
+                            navController.navigate(Navigation.ADD_ACTION_GROUPS.toString())
+                                  },
+                        offsetX = offsetX
                     )
                 }
             }

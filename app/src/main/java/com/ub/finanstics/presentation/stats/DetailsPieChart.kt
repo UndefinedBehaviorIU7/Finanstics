@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ub.finanstics.R
 import com.ub.finanstics.db.Action
-import com.ub.finanstics.presentation.actionView.ApiActionView
 import com.ub.finanstics.presentation.actionView.LocalActionView
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.ui.theme.Blue

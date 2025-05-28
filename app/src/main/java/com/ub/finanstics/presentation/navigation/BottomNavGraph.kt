@@ -138,9 +138,8 @@ fun BottomNavGraph(
                     verticalAlignment = Alignment.Bottom
                 ) {
                     PlusActionButton(
-                        navController = navController,
-                        offsetX = offsetX,
-                        Navigation.ADD_ACTION.toString()
+                        onClick = { navController.navigate(Navigation.ADD_ACTION.toString()) },
+                        offsetX = offsetX
                     )
                 }
             }
@@ -151,9 +150,8 @@ fun BottomNavGraph(
 @Suppress("MagicNumber")
 @Composable
 fun PlusActionButton(
-    navController: NavController,
+    onClick: () -> Unit,
     offsetX: Dp,
-    addActionNavigate: String
 ) {
     Box(modifier = Modifier.offset(x = -offsetX)) {
         Icon(
@@ -162,9 +160,7 @@ fun PlusActionButton(
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier
                 .size(50.dp)
-                .clickable {
-                    navController.navigate(addActionNavigate)
-                }
+                .clickable { onClick() }
         )
         Icon(
             imageVector = PlusCircleIcon,

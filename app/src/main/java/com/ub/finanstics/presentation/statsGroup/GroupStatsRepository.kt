@@ -173,7 +173,8 @@ class GroupStatsRepository(private val context: Context) {
         expenses: List<Pair<String, Int>>?
     ): Int? {
         if (incomes == null && expenses == null) return null
-        return (incomes ?: emptyList()).sumOf { it.second } - (expenses ?: emptyList()).sumOf { it.second }
+        return (incomes ?: emptyList()).sumOf { it.second } - (expenses
+            ?: emptyList()).sumOf { it.second }
     }
 
     fun actionsToPairs(actions: List<Action>, categories: List<Category>): List<Pair<String, Int>> {
