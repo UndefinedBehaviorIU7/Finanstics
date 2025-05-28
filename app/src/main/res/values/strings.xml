@@ -107,4 +107,8 @@
     <string name="show_password">Показать пароль</string>
     <string name="current_password">Текущий пароль</string>
     <string name="password_change_success">Пароль успешно изменен</string>
+    <string name="error_load_group">Ошибка загрузки групп</string>
+    <string name="error_add_to_server">Ошибка загрузки данных на сервер</string>
+    <string name="сontinue_without_groups">Продолжить без групп</string>
+    <string name="add_only_locally">Добавить только локально</string>
 </resources>

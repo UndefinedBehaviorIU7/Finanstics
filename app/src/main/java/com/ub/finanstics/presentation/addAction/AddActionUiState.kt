@@ -31,7 +31,23 @@ sealed class AddActionUiState {
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean,
         val menuExpandedGroup: Boolean,
-        val error: com.ub.finanstics.presentation.addAction.Error,
+        val error: ErrorAddAction,
+    ) : AddActionUiState()
+
+    data class ErrorLoad(
+        var typeAction: ActionType,
+        var nameAction: String,
+        var moneyAction: Int,
+        var data: String,
+        var category: String,
+        var description: String,
+        var allCategory: List<String>,
+        var allGroup: List<Group>,
+        var groups: List<Group>,
+        val menuExpandedType: Boolean,
+        val menuExpandedCategory: Boolean,
+        val menuExpandedGroup: Boolean,
+        val error: ErrorAddAction,
     ) : AddActionUiState()
 
     data class Loading(

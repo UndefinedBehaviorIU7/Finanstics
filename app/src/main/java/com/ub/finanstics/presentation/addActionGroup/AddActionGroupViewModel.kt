@@ -5,13 +5,19 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
+import com.ub.finanstics.fcm.regFirebaseToken
 import com.ub.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import java.util.Calendar
+
+
 
 class AddActionGroupViewModel(
     application: Application
@@ -29,27 +35,23 @@ class AddActionGroupViewModel(
 
     val uiState = _uiState.asStateFlow()
 
-//    fun getCategoriesList() {
-//        viewModelScope.launch {
-//            val categoryNames = repository.getCategoriesNames()
-//            _uiState.update { currentState ->
-//                when (currentState) {
-//                    is AddActionGroupUiState.Idle -> currentState.copy(allCategory = categoryNames)
-//                    else -> currentState
-//                }
-//            }
-//        }
-//    }
+    fun getNowData(): String {
+        val calendar = Calendar.getInstance()
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH) + 1
+        val year = calendar.get(Calendar.YEAR)
 
-    fun chooseTypeAndLoad(type: ActionType) {
-        _uiState.value = AddActionGroupUiState.SelectType(type)
+        return "%02d.%02d.%04d".format(day, month, year)
+    }
+    fun tryLoad(type: ActionType) {
 
         viewModelScope.launch {
+
             _uiState.value = AddActionGroupUiState.Loading(
                 typeAction = type,
                 nameAction = "",
                 moneyAction = -1,
-                data = "",
+                data = getNowData(),
                 category = "",
                 description = "",
                 allCategory = listOf(),
@@ -58,26 +60,50 @@ class AddActionGroupViewModel(
                 duplication = false
             )
 
-            val categories = repository.getCategoriesNames(type.toInt())
+            val timeout = 5000L
+            val categories = withTimeoutOrNull(timeout) {
+                try {
+                    repository.getCategoriesByType(type.toInt())
+                } catch (e: Exception) {
+                    Log.e("chooseTypeAndLoad", "Error getting categories", e)
+                    null
+                }
+            }.also {
+                Log.d("chooseTypeAndLoad", "Categories result: $it")
+            }
 
-            if (categories != null) {
-                Log.d("categoriesRES", categories.size.toString())
-            } else Log.d("categoriesRES", "eroijguidfjg")
-
-            _uiState.value = AddActionGroupUiState.Idle(
-                typeAction = type,
-                nameAction = "",
-                moneyAction = -1,
-                data = "",
-                category = "",
-                description = "",
-                allCategory = categories ?: emptyList(),
-                menuExpandedType = false,
-                menuExpandedCategory = false,
-                duplication = false,
-            )
+            if (categories == null) {
+                _uiState.value = AddActionGroupUiState.Error(
+                    typeAction = type,
+                    nameAction = "",
+                    moneyAction = -1,
+                    data = getNowData(),
+                    category = "",
+                    description = "",
+                    allCategory = emptyList(),
+                    menuExpandedType = false,
+                    menuExpandedCategory = false,
+                    duplication = false,
+                    error = ErrorAddAction.ERROR_LOADING_DATA_SERVER,
+                )
+            } else {
+                _uiState.value = AddActionGroupUiState.Idle(
+                    typeAction = type,
+                    nameAction = "",
+                    moneyAction = -1,
+                    data = getNowData(),
+                    category = "",
+                    description = "",
+                    allCategory = categories,
+                    menuExpandedType = false,
+                    menuExpandedCategory = false,
+                    duplication = false,
+                )
+            }
         }
     }
+
+
 
     @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
     fun updateUIState(
@@ -141,19 +167,19 @@ class AddActionGroupViewModel(
     @Suppress("MagicNumber", "LongParameterList", "ComplexMethod", "ReturnCount")
     fun validateIdle(
         state: AddActionGroupUiState.Idle
-    ): Error {
-        if (state.nameAction.isBlank()) return Error.NAME
-        if (state.typeAction == ActionType.NULL) return Error.TYPE
-        if (state.moneyAction <= 0) return Error.MONEY
-        if (state.data.isBlank()) return Error.DATE
-        if (state.category.isBlank()) return Error.CATEGORY
+    ): ErrorAddAction {
+        if (state.nameAction.isBlank()) return ErrorAddAction.NAME
+        if (state.typeAction == ActionType.NULL) return ErrorAddAction.TYPE
+        if (state.moneyAction <= 0) return ErrorAddAction.MONEY
+        if (state.data.isBlank()) return ErrorAddAction.DATE
+        if (state.category.isBlank()) return ErrorAddAction.CATEGORY
 
-        return Error.OK
+        return ErrorAddAction.OK
     }
 
     fun createErrorStateGroup(
         current: AddActionGroupUiState.Idle,
-        error: Error
+        error: ErrorAddAction
     ): AddActionGroupUiState.Error {
         return AddActionGroupUiState.Error(
             typeAction = current.typeAction,
@@ -170,35 +196,6 @@ class AddActionGroupViewModel(
         )
     }
 
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    fun addAction() {
-//        val current = uiState.value
-//        if (current is AddActionUiState.Idle) {
-//            viewModelScope.launch {
-//                val error = validateIdle(current)
-//                if (error == null) {
-//                    val data = DataClass.getDataByString(current.data)
-//                    val action = Action(
-//                        name = current.nameAction,
-//                        type = current.typeAction.ordinal,
-//                        description = current.description,
-//                        value = current.moneyAction,
-//                        date = LocalDate.of(data.getYear(), data.getMonth().number, data.getDay()),
-//                        categoryId = categoryDao.getCategoryByName(name = current.category)!!.id,
-//                        createdAt = "2025-04-22T14:30:00"
-//                    )
-//                    actionDao.insertAction(action)
-//                    _uiState.value = AddActionUiState.Ok
-//                } else {
-//                    _uiState.value = createErrorState(
-//                        current = current,
-//                        error = error
-//                    )
-//                }
-//            }
-//        }
-//    }
-
     private fun getCategoryIdByName(
         name: String, allCategory: List<Category>
     ): Int? {
@@ -210,41 +207,160 @@ class AddActionGroupViewModel(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun addAction(): Error {
-        val current = uiState.value
-        var error: Error = Error.UISTATE
-        if (current is AddActionGroupUiState.Idle) {
-            viewModelScope.launch {
-                error = validateIdle(current)
-                if (error == Error.OK) {
-                    val data = DataClass.getDataByString(current.data)
-                    val categoryId = getCategoryIdByName(current.category, current.allCategory)
-                    var res = if (categoryId == null)
-                        ErrorAddActionGroupApi.Error
-                    else
-                        ErrorAddActionGroupApi.Ok
-                    if (res == ErrorAddActionGroupApi.Ok)
-                        res = repository.addActionApi(
-                            actionName = current.nameAction,
-                            type = current.typeAction.toInt(),
-                            value = current.moneyAction,
-                            date = dataForApi(current.data),
-                            categoryId = categoryId ?: 1,
-                            description = current.description,
-                            duplication = current.duplication
-                        )
-                    error = if (res == ErrorAddActionGroupApi.Ok)
-                        Error.OK
-                    else
-                        Error.SERVER
-                } else {
-                    _uiState.value = createErrorStateGroup(
-                        current = current,
-                        error = error
-                    )
-                }
+    fun addAction() {
+        val current = when (val state = _uiState.value) {
+            is AddActionGroupUiState.Error -> {
+                val idle = AddActionGroupUiState.Idle(
+                    typeAction = state.typeAction,
+                    nameAction = state.nameAction,
+                    moneyAction = state.moneyAction,
+                    data = state.data,
+                    category = state.category,
+                    description = state.description,
+                    allCategory = state.allCategory,
+                    menuExpandedType = state.menuExpandedType,
+                    menuExpandedCategory = state.menuExpandedCategory,
+                    duplication = state.duplication
+                )
+                _uiState.value = idle
+                idle
+            }
+            is AddActionGroupUiState.Idle -> state
+            else -> return
+        }
+
+        val error = validateIdle(current)
+        if (error != ErrorAddAction.OK) {
+            _uiState.value = createErrorStateGroup(current, error)
+            return
+        }
+
+        val categoryId = getCategoryIdByName(current.category, current.allCategory)
+        if (categoryId == null) {
+            _uiState.value = createErrorStateGroup(current, ErrorAddAction.ERROR_ADD_DATA_SERVER)
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = AddActionGroupUiState.Loading(
+                typeAction = current.typeAction,
+                nameAction = "",
+                moneyAction = -1,
+                data = getNowData(),
+                category = "",
+                description = "",
+                allCategory = current.allCategory,
+                menuExpandedType = false,
+                menuExpandedCategory = false,
+                duplication = false,
+            )
+
+            val result = repository.addActionApi(
+                actionName = current.nameAction,
+                type = current.typeAction.toInt(),
+                value = current.moneyAction,
+                date = dataForApi(current.data),
+                categoryId = categoryId,
+                description = current.description,
+                duplication = current.duplication
+            )
+
+            if (result == ErrorAddAction.OK) {
+                _uiState.value = AddActionGroupUiState.Ok
+            } else {
+                _uiState.value = createErrorStateGroup(current, result)
             }
         }
-        return error
     }
+
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun tpyAddAction(): ErrorAddAction {
+//        var res = ErrorAddAction.OK
+//        val current = uiState.value
+//        if (current is AddActionGroupUiState.Error) {
+//            _uiState.value = AddActionGroupUiState.Idle(
+//                typeAction = current.typeAction,
+//                nameAction = current.nameAction,
+//                moneyAction = current.moneyAction,
+//                data = current.data,
+//                category = current.category,
+//                description = current.description,
+//                allCategory = current.allCategory,
+//                menuExpandedType = current.menuExpandedType,
+//                menuExpandedCategory = current.menuExpandedCategory,
+//                duplication = current.duplication
+//            )
+//            res =  addAction()
+//        }
+//        return res
+//    }
+//
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    fun addActio1n(): ErrorAddAction {
+//        var error = ErrorAddAction.OK
+//
+//        val current = uiState.value
+//
+//        if (current is AddActionGroupUiState.Idle) {
+//            viewModelScope.launch {
+//
+//                error = validateIdle(current)
+//
+//                if (error == ErrorAddAction.OK) {
+//
+//                    val categoryId = getCategoryIdByName(current.category, current.allCategory)
+//
+//                    if (categoryId == null)
+//                        error = ErrorAddAction.ERROR_ADD_DATA_SERVER
+//
+//                    _uiState.value = AddActionGroupUiState.Loading(
+//                        typeAction = ActionType.NULL,
+//                        nameAction = "",
+//                        moneyAction = -1,
+//                        data = getNowData(),
+//                        category = "",
+//                        description = "",
+//                        allCategory = listOf(),
+//                        menuExpandedType = false,
+//                        menuExpandedCategory = false,
+//                        duplication = false
+//                    )
+//
+//                    if (error == ErrorAddAction.OK) {
+//
+//                        val timeout = 5000L
+//                        val error = withTimeoutOrNull(timeout) {
+//                            try {
+//                                repository.addActionApi(
+//                                    actionName = current.nameAction,
+//                                    type = current.typeAction.toInt(),
+//                                    value = current.moneyAction,
+//                                    date = dataForApi(current.data),
+//                                    categoryId = categoryId ?: 1,
+//                                    description = current.description,
+//                                    duplication = current.duplication
+//                                )
+//                            } catch (e: Exception) {
+//                                Log.e("chooseTypeAndLoad", "Error getting categories", e)
+//                                null
+//                            }
+//                        }.also {
+//                            Log.d("chooseTypeAndLoad", "Categories result: $it")
+//                        }
+//                    }
+//                }
+//            }
+//            Log.d("AddAction error check", error.str)
+//            if (error != ErrorAddAction.OK) {
+//                _uiState.value = createErrorStateGroup(
+//                    current = current,
+//                    error = error
+//                )
+//            }
+//        }
+//
+//        return error
+//    }
+
+
 }

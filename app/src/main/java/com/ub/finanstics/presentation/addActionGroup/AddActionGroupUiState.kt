@@ -23,7 +23,7 @@ sealed class AddActionGroupUiState {
         var data: String,
         var category: String,
         var description: String,
-        val error: com.ub.finanstics.presentation.addAction.Error,
+        val error: ErrorAddAction,
         var allCategory: List<Category>,
         val menuExpandedType: Boolean,
         val menuExpandedCategory: Boolean,
