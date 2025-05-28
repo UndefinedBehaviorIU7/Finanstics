@@ -51,7 +51,6 @@ import com.ub.finanstics.R
 import com.ub.finanstics.presentation.actionView.ApiActionView
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.CalendarClass
-import com.ub.finanstics.presentation.calendar.CalendarGroupViewModel
 import com.ub.finanstics.presentation.calendar.DayClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.calendar.WeekDraw

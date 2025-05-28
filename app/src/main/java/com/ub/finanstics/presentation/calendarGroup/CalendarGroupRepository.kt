@@ -1,3 +1,5 @@
+package com.ub.finanstics.presentation.calendarGroup
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -16,6 +18,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Suppress("TooManyFunctions")
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataApiToDataClass(
@@ -46,51 +49,53 @@ fun dataClassToLocalDate(data: DataClass): LocalDate {
     )
 }
 
-fun getCategoryById(
-    id: Int,
-    categories: Array<Category>?
-): Category? {
-    if (categories != null)
-        for (el in categories) {
-            if (el.id == id) {
-                return el
+
+class CalendarGroupRepository(private var db: FinansticsDatabase) {
+    fun getCategoryById(
+        id: Int,
+        categories: Array<Category>?
+    ): Category? {
+        if (categories != null)
+            for (el in categories) {
+                if (el.id == id) {
+                    return el
+                }
             }
-        }
-    return null
-}
-
-
-@Suppress("ReturnCount", "TooGenericExceptionCaught")
-suspend fun getCategoriesById(
-    groupId: Int
-): Array<Category>? {
-    val apiRep = ApiRepository()
-    try {
-        val response = apiRep.getGroupCategories(groupId)
-        if (!response.isSuccessful) return null
-
-        val categories = response.body() ?: return null
-
-        Log.d("sizeCategories", categories.size.toString())
-
-        return categories.toTypedArray()
-    } catch (e: Exception) {
-        Log.e("getGroupActionDays ERROR", e.toString())
         return null
     }
-}
 
-@Suppress("TooGenericExceptionCaught")
-@RequiresApi(Build.VERSION_CODES.O)
-suspend fun getArrayDataClass(
-    actions: com.ub.finanstics.api.models.Action,
-    categories: Array<Category>?
-): ActionDataClass? {
+
+    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    suspend fun getCategoriesById(
+        groupId: Int
+    ): Array<Category>? {
+        val apiRep = ApiRepository()
+        try {
+            val response = apiRep.getGroupCategories(groupId)
+            if (!response.isSuccessful) return null
+
+            val categories = response.body() ?: return null
+
+            Log.d("sizeCategories", categories.size.toString())
+
+            return categories.toTypedArray()
+        } catch (e: Exception) {
+            Log.e("getGroupActionDays ERROR", e.toString())
+            return null
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getArrayDataClass(
+        actions: com.ub.finanstics.api.models.Action,
+        categories: Array<Category>?
+    ): ActionDataClass? {
 //    val userName = getUserName(actions.userId)
-    var res: ActionDataClass? = null
-    Log.d("getArrayActionDataClassid", actions.userId.toString())
-    val category: Category? = getCategoryById(actions.category_id, categories)
-    res = ActionDataClass(
+        var res: ActionDataClass? = null
+        Log.d("getArrayActionDataClassid", actions.userId.toString())
+        val category: Category? = getCategoryById(actions.category_id, categories)
+        res = ActionDataClass(
             userName = "skip skipish",
             actionName = actions.name,
             actionType = actions.type,
@@ -100,10 +105,9 @@ suspend fun getArrayDataClass(
             userId = actions.userId,
             description = actions.description
         )
-    return res
-}
+        return res
+    }
 
-class CalendarGroupRepository(private var db: FinansticsDatabase) {
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun getUserName(

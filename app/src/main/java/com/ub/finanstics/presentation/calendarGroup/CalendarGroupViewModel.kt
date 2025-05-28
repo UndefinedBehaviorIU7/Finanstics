@@ -1,6 +1,5 @@
-package com.ub.finanstics.presentation.calendar
+package com.ub.finanstics.presentation.calendarGroup
 
-import CalendarGroupRepository
 import android.app.Application
 import android.os.Build
 import android.util.Log
@@ -9,7 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.calendarGroup.CalendarGroupUiState
+import com.ub.finanstics.presentation.calendar.ActionDataClass
+import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.calendar.DayClass
+import com.ub.finanstics.presentation.calendar.ErrorCalendar
+import com.ub.finanstics.presentation.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 import com.ub.finanstics.presentation.stats.TIME_UPDATE
 import kotlinx.coroutines.Job

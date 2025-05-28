@@ -1,6 +1,5 @@
 package com.ub.finanstics.presentation.calendar
 
-import CalendarGroupRepository
 import CalendarRepository
 import android.app.Application
 import android.os.Build
@@ -15,8 +14,9 @@ import com.ub.finanstics.presentation.calendar.MonthNameClass.JANUARY
 import com.ub.finanstics.presentation.calendar.MonthNameClass.JUNE
 import com.ub.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
 import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
-import dataClassToApiString
-import dataClassToLocalDate
+import com.ub.finanstics.presentation.calendarGroup.CalendarGroupRepository
+import com.ub.finanstics.presentation.calendarGroup.dataClassToApiString
+import com.ub.finanstics.presentation.calendarGroup.dataClassToLocalDate
 
 enum class ErrorCalendar(val str: String) {
     ERRORSERVER("ошибка сервера"),
