@@ -325,6 +325,7 @@ fun DrawErrorGroup(
 //    }
 }
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawSelectTypeGroup(
     vm: AddActionGroupViewModel,

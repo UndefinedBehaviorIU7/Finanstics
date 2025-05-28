@@ -36,6 +36,7 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         return null
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun getGroupCategoryIdByName(group: Group, name: String): Int? {
         var res: Category? = null
         val apiRep = ApiRepository()
@@ -98,7 +99,8 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         "LongParameterList",
         "LongMethod",
         "ComplexMethod",
-        "TooGenericExceptionCaught"
+        "TooGenericExceptionCaught",
+        "NestedBlockDepth"
     )
     suspend fun addActionApi(
         actionName: String,

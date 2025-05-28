@@ -649,6 +649,7 @@ fun DrawErrorLoad(
     }
 }
 
+@Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun DrawSelect(
     vm: AddActionViewModel,

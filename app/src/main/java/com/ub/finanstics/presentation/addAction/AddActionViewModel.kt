@@ -84,6 +84,7 @@ class AddActionViewModel(
         return "%02d.%02d.%04d".format(day, month, year)
     }
 
+    @Suppress("TooGenericExceptionCaught", "LongMethod")
     fun tryLoad(type: ActionType) {
 
         viewModelScope.launch {
@@ -105,7 +106,7 @@ class AddActionViewModel(
 
             val categories = repository.getCategoriesNames(type.toInt())
 
-            val timeout = 5000L
+            val timeout = TIME_LOAD
             val allGroups = withTimeoutOrNull(timeout) {
                 try {
                     repository.getUserGroup()

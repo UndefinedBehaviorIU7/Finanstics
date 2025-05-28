@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Calendar
 
+const val TIME_LOAD = 5000L
+
 class AddActionGroupViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -30,6 +32,7 @@ class AddActionGroupViewModel(
 
     val uiState = _uiState.asStateFlow()
 
+    @Suppress("TooGenericExceptionCaught")
     fun getNowData(): String {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -55,7 +58,7 @@ class AddActionGroupViewModel(
                 duplication = false
             )
 
-            val timeout = 5000L
+            val timeout = TIME_LOAD
             val categories = withTimeoutOrNull(timeout) {
                 try {
                     repository.getCategoriesByType(type.toInt())
@@ -189,6 +192,7 @@ class AddActionGroupViewModel(
         )
     }
 
+    @Suppress("ReturnCount")
     private fun getCategoryIdByName(
         name: String, allCategory: List<Category>
     ): Int? {
