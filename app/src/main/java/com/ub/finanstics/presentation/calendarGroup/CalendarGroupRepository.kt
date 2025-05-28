@@ -1,12 +1,19 @@
+package com.ub.finanstics.presentation.calendarGroup
+
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
+import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -41,70 +48,53 @@ fun dataClassToLocalDate(data: DataClass): LocalDate {
     )
 }
 
-fun getCategoryById(
-    id: Int,
-    categories: Array<Category>?
-): Category? {
-    if (categories != null)
-        for (el in categories) {
-            if (el.id == id) {
-                return el
+
+class CalendarGroupRepository(private var db: FinansticsDatabase) {
+    fun getCategoryById(
+        id: Int,
+        categories: Array<Category>?
+    ): Category? {
+        if (categories != null)
+            for (el in categories) {
+                if (el.id == id) {
+                    return el
+                }
             }
-        }
-    return null
-}
-
-@Suppress("TooGenericExceptionCaught")
-suspend fun getUserName(
-    userId: Int
-): String? {
-    var res: String? = null
-    Log.d("getUserNameuserId", userId.toString())
-    try {
-        val apiRep = ApiRepository()
-        val response = apiRep.getUser(userId)
-        if (!response.isSuccessful) {
-            Log.e("getUserName", "not isSuccessful")
-        } else {
-            res = response.body()?.username
-        }
-    } catch (e: Exception) {
-        Log.e("getUserName", e.toString())
-    }
-    return res
-}
-
-@Suppress("ReturnCount", "TooGenericExceptionCaught")
-suspend fun getCategoriesById(
-    groupId: Int
-): Array<Category>? {
-    val apiRep = ApiRepository()
-    try {
-        val response = apiRep.getGroupCategories(groupId)
-        if (!response.isSuccessful) return null
-
-        val categories = response.body() ?: return null
-
-        Log.d("sizeCategories", categories.size.toString())
-
-        return categories.toTypedArray()
-    } catch (e: Exception) {
-        Log.e("getGroupActionDays ERROR", e.toString())
         return null
     }
-}
 
-@Suppress("TooGenericExceptionCaught")
-@RequiresApi(Build.VERSION_CODES.O)
-suspend fun getArrayDataClass(
-    actions: com.ub.finanstics.api.models.Action,
-    categories: Array<Category>?
-): ActionDataClass? {
+
+    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    suspend fun getCategoriesById(
+        groupId: Int
+    ): Array<Category>? {
+        val apiRep = ApiRepository()
+        try {
+            val response = apiRep.getGroupCategories(groupId)
+            if (!response.isSuccessful) return null
+
+            val categories = response.body() ?: return null
+
+            Log.d("sizeCategories", categories.size.toString())
+
+            return categories.toTypedArray()
+        } catch (e: Exception) {
+            Log.e("getGroupActionDays ERROR", e.toString())
+            return null
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun getArrayDataClass(
+        actions: com.ub.finanstics.api.models.Action,
+        categories: Array<Category>?
+    ): ActionDataClass? {
 //    val userName = getUserName(actions.userId)
-    var res: ActionDataClass? = null
-    Log.d("getArrayActionDataClassid", actions.userId.toString())
-    val category: Category? = getCategoryById(actions.category_id, categories)
-    res = ActionDataClass(
+        var res: ActionDataClass? = null
+        Log.d("getArrayActionDataClassid", actions.userId.toString())
+        val category: Category? = getCategoryById(actions.category_id, categories)
+        res = ActionDataClass(
             userName = "skip skipish",
             actionName = actions.name,
             actionType = actions.type,
@@ -114,10 +104,51 @@ suspend fun getArrayDataClass(
             userId = actions.userId,
             description = actions.description
         )
-    return res
-}
+        return res
+    }
 
-class CalendarGroupRepository(private var db: FinansticsDatabase) {
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun getUserName(
+        userId: Int
+    ): String? {
+        var res: String? = null
+        Log.d("getUserNameuserId", userId.toString())
+        try {
+            val apiRep = ApiRepository()
+            val response = apiRep.getUser(userId)
+            if (!response.isSuccessful) {
+                Log.e("getUserName", "not isSuccessful")
+            } else {
+                res = response.body()?.username
+            }
+        } catch (e: Exception) {
+            Log.e("getUserName", e.toString())
+        }
+        return res
+    }
+
+    @Suppress("NestedBlockDepth", "TooGenericExceptionCaught")
+    suspend fun userImage(userId: Int): Bitmap? = withContext(Dispatchers.IO) {
+        try {
+            val response = RetrofitInstance.api.getUserImage(userId)
+            if (response.isSuccessful) {
+                response.body()?.byteStream().use { stream ->
+                    if (stream != null) {
+                        BitmapFactory.decodeStream(stream)
+                    } else {
+                        Log.d("userImage", "1")
+                        null
+                    }
+                }
+            } else {
+                Log.d("userImage", "2")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("userImage", e.toString())
+            null
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @Suppress(
