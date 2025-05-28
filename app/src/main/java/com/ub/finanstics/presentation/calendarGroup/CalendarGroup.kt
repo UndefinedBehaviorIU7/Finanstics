@@ -517,21 +517,22 @@ fun CalendarGroup(
                 if (action != null) {
                     DrawCalendarGroupWithAction(uiState.calendar, action, isLandscape, vm)
                 }
-                ApiActionView(
-                    action = uiState.action,
-                    category = uiState.category,
-                    isVisible = true,
-                    onDismiss = {
-                        vm.hideAction()
-                    },
-                    imageBitmap = uiState.imageBitmap,
-                    name = uiState.name,
-                    modifier = Modifier
-                        .width(380.dp)
-                        .height(250.dp),
-                    color = if (uiState.type == 0) ColorsExpenses[0]
-                    else ColorsIncomes[1]
-                )
+                BoxWithConstraints {
+                    val width = maxWidth
+                    ApiActionView(
+                        action = uiState.action,
+                        category = uiState.category,
+                        isVisible = true,
+                        onDismiss = {
+                            vm.hideAction()
+                        },
+                        imageBitmap = uiState.imageBitmap,
+                        name = uiState.name,
+                        modifier = Modifier.width(width - 20.dp),
+                        color = if (uiState.type == 0) ColorsExpenses[0]
+                        else ColorsIncomes[1]
+                    )
+                }
             }
 
             else -> {}

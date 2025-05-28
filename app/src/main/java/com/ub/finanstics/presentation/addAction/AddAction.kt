@@ -27,6 +27,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
@@ -34,6 +35,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -163,13 +165,26 @@ fun FormAddData(
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 tonalElevation = 8.dp,
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(20.dp)
+                    )
                     .width(370.dp)
                     .wrapContentHeight()
             ) {
                 val datePickerState = rememberDatePickerState()
                 val density = LocalDensity.current
+                val colors = DatePickerDefaults.colors().copy(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    todayDateBorderColor = MaterialTheme.colorScheme.secondary,
+                    selectedYearContentColor = MaterialTheme.colorScheme.primary,
+                    selectedYearContainerColor = MaterialTheme.colorScheme.secondary,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.secondary,
+                    selectedDayContentColor = MaterialTheme.colorScheme.background
+                )
 
                 Column(
                     modifier = Modifier
@@ -180,15 +195,21 @@ fun FormAddData(
                         state = datePickerState,
                         modifier = Modifier
                             .heightIn(max = with(density) { 500.dp.toPx() }.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.background,
+                                shape = RoundedCornerShape(20.dp)
+                            )
                             .width(370.dp),
                         title = {
                             Text(
                                 text = "Выберите дату",
                                 modifier = Modifier.padding(8.dp),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         },
                         headline = null,
+                        colors = colors,
                         showModeToggle = false
                     )
 
@@ -286,6 +307,8 @@ fun Selector(
 
         DropdownMenu(
             expanded = expanded,
+            shape = RoundedCornerShape(15.dp),
+            containerColor = MaterialTheme.colorScheme.onBackground,
             onDismissRequest = { onExpandChange(false) },
             modifier = Modifier
                 .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
@@ -298,7 +321,7 @@ fun Selector(
                     .verticalScroll(rememberScrollState())
             ) {
                 Column {
-                    allElements.forEach { item ->
+                    allElements.forEachIndexed { index, item ->
                         DropdownMenuItem(
                             text = { Text(item) },
                             onClick = {
@@ -306,6 +329,14 @@ fun Selector(
                                 onExpandChange(false)
                             }
                         )
+
+                        if (index < allElements.size - 1) {
+                            Divider(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -367,6 +398,8 @@ fun MultiTypeSelector(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { onExpandChange(false) },
+            shape = RoundedCornerShape(15.dp),
+            containerColor = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
                 .heightIn(max = screenHeight * 0.3f)
@@ -378,14 +411,14 @@ fun MultiTypeSelector(
                     .verticalScroll(rememberScrollState())
             ) {
                 Column {
-                    allElements.forEach { item ->
+                    allElements.forEachIndexed { index, item ->
                         val isChecked = selectedItems.contains(item)
                         DropdownMenuItem(
                             text = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Checkbox(
                                         checked = isChecked,
-                                        onCheckedChange = null
+                                        onCheckedChange = null,
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(item.name)
@@ -400,6 +433,14 @@ fun MultiTypeSelector(
                                 onSelectionChanged(newSelection)
                             }
                         )
+
+                        if (index < allElements.size - 1) {
+                            Divider(
+                                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f),
+                                thickness = 1.dp,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -424,7 +465,7 @@ fun DrawIdle(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${uiState.typeAction.label}",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 22.sp
     )
@@ -483,20 +524,21 @@ fun DrawIdle(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter
     ) {
-        maxWidth
+        val width = maxWidth
         Button(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = {
-                vm.addAction()
-            },
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier.width(width),
+            onClick = { vm.addAction() },
             enabled = vm.validateIdle(uiState) == ErrorAddAction.OK
         ) {
             Text(
+                color = MaterialTheme.colorScheme.primary,
                 text = stringResource(R.string.add_action),
-                fontSize = 28.sp
+                fontSize = 24.sp
             )
         }
     }
@@ -519,7 +561,7 @@ fun DrawError(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${uiState.typeAction.label}",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 22.sp
     )
@@ -548,13 +590,14 @@ fun DrawError(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = {
-                vm.addAction()
-            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            onClick = { vm.addAction() },
         ) {
             Text(
+                modifier = Modifier.padding(vertical = 5.dp),
                 text = stringResource(R.string.retry),
-                fontSize = 24.sp
+                fontSize = 20.sp
             )
         }
 
@@ -565,13 +608,14 @@ fun DrawError(
                 containerColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = {
-                vm.addActionOnlyLocally()
-            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(15.dp),
+            onClick = { vm.addActionOnlyLocally() },
         ) {
             Text(
+                modifier = Modifier.padding(vertical = 5.dp),
                 text = stringResource(R.string.add_only_locally),
-                fontSize = 24.sp
+                fontSize = 20.sp
             )
         }
     }
@@ -593,7 +637,7 @@ fun DrawErrorLoad(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "${stringResource(R.string.type_action)} ${ uiState.typeAction.label }",
+        text = "${stringResource(R.string.type_action)} ${uiState.typeAction.label}",
         color = MaterialTheme.colorScheme.primary,
         fontSize = 22.sp
     )
@@ -621,13 +665,16 @@ fun DrawErrorLoad(
             containerColor = MaterialTheme.colorScheme.onBackground,
             contentColor = MaterialTheme.colorScheme.primary
         ),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
         onClick = {
             vm.tryLoad(uiState.typeAction)
         },
     ) {
         Text(
+            modifier = Modifier.padding(vertical = 5.dp),
             text = stringResource(R.string.retry),
-            fontSize = 24.sp
+            fontSize = 20.sp
         )
     }
 
@@ -638,13 +685,16 @@ fun DrawErrorLoad(
             containerColor = MaterialTheme.colorScheme.onBackground,
             contentColor = MaterialTheme.colorScheme.primary
         ),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
         onClick = {
             vm.withoutGroups(uiState.typeAction, uiState.allCategory)
         },
     ) {
         Text(
+            modifier = Modifier.padding(vertical = 5.dp),
             text = stringResource(R.string.сontinue_without_groups),
-            fontSize = 24.sp
+            fontSize = 20.sp
         )
     }
 }
@@ -668,7 +718,7 @@ fun DrawSelect(
     )
     Row(
         modifier = Modifier
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -765,7 +815,6 @@ fun AddAction(
                 onClick = { navController.navigateUp() },
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 10.dp)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,

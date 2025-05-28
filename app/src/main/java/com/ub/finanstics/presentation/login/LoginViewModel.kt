@@ -85,6 +85,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         if (vk != null) {
             viewModelScope.launch {
                 val result = repository.logInVK(vk)
+                regFirebaseToken(application.applicationContext)
                 _uiState.value = result
             }
         }
