@@ -142,7 +142,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                         res = ErrorAddAction.ERROR_ADD_DATA_SERVER
                     }
                 }
-
             } catch (e: Exception) {
                 res = ErrorAddAction.ERROR_ADD_DATA_SERVER
             }

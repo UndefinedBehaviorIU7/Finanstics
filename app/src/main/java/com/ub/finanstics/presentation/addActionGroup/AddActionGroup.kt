@@ -230,8 +230,7 @@ fun DrawErrorGroup(
     Spacer(modifier = Modifier.height(16.dp))
 
     if (error == ErrorAddAction.ERROR_LOADING_DATA_SERVER ||
-        error == ErrorAddAction.ERROR_ADD_DATA_SERVER)
-    {
+        error == ErrorAddAction.ERROR_ADD_DATA_SERVER) {
         Image(
             painter = painterResource(R.drawable.connection_error),
             contentDescription = stringResource(R.string.connection_error),

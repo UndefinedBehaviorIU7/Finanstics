@@ -169,8 +169,6 @@ class AddActionViewModel(
         )
     }
 
-
-
 //    fun chooseTypeAndLoad(type: ActionType) {
 //        _uiState.value = AddActionUiState.SelectType(type)
 //
@@ -423,7 +421,6 @@ class AddActionViewModel(
             }
         }
     }
-
 
 //    @Suppress("TooGenericExceptionCaught")
 //    @RequiresApi(Build.VERSION_CODES.O)
