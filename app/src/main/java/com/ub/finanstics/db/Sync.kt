@@ -80,10 +80,7 @@ suspend fun syncLocalWithServerCategories(application: Application) {
     val apiRep = ApiRepository()
     val db = FinansticsDatabase.getDatabase(application)
     val categoryDao = db.categoryDao()
-    println(categoryDao.getAllCategories())
     val unsyncedCategories = categoryDao.getUnsyncedCategories()
-    println("Unsynced categories:")
-    println(unsyncedCategories)
 
     unsyncedCategories.forEach { category ->
         try {

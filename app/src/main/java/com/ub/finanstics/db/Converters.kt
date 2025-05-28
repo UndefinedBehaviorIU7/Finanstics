@@ -3,21 +3,10 @@ package com.ub.finanstics.db
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.TypeConverter
-import com.ub.finanstics.presentation.calendar.MonthNameClass
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class Converters {
-    @TypeConverter
-    fun fromMonthNameClass(month: MonthNameClass): Int {
-        return month.number
-    }
-
-    @TypeConverter
-    fun toMonthNameClass(monthNumber: Int): MonthNameClass {
-        return MonthNameClass.entries.first { it.number == monthNumber }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
 

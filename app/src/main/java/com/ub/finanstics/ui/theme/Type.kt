@@ -10,7 +10,6 @@ private val FONT_SIZE = 16.sp
 private val LINE_HEIGHT = 24.sp
 private val LETTER_HEIGHT = 0.5.sp
 
-// Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
