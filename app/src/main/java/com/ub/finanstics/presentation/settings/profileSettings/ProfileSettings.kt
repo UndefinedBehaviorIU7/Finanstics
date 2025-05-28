@@ -485,7 +485,7 @@ private fun ProfileHeader(
     )
 
     Text(
-        text = tag,
+        text = "Тег: $tag",
         fontSize = 20.sp,
         textAlign = TextAlign.Center
     )
