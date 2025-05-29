@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import com.ub.finanstics.presentation.userScreens.stats.TIME_UPDATE
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

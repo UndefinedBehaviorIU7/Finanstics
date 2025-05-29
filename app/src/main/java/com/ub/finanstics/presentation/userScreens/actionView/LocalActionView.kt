@@ -29,7 +29,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.ub.finanstics.R
 import com.ub.finanstics.db.Action
-import com.ub.finanstics.presentation.stats.dateToString
+import com.ub.finanstics.presentation.userScreens.stats.dateToString
 import com.ub.finanstics.presentation.templates.Divider
 
 @RequiresApi(Build.VERSION_CODES.O)

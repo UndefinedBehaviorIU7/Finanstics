@@ -52,7 +52,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.dialogs.ErrorAlertDialog
 import com.ub.finanstics.dialogs.ErrorDialogContent
-import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.presentation.templates.forms.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 

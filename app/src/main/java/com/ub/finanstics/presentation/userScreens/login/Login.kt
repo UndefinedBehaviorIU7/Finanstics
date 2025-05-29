@@ -29,9 +29,9 @@ import com.ub.finanstics.R
 import com.ub.finanstics.dialogs.ErrorAlertDialog
 import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.forms.ButtonForm
-import com.ub.finanstics.presentation.forms.Form
-import com.ub.finanstics.presentation.forms.PasswordForm
+import com.ub.finanstics.presentation.templates.forms.ButtonForm
+import com.ub.finanstics.presentation.templates.forms.Form
+import com.ub.finanstics.presentation.templates.forms.PasswordForm
 import com.vk.id.onetap.compose.onetap.OneTap
 import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 

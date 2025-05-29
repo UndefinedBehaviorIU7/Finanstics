@@ -80,7 +80,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Group
-import com.ub.finanstics.presentation.forms.Form
+import com.ub.finanstics.presentation.templates.forms.Form
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
