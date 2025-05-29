@@ -448,8 +448,6 @@ fun DrawCalendarWithoutAction(
 fun DrawError(
     vm: CalendarGroupViewModel,
 ) {
-
-
     Spacer(modifier = Modifier.height(16.dp))
 
     Image(

@@ -91,8 +91,7 @@ class CalendarViewModel(
                 if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
 
                     _uiState.value = CalendarUiState.DrawActions(calendar, day)
-                }
-                else
+                } else
                     _uiState.value = CalendarUiState.Default(calendar)
             }
         } catch (e: NullPointerException) {
