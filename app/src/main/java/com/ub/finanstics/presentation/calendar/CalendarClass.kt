@@ -19,7 +19,7 @@ import com.ub.finanstics.presentation.calendarGroup.dataClassToApiString
 import com.ub.finanstics.presentation.calendarGroup.dataClassToLocalDate
 
 enum class ErrorCalendar(val str: String) {
-    ERRORSERVER("ошибка сервера"),
+    ERRORSERVER("ошибка загрузки с сервера"),
     OK("ok")
 }
 
@@ -34,7 +34,6 @@ private const val NUM_400 = 400
 
 private const val ZERO = 0
 
-private const val COUNT_ACTION = 20
 private const val COUNT_MONEY = 0
 
 @Suppress("MagicNumber")
@@ -186,10 +185,6 @@ data class ActionDataClass(
         return actionMoney
     }
 
-    fun getUserName(): String {
-        return userName
-    }
-
     fun getUserId(): Int {
         return userId
     }
@@ -269,7 +264,7 @@ data class DayClass(
     }
 
     fun getActions(): Array<ActionDataClass?> {
-        return actionDataClasses!!
+        return actionDataClasses
     }
 
     fun getDayData(): Int {
@@ -421,11 +416,9 @@ class GridDatas(
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun initActionsByApi(
-        application: Application,
         groupId: Int
     ): ErrorCalendar {
-        val db = FinansticsDatabase.getDatabase(application)
-        val repository = CalendarGroupRepository(db)
+        val repository = CalendarGroupRepository()
 
         val dataFirst = days[0]!!.getData()
         val dataSecond = days.last()!!.getData()
@@ -480,14 +473,10 @@ class CalendarClass {
                 calendar.get(java.util.Calendar.YEAR)
             )
         }
-
-        fun getNowDay(): DayClass {
-            return DayClass(getNowData())
-        }
     }
 
-    fun getNowDataClass(): DayClass {
-        return gridDatas.getDayByData(getNowData())!!
+    fun getNowDataClass(): DayClass? {
+        return gridDatas.getDayByData(getNowData())
     }
 
     fun getDays(): Array<DayClass?> {
@@ -531,9 +520,8 @@ class CalendarClass {
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun initActionsDayByApi(
-        application: Application,
         groupId: Int
     ): ErrorCalendar {
-        return gridDatas.initActionsByApi(application, groupId)
+        return gridDatas.initActionsByApi(groupId)
     }
 }

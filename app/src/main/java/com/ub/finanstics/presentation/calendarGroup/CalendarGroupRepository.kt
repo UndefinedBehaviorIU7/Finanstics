@@ -8,7 +8,6 @@ import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
@@ -49,8 +48,8 @@ fun dataClassToLocalDate(data: DataClass): LocalDate {
 }
 
 
-class CalendarGroupRepository(private var db: FinansticsDatabase) {
-    fun getCategoryById(
+class CalendarGroupRepository {
+    private fun getCategoryById(
         id: Int,
         categories: Array<Category>?
     ): Category? {
@@ -65,7 +64,7 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
 
 
     @Suppress("ReturnCount", "TooGenericExceptionCaught")
-    suspend fun getCategoriesById(
+    private suspend fun getCategoriesById(
         groupId: Int
     ): Array<Category>? {
         val apiRep = ApiRepository()
@@ -86,12 +85,11 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
 
     @Suppress("TooGenericExceptionCaught")
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getArrayDataClass(
+    fun getArrayDataClass(
         actions: com.ub.finanstics.api.models.Action,
         categories: Array<Category>?
-    ): ActionDataClass? {
-//    val userName = getUserName(actions.userId)
-        var res: ActionDataClass? = null
+    ): ActionDataClass {
+        val res: ActionDataClass?
         Log.d("getArrayActionDataClassid", actions.userId.toString())
         val category: Category? = getCategoryById(actions.category_id, categories)
         res = ActionDataClass(
@@ -181,9 +179,7 @@ class CalendarGroupRepository(private var db: FinansticsDatabase) {
                 if (dataFirst <= date && date <= dataSecond) {
                     val list = tempMap.getOrPut(date) { mutableListOf() }
                     val actionsData = getArrayDataClass(el, categories)
-                    Log.d("dataApiToDataClass", (actionsData == null).toString())
-                    if (actionsData != null)
-                        list.add(actionsData)
+                    list.add(actionsData)
                 }
             }
         } catch (e: Exception) {

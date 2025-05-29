@@ -3,13 +3,14 @@ package com.ub.finanstics.presentation.calendarGroup
 import android.graphics.Bitmap
 import com.ub.finanstics.presentation.calendar.CalendarClass
 import com.ub.finanstics.presentation.calendar.DayClass
+import com.ub.finanstics.presentation.calendar.ErrorCalendar
 
 sealed class CalendarGroupUiState {
     data object Idle : CalendarGroupUiState()
     data object Loading : CalendarGroupUiState()
 
     data class Error(
-        val message: String
+        val message: ErrorCalendar
     ) : CalendarGroupUiState()
 
     data class Default(

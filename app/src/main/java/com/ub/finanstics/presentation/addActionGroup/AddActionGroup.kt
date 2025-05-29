@@ -53,8 +53,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.addAction.ActionType
-import com.ub.finanstics.presentation.addAction.AddActionGroupUiState
-import com.ub.finanstics.presentation.addAction.AddActionGroupViewModel
 import com.ub.finanstics.presentation.addAction.ErrorAddAction
 import com.ub.finanstics.presentation.addAction.FormAddData
 import com.ub.finanstics.presentation.addAction.Selector
@@ -111,7 +109,6 @@ fun BooleanFormCheckboxField(
 fun DrawIdleGroup(
     uiState: AddActionGroupUiState.Idle,
     vm: AddActionGroupViewModel,
-    navController: NavController
 ) {
 
     HorizontalDivider(
@@ -223,7 +220,7 @@ fun DrawErrorGroup(
     Spacer(modifier = Modifier.height(16.dp))
 
     Text(
-        text = "${error.str}",
+        text = error.str,
         color = MaterialTheme.colorScheme.primary,
         fontSize = 19.sp
     )
@@ -261,72 +258,6 @@ fun DrawErrorGroup(
             )
         }
     }
-
-//    Selector(
-//        value = uiState.category,
-//        label = stringResource(R.string.category),
-//        expanded = uiState.menuExpandedCategory,
-//        allElements = uiState.allCategory.map { it.name },
-//        onExpandChange = { vm.updateUIState(newMenuExpandedCategory = it) },
-//        selected = { vm.updateUIState(newCategory = it) },
-//        isError = false
-//    )
-//
-//    Form(
-//        value = if (uiState.moneyAction != -1) uiState.moneyAction.toString() else "",
-//        label = stringResource(R.string.sum),
-//        isError = errorAddACtion == ErrorAddAction.MONEY,
-//        lambda = { vm.updateUIState(newMoneyAction = it.toIntOrNull() ?: -1) }
-//    )
-//
-//    Form(
-//        value = uiState.nameAction,
-//        label = stringResource(R.string.name_action),
-//        isError = errorAddACtion == ErrorAddAction.NAME,
-//        lambda = { vm.updateUIState(newNameAction = it) }
-//    )
-//
-//    FormAddData(
-//        value = uiState.data,
-//        label = stringResource(R.string.data),
-//        isError = errorAddACtion == ErrorAddAction.DATE,
-//        lambda = { vm.updateUIState(newData = it) }
-//    )
-//
-//    Form(
-//        value = uiState.description,
-//        label = stringResource(R.string.description),
-//        isError = errorAddACtion == ErrorAddAction.DESCRIPTION,
-//        lambda = { vm.updateUIState(newDescription = it) }
-//    )
-//
-//    BooleanFormCheckboxField(
-//        value = uiState.duplication,
-//        label = stringResource(R.string.duplication_my),
-//        isError = false,
-//        onCheckedChange = { vm.updateUIState(newDuplication = it) },
-//    )
-//
-//    Spacer(modifier = Modifier.height(5.dp))
-//
-//    BoxWithConstraints(
-//        modifier = Modifier.fillMaxWidth(),
-//        contentAlignment = Alignment.TopCenter
-//    ) {
-//        maxWidth
-//        Button(
-//            colors = ButtonDefaults.buttonColors(
-//                containerColor = MaterialTheme.colorScheme.onBackground,
-//                contentColor = MaterialTheme.colorScheme.primary
-//            ),
-//            onClick = { vm.addAction() },
-//        ) {
-//            Text(
-//                text = stringResource(R.string.add_action),
-//                fontSize = 28.sp
-//            )
-//        }
-//    }
 }
 
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
@@ -464,7 +395,7 @@ fun AddActionGroup(
 
         when (val uiState = vm.uiState.collectAsState().value) {
             is AddActionGroupUiState.Idle -> {
-                DrawIdleGroup(uiState, vm, navController)
+                DrawIdleGroup(uiState, vm)
             }
 
             is AddActionGroupUiState.Error -> {
@@ -492,8 +423,6 @@ fun AddActionGroup(
                     )
                 }
             }
-
-            else -> {}
         }
     }
 }

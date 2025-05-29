@@ -1,5 +1,6 @@
 package com.ub.finanstics.presentation.addAction
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -86,6 +87,7 @@ import com.ub.finanstics.ui.theme.ColorsIncomes
 import java.time.Instant
 import java.time.ZoneId
 
+@SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
@@ -202,7 +204,7 @@ fun FormAddData(
                             .width(370.dp),
                         title = {
                             Text(
-                                text = "Выберите дату",
+                                text = stringResource(R.string.select_data),
                                 modifier = Modifier.padding(8.dp),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
@@ -253,6 +255,7 @@ fun FormAddData(
     }
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Suppress("MagicNumber", "LongParameterList", "LongMethod")
 @Composable
 fun Selector(
@@ -344,6 +347,7 @@ fun Selector(
     }
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Suppress("MagicNumber", "LongParameterList", "LongMethod", "ComplexMethod")
 @Composable
 fun MultiTypeSelector(
@@ -454,7 +458,6 @@ fun MultiTypeSelector(
 fun DrawIdle(
     uiState: AddActionUiState.Idle,
     vm: AddActionViewModel,
-    navController: NavController
 ) {
     HorizontalDivider(
         thickness = 1.dp,
@@ -827,7 +830,7 @@ fun AddAction(
 
         when (val uiState = vm.uiState.collectAsState().value) {
             is AddActionUiState.Idle -> {
-                DrawIdle(uiState, vm, navController)
+                DrawIdle(uiState, vm)
             }
 
             is AddActionUiState.Error -> {
@@ -859,8 +862,6 @@ fun AddAction(
             is AddActionUiState.ErrorLoad -> {
                 DrawErrorLoad(uiState, vm)
             }
-
-            else -> {}
         }
     }
 }

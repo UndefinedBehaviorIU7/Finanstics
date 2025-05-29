@@ -5,7 +5,7 @@ import com.ub.finanstics.presentation.calendar.ActionDataClass
 import com.ub.finanstics.presentation.calendar.DataClass
 import com.ub.finanstics.presentation.calendar.MonthNameClass
 
-class CalendarRepository(private var db: FinansticsDatabase) {
+class CalendarRepository(db: FinansticsDatabase) {
     private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
@@ -16,7 +16,7 @@ class CalendarRepository(private var db: FinansticsDatabase) {
             data.getMonth().number,
             data.getYear()
         )
-        var res = mutableListOf<ActionDataClass>()
+        val res = mutableListOf<ActionDataClass>()
         for (el in actions) {
             res.add(
                 ActionDataClass(
