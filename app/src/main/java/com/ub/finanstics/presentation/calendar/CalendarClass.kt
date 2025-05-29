@@ -486,8 +486,8 @@ class CalendarClass {
         }
     }
 
-    fun getNowDataClass(): DayClass {
-        return gridDatas.getDayByData(getNowData())!!
+    fun getNowDataClass(): DayClass? {
+        return gridDatas.getDayByData(getNowData())
     }
 
     fun getDays(): Array<DayClass?> {

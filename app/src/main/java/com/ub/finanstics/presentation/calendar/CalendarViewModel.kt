@@ -95,7 +95,6 @@ class CalendarViewModel(
                 calendar.initActionsDay(application)
                 _uiState.value = CalendarUiState.Loading
                 _uiState.value = CalendarUiState.DrawActions(calendar, calendar.getNowDataClass())
-                Log.d("CalendarClass", CalendarClass.getNowDay().getActions().size.toString())
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -117,9 +116,9 @@ class CalendarViewModel(
                 newCalendar.copy(calendar)
                 newCalendar.initActionsDay(application)
                 _uiState.value = CalendarUiState.Default(newCalendar)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
+                val day = calendar.getNowDataClass()
+                if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
+
                     _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
                 }
                 else
@@ -138,9 +137,8 @@ class CalendarViewModel(
                 val newCalendar = CalendarClass()
                 newCalendar.copy(calendar)
                 newCalendar.initActionsDay(application)
-                var day = CalendarClass.getNowDay()
-                if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                    day = calendar.getNowDataClass()
+                val day = calendar.getNowDataClass()
+                if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
                     _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
                 }
                 else

@@ -141,9 +141,9 @@ class CalendarGroupViewModel(
                     _uiState.value = CalendarGroupUiState.Loading
                 else {
                     _uiState.value = CalendarGroupUiState.Default(newCalendar)
-                    var day = CalendarClass.getNowDay()
-                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                        day = calendar.getNowDataClass()
+                    val day = calendar.getNowDataClass()
+                    if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
+
                         _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
                     }
                     else
@@ -166,9 +166,9 @@ class CalendarGroupViewModel(
                 if (calendar.initActionsDayByApi(application, groupId) == ErrorCalendar.ERRORSERVER)
                     _uiState.value = CalendarGroupUiState.Loading
                 else {
-                    var day = CalendarClass.getNowDay()
-                    if (day.getData().getMonth() == calendar.getData().getMonth()) {
-                        day = calendar.getNowDataClass()
+                    val day = calendar.getNowDataClass()
+                    if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
+
                         _uiState.value = CalendarGroupUiState.DrawActions(newCalendar, day)
                     } else
                         _uiState.value = CalendarGroupUiState.Default(newCalendar)
