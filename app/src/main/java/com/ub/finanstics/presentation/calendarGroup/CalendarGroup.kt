@@ -443,7 +443,7 @@ fun DrawCalendarWithoutAction(
     }
 }
 
-@Suppress("LongMethod")
+@Suppress("MagicNumber")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DrawError(
