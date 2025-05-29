@@ -1,6 +1,6 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
-import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 
 sealed class GroupStatsUiState {
     object Loading : GroupStatsUiState()

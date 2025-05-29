@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

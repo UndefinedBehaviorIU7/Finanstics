@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addGroup
+package com.ub.finanstics.presentation.groupScreens.addGroup
 
 data class User(
     val id: Int,

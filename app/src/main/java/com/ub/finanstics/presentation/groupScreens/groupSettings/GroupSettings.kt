@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.settings.groupSettings
+package com.ub.finanstics.presentation.groupScreens.groupSettings
 
 import android.graphics.Bitmap
 import android.net.Uri

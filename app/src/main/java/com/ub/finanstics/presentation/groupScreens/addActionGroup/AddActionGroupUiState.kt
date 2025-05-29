@@ -1,8 +1,8 @@
-package com.ub.finanstics.presentation.addActionGroup
+package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.presentation.addAction.ActionType
-import com.ub.finanstics.presentation.addAction.ErrorAddAction
+import com.ub.finanstics.presentation.userScreens.addAction.ActionType
+import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
 
 sealed class AddActionGroupUiState {
     data class Idle(

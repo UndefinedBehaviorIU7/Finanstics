@@ -1,11 +1,11 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.content.Context
 import com.ub.finanstics.R
 import com.ub.finanstics.db.Action
 import com.ub.finanstics.db.Category
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 
 class StatsRepository(private val context: Context) {
     val db = FinansticsDatabase.getDatabase(context)

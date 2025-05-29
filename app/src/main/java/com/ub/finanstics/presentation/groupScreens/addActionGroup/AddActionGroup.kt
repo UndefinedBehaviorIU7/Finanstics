@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addActionGroup
+package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -52,10 +52,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
-import com.ub.finanstics.presentation.addAction.ActionType
-import com.ub.finanstics.presentation.addAction.ErrorAddAction
-import com.ub.finanstics.presentation.addAction.FormAddData
-import com.ub.finanstics.presentation.addAction.Selector
+import com.ub.finanstics.presentation.userScreens.addAction.ActionType
+import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
+import com.ub.finanstics.presentation.userScreens.addAction.FormAddData
+import com.ub.finanstics.presentation.userScreens.addAction.Selector
 import com.ub.finanstics.presentation.templates.forms.Form
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses

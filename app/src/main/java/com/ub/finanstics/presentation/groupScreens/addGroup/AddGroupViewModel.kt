@@ -1,10 +1,10 @@
-package com.ub.finanstics.presentation.addGroup
+package com.ub.finanstics.presentation.groupScreens.addGroup
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

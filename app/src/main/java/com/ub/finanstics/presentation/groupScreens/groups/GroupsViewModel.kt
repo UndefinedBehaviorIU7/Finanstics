@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.groups
+package com.ub.finanstics.presentation.groupScreens.groups
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

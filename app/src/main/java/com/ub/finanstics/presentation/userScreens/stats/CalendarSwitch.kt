@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ub.finanstics.presentation.calendar.CalendarClass
-import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
 

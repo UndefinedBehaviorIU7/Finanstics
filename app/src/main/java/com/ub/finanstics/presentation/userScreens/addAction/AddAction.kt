@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.userScreens.addAction
 
 import android.annotation.SuppressLint
 import android.os.Build

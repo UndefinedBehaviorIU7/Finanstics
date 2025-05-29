@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -8,8 +8,8 @@ import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -188,7 +188,7 @@ class GroupStatsRepository(private val context: Context) {
 
         return actions
             .map { action ->
-                val name = action.category_id
+                val name = action.categoryId
                     .let { categoryMap[it]!!.name }
                 action.value.let { name to it }
             }

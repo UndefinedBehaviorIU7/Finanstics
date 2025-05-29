@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.register
+package com.ub.finanstics.presentation.userScreens.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

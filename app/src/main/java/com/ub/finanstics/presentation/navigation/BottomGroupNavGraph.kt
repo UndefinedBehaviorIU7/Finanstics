@@ -31,9 +31,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.calendarGroup.CalendarGroup
-import com.ub.finanstics.presentation.settings.groupSettings.GroupSettings
-import com.ub.finanstics.presentation.statsGroup.GroupStats
+import com.ub.finanstics.presentation.groupScreens.calendarGroup.CalendarGroup
+import com.ub.finanstics.presentation.groupScreens.groupSettings.GroupSettings
+import com.ub.finanstics.presentation.groupScreens.statsGroup.GroupStats
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.ui.theme.icons.CircleIcon

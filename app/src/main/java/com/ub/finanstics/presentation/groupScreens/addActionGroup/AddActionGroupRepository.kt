@@ -1,12 +1,12 @@
-package com.ub.finanstics.presentation.addActionGroup
+package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.presentation.addAction.ErrorAddAction
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 
 @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexCondition")
 class AddActionGroupRepository(
@@ -18,12 +18,11 @@ class AddActionGroupRepository(
     ): MutableList<Category>? {
         val res: MutableList<Category> = mutableListOf()
         for (el in allCategories) {
-            Log.e("add Category", "Ok")
             if (el.type == 1 || (el.type == type) || (el.type == 2 && type == 1)) {
                 res.add(el)
             }
         }
-        return if (res.size == 0)
+        return if (res.isEmpty())
             null
         else
             res
@@ -34,7 +33,6 @@ class AddActionGroupRepository(
         var res: MutableList<Category>? = null
         val preferencesManager = PreferencesManager(context)
         val groupId = preferencesManager.getInt("groupId", -1)
-        Log.e("add Category", groupId.toString())
         try {
             val response = apiRep.getGroupCategories(groupId)
             if (response.isSuccessful) {
@@ -42,10 +40,9 @@ class AddActionGroupRepository(
                 if (allCategories != null)
                     res = getCategoriesListByType(allCategories, type)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             res = null
         }
-
         return res
     }
 
@@ -91,13 +88,10 @@ class AddActionGroupRepository(
                     res = ErrorAddAction.ERROR_ADD_DATA_SERVER
                 }
 
-                Log.d("addActionGroupApi", "res: ${res.str}")
-            } catch (e: Exception) {
-                Log.e("addActionGroupApi ERROR", e.toString())
+            } catch (_: Exception) {
                 res = ErrorAddAction.ERROR_ADD_DATA_SERVER
             }
         }
-        Log.d("addActionApi res", res.str)
         return res
     }
 }

@@ -1,12 +1,12 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.userScreens.addAction
 
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 
 class AddActionRepository(private var db: FinansticsDatabase, private val context: Context) {
     private val categoryDao = db.categoryDao()
@@ -53,7 +53,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
                     resF = res
                 }
             } catch (e: Exception) {
-                Log.e("getGroupActionDays ERROR", e.toString())
                 resF = null
             }
         }

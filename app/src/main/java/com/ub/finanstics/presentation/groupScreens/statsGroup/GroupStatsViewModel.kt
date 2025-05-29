@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.app.Application
 import android.graphics.Bitmap
@@ -8,11 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.R
-import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 import com.ub.finanstics.presentation.converters.base64ToBitmap
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.stats.TIME_UPDATE
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.stats.TIME_UPDATE
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

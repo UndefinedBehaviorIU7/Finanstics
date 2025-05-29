@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.login
+package com.ub.finanstics.presentation.userScreens.login
 
 sealed class LoginUiState {
     data class Idle(

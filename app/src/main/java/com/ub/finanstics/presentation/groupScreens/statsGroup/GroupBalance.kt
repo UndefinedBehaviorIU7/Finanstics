@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addActionGroup
+package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import android.app.Application
 import android.os.Build
@@ -8,10 +8,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.addAction.ActionType
-import com.ub.finanstics.presentation.addAction.ErrorAddAction
-import com.ub.finanstics.presentation.addAction.dataForApi
-import com.ub.finanstics.presentation.addAction.toInt
+import com.ub.finanstics.presentation.userScreens.addAction.ActionType
+import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
+import com.ub.finanstics.presentation.userScreens.addAction.dataForApi
+import com.ub.finanstics.presentation.userScreens.addAction.toInt
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -57,11 +57,8 @@ class AddActionGroupViewModel(
                 try {
                     repository.getCategoriesByType(type.toInt())
                 } catch (e: Exception) {
-                    Log.e("chooseTypeAndLoad", "Error getting categories", e)
                     null
                 }
-            }.also {
-                Log.d("chooseTypeAndLoad", "Categories result: $it")
             }
 
             if (categories == null) {

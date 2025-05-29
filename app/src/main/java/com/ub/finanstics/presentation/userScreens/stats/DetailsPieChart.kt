@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ub.finanstics.R
 import com.ub.finanstics.db.Action
-import com.ub.finanstics.presentation.actionView.LocalActionView
-import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.actionView.LocalActionView
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 import com.ub.finanstics.ui.theme.Blue
 import java.time.LocalDate
 

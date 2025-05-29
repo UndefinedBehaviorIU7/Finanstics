@@ -167,10 +167,6 @@ class ApiRepository {
         return RetrofitInstance.api.getGroupById(groupId)
     }
 
-    suspend fun getAllGroups(): Response<List<Group>> {
-        return RetrofitInstance.api.getAllGroups()
-    }
-
     suspend fun getUserGroups(userId: Int): Response<List<Group>> {
         return RetrofitInstance.api.getUserGroups(userId)
     }

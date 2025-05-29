@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.group
+package com.ub.finanstics.presentation.groupScreens.group
 
 import android.os.Build
 import androidx.activity.compose.BackHandler

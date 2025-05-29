@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addGroup
+package com.ub.finanstics.presentation.groupScreens.addGroup
 
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.activity.ComponentActivity

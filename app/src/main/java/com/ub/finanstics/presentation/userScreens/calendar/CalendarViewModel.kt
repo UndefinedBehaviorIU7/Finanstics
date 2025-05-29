@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.calendar
+package com.ub.finanstics.presentation.userScreens.calendar
 
 import android.app.Application
 import android.os.Build

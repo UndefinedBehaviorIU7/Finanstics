@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.content.res.Configuration
 import android.os.Build
@@ -51,8 +51,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.stats.PieChart
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.stats.PieChart
 import com.ub.finanstics.presentation.templates.AvatarBitmap
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader

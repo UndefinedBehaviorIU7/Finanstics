@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.calendarGroup
+package com.ub.finanstics.presentation.groupScreens.calendarGroup
 
 import android.content.res.Configuration
 import android.os.Build
@@ -50,12 +50,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.R
-import com.ub.finanstics.presentation.actionView.ApiActionView
-import com.ub.finanstics.presentation.calendar.ActionDataClass
-import com.ub.finanstics.presentation.calendar.CalendarClass
-import com.ub.finanstics.presentation.calendar.DayClass
-import com.ub.finanstics.presentation.calendar.MonthNameClass
-import com.ub.finanstics.presentation.calendar.WeekDraw
+import com.ub.finanstics.presentation.userScreens.actionView.ApiActionView
+import com.ub.finanstics.presentation.userScreens.calendar.ActionDataClass
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.calendar.DayClass
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.calendar.WeekDraw
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses

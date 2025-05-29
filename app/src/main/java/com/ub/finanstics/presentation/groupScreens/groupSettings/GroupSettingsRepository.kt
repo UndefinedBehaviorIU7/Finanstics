@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.settings.groupSettings
+package com.ub.finanstics.presentation.groupScreens.groupSettings
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -8,7 +8,7 @@ import com.ub.finanstics.R
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.User
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.calendar
+package com.ub.finanstics.presentation.userScreens.calendar
 
 import com.ub.finanstics.db.Action
 

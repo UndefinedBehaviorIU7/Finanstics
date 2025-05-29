@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.login
+package com.ub.finanstics.presentation.userScreens.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

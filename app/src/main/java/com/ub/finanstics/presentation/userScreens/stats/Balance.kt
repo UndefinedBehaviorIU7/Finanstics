@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -1,6 +1,6 @@
 @file:Suppress("NAME_SHADOWING")
 
-package com.ub.finanstics.presentation.calendar
+package com.ub.finanstics.presentation.userScreens.calendar
 
 import android.content.res.Configuration
 import android.os.Build
@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ub.finanstics.R
-import com.ub.finanstics.presentation.actionView.LocalActionView
+import com.ub.finanstics.presentation.userScreens.actionView.LocalActionView
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes

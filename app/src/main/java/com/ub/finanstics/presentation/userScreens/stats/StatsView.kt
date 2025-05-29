@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.content.res.Configuration
 import android.os.Build
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.OFFSET_BAR

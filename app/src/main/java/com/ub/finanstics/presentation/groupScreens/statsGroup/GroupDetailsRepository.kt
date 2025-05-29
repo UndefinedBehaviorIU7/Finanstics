@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -41,7 +41,7 @@ class GroupDetailsRepository(private val context: Context) {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

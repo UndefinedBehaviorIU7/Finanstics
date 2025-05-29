@@ -1,9 +1,9 @@
-package com.ub.finanstics.presentation.addGroup
+package com.ub.finanstics.presentation.groupScreens.addGroup
 
 import android.content.Context
 import com.google.gson.Gson
 import com.ub.finanstics.api.RetrofitInstance
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 

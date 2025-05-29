@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.actionView
+package com.ub.finanstics.presentation.userScreens.actionView
 
 import android.os.Build
 import androidx.annotation.RequiresApi

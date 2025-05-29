@@ -18,7 +18,7 @@ import com.google.firebase.messaging.ktx.messaging
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.presentation.MainActivity
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 
 class FinansticsFMS : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -31,7 +31,6 @@ class FinansticsFMS : FirebaseMessagingService() {
         }
 
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
             it.body?.let { body -> sendNotification(body) }
         }
     }
@@ -40,7 +39,6 @@ class FinansticsFMS : FirebaseMessagingService() {
     private fun isLongRunningJob() = true
 
     override fun onNewToken(token: String) {
-        sendRegistrationToServer(token)
     }
 
     private fun scheduleJob() {
@@ -50,10 +48,6 @@ class FinansticsFMS : FirebaseMessagingService() {
 
     private fun handleNow() {
         Log.d(TAG, "Short lived task is done.")
-    }
-
-    private fun sendRegistrationToServer(token: String?) {
-        Log.d(TAG, "sendRegistrationTokenToServer($token)")
     }
 
     private fun sendNotification(messageBody: String) {
@@ -104,7 +98,6 @@ fun logFirebaseToken(context: Context) {
     if (fcmToken.isEmpty()) {
         Firebase.messaging.token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
                 return@addOnCompleteListener
             }
 

@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.userScreens.addAction
 
 enum class ActionType(val label: String) {
     INCOME("Доход"),

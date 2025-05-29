@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.app.Application
 import android.os.Build
@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.db.Action
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

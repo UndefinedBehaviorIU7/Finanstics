@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.settings.profileSettings
+package com.ub.finanstics.presentation.userScreens.profileSettings
 
 import android.content.Intent
 import android.graphics.Bitmap

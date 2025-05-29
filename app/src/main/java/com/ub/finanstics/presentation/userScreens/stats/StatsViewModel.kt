@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.stats
+package com.ub.finanstics.presentation.userScreens.stats
 
 import android.app.Application
 import android.os.Build
@@ -9,9 +9,9 @@ import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.db.syncData
-import com.ub.finanstics.presentation.calendar.CalendarClass
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import com.ub.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

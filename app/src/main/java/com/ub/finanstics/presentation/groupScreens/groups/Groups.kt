@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.groups
+package com.ub.finanstics.presentation.groupScreens.groups
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -70,7 +70,7 @@ import com.ub.finanstics.dialogs.ErrorAlertDialog
 import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.converters.bitmapToBase64
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.PlusCircleIcon

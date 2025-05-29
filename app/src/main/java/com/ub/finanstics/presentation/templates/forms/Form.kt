@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.forms
+package com.ub.finanstics.presentation.templates.forms
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.settings.groupSettings
+package com.ub.finanstics.presentation.groupScreens.groupSettings
 
 import android.app.Application
 import android.content.Context
@@ -15,7 +15,7 @@ import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import java.io.File
 import java.io.FileOutputStream
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,9 +1,8 @@
+package com.ub.finanstics.presentation.userScreens.calendar
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.calendar.ActionDataClass
-import com.ub.finanstics.presentation.calendar.DataClass
-import com.ub.finanstics.presentation.calendar.MonthNameClass
 
 class CalendarRepository(db: FinansticsDatabase) {
     private val actionDao = db.actionDao()
@@ -17,21 +16,20 @@ class CalendarRepository(db: FinansticsDatabase) {
             data.getYear()
         )
         val res = mutableListOf<ActionDataClass>()
-        for (el in actions) {
+        for (action in actions) {
             res.add(
                 ActionDataClass(
-                    userName = "user",
-                    actionName = el.name,
-                    actionType = el.type,
-                    actionMoney = el.value,
-                    actionCategory = categoryDao.getCategoryById(el.categoryId)!!.name,
+                    actionName = action.name,
+                    actionType = action.type,
+                    actionMoney = action.value,
+                    actionCategory = categoryDao.getCategoryById(action.categoryId)!!.name,
                     data = DataClass(
-                        el.date.dayOfMonth,
-                        MonthNameClass.fromInt(el.date.monthValue),
-                        el.date.year
+                        action.date.dayOfMonth,
+                        MonthNameClass.fromInt(action.date.monthValue),
+                        action.date.year
                     ),
                     userId = 1,
-                    description = el.description
+                    description = action.description
                 )
             )
         }

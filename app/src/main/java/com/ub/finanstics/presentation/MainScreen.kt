@@ -28,7 +28,7 @@ import com.ub.finanstics.presentation.navigation.BottomBarScreen
 import com.ub.finanstics.presentation.navigation.BottomBarUiState
 import com.ub.finanstics.presentation.navigation.BottomBarViewModel
 import com.ub.finanstics.presentation.navigation.BottomNavGraph
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsViewModel
+import com.ub.finanstics.presentation.userScreens.profileSettings.ProfileSettingsViewModel
 import com.ub.finanstics.ui.theme.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.settings.profileSettings
+package com.ub.finanstics.presentation.userScreens.profileSettings
 
 import android.app.Application
 import android.content.Context
@@ -10,8 +10,8 @@ import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import com.ub.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

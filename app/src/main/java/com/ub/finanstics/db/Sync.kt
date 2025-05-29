@@ -5,8 +5,8 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -92,11 +92,6 @@ suspend fun syncLocalWithServerCategories(application: Application) {
             )
 
             if (!response.isSuccessful) {
-                Log.e(
-                    "Sync",
-                    "Failed to sync category ${category.id}: " +
-                        "${response.errorBody()?.string()}"
-                )
                 return@forEach
             }
             val serverResp = response.body()
@@ -142,11 +137,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
             localActions.forEach { locAct -> if (serverAction.id == locAct.serverId) new = false }
             if (!new) return@forEach
 
-            if (categoryDao.getCategoryByServerId(serverAction.category_id) == null) {
-                Log.e(
-                    "Sync",
-                    "No category ${serverAction.category_id} from server"
-                )
+            if (categoryDao.getCategoryByServerId(serverAction.categoryId) == null) {
                 return@forEach
             }
             val newAction = Action(
@@ -155,9 +146,9 @@ suspend fun syncServerWithLocalActions(application: Application) {
                 description = serverAction.description,
                 value = serverAction.value,
                 date = LocalDate.parse(serverAction.date, formatter),
-                categoryId = categoryDao.getCategoryByServerId(serverAction.category_id)!!.id,
+                categoryId = categoryDao.getCategoryByServerId(serverAction.categoryId)!!.id,
                 serverId = serverAction.id,
-                createdAt = serverAction.created_at
+                createdAt = serverAction.createdAt
             )
             actionDao.insertAction(newAction)
         }
@@ -207,7 +198,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                 )
                 categoryDao.updateCreationTime(
                     cat.id,
-                    serverCategory.created_at!!
+                    serverCategory.createdAt!!
                 )
                 return@forEach
             }
@@ -216,7 +207,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                     name = serverCategory.name,
                     type = serverCategory.type,
                     serverId = serverCategory.id,
-                    createdAt = serverCategory.created_at
+                    createdAt = serverCategory.createdAt
                 )
             )
         }

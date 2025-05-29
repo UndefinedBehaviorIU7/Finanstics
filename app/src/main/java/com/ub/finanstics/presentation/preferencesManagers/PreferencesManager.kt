@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.preferencesManager
+package com.ub.finanstics.presentation.preferencesManagers
 
 import android.content.Context
 import android.content.SharedPreferences

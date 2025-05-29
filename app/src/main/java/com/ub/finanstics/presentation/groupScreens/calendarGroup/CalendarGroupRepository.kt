@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.calendarGroup
+package com.ub.finanstics.presentation.groupScreens.calendarGroup
 
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
@@ -7,10 +7,11 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.presentation.calendar.ActionDataClass
-import com.ub.finanstics.presentation.calendar.DataClass
-import com.ub.finanstics.presentation.calendar.MonthNameClass
+import com.ub.finanstics.presentation.userScreens.calendar.ActionDataClass
+import com.ub.finanstics.presentation.userScreens.calendar.DataClass
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -74,11 +75,8 @@ class CalendarGroupRepository {
 
             val categories = response.body() ?: return null
 
-            Log.d("sizeCategories", categories.size.toString())
-
             return categories.toTypedArray()
-        } catch (e: Exception) {
-            Log.e("getGroupActionDays ERROR", e.toString())
+        } catch (_: Exception) {
             return null
         }
     }
@@ -86,18 +84,16 @@ class CalendarGroupRepository {
     @Suppress("TooGenericExceptionCaught")
     @RequiresApi(Build.VERSION_CODES.O)
     fun getArrayDataClass(
-        actions: com.ub.finanstics.api.models.Action,
+        actions: Action,
         categories: Array<Category>?
     ): ActionDataClass {
         val res: ActionDataClass?
-        Log.d("getArrayActionDataClassid", actions.userId.toString())
-        val category: Category? = getCategoryById(actions.category_id, categories)
+        val category: Category? = getCategoryById(actions.categoryId, categories)
         res = ActionDataClass(
-            userName = "skip skipish",
             actionName = actions.name,
             actionType = actions.type,
             actionMoney = actions.value,
-            actionCategory = category?.name ?: actions.category_id.toString(),
+            actionCategory = category?.name ?: actions.categoryId.toString(),
             data = dataApiToDataClass(actions.date),
             userId = actions.userId,
             description = actions.description
@@ -110,7 +106,6 @@ class CalendarGroupRepository {
         userId: Int
     ): String? {
         var res: String? = null
-        Log.d("getUserNameuserId", userId.toString())
         try {
             val apiRep = ApiRepository()
             val response = apiRep.getUser(userId)
@@ -134,16 +129,13 @@ class CalendarGroupRepository {
                     if (stream != null) {
                         BitmapFactory.decodeStream(stream)
                     } else {
-                        Log.d("userImage", "1")
                         null
                     }
                 }
             } else {
-                Log.d("userImage", "2")
                 null
             }
         } catch (e: Exception) {
-            Log.e("userImage", e.toString())
             null
         }
     }
@@ -182,8 +174,7 @@ class CalendarGroupRepository {
                     list.add(actionsData)
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getGroupActionDays ERROR2", e.toString())
+        } catch (_: Exception) {
             return null
         }
         return tempMap.mapValues { it.value.toTypedArray() }

@@ -1,22 +1,21 @@
-package com.ub.finanstics.presentation.calendar
+package com.ub.finanstics.presentation.userScreens.calendar
 
-import CalendarRepository
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.db.FinansticsDatabase
-import com.ub.finanstics.presentation.calendar.MonthNameClass.APRIL
-import com.ub.finanstics.presentation.calendar.MonthNameClass.DECEMBER
-import com.ub.finanstics.presentation.calendar.MonthNameClass.FEBRUARY
-import com.ub.finanstics.presentation.calendar.MonthNameClass.JANUARY
-import com.ub.finanstics.presentation.calendar.MonthNameClass.JUNE
-import com.ub.finanstics.presentation.calendar.MonthNameClass.NOVEMBER
-import com.ub.finanstics.presentation.calendar.MonthNameClass.SEPTEMBER
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.APRIL
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.DECEMBER
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.FEBRUARY
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.JANUARY
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.JUNE
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.NOVEMBER
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass.SEPTEMBER
 import com.ub.finanstics.presentation.groupScreens.calendarGroup.CalendarGroupRepository
 import com.ub.finanstics.presentation.groupScreens.calendarGroup.dataClassToApiString
 import com.ub.finanstics.presentation.groupScreens.calendarGroup.dataClassToLocalDate
+import java.util.Calendar
 
 enum class ErrorCalendar(val str: String) {
     ERRORSERVER("ошибка загрузки с сервера"),
@@ -171,7 +170,6 @@ data class DataClass(
 }
 
 data class ActionDataClass(
-    private var userName: String,
     private var userId: Int,
     private var actionName: String,
     private var actionType: Int,
@@ -209,9 +207,9 @@ data class ActionDataClass(
             name = actionName,
             value = actionMoney,
             date = dataClassToApiString(data),
-            category_id = 1,
+            categoryId = 1,
             description = description,
-            created_at = "ub",
+            createdAt = "ub",
             groups = emptyList()
         )
     }
@@ -359,7 +357,6 @@ class MountClass(
     fun getLastWeek(): Array<DayClass?> {
         val days = mutableListOf<DayClass>()
         for (day in this.days.reversed()) {
-            Log.d("Calendar", day?.getDayOfWeek()?.number.toString())
             days.add(day!!)
             if (day.getDayOfWeek() == DayWeekClass.MONDAY)
                 break
@@ -407,10 +404,9 @@ class GridDatas(
     suspend fun initActions(application: Application) {
         val db = FinansticsDatabase.getDatabase(application)
         val repository = CalendarRepository(db)
-        for (el in days) {
-            Log.d("elel", "")
-            el?.initActions(repository.getActionDays(el.getData()))
-            el?.updateMoney()
+        for (day in days) {
+            day?.initActions(repository.getActionDays(day.getData()))
+            day?.updateMoney()
         }
     }
 
@@ -455,22 +451,22 @@ class CalendarClass {
     private var gridDatas: GridDatas
 
     init {
-        val calendar = java.util.Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         data = DataClass(
-            calendar.get(java.util.Calendar.DAY_OF_MONTH),
-            MonthNameClass.fromInt(calendar.get(java.util.Calendar.MONTH) + 1),
-            calendar.get(java.util.Calendar.YEAR)
+            calendar.get(Calendar.DAY_OF_MONTH),
+            MonthNameClass.fromInt(calendar.get(Calendar.MONTH) + 1),
+            calendar.get(Calendar.YEAR)
         )
         gridDatas = GridDatas(data)
     }
 
     companion object {
         private fun getNowData(): DataClass {
-            val calendar = java.util.Calendar.getInstance()
+            val calendar = Calendar.getInstance()
             return DataClass(
-                calendar.get(java.util.Calendar.DAY_OF_MONTH),
-                MonthNameClass.fromInt(calendar.get(java.util.Calendar.MONTH) + 1),
-                calendar.get(java.util.Calendar.YEAR)
+                calendar.get(Calendar.DAY_OF_MONTH),
+                MonthNameClass.fromInt(calendar.get(Calendar.MONTH) + 1),
+                calendar.get(Calendar.YEAR)
             )
         }
     }

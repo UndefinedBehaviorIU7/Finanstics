@@ -1,12 +1,12 @@
-package com.ub.finanstics.presentation.settings.profileSettings
+package com.ub.finanstics.presentation.userScreens.profileSettings
 
 import android.content.Context
 import android.graphics.BitmapFactory
 import coil3.Bitmap
 import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.User
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -45,7 +45,7 @@ class ProfileSettingsRepository(private val context: Context) {
 
     suspend fun getUserInfo(userId: Int): ProfileSettingsUiState {
         return try {
-            val resp = RetrofitInstance.api.userInfo(userId)
+            val resp = RetrofitInstance.api.getUser(userId)
             userInfoHandler(resp)
         } catch (e: Exception) {
             return ProfileSettingsUiState.Error(msg = "Ошибка загрузки профиля")

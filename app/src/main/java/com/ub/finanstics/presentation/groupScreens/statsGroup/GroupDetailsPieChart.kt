@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.statsGroup
+package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -37,12 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.Action
-import com.ub.finanstics.presentation.actionView.ApiActionView
-import com.ub.finanstics.presentation.actionView.formatDate
-import com.ub.finanstics.presentation.calendar.CalendarClass
-import com.ub.finanstics.presentation.stats.animateDp
-import com.ub.finanstics.presentation.stats.statsColors
-import com.ub.finanstics.presentation.stats.statsLabelId
+import com.ub.finanstics.presentation.userScreens.actionView.ApiActionView
+import com.ub.finanstics.presentation.userScreens.actionView.formatDate
+import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
+import com.ub.finanstics.presentation.userScreens.stats.BarLen
+import com.ub.finanstics.presentation.userScreens.stats.animateDp
+import com.ub.finanstics.presentation.userScreens.stats.statsColors
+import com.ub.finanstics.presentation.userScreens.stats.statsLabelId
 import com.ub.finanstics.ui.theme.Blue
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -281,7 +282,7 @@ fun ActionInfo(
             )
         }
 
-        com.ub.finanstics.presentation.stats.BarLen(
+        BarLen(
             modifier = Modifier.weight(4f),
             widthSize = totalSum.toFloat() / (action.value.toFloat() / widthSize),
             isAnimationPlayed = true,

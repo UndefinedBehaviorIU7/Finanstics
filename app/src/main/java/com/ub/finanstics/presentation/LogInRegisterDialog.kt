@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.navigation
+package com.ub.finanstics.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

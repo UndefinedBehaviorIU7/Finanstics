@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.register
+package com.ub.finanstics.presentation.userScreens.register
 
 sealed class RegisterUiState {
     data class Idle(

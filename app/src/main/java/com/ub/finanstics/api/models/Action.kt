@@ -10,8 +10,8 @@ data class Action(
     val name: String,
     val value: Int,
     val date: String,
-    val category_id: Int,
+    @SerializedName("category_id") val categoryId: Int,
     val description: String?,
-    val created_at: String?,
+    @SerializedName("created_at") val createdAt: String?,
     val groups: List<Int>
 )
