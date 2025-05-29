@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -332,7 +334,7 @@ fun CalendarHeading(
         )
 
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.45f),
             colors = ButtonDefaults.buttonColors(
@@ -346,7 +348,7 @@ fun CalendarHeading(
             )
         }
         Button(
-            onClick = { /* Действие при нажатии */ },
+            onClick = { },
             modifier = Modifier
                 .weight(0.25f),
             colors = ButtonDefaults.buttonColors(
@@ -442,6 +444,42 @@ fun DrawCalendarWithoutAction(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun DrawError(
+    vm: CalendarGroupViewModel,
+) {
+
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Image(
+        painter = painterResource(R.drawable.connection_error),
+        contentDescription = stringResource(R.string.connection_error),
+        modifier = Modifier.size(120.dp)
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(15.dp),
+        onClick = {
+                vm.loadCalendar()
+        },
+    ) {
+        Text(
+            color = MaterialTheme.colorScheme.primary,
+            text = stringResource(R.string.retry),
+            fontSize = 20.sp
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 fun CalendarGroup(
@@ -498,7 +536,12 @@ fun CalendarGroup(
             }
 
             is CalendarGroupUiState.Error -> {
-                Text("Error: ${uiState.message}")
+                Text(
+                    text = uiState.message.str,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 19.sp
+                )
+                DrawError(vm)
             }
 
             is CalendarGroupUiState.Default -> {
@@ -534,8 +577,6 @@ fun CalendarGroup(
                     )
                 }
             }
-
-            else -> {}
         }
     }
 }

@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.ub.finanstics.presentation.calendar
 
 import android.content.res.Configuration

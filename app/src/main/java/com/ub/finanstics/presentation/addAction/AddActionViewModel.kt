@@ -11,11 +11,11 @@ import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.calendar.DataClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import android.util.Log
+import com.ub.finanstics.presentation.addActionGroup.TIME_LOAD
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Calendar
 
@@ -25,14 +25,10 @@ enum class ErrorAddAction(val str: String) {
     MONEY("сумма"),
     DATE("дата"),
     CATEGORY("категория"),
-    DESCRIPTION("описание"),
-    SERVER("Сервер"),
     OK("ok"),
-    UISTATE("uiState"),
     ERROR_LOADING_DATA_SERVER("ошибка загрузки данных с сервера"),
     ERROR_ADD_DATA_SERVER("ошибка загрузки данных на сервер")
 }
-private const val TIME = 3000L
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun dataForApi(dataStr: String): String {
@@ -58,20 +54,7 @@ class AddActionViewModel(
 
     val uiState = _uiState.asStateFlow()
 
-    fun getUserGroupsList() {
-        viewModelScope.launch {
-            val groups = repository.getUserGroup()
-            val groupNames = groups?.map { it } ?: emptyList()
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is AddActionUiState.Idle -> currentState.copy(allGroup = groupNames)
-                    else -> currentState
-                }
-            }
-        }
-    }
-
-    fun getNowData(): String {
+    private fun getNowData(): String {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH) + 1
@@ -87,17 +70,6 @@ class AddActionViewModel(
 
             _uiState.value = AddActionUiState.Loading(
                 typeAction = type,
-                nameAction = "",
-                moneyAction = -1,
-                data = getNowData(),
-                category = "",
-                description = "",
-                allCategory = listOf(),
-                menuExpandedType = false,
-                menuExpandedCategory = false,
-                allGroup = listOf(),
-                groups = listOf(),
-                menuExpandedGroup = false
             )
 
             val categories = repository.getCategoriesNames(type.toInt())
@@ -117,17 +89,7 @@ class AddActionViewModel(
             if (allGroups == null) {
                 _uiState.value = AddActionUiState.ErrorLoad(
                     typeAction = type,
-                    nameAction = "",
-                    moneyAction = -1,
-                    data = getNowData(),
-                    category = "",
-                    description = "",
                     allCategory = categories,
-                    menuExpandedType = false,
-                    menuExpandedCategory = false,
-                    allGroup = emptyList(),
-                    groups = listOf(),
-                    menuExpandedGroup = false,
                     error = ErrorAddAction.ERROR_LOADING_DATA_SERVER,
                 )
             } else {
@@ -284,13 +246,6 @@ class AddActionViewModel(
             is AddActionUiState.Loading -> {
                 _uiState.value = current.copy(
                     typeAction = newTypeAction ?: current.typeAction,
-                    nameAction = newNameAction ?: current.nameAction,
-                    moneyAction = newMoneyAction ?: current.moneyAction,
-                    data = newData ?: current.data,
-                    category = newCategory ?: current.category,
-                    description = newDescription ?: current.description,
-                    menuExpandedType = newMenuExpandedType ?: current.menuExpandedType,
-                    menuExpandedCategory = newMenuExpandedCategory ?: current.menuExpandedCategory
                 )
             }
 
@@ -311,7 +266,7 @@ class AddActionViewModel(
         return ErrorAddAction.OK
     }
 
-    fun createErrorState(
+    private fun createErrorState(
         current: AddActionUiState.Idle,
         error: ErrorAddAction
     ): AddActionUiState.Error {
@@ -366,17 +321,6 @@ class AddActionViewModel(
         viewModelScope.launch {
             _uiState.value = AddActionUiState.Loading(
                 typeAction = current.typeAction,
-                nameAction = "",
-                moneyAction = -1,
-                data = getNowData(),
-                category = "",
-                description = "",
-                allCategory = current.allCategory,
-                menuExpandedType = false,
-                menuExpandedCategory = false,
-                allGroup = listOf(),
-                groups = listOf(),
-                menuExpandedGroup = false,
             )
 
             val result = repository.addActionApi(

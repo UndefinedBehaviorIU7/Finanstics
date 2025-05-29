@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.calendar
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
@@ -24,7 +23,7 @@ class CalendarViewModel(
 
     private var calendar = CalendarClass()
 
-    var syncJob: Job? = null
+    private var syncJob: Job? = null
 
     fun cancelUpdate() {
         syncJob?.cancel()
@@ -35,7 +34,16 @@ class CalendarViewModel(
     fun autoUpdate() {
         syncJob = viewModelScope.launch {
             while (true) {
+                val uiState = _uiState.value
                 calendar.initActionsDay(application)
+                val newCalendar = CalendarClass()
+                newCalendar.copy(calendar)
+                if (uiState is CalendarUiState.Default) {
+                    _uiState.value = CalendarUiState.Default(newCalendar)
+                } else {
+                    if (uiState is CalendarUiState.DrawActions)
+                        _uiState.value = CalendarUiState.DrawActions(newCalendar, uiState.day)
+                }
                 delay(TIME_UPDATE)
             }
         }
@@ -75,26 +83,17 @@ class CalendarViewModel(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun startAutoRefresh() {
-        viewModelScope.launch {
-            while (true) {
-                try {
-                    calendar.initActionsDay(application)
-                } catch (e: Exception) {
-                    Log.e("CalendarAutoRefresh", "Ошибка при обновлении: ${e.message}")
-                }
-                delay(TIME_UPDATE)
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
     private fun loadCalendar() {
         try {
             viewModelScope.launch {
                 calendar.initActionsDay(application)
-                _uiState.value = CalendarUiState.Loading
-                _uiState.value = CalendarUiState.DrawActions(calendar, calendar.getNowDataClass())
+                val day = calendar.getNowDataClass()
+                if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
+
+                    _uiState.value = CalendarUiState.DrawActions(calendar, day)
+                }
+                else
+                    _uiState.value = CalendarUiState.Default(calendar)
             }
         } catch (e: NullPointerException) {
             _uiState.value = CalendarUiState.Error("Ошибка: данные календаря отсутствуют")
@@ -106,45 +105,13 @@ class CalendarViewModel(
     }
 
     fun nextMonth() {
-        Log.d("CalendarViewModel", "Next month clicked")
-        if (_uiState.value is CalendarUiState.Default ||
-            _uiState.value is CalendarUiState.DrawActions
-        ) {
-            viewModelScope.launch {
-                calendar.nextMonth()
-                val newCalendar = CalendarClass()
-                newCalendar.copy(calendar)
-                newCalendar.initActionsDay(application)
-                _uiState.value = CalendarUiState.Default(newCalendar)
-                val day = calendar.getNowDataClass()
-                if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
-
-                    _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
-                }
-                else
-                    _uiState.value = CalendarUiState.Default(newCalendar)
-            }
-        }
+        calendar.nextMonth()
+        loadCalendar()
     }
 
     fun lastMonth() {
-        Log.d("CalendarViewModel", "Previous month clicked")
-        if (_uiState.value is CalendarUiState.Default ||
-            _uiState.value is CalendarUiState.DrawActions
-        ) {
-            viewModelScope.launch {
-                calendar.lastMonth()
-                val newCalendar = CalendarClass()
-                newCalendar.copy(calendar)
-                newCalendar.initActionsDay(application)
-                val day = calendar.getNowDataClass()
-                if (day != null && day.getData().getMonth() == calendar.getData().getMonth()) {
-                    _uiState.value = CalendarUiState.DrawActions(newCalendar, day)
-                }
-                else
-                    _uiState.value = CalendarUiState.Default(newCalendar)
-            }
-        }
+        calendar.lastMonth()
+        loadCalendar()
     }
 
     fun actions(

@@ -1,21 +1,17 @@
-package com.ub.finanstics.presentation.addAction
+package com.ub.finanstics.presentation.addActionGroup
 
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.db.FinansticsDatabase
+import com.ub.finanstics.presentation.addAction.ErrorAddAction
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 
 @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexCondition")
 class AddActionGroupRepository(
-    private var db: FinansticsDatabase,
     private val context: Context
 ) {
-    private val actionDao = db.actionDao()
-    private val categoryDao = db.categoryDao()
-
     private fun getCategoriesListByType(
         allCategories: List<Category>,
         type: Int
@@ -63,8 +59,6 @@ class AddActionGroupRepository(
         description: String?,
         duplication: Boolean
     ): ErrorAddAction {
-        Log.d("addActionGroupApi", "startF")
-
         var res = ErrorAddAction.OK
 
         val apiRep = ApiRepository()
@@ -76,8 +70,6 @@ class AddActionGroupRepository(
 
         val groupId = preferencesManager.getInt("groupId", -1)
         val token = encryptedPrefManager.getString("token", "-1")
-
-        Log.d("duplicationqqqq", duplication.toString())
 
         if (userId < 0 || token == "-1") {
             res = ErrorAddAction.ERROR_ADD_DATA_SERVER

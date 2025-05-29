@@ -36,33 +36,12 @@ sealed class AddActionUiState {
 
     data class ErrorLoad(
         var typeAction: ActionType,
-        var nameAction: String,
-        var moneyAction: Int,
-        var data: String,
-        var category: String,
-        var description: String,
         var allCategory: List<String>,
-        var allGroup: List<Group>,
-        var groups: List<Group>,
-        val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean,
-        val menuExpandedGroup: Boolean,
         val error: ErrorAddAction,
     ) : AddActionUiState()
 
     data class Loading(
         var typeAction: ActionType,
-        var nameAction: String,
-        var moneyAction: Int,
-        var data: String,
-        var category: String,
-        var description: String,
-        var allCategory: List<String>,
-        var allGroup: List<Group>,
-        var groups: List<Group>,
-        val menuExpandedType: Boolean,
-        val menuExpandedCategory: Boolean,
-        val menuExpandedGroup: Boolean,
     ) : AddActionUiState()
 
     data class SelectType(

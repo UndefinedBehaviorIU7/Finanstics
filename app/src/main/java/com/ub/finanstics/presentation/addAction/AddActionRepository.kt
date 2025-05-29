@@ -3,22 +3,12 @@ package com.ub.finanstics.presentation.addAction
 import android.content.Context
 import android.util.Log
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.db.FinansticsDatabase
 import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
 
-enum class ErrorAddActionApi(val str: String) {
-    ERROR("ошибка сервера"),
-    ERROR_USER_ID("вы не авторизированны"),
-    ERROR_USER_TOKEN("ошибка сессии"),
-    ERROR_ADD_ACTION_API("ошибка добавление действия на сервер"),
-    Ok("ок")
-}
-
 class AddActionRepository(private var db: FinansticsDatabase, private val context: Context) {
-    private val actionDao = db.actionDao()
     private val categoryDao = db.categoryDao()
 
     suspend fun getCategoriesNames(type: Int): List<String> {
@@ -27,30 +17,6 @@ class AddActionRepository(private var db: FinansticsDatabase, private val contex
         else
             categoryDao.getExpensesCategories()
         return categories.map { it.name }
-    }
-
-    private fun findCategoryByNameInList(allCategory: List<Category>, name: String): Category? {
-        for (el in allCategory)
-            if (el.name == name)
-                return el
-        return null
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private suspend fun getGroupCategoryIdByName(group: Group, name: String): Int? {
-        var res: Category? = null
-        val apiRep = ApiRepository()
-        try {
-            val response = apiRep.getGroupCategories(group.id)
-            if (response.isSuccessful) {
-                val allCategories = response.body()
-                if (allCategories != null)
-                    res = findCategoryByNameInList(allCategories, name)
-            }
-        } catch (e: Exception) {
-            res = null
-        }
-        return res?.id
     }
 
     @Suppress(
