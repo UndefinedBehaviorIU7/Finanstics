@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -18,7 +17,7 @@ import com.google.firebase.messaging.ktx.messaging
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.presentation.MainActivity
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 
 class FinansticsFMS : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -31,7 +30,6 @@ class FinansticsFMS : FirebaseMessagingService() {
         }
 
         remoteMessage.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
             it.body?.let { body -> sendNotification(body) }
         }
     }
@@ -39,8 +37,8 @@ class FinansticsFMS : FirebaseMessagingService() {
     @Suppress("FunctionOnlyReturningConstant")
     private fun isLongRunningJob() = true
 
+    @Suppress("EmptyFunctionBlock")
     override fun onNewToken(token: String) {
-        sendRegistrationToServer(token)
     }
 
     private fun scheduleJob() {
@@ -48,12 +46,8 @@ class FinansticsFMS : FirebaseMessagingService() {
         WorkManager.getInstance(this).beginWith(work).enqueue()
     }
 
+    @Suppress("EmptyFunctionBlock")
     private fun handleNow() {
-        Log.d(TAG, "Short lived task is done.")
-    }
-
-    private fun sendRegistrationToServer(token: String?) {
-        Log.d(TAG, "sendRegistrationTokenToServer($token)")
     }
 
     private fun sendNotification(messageBody: String) {
@@ -104,7 +98,6 @@ fun logFirebaseToken(context: Context) {
     if (fcmToken.isEmpty()) {
         Firebase.messaging.token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
                 return@addOnCompleteListener
             }
 
@@ -126,11 +119,7 @@ suspend fun regFirebaseToken(context: Context) {
         val apiRep = ApiRepository()
         try {
             val response = apiRep.registerFCMToken(token, fcmToken)
-            if (!response.isSuccessful) {
-                Log.e("FCM", "Register FCM failed: ${response.errorBody()}")
-            }
-        } catch (e: Exception) {
-            Log.e("FCM", "Register FCM Failed: $e")
+        } catch (_: Exception) {
         }
     }
 }

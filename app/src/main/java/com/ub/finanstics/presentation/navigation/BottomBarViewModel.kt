@@ -6,9 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class BottomBarViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+class BottomBarViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<BottomBarUiState>(BottomBarUiState.Hidden)
     val uiState = _uiState.asStateFlow()
 

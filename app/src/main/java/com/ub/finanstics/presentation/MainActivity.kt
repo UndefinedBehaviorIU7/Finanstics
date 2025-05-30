@@ -21,14 +21,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ub.finanstics.R
-import com.ub.finanstics.presentation.addAction.AddAction
-import com.ub.finanstics.presentation.addActionGroup.AddActionGroup
-import com.ub.finanstics.presentation.addGroup.AddGroupScreen
-import com.ub.finanstics.presentation.group.GroupMainScreen
-import com.ub.finanstics.presentation.groups.Groups
-import com.ub.finanstics.presentation.login.Login
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.register.Register
+import com.ub.finanstics.presentation.userScreens.addAction.AddAction
+import com.ub.finanstics.presentation.groupScreens.addActionGroup.AddActionGroup
+import com.ub.finanstics.presentation.groupScreens.addGroup.AddGroupScreen
+import com.ub.finanstics.presentation.groupScreens.group.GroupMainScreen
+import com.ub.finanstics.presentation.groupScreens.groups.Groups
+import com.ub.finanstics.presentation.userScreens.login.Login
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.register.Register
 import com.ub.finanstics.ui.theme.FinansticsTheme
 import com.ub.finanstics.ui.theme.ThemeViewModel
 

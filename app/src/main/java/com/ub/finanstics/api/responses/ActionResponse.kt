@@ -1,7 +1,9 @@
 package com.ub.finanstics.api.responses
 
+import com.google.gson.annotations.SerializedName
+
 @Suppress("ConstructorParameterNaming")
 data class ActionResponse(
     val id: Int,
-    val created_at: String
+    @SerializedName("created_at") val createdAt: String
 )

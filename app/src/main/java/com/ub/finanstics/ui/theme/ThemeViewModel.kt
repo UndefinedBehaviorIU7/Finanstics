@@ -3,7 +3,7 @@ package com.ub.finanstics.ui.theme
 import android.app.Application
 import android.content.res.Configuration
 import androidx.lifecycle.AndroidViewModel
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsRepository
+import com.ub.finanstics.presentation.userScreens.profileSettings.ProfileSettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

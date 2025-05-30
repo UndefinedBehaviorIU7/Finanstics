@@ -73,6 +73,7 @@ interface ActionDao {
             "AND strftime('%Y', date) = printf('%d', :year) " +
             "AND categoryId = :categoryId AND type = :type"
     )
+
     suspend fun getActionsDateByCategoryAndType(
         month: Int,
         year: Int,

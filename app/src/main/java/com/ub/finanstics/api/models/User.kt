@@ -10,12 +10,8 @@ data class User(
     val password: String?,
     val username: String?,
     val image: String?,
-
-    @SerializedName("user_data")
-    val userData: String?,
-
+    @SerializedName("user_data") val userData: String?,
     val createdAt: String?,
     val groups: List<Int>?,
-    val vk_id: Int?,
     val userToCategories: List<Int>?
 )

@@ -37,17 +37,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.calendar.Calendar
-import com.ub.finanstics.presentation.preferencesManager.EncryptedPreferencesManager
-import com.ub.finanstics.presentation.preferencesManager.PreferencesManager
-import com.ub.finanstics.presentation.settings.profileSettings.ProfileSettingsScreen
-import com.ub.finanstics.presentation.stats.Stats
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.presentation.userScreens.calendar.Calendar
+import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
+import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.profileSettings.ProfileSettingsScreen
+import com.ub.finanstics.presentation.userScreens.stats.Stats
+import com.ub.finanstics.OFFSET_BAR
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.GroupsIcon
 import com.ub.finanstics.ui.theme.icons.MenuIcon
-import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -139,36 +138,11 @@ fun BottomNavGraph(
                 ) {
                     PlusActionButton(
                         onClick = { navController.navigate(Navigation.ADD_ACTION.toString()) },
-                        offsetX = offsetX
+                        offsetX = -offsetX
                     )
                 }
             }
         }
-    }
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun PlusActionButton(
-    onClick: () -> Unit,
-    offsetX: Dp,
-) {
-    Box(modifier = Modifier.offset(x = -offsetX)) {
-        Icon(
-            imageVector = CircleIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.tertiary,
-            modifier = Modifier
-                .size(50.dp)
-                .clickable { onClick() }
-        )
-        Icon(
-            imageVector = PlusCircleIcon,
-            contentDescription = "",
-            tint = MaterialTheme.colorScheme.background,
-            modifier = Modifier
-                .size(50.dp)
-        )
     }
 }
 

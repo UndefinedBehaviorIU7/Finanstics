@@ -21,6 +21,7 @@
     <string name="have_an_account">Уже есть аккаунт</string>
     <string name="passwords_do_not_match">Пароли не совпадают</string>
     <string name="empty_fields">Заполните все поля для продолжения</string>
+    <string name="server_error">Ошибка сервера</string>
     <string name="server_error_400">Ошибка 400</string>
     <string name="server_error_401">Ошибка 401</string>
     <string name="server_error_404">Ошибка 404</string>
@@ -138,4 +139,9 @@
     <string name="percents">"Проценты"</string>
     <string name="other_incomes">"Прочие доходы"</string>
     <string name="select_data">"Выберите дату"</string>
+    <string name="finance_calendar">"Календарь финансов"</string>
+    <string name="back">"Назад"</string>
+    <string name="plus">"Плюс"</string>
+    <string name="circle">"Круг"</string>
+    <string name="file_processing_error">"Не удалось подготовить файл"</string>
 </resources>
