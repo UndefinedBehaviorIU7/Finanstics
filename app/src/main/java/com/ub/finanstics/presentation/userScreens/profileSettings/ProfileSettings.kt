@@ -96,7 +96,7 @@ import com.ub.finanstics.presentation.templates.Toggler
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Suppress("ForbiddenComment", "MagicNumber", "LongParameterList")
+@Suppress("ForbiddenComment", "MagicNumber", "LongMethod")
 @Composable
 fun ProfileSettingsScreen(
     navController: NavController,
