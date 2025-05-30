@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514723749395",
+    "project_id": "finanstics",
+    "storage_bucket": "finanstics.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514723749395:android:ea78ae97d5b5231f97e9e6",
+        "android_client_info": {
+          "package_name": "com.ub.finanstics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_CdRDUppELBF17d73VbFcPUU_enfBVvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
