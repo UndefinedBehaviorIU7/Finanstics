@@ -37,6 +37,7 @@ class FinansticsFMS : FirebaseMessagingService() {
     @Suppress("FunctionOnlyReturningConstant")
     private fun isLongRunningJob() = true
 
+    @Suppress("EmptyFunctionalBlock")
     override fun onNewToken(token: String) {
     }
 
@@ -45,6 +46,7 @@ class FinansticsFMS : FirebaseMessagingService() {
         WorkManager.getInstance(this).beginWith(work).enqueue()
     }
 
+    @Suppress("EmptyFunctionalBlock")
     private fun handleNow() {
     }
 

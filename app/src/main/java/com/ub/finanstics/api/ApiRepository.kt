@@ -164,6 +164,7 @@ class ApiRepository {
         return RetrofitInstance.api.getGroupImage(groupId)
     }
 
+    @Suppress("LongParameterList")
     suspend fun updateGroupInfo(
         token: String,
         groupId: Int,

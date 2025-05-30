@@ -2,6 +2,7 @@ package com.ub.finanstics
 
 import androidx.compose.ui.unit.dp
 
+@Suppress("MagicNumber")
 val OFFSET_BAR = 60.dp
 
 const val PREF_NAME = "FinansticsPref"
