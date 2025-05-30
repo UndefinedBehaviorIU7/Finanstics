@@ -46,7 +46,6 @@ fun dataClassToLocalDate(data: DataClass): LocalDate {
     )
 }
 
-
 class CalendarGroupRepository {
     private fun getCategoryById(
         id: Int,
@@ -60,7 +59,6 @@ class CalendarGroupRepository {
             }
         return null
     }
-
 
     @Suppress("ReturnCount", "TooGenericExceptionCaught")
     private suspend fun getCategoriesById(

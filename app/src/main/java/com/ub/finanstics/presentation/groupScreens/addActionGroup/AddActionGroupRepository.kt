@@ -84,7 +84,6 @@ class AddActionGroupRepository(private val context: Context) {
                 if (!response.isSuccessful) {
                     res = ErrorAddAction.ERROR_ADD_DATA_SERVER
                 }
-
             } catch (_: Exception) {
                 res = ErrorAddAction.ERROR_ADD_DATA_SERVER
             }

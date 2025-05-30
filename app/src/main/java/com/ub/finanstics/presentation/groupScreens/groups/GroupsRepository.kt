@@ -24,7 +24,6 @@ class GroupsRepository(private val context: Context) {
             val apiRepository = ApiRepository()
             val response = apiRepository.getUserGroups(userId)
             handleGetGroups(response)
-
         } catch (e: Exception) {
             GroupsUiState.Error(
                 groups = emptyList(),
