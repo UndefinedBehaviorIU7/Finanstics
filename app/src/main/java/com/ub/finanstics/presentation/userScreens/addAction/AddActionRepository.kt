@@ -1,7 +1,6 @@
 package com.ub.finanstics.presentation.userScreens.addAction
 
 import android.content.Context
-import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.db.FinansticsDatabase

@@ -1,6 +1,5 @@
 package com.ub.finanstics.presentation.groupScreens.groups
 
-import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.GroupWithImage
 
 sealed class GroupsUiState {

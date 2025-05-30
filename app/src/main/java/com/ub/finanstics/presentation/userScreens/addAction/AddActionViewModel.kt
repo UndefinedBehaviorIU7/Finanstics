@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import android.util.Log
 import com.ub.finanstics.presentation.groupScreens.addActionGroup.TIME_LOAD
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Calendar
