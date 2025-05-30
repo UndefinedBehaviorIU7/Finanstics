@@ -474,8 +474,6 @@ private fun ProfileHeader(
     )
 }
 
-
-
 @Suppress("MagicNumber", "LongParameterList")
 @Composable
 fun CenteredEditableText(
