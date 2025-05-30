@@ -21,9 +21,7 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("TooManyFunctions")
-class CalendarGroupViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+class CalendarGroupViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<CalendarGroupUiState>(CalendarGroupUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -122,11 +120,11 @@ class CalendarGroupViewModel(
                 } else {
                     _uiState.value = CalendarGroupUiState.Error(ErrorCalendar.ERRORSERVER)
                 }
-            } catch (e: NullPointerException) {
+            } catch (_: NullPointerException) {
                 _uiState.value = CalendarGroupUiState.Error(ErrorCalendar.ERRORSERVER)
-            } catch (e: IllegalStateException) {
+            } catch (_: IllegalStateException) {
                 _uiState.value = CalendarGroupUiState.Error(ErrorCalendar.ERRORSERVER)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uiState.value = CalendarGroupUiState.Error(ErrorCalendar.ERRORSERVER)
             }
         }

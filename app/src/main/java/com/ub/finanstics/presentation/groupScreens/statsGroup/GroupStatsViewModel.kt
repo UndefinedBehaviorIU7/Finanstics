@@ -9,7 +9,7 @@ import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
-import com.ub.finanstics.presentation.converters.base64ToBitmap
+import com.ub.finanstics.converters.base64ToBitmap
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import com.ub.finanstics.presentation.userScreens.stats.TIME_UPDATE
@@ -56,9 +56,9 @@ class GroupStatsViewModel(application: Application) : AndroidViewModel(applicati
         try {
             _uiState.value = GroupStatsUiState.Loading
             _uiState.value = GroupStatsUiState.Calendar(calendar, all, 0)
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             _uiState.value = GroupStatsUiState.Error(application.getString(R.string.no_calendar))
-        } catch (e: IllegalStateException) {
+        } catch (_: IllegalStateException) {
             _uiState.value = GroupStatsUiState.Error(
                 application.getString(R.string.invalid_calendar_state)
             )

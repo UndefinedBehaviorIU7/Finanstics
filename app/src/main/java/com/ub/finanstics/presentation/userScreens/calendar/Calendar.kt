@@ -54,7 +54,7 @@ import com.ub.finanstics.presentation.userScreens.actionView.LocalActionView
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.OFFSET_BAR
 import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon

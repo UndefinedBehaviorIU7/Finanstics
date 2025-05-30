@@ -8,13 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +25,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -66,12 +63,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.api.models.GroupWithImage
-import com.ub.finanstics.dialogs.ErrorAlertDialog
-import com.ub.finanstics.dialogs.ErrorDialogContent
+import com.ub.finanstics.converters.bitmapToBase64
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.converters.bitmapToBase64
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
-import com.ub.finanstics.presentation.templates.Loader
+import com.ub.finanstics.presentation.templates.BackArrow
+import com.ub.finanstics.presentation.templates.ErrorAlertDialog
+import com.ub.finanstics.presentation.templates.ErrorDialogContent
+import com.ub.finanstics.presentation.templates.LoadingContent
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 
@@ -150,31 +148,14 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    modifier = Modifier.fillMaxHeight()
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                BackArrow { navController.navigateUp() }
 
                 GroupSearchBar(vm, searchQuery)
             }
 
             when (uiState) {
                 is GroupsUiState.Loading -> {
-                    BoxWithConstraints {
-                        val width = maxWidth
-                        Loader(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(width / 3)
-                        )
-                    }
+                    LoadingContent()
                 }
 
                 is GroupsUiState.All -> {
@@ -229,8 +210,6 @@ fun Groups(navController: NavController, vm: GroupsViewModel = viewModel()) {
                         onSwipeUp = { isPlusButtonVisible = false }
                     )
                 }
-
-                else -> Unit
             }
         }
 

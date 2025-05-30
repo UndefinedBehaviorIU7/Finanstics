@@ -1,26 +1,19 @@
 package com.ub.finanstics.presentation.userScreens.profileSettings
 
 import android.app.Application
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
+import com.ub.finanstics.R
+import com.ub.finanstics.TIME_INIT
+import com.ub.finanstics.converters.createMultipartBodyPart
+import com.ub.finanstics.converters.uriToBitmap
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
-import com.ub.finanstics.ui.theme.TIME_INIT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
-import java.io.FileOutputStream
 
 @Suppress("DEPRECATION", "TooManyFunctions")
 class ProfileSettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -67,7 +60,9 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
                     if (repository.updateUsername(newUsername)) {
                         _uiState.value = current.copy()
                     } else {
-                        _uiState.value = ProfileSettingsUiState.Error("Неизвестная ошибка")
+                        _uiState.value = ProfileSettingsUiState.Error(
+                            getApplication<Application>().getString(R.string.unknown_error)
+                        )
                     }
                 }
             }
@@ -141,7 +136,9 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
                     if (repository.updateData(newData)) {
                         _uiState.value = current.copy()
                     } else {
-                        _uiState.value = ProfileSettingsUiState.Error("Неизвестная ошибка")
+                        _uiState.value = ProfileSettingsUiState.Error(
+                            getApplication<Application>().getString(R.string.unknown_error)
+                        )
                     }
                 }
             }
@@ -155,12 +152,14 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
             is ProfileSettingsUiState.Auth -> {
                 if (uri == null) return
 
-                val imagePart = createMultipartBodyPart(uri) ?: run {
-                    _uiState.value = ProfileSettingsUiState.Error("Не удалось подготовить файл")
+                val imagePart = createMultipartBodyPart(getApplication<Application>(), uri) ?: run {
+                    _uiState.value = ProfileSettingsUiState.Error(
+                        getApplication<Application>().getString(R.string.file_processing_error)
+                    )
                     return
                 }
 
-                val newBitmap = uriToBitmap(getApplication(), uri)
+                val newBitmap = uriToBitmap(getApplication<Application>(), uri)
                 viewModelScope.launch {
                     val success = repository.updateImage(imagePart)
                     if (success) {
@@ -169,40 +168,13 @@ class ProfileSettingsViewModel(application: Application) : AndroidViewModel(appl
                             imageBitmap = newBitmap
                         )
                     } else {
-                        _uiState.value = ProfileSettingsUiState.Error("Сервер вернул ошибку")
+                        _uiState.value = ProfileSettingsUiState.Error(
+                            getApplication<Application>().getString(R.string.server_error)
+                        )
                     }
                 }
             }
             else -> Unit
-        }
-    }
-
-    private fun createMultipartBodyPart(uri: Uri): MultipartBody.Part? {
-        val context = getApplication<Application>().applicationContext
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-
-        val file = File(context.cacheDir, "temp_${System.currentTimeMillis()}.jpg")
-        FileOutputStream(file).use { output ->
-            inputStream.copyTo(output)
-        }
-
-        val requestFile = file
-            .asRequestBody("image/jpeg".toMediaTypeOrNull())
-
-        return MultipartBody.Part.createFormData(
-            name = "image",
-            filename = file.name,
-            body = requestFile
-        )
-    }
-
-    @Suppress("MagicNumber")
-    private fun uriToBitmap(context: Context, uri: Uri): Bitmap {
-        return if (Build.VERSION.SDK_INT < 28) {
-            MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-        } else {
-            val source = ImageDecoder.createSource(context.contentResolver, uri)
-            ImageDecoder.decodeBitmap(source)
         }
     }
 

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,15 +38,12 @@ import com.ub.finanstics.R
 @Suppress("MagicNumber")
 @Composable
 fun LoadingContent() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(56.dp),
-            color = MaterialTheme.colorScheme.secondary
+    BoxWithConstraints {
+        val width = maxWidth
+        Loader(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(width / 3)
         )
     }
 }

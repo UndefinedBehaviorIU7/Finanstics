@@ -42,7 +42,7 @@ fun Balance(
             }
             if (period != stringResource(R.string.all_time)) {
                 Spacer(Modifier.height(16.dp))
-                Row() {
+                Row {
                     Text(
                         text = stringResource(R.string.balance_for) + " " +
                             stringResource(R.string.all_time),

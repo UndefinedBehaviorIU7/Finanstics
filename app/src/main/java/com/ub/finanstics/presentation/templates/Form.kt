@@ -1,4 +1,4 @@
-package com.ub.finanstics.presentation.templates.forms
+package com.ub.finanstics.presentation.templates
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -84,51 +84,4 @@ fun PasswordForm(
         shape = RoundedCornerShape(15.dp),
         trailingIcon = { icon() }
     )
-}
-
-@Suppress("MagicNumber")
-@Composable
-fun ButtonForm(
-    modifier: Modifier,
-    buttonText: String,
-    navText: String,
-    navigate: () -> Unit,
-    action: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-    ) {
-        Button(
-            onClick = action,
-            contentPadding = PaddingValues(
-                vertical = 10.dp,
-                horizontal = 20.dp,
-            ),
-            shape = RoundedCornerShape(15.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onBackground
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Text(
-                text = buttonText,
-                fontSize = 25.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
-        TextButton(
-            onClick = navigate,
-            modifier = Modifier.padding(top = 7.dp)
-        ) {
-            Text(
-                text = navText,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-    }
 }

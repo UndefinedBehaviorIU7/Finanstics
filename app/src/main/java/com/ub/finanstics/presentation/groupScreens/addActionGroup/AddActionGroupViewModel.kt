@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,7 +55,7 @@ class AddActionGroupViewModel(
             val categories = withTimeoutOrNull(timeout) {
                 try {
                     repository.getCategoriesByType(type.toInt())
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }

@@ -3,7 +3,6 @@ package com.ub.finanstics.presentation.groupScreens.statsGroup
 import android.app.Application
 import android.graphics.Bitmap
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -97,8 +96,7 @@ class GroupDetailsViewModel(
                         )
                     }
                 }
-            } catch (e: Exception) {
-                Log.e("DETAILS", "$e")
+            } catch (_: Exception) {
             }
         }
     }
@@ -130,15 +128,8 @@ class GroupDetailsViewModel(
             try {
                 val ownerName = repository.getUserName(userId)
                 if (ownerName != null) _name.value = ownerName
-            } catch (e: Exception) {
-                Log.e("ACTION", "$e")
+            } catch (_: Exception) {
             }
-        }
-    }
-
-    fun getUserImage(userId: Int) {
-        viewModelScope.launch {
-            _image.value = repository.getUserImage(userId)
         }
     }
 

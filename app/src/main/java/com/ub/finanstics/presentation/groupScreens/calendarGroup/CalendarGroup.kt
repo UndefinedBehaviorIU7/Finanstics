@@ -60,7 +60,7 @@ import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.OFFSET_BAR
 import com.ub.finanstics.ui.theme.averageColor
 import com.ub.finanstics.ui.theme.icons.LeftIcon
 import com.ub.finanstics.ui.theme.icons.RightIcon
@@ -195,7 +195,7 @@ fun DrawCalendarGroupWithAction(
     } else {
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Календарь финансов",
+            text = stringResource(R.string.finance_calendar),
             color = MaterialTheme.colorScheme.primary,
             fontSize = 26.sp
         )

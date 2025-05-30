@@ -3,32 +3,31 @@ package com.ub.finanstics.presentation.groupScreens.groupSettings
 import android.content.Context
 import android.graphics.BitmapFactory
 import coil3.Bitmap
-import com.google.gson.Gson
 import com.ub.finanstics.R
-import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 class GroupSettingsRepository(private val context: Context) {
+    private val api = ApiRepository()
+
     @Suppress("TooGenericExceptionCaught")
     suspend fun getUserById(userId: Int): User? {
         return try {
-            val response = RetrofitInstance.api.getUser(userId)
+            val response = api.getUser(userId)
 
             if (response.isSuccessful) {
                 response.body()
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -50,7 +49,7 @@ class GroupSettingsRepository(private val context: Context) {
                     } ?: return@coroutineScope null
                 }
                 result
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 null
             }
         }
@@ -59,7 +58,7 @@ class GroupSettingsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "TooGenericExceptionCaught")
     suspend fun getGroupImage(groupId: Int): Bitmap? {
         return try {
-            val response = RetrofitInstance.api.getGroupImage(groupId)
+            val response = api.getGroupImage(groupId)
             if (response.isSuccessful) {
                 response.body()?.byteStream().use { stream ->
                     if (stream != null) {
@@ -71,7 +70,7 @@ class GroupSettingsRepository(private val context: Context) {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -79,9 +78,9 @@ class GroupSettingsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun getGroup(groupId: Int): GroupSettingsUiState {
         return try {
-            val response = RetrofitInstance.api.getGroupById(groupId)
+            val response = api.getGroupById(groupId)
             handleGetGroup(response)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             GroupSettingsUiState.Error(
                 errorMsg = context.getString(R.string.unknown_error)
             )
@@ -147,9 +146,9 @@ class GroupSettingsRepository(private val context: Context) {
     suspend fun leaveGroup(groupId: Int): Boolean {
         return try {
             val token = EncryptedPreferencesManager(context).getString("token", "")
-            val response = RetrofitInstance.api.leaveGroup(groupId, token)
+            val response = api.leaveGroup(token, groupId)
             response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -158,9 +157,9 @@ class GroupSettingsRepository(private val context: Context) {
     suspend fun deleteGroup(groupId: Int): Boolean {
         return try {
             val token = EncryptedPreferencesManager(context).getString("token", "")
-            val response = RetrofitInstance.api.deleteGroup(groupId, token)
+            val response = api.deleteGroup(token, groupId)
             response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -174,20 +173,15 @@ class GroupSettingsRepository(private val context: Context) {
         admins: List<Int>
     ): Boolean {
         return try {
-            val gson = Gson()
-            val token = EncryptedPreferencesManager(context)
-                .getString("token", "")
+            val token = EncryptedPreferencesManager(context).getString("token", "")
 
-            val usersJson = gson.toJson(users)
-            val adminsJson = gson.toJson(admins)
-
-            val response = RetrofitInstance.api.updateGroupInfo(
+            val response = api.updateGroupInfo(
                 groupId = groupId,
                 token = token,
                 name = name,
                 groupData = groupData ?: "",
-                users = usersJson,
-                admins = adminsJson
+                users = users,
+                admins = admins
             )
 
             if (!response.isSuccessful) {
@@ -196,7 +190,7 @@ class GroupSettingsRepository(private val context: Context) {
             }
 
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -207,16 +201,10 @@ class GroupSettingsRepository(private val context: Context) {
         image: MultipartBody.Part
     ): Boolean {
         return try {
-            val mediaTypeText = "text/plain".toMediaType()
+            val token = EncryptedPreferencesManager(context).getString("token", "")
 
-            val token = EncryptedPreferencesManager(context)
-                .getString("token", "")
-                .toRequestBody(mediaTypeText)
-
-            val groupIdBody = groupId.toString().toRequestBody(mediaTypeText)
-
-            val response = RetrofitInstance.api.updateGroupImage(
-                groupId = groupIdBody,
+            val response = api.updateGroupImage(
+                groupId = groupId,
                 token = token,
                 image = image
             )
@@ -227,7 +215,7 @@ class GroupSettingsRepository(private val context: Context) {
             }
 
             true
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }
@@ -235,14 +223,14 @@ class GroupSettingsRepository(private val context: Context) {
     @Suppress("MagicNumber", "TooGenericExceptionCaught")
     suspend fun getUserByTag(tag: String): Int? {
         try {
-            val response = RetrofitInstance.api.getUserByTag(tag)
+            val response = api.getUserByTag(tag)
 
             return if (response.isSuccessful) {
                 response.body()!!.id
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
     }

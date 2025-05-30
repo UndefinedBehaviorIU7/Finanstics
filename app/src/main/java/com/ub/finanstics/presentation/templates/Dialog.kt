@@ -1,4 +1,4 @@
-package com.ub.finanstics.dialogs
+package com.ub.finanstics.presentation.templates
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +27,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ub.finanstics.R
+
+@Suppress("MagicNumber")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BasicDialog(
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    BasicAlertDialog(
+        onDismissRequest = onDismissRequest,
+        content = content
+    )
+}
 
 @Suppress("MagicNumber")
 @OptIn(ExperimentalMaterial3Api::class)

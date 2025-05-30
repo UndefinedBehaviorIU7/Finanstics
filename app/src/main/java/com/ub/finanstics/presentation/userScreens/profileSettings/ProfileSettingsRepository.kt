@@ -3,7 +3,7 @@ package com.ub.finanstics.presentation.userScreens.profileSettings
 import android.content.Context
 import android.graphics.BitmapFactory
 import coil3.Bitmap
-import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.User
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
@@ -11,22 +11,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 
 @Suppress("TooGenericExceptionCaught", "TooManyFunctions")
 class ProfileSettingsRepository(private val context: Context) {
     private val prefs = PreferencesManager(context)
+    private val encryptedPrefs = EncryptedPreferencesManager(context)
+    private val api = ApiRepository()
 
     fun isAuth(): Boolean {
-        val enPrefs = EncryptedPreferencesManager(context)
-        return enPrefs.getString("token", "").isNotEmpty()
+        return encryptedPrefs.getString("token", "").isNotEmpty()
     }
 
     @Suppress("NestedBlockDepth")
     private suspend fun getImage(userId: Int): Bitmap? {
         return try {
-            val response = RetrofitInstance.api.getUserImage(userId)
+            val response = api.getUserImage(userId)
             if (response.isSuccessful) {
                 response.body()?.byteStream().use { stream ->
                     if (stream != null) {
@@ -38,16 +38,16 @@ class ProfileSettingsRepository(private val context: Context) {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
     suspend fun getUserInfo(userId: Int): ProfileSettingsUiState {
         return try {
-            val resp = RetrofitInstance.api.getUser(userId)
+            val resp = api.getUser(userId)
             userInfoHandler(resp)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return ProfileSettingsUiState.Error(msg = "Ошибка загрузки профиля")
         }
     }
@@ -77,7 +77,7 @@ class ProfileSettingsRepository(private val context: Context) {
             val bitmap = bitmapDeferred.await()
 
             ProfileSettingsUiState.Auth(
-                token = EncryptedPreferencesManager(context).getString("token", ""),
+                token = encryptedPrefs.getString("token", ""),
                 imageBitmap = bitmap,
                 imageUri = null,
                 username = username,
@@ -106,70 +106,69 @@ class ProfileSettingsRepository(private val context: Context) {
     }
 
     suspend fun logout(): ProfileSettingsUiState {
-        val response =
-            RetrofitInstance.api.logout(
-                EncryptedPreferencesManager(context).getString("token", "")
-            )
-        if (response.isSuccessful) {
-            return ProfileSettingsUiState.Loading
+        val response = api.logout(
+            encryptedPrefs.getString("token", "")
+        )
+        return if (response.isSuccessful) {
+            ProfileSettingsUiState.Loading
         } else {
-            return ProfileSettingsUiState.Error("Неизвестная ошибка")
+            ProfileSettingsUiState.Error("Неизвестная ошибка")
         }
     }
 
     suspend fun updateData(newData: String): Boolean {
         try {
-            val response = RetrofitInstance.api.updateUserData(
-                token = EncryptedPreferencesManager(context).getString("token", ""),
+            val response = api.updateUserData(
+                token = encryptedPrefs.getString("token", ""),
                 userId = prefs.getInt("id", 0),
                 userData = newData
             )
 
             return response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }
 
     suspend fun updateUsername(newUsername: String): Boolean {
         try {
-            val response = RetrofitInstance.api.updateUsername(
+            val response = api.updateUsername(
                 userId = prefs.getInt("id", 0),
-                token = EncryptedPreferencesManager(context).getString("token", ""),
+                token = encryptedPrefs.getString("token", ""),
                 username = newUsername
             )
 
             return response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }
 
     suspend fun updateImage(image: MultipartBody.Part): Boolean {
         try {
-            val response = RetrofitInstance.api.updateUserImage(
-                userId = prefs.getInt("id", 0).toString(),
-                token = EncryptedPreferencesManager(context).getString("token", "").toRequestBody(),
+            val response = api.updateUserImage(
+                userId = prefs.getInt("id", 0),
+                token = encryptedPrefs.getString("token", ""),
                 image = image
             )
 
             return response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }
 
     suspend fun changePassword(oldPassword: String, newPassword: String): Boolean {
         try {
-            val response = RetrofitInstance.api.passwordChange(
+            val response = api.passwordChange(
                 newPassword = newPassword,
                 oldPassword = oldPassword,
-                userId = prefs.getInt("id", 0),
-                token = EncryptedPreferencesManager(context).getString("token", "")
+                userId = prefs.getInt("id", -1),
+                token = encryptedPrefs.getString("token", "")
             )
 
             return response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }

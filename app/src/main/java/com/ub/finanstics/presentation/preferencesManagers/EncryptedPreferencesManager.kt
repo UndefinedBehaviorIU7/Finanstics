@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.ub.finanstics.ui.theme.PREF_NAME
+import com.ub.finanstics.PREF_NAME
 
 class EncryptedPreferencesManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)
@@ -61,4 +61,8 @@ class EncryptedPreferencesManager(context: Context) {
         key: String,
         defaultValue: Boolean
     ): Boolean = sharedPreferences.getBoolean(key, defaultValue)
+
+    fun contains(key: String): Boolean {
+        return sharedPreferences.contains(key)
+    }
 }

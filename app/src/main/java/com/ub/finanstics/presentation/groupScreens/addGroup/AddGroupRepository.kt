@@ -1,32 +1,28 @@
 package com.ub.finanstics.presentation.groupScreens.addGroup
 
 import android.content.Context
-import com.google.gson.Gson
-import com.ub.finanstics.api.RetrofitInstance
+import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 
 @Suppress("TooGenericExceptionCaught")
 class AddGroupRepository(context: Context) {
     private val enPrefs = EncryptedPreferencesManager(context)
+    private val api = ApiRepository()
 
     suspend fun createGroup(state: AddGroupUiState.Idle): Boolean {
         try {
-            val gson = Gson()
-            val jsonMediaType = "application/json; charset=utf-8".toMediaType()
 
             val users: List<Int> = state.users.map { it.id }
 
-            val response = RetrofitInstance.api.createGroup(
-                token = enPrefs.getString("token", "").toRequestBody(),
-                groupName = state.groupName.toRequestBody("text/plain".toMediaType()),
-                groupData = state.groupData.toRequestBody("text/plain".toMediaType()),
-                users = gson.toJson(users).toRequestBody(jsonMediaType),
+            val response = api.createGroup(
+                token = enPrefs.getString("token", ""),
+                groupName = state.groupName,
+                groupData = state.groupData,
+                users = users
             )
 
             return response.isSuccessful
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return false
         }
     }
@@ -34,14 +30,14 @@ class AddGroupRepository(context: Context) {
     @Suppress("MagicNumber")
     suspend fun getUserByTag(tag: String): Int {
         try {
-            val response = RetrofitInstance.api.getUserByTag(tag)
+            val response = api.getUserByTag(tag)
 
             return if (response.isSuccessful) {
                 response.body()!!.id
             } else {
                 -1
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return -2
         }
     }

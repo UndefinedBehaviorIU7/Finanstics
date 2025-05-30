@@ -56,7 +56,7 @@ import com.ub.finanstics.presentation.userScreens.addAction.ActionType
 import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
 import com.ub.finanstics.presentation.userScreens.addAction.FormAddData
 import com.ub.finanstics.presentation.userScreens.addAction.Selector
-import com.ub.finanstics.presentation.templates.forms.Form
+import com.ub.finanstics.presentation.templates.Form
 import com.ub.finanstics.presentation.templates.Loader
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes

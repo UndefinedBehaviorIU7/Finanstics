@@ -23,10 +23,11 @@ import androidx.compose.ui.unit.sp
 import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ColorsExpenses
 import com.ub.finanstics.ui.theme.ColorsIncomes
-import com.ub.finanstics.ui.theme.DEGREES_MAX
-import com.ub.finanstics.ui.theme.STATS_ANIMATE_DURATION
 import com.ub.finanstics.ui.theme.generateColdColor
 import com.ub.finanstics.ui.theme.generateWarmColor
+
+const val DEGREES_MAX = 360f
+const val STATS_ANIMATE_DURATION = 1000
 
 fun statsColors(expenses: Boolean, cnt: Int): List<Color> {
     if (expenses) {
@@ -66,8 +67,8 @@ fun PieChart(
     val totalSum = data.sumOf { it.second }
     val floatValue = calculateFloatValues(data, totalSum).toMutableList()
 
-    if (floatValue.size > 0 && floatValue[0] == 0f) {
-        floatValue[0] = 360f
+    if (floatValue.isNotEmpty() && floatValue[0] == 0f) {
+        floatValue[0] = DEGREES_MAX
     }
     val colors = statsColors(
         expenses,

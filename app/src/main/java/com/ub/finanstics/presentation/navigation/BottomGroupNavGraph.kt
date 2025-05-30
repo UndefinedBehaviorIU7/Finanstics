@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -34,10 +35,12 @@ import com.ub.finanstics.presentation.Navigation
 import com.ub.finanstics.presentation.groupScreens.calendarGroup.CalendarGroup
 import com.ub.finanstics.presentation.groupScreens.groupSettings.GroupSettings
 import com.ub.finanstics.presentation.groupScreens.statsGroup.GroupStats
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.OFFSET_BAR
+import com.ub.finanstics.R
 import com.ub.finanstics.ui.theme.ThemeViewModel
 import com.ub.finanstics.ui.theme.icons.CircleIcon
 import com.ub.finanstics.ui.theme.icons.PersonIcon
+import com.ub.finanstics.ui.theme.icons.PlusCircleIcon
 import kotlin.math.abs
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -129,7 +132,7 @@ fun BottomGroupNavGraph(
                         onClick = {
                             navController.navigate(Navigation.ADD_ACTION_GROUPS.toString())
                                   },
-                        offsetX = offsetX
+                        offsetX = -offsetX
                     )
                 }
             }
@@ -162,6 +165,35 @@ fun PersonButton(
                 .clickable {
                     navController.navigate(Navigation.STATS.toString())
                 }
+        )
+    }
+}
+
+@Suppress("MagicNumber")
+@Composable
+fun PlusActionButton(
+    onClick: () -> Unit,
+    offsetX: Dp = 0.dp,
+    offsetY: Dp = 0.dp,
+) {
+    Box(
+        modifier = Modifier
+            .offset(x = offsetX, y = offsetY)
+    ) {
+        Icon(
+            imageVector = CircleIcon,
+            contentDescription = stringResource(R.string.circle),
+            tint = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .size(50.dp)
+                .clickable { onClick() }
+        )
+        Icon(
+            imageVector = PlusCircleIcon,
+            contentDescription = stringResource(R.string.plus),
+            tint = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .size(50.dp)
         )
     }
 }

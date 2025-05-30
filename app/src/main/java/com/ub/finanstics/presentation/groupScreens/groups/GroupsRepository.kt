@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import coil3.Bitmap
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Group
 import com.ub.finanstics.api.models.GroupWithImage
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
@@ -13,9 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import retrofit2.Response
-import kotlin.collections.map
 
 class GroupsRepository(private val context: Context) {
+    private val api = ApiRepository()
+
     @Suppress("TooGenericExceptionCaught", "MagicNumber")
     suspend fun getGroups(): GroupsUiState {
         return try {
@@ -72,7 +72,7 @@ class GroupsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
     suspend fun getGroupImage(groupId: Int): Bitmap? {
         return try {
-            val response = RetrofitInstance.api.getGroupImage(groupId)
+            val response = api.getGroupImage(groupId)
             if (response.isSuccessful) {
                 response.body()?.byteStream().use { stream ->
                     if (stream != null) {

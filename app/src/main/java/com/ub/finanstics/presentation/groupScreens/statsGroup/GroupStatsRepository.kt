@@ -3,13 +3,11 @@ package com.ub.finanstics.presentation.groupScreens.statsGroup
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
-import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
+import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -22,7 +20,8 @@ fun sumPairs(list: List<Pair<String, Int>>): List<Pair<String, Int>> {
 }
 
 class GroupStatsRepository(private val context: Context) {
-    val preferencesManager = PreferencesManager(context)
+    private val preferencesManager = PreferencesManager(context)
+    private val api = ApiRepository()
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun getIncomes(
@@ -33,15 +32,14 @@ class GroupStatsRepository(private val context: Context) {
         val userId = preferencesManager.getInt("id", -1)
         if (userId < 0 || groupId < 0) return null
 
-        val apiRep = ApiRepository()
         var incomes: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActionsByDate(
+            val respAct = api.getGroupActionsByDate(
                 groupId = groupId,
                 year = year,
                 month = month.number
             )
-            val respCat = apiRep.getGroupCategories(groupId)
+            val respCat = api.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
@@ -59,8 +57,7 @@ class GroupStatsRepository(private val context: Context) {
                         .sortedByDescending { it.second }
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getIncomes ERROR", e.toString())
+        } catch (_: Exception) {
         }
         return incomes
     }
@@ -74,15 +71,14 @@ class GroupStatsRepository(private val context: Context) {
         val userId = preferencesManager.getInt("id", -1)
         if (userId < 0 || groupId < 0) return null
 
-        val apiRep = ApiRepository()
         var expenses: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActionsByDate(
+            val respAct = api.getGroupActionsByDate(
                 groupId = groupId,
                 year = year,
                 month = month.number
             )
-            val respCat = apiRep.getGroupCategories(groupId)
+            val respCat = api.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
@@ -100,8 +96,7 @@ class GroupStatsRepository(private val context: Context) {
                         .sortedByDescending { it.second }
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getExpenses ERROR", "$e")
+        } catch (_: Exception) {
         }
         return expenses
     }
@@ -112,11 +107,10 @@ class GroupStatsRepository(private val context: Context) {
         val userId = preferencesManager.getInt("id", -1)
         if (userId < 0 || groupId < 0) return null
 
-        val apiRep = ApiRepository()
         var incomes: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActions(groupId)
-            val respCat = apiRep.getGroupCategories(groupId)
+            val respAct = api.getGroupActions(groupId)
+            val respCat = api.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
@@ -134,8 +128,7 @@ class GroupStatsRepository(private val context: Context) {
                         .sortedByDescending { it.second }
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getAllIncomes ERROR", "$e")
+        } catch (_: Exception) {
         }
         return if (incomes != null) sumPairs(incomes) else null
     }
@@ -146,11 +139,10 @@ class GroupStatsRepository(private val context: Context) {
         val userId = preferencesManager.getInt("id", -1)
         if (userId < 0 || groupId < 0) return null
 
-        val apiRep = ApiRepository()
         var expenses: List<Pair<String, Int>>? = null
         try {
-            val respAct = apiRep.getGroupActions(groupId)
-            val respCat = apiRep.getGroupCategories(groupId)
+            val respAct = api.getGroupActions(groupId)
+            val respCat = api.getGroupCategories(groupId)
 
             if (respAct.isSuccessful && respCat.isSuccessful) {
                 val actions = respAct.body()
@@ -168,8 +160,7 @@ class GroupStatsRepository(private val context: Context) {
                         .sortedByDescending { it.second }
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getAllExpenses ERROR", e.toString())
+        } catch (_: Exception) {
         }
         return if (expenses != null) sumPairs(expenses) else null
     }
@@ -197,7 +188,7 @@ class GroupStatsRepository(private val context: Context) {
     @Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
     suspend fun groupImage(groupId: Int): Bitmap? {
         return try {
-            val response = RetrofitInstance.api.getGroupImage(groupId)
+            val response = api.getGroupImage(groupId)
             if (response.isSuccessful) {
                 response.body()?.byteStream().use { stream ->
                     if (stream != null) {
@@ -209,7 +200,7 @@ class GroupStatsRepository(private val context: Context) {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

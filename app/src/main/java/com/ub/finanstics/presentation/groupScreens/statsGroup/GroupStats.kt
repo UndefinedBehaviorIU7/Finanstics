@@ -56,7 +56,7 @@ import com.ub.finanstics.presentation.userScreens.stats.PieChart
 import com.ub.finanstics.presentation.templates.AvatarBitmap
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
@@ -202,7 +202,7 @@ fun Header(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxSize()
             )

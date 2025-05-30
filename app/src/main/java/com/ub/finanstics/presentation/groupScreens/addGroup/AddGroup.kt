@@ -50,9 +50,9 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
-import com.ub.finanstics.dialogs.ErrorAlertDialog
-import com.ub.finanstics.dialogs.ErrorDialogContent
-import com.ub.finanstics.presentation.templates.forms.Form
+import com.ub.finanstics.presentation.templates.ErrorAlertDialog
+import com.ub.finanstics.presentation.templates.ErrorDialogContent
+import com.ub.finanstics.presentation.templates.Form
 import com.ub.finanstics.presentation.templates.ErrorContent
 import com.ub.finanstics.presentation.templates.LoadingContent
 

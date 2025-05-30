@@ -3,10 +3,8 @@ package com.ub.finanstics.presentation.groupScreens.calendarGroup
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.models.Action
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.presentation.userScreens.calendar.ActionDataClass
@@ -109,21 +107,19 @@ class CalendarGroupRepository {
         try {
             val apiRep = ApiRepository()
             val response = apiRep.getUser(userId)
-            if (!response.isSuccessful) {
-                Log.e("getUserName", "not isSuccessful")
-            } else {
+            if (response.isSuccessful) {
                 res = response.body()?.username
             }
-        } catch (e: Exception) {
-            Log.e("getUserName", e.toString())
+        } catch (_: Exception) {
         }
         return res
     }
 
     @Suppress("NestedBlockDepth", "TooGenericExceptionCaught")
     suspend fun userImage(userId: Int): Bitmap? = withContext(Dispatchers.IO) {
+        val api = ApiRepository()
         try {
-            val response = RetrofitInstance.api.getUserImage(userId)
+            val response = api.getUserImage(userId)
             if (response.isSuccessful) {
                 response.body()?.byteStream().use { stream ->
                     if (stream != null) {
@@ -135,7 +131,7 @@ class CalendarGroupRepository {
             } else {
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

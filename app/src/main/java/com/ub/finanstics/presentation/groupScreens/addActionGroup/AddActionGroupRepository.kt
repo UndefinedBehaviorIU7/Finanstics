@@ -1,7 +1,6 @@
 package com.ub.finanstics.presentation.groupScreens.addActionGroup
 
 import android.content.Context
-import android.util.Log
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.api.models.Category
 import com.ub.finanstics.presentation.userScreens.addAction.ErrorAddAction
@@ -9,9 +8,7 @@ import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesMa
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 
 @Suppress("TooGenericExceptionCaught", "NestedBlockDepth", "ComplexCondition")
-class AddActionGroupRepository(
-    private val context: Context
-) {
+class AddActionGroupRepository(private val context: Context) {
     private fun getCategoriesListByType(
         allCategories: List<Category>,
         type: Int

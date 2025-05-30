@@ -3,7 +3,6 @@ package com.ub.finanstics.presentation.userScreens.login
 import android.content.Context
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.responses.UserResponse
 import com.ub.finanstics.api.responses.VKUserResponse
 import com.ub.finanstics.fcm.logFirebaseToken
@@ -13,13 +12,15 @@ import com.vk.id.AccessToken
 import retrofit2.Response
 
 class LoginRepository(private val context: Context) {
+    private val api = ApiRepository()
+
     @Suppress("TooGenericExceptionCaught")
     suspend fun logIn(login: String, password: String): LoginUiState {
         logFirebaseToken(context)
         return try {
-            val response = RetrofitInstance.api.login(tag = login, password = password)
+            val response = api.login(tag = login, password = password)
             handleResponse(response, login, password)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             LoginUiState.Error(
                 login = login,
                 password = password,
@@ -125,13 +126,12 @@ class LoginRepository(private val context: Context) {
     suspend fun logInVK(vk: AccessToken): LoginUiState {
         logFirebaseToken(context)
         var logInState: LoginUiState
-        val apiRep = ApiRepository()
-        val userResp = apiRep.getUserVK(vk.userID.toInt())
+        val userResp = api.getUserVK(vk.userID.toInt())
         try {
             if (userResp.isSuccessful) {
                 val user = userResp.body()
                 if (user != null) {
-                    val logResp = apiRep.loginVK(vk.userID.toInt())
+                    val logResp = api.loginVK(vk.userID.toInt())
                     return handleResponseVK(logResp, vk)
                 }
             }
@@ -140,7 +140,7 @@ class LoginRepository(private val context: Context) {
                 password = "",
                 errorMsg = context.getString(R.string.no_user_vk_id)
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             logInState = LoginUiState.Error(
                 login = "",
                 password = "",

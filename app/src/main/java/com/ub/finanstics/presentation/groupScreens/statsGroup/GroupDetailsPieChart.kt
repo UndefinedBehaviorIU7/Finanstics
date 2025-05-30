@@ -2,7 +2,6 @@ package com.ub.finanstics.presentation.groupScreens.statsGroup
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,13 +9,11 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,7 +38,6 @@ import com.ub.finanstics.presentation.userScreens.actionView.ApiActionView
 import com.ub.finanstics.presentation.userScreens.actionView.formatDate
 import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 import com.ub.finanstics.presentation.userScreens.stats.BarLen
-import com.ub.finanstics.presentation.userScreens.stats.animateDp
 import com.ub.finanstics.presentation.userScreens.stats.statsColors
 import com.ub.finanstics.presentation.userScreens.stats.statsLabelId
 import com.ub.finanstics.ui.theme.Blue
@@ -298,39 +294,6 @@ fun ActionInfo(
             fontSize = if (action.value.toString().length < 5) 16.sp
             else (16 - (action.value.toString().length - 5) * 3).sp,
             color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-@Suppress("MagicNumber")
-fun BarLen(
-    modifier: Modifier,
-    isAnimationPlayed: Boolean = true,
-    widthSize: Float,
-    color: Color,
-    colorIn: Color = color,
-) {
-    BoxWithConstraints(modifier = modifier) {
-        val barLen = animateDp(
-            animationPlayed = isAnimationPlayed,
-            start = 0.dp,
-            end = maxWidth / widthSize,
-            animDuration = 1000
-        )
-        Box(
-            modifier = Modifier
-                .background(
-                    color = color,
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(2.dp)
-                .background(
-                    color = colorIn,
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .height(10.dp)
-                .width(barLen)
         )
     }
 }

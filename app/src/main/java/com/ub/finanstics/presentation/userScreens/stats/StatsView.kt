@@ -40,7 +40,7 @@ import androidx.navigation.NavController
 import com.ub.finanstics.presentation.userScreens.calendar.MonthNameClass
 import com.ub.finanstics.presentation.templates.Divider
 import com.ub.finanstics.presentation.templates.Loader
-import com.ub.finanstics.ui.theme.OFFSET_BAR
+import com.ub.finanstics.OFFSET_BAR
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Suppress("MagicNumber", "LongMethod")
@@ -103,7 +103,7 @@ fun Stats(
                 }
                 is StatsUiState.LoadingData -> {
                     val calendar = uiState.calendar
-                    Column() {
+                    Column {
                         Spacer(modifier = Modifier.height(5.dp))
                         CalendarSwitch(
                             calendar = calendar,
@@ -267,7 +267,7 @@ fun StatsViewHorizontal(
 ) {
     val uiState = vm.uiState.collectAsState().value
     if (uiState is StatsUiState.Done) {
-        Row() {
+        Row {
             Column(
                 modifier = Modifier.weight(1f)
             ) {

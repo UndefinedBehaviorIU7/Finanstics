@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.ub.finanstics.ui.theme.PREF_NAME
-import com.ub.finanstics.ui.theme.TIME_INIT
+import com.ub.finanstics.PREF_NAME
+import com.ub.finanstics.TIME_INIT
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime

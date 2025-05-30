@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -47,7 +46,6 @@ class FinansticsFMS : FirebaseMessagingService() {
     }
 
     private fun handleNow() {
-        Log.d(TAG, "Short lived task is done.")
     }
 
     private fun sendNotification(messageBody: String) {
@@ -119,11 +117,7 @@ suspend fun regFirebaseToken(context: Context) {
         val apiRep = ApiRepository()
         try {
             val response = apiRep.registerFCMToken(token, fcmToken)
-            if (!response.isSuccessful) {
-                Log.e("FCM", "Register FCM failed: ${response.errorBody()}")
-            }
-        } catch (e: Exception) {
-            Log.e("FCM", "Register FCM Failed: $e")
+        } catch (_: Exception) {
         }
     }
 }

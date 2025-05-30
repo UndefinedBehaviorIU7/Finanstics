@@ -3,13 +3,14 @@ package com.ub.finanstics.presentation.userScreens.register
 import android.content.Context
 import com.ub.finanstics.R
 import com.ub.finanstics.api.ApiRepository
-import com.ub.finanstics.api.RetrofitInstance
 import com.ub.finanstics.api.responses.UserResponse
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
 import retrofit2.Response
 
 class RegisterRepository(private val context: Context) {
+    private val api = ApiRepository()
+
     @Suppress("TooGenericExceptionCaught")
     suspend fun register(
         username: String,
@@ -17,13 +18,13 @@ class RegisterRepository(private val context: Context) {
         tag: String,
     ): RegisterUiState {
         return try {
-            val response = RetrofitInstance.api.register(
+            val response = api.register(
                 username = username,
                 password = password,
                 tag = tag,
             )
             handleResponse(response, username, password, tag)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             RegisterUiState.Error(
                 login = tag,
                 username = username,
@@ -156,11 +157,10 @@ class RegisterRepository(private val context: Context) {
             )
         }
         var regState: RegisterUiState
-        val apiRep = ApiRepository()
-        val userResp = apiRep.getUserVK(vkId)
+        val userResp = api.getUserVK(vkId)
         try {
             if (!userResp.isSuccessful) {
-                val resp = apiRep.registerVK(
+                val resp = api.registerVK(
                     vkId = vkId,
                     username = username,
                     tag = tag,
@@ -176,7 +176,7 @@ class RegisterRepository(private val context: Context) {
                 vkId = vkId,
                 errorMsg = context.getString(R.string.already_registered)
             )
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             regState = RegisterUiState.VKError(
                 login = tag,
                 password = password,
@@ -188,16 +188,15 @@ class RegisterRepository(private val context: Context) {
         }
         return regState
     }
-}
 
-@Suppress("TooGenericExceptionCaught")
-suspend fun tagExists(tag: String): Boolean {
-    val apiRep = ApiRepository()
-    try {
-        val resp = apiRep.getUserByTag(tag)
-        if (resp.isSuccessful) {
-            return (resp.body() != null)
-        }
-    } catch (_: Exception) { }
-    return false
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun tagExists(tag: String): Boolean {
+        try {
+            val resp = api.getUserByTag(tag)
+            if (resp.isSuccessful) {
+                return (resp.body() != null)
+            }
+        } catch (_: Exception) { }
+        return false
+    }
 }

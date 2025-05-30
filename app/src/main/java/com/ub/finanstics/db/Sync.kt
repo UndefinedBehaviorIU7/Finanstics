@@ -2,7 +2,6 @@ package com.ub.finanstics.db
 
 import android.app.Application
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ub.finanstics.api.ApiRepository
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
@@ -30,7 +29,6 @@ suspend fun syncLocalWithServerActions(application: Application) {
         try {
             val category = categoryDao.getCategoryById(action.categoryId)
             if (category == null) {
-                Log.e("Sync", "No ${action.categoryId} in db")
                 return@forEach
             }
 
@@ -50,20 +48,14 @@ suspend fun syncLocalWithServerActions(application: Application) {
                 groupId = null
             )
             if (!response.isSuccessful) {
-                Log.e(
-                    "Sync",
-                    "Failed to sync action ${action.actionId}: " +
-                        "${response.errorBody()?.string()}"
-                )
                 return@forEach
             }
             val serverResp = response.body()
             if (serverResp != null) {
                 actionDao.updateServerId(action.actionId, serverResp.id)
-                actionDao.updateCreationTime(action.actionId, serverResp.created_at)
+                actionDao.updateCreationTime(action.actionId, serverResp.createdAt)
             }
-        } catch (e: Exception) {
-            Log.e("Sync", "Error syncing action ${action.actionId}", e)
+        } catch (_: Exception) {
         }
     }
 }
@@ -97,10 +89,9 @@ suspend fun syncLocalWithServerCategories(application: Application) {
             val serverResp = response.body()
             if (serverResp != null) {
                 categoryDao.updateServerId(category.id, serverResp.id)
-                categoryDao.updateCreationTime(category.id, serverResp.created_at)
+                categoryDao.updateCreationTime(category.id, serverResp.createdAt)
             }
-        } catch (e: Exception) {
-            Log.e("Sync", "Error syncing action ${category.id}", e)
+        } catch (_: Exception) {
         }
     }
 }
@@ -123,13 +114,6 @@ suspend fun syncServerWithLocalActions(application: Application) {
 
     try {
         val response = apiRep.getUserActionsSince(userId, preferencesManager.getUpdateTime())
-        if (!response.isSuccessful) {
-            Log.e(
-                "Sync",
-                "Failed to load actions from server to local db:" +
-                    "${response.errorBody()?.string()}"
-            )
-        }
         val serverActions = response.body()
         val localActions = db.actionDao().getAllActions()
         serverActions?.forEach { serverAction ->
@@ -152,12 +136,7 @@ suspend fun syncServerWithLocalActions(application: Application) {
             )
             actionDao.insertAction(newAction)
         }
-    } catch (e: Exception) {
-        Log.e(
-            "Sync",
-            "Error syncing action from server to local",
-            e
-        )
+    } catch (_: Exception) {
     }
 }
 
@@ -177,13 +156,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
 
     try {
         val response = apiRep.getUserCategoriesSince(userId, preferencesManager.getUpdateTime())
-        if (!response.isSuccessful) {
-            Log.e(
-                "Sync",
-                "Failed to load actions from server to local db:" +
-                    "${response.errorBody()?.string()}"
-            )
-        }
+
         val serverCategories = response.body()
         serverCategories?.forEach { serverCategory ->
             val cat = categoryDao
@@ -211,12 +184,7 @@ suspend fun syncServerWithLocalCategories(application: Application) {
                 )
             )
         }
-    } catch (e: Exception) {
-        Log.e(
-            "Sync",
-            "Error syncing action from server to local",
-            e
-        )
+    } catch (_: Exception) {
     }
 }
 

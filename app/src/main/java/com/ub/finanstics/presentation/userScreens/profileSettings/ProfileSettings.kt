@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -36,20 +37,15 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -83,7 +79,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -95,6 +90,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
 import com.ub.finanstics.presentation.Navigation
+import com.ub.finanstics.presentation.templates.BasicDialog
+import com.ub.finanstics.presentation.templates.LoadingContent
+import com.ub.finanstics.presentation.templates.Toggler
 import com.ub.finanstics.ui.theme.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -122,14 +120,15 @@ fun ProfileSettingsScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 32.dp, vertical = 100.dp)
+            .systemBarsPadding()
     ) {
         CompositionLocalProvider(
             LocalContentColor provides MaterialTheme.colorScheme.primary
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp, vertical = 100.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -389,22 +388,6 @@ private fun ErrorContent(onRetry: () -> Unit,
     }
 }
 
-@Suppress("MagicNumber")
-@Composable
-private fun LoadingContent() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(56.dp),
-            color = MaterialTheme.colorScheme.secondary
-        )
-    }
-}
-
 @Suppress("MagicNumber", "LongMethod")
 @Composable
 private fun ProfileHeader(
@@ -491,38 +474,7 @@ private fun ProfileHeader(
     )
 }
 
-@Suppress("MagicNumber")
-@Composable
-fun Toggler(
-    label: String,
-    checked: Boolean,
-    onToggle: (Boolean) -> Unit,
-    fontSize: TextUnit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .height(56.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            fontSize = fontSize,
-            modifier = Modifier.weight(1f)
-        )
-        Switch(
-            checked = checked,
-            onCheckedChange = onToggle,
-            colors = SwitchDefaults.colors(
-                checkedTrackColor = MaterialTheme.colorScheme.tertiary,
-                checkedThumbColor = MaterialTheme.colorScheme.background,
-                uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
-                uncheckedBorderColor = MaterialTheme.colorScheme.tertiary,
-                uncheckedTrackColor = MaterialTheme.colorScheme.background
-            )
-        )
-    }
-}
+
 
 @Suppress("MagicNumber", "LongParameterList")
 @Composable
@@ -581,19 +533,6 @@ fun CenteredEditableText(
             }
         }
     }
-}
-
-@Suppress("MagicNumber")
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BasicDialog(
-    onDismissRequest: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
-        content = content
-    )
 }
 
 @Suppress("MagicNumber", "LongMethod")

@@ -12,7 +12,6 @@ import com.ub.finanstics.db.syncData
 import com.ub.finanstics.presentation.userScreens.calendar.CalendarClass
 import com.ub.finanstics.presentation.preferencesManagers.EncryptedPreferencesManager
 import com.ub.finanstics.presentation.preferencesManagers.PreferencesManager
-import com.ub.finanstics.ui.theme.MIN_CATEGORIES_SIZE
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
+const val MIN_CATEGORIES_SIZE = 17
 const val TIME_UPDATE = 1000L
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -70,9 +70,9 @@ class StatsViewModel(
             _uiState.value = StatsUiState.Loading
             _date.value = calendar
             _uiState.value = StatsUiState.Calendar(calendar, 0)
-        } catch (e: NullPointerException) {
+        } catch (_: NullPointerException) {
             _uiState.value = StatsUiState.Error("Ошибка: данные календаря отсутствуют")
-        } catch (e: IllegalStateException) {
+        } catch (_: IllegalStateException) {
             _uiState.value = StatsUiState.Error("Ошибка: некорректное состояние календаря")
         } catch (e: Exception) {
             _uiState.value = StatsUiState.Error("Неизвестная ошибка: ${e.message}")

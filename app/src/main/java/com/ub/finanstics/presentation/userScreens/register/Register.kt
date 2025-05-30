@@ -12,11 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ub.finanstics.R
-import com.ub.finanstics.dialogs.ErrorAlertDialog
-import com.ub.finanstics.dialogs.ErrorDialogContent
 import com.ub.finanstics.presentation.Navigation
-import com.ub.finanstics.presentation.templates.forms.ButtonForm
-import com.ub.finanstics.presentation.templates.forms.Form
-import com.ub.finanstics.presentation.templates.forms.PasswordForm
+import com.ub.finanstics.presentation.templates.BackArrow
+import com.ub.finanstics.presentation.templates.DoubleButton
+import com.ub.finanstics.presentation.templates.ErrorAlertDialog
+import com.ub.finanstics.presentation.templates.ErrorDialogContent
+import com.ub.finanstics.presentation.templates.Form
+import com.ub.finanstics.presentation.templates.LoadingContent
+import com.ub.finanstics.presentation.templates.PasswordForm
 import com.vk.id.onetap.compose.onetap.OneTap
 import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 
@@ -70,262 +67,44 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                     .fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                IconButton(
-                    onClick = { navController.navigateUp() }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.step_back),
-                        modifier = Modifier.fillMaxSize(),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                BackArrow { navController.navigateUp() }
             }
 
             when (uiState) {
                 is RegisterUiState.Idle -> {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 40.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentDescription = stringResource(R.string.app_name)
-                        )
-
-                        Form(
-                            uiState.login,
-                            label = stringResource(R.string.login),
-                            isError = false,
-                            lambda = { vm.updateField("login", it) }
-                        )
-
-                        Form(
-                            uiState.username,
-                            label = stringResource(R.string.username),
-                            isError = false,
-                            lambda = { vm.updateField("username", it) }
-                        )
-
-                        PasswordForm(
-                            uiState.password,
-                            label = stringResource(R.string.password),
-                            isError = false,
-                            lambda = { vm.updateField("password", it) }
-                        )
-
-                        PasswordForm(
-                            uiState.passwordRepeat,
-                            label = stringResource(R.string.password_repeat),
-                            isError = false,
-                            lambda = { vm.updateField("passwordRepeat", it) }
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        ButtonForm(
-                            modifier = Modifier,
-                            buttonText = stringResource(R.string.register),
-                            navText = stringResource(R.string.have_an_account),
-                            action = { vm.register() },
-                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
-                        )
-
-                        Spacer(modifier = Modifier.height(3.dp))
-
-                        OneTap(
-                            onAuth = { oAuth, token ->
-                                val vk = token
-                                vm.handleOneTapAuth(vk)
-                            },
-                            scenario = OneTapTitleScenario.SignUp,
-                        )
-
-                        Spacer(modifier = Modifier.height(25.dp))
-                    }
+                    RegisterIdle(
+                        navController = navController,
+                        vm = vm,
+                        uiState = uiState
+                    )
                 }
 
                 is RegisterUiState.VKIdle -> {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 40.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentDescription = stringResource(R.string.app_name)
-                        )
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Text(
-                            text = stringResource(R.string.you_need_tag),
-                            textAlign = TextAlign.Center,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                        Form(
-                            uiState.login,
-                            label = stringResource(R.string.tag),
-                            isError = false,
-                            lambda = { vm.updateField("login", it) }
-                        )
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        ButtonForm(
-                            modifier = Modifier,
-                            buttonText = stringResource(R.string.register),
-                            navText = stringResource(R.string.have_an_account),
-                            action = { vm.registerVK() },
-                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
-                        )
-
-                        Spacer(modifier = Modifier.height(25.dp))
-                    }
+                    RegisterVkIdle(
+                        navController = navController,
+                        vm = vm,
+                        uiState = uiState
+                    )
                 }
 
                 is RegisterUiState.Error -> {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 40.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentDescription = stringResource(R.string.app_name)
-                        )
-
-                        Form(
-                            uiState.login,
-                            label = stringResource(R.string.login),
-                            isError = false,
-                            lambda = { vm.updateField("login", it) }
-                        )
-
-                        Form(
-                            uiState.username,
-                            label = stringResource(R.string.username),
-                            isError = false,
-                            lambda = { vm.updateField("username", it) }
-                        )
-
-                        PasswordForm(
-                            uiState.password,
-                            label = stringResource(R.string.password),
-                            isError = false,
-                            lambda = { vm.updateField("password", it) }
-                        )
-
-                        PasswordForm(
-                            uiState.passwordRepeat,
-                            label = stringResource(R.string.password_repeat),
-                            isError = false,
-                            lambda = { vm.updateField("passwordRepeat", it) }
-                        )
-
-                        ErrorAlertDialog(
-                            onDismissRequest = { vm.resetToIdle() }
-                        ) {
-                            ErrorDialogContent(
-                                msg = uiState.errorMsg,
-                                action = {
-                                    vm.resetToIdle()
-                                },
-                                buttonText = stringResource(R.string.ok),
-                                onClose = {
-                                    vm.resetToIdle()
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        ButtonForm(
-                            modifier = Modifier,
-                            buttonText = stringResource(R.string.register),
-                            navText = stringResource(R.string.have_an_account),
-                            action = { vm.register() },
-                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
-                        )
-
-                        Spacer(modifier = Modifier.height(3.dp))
-
-                        OneTap(
-                            onAuth = { oAuth, token ->
-                                val vk = token
-                                vm.handleOneTapAuth(vk)
-                            },
-                            scenario = OneTapTitleScenario.SignUp,
-                        )
-
-                        Spacer(modifier = Modifier.height(25.dp))
-                    }
+                    RegisterError(
+                        navController = navController,
+                        vm = vm,
+                        uiState = uiState
+                    )
                 }
 
                 is RegisterUiState.VKError -> {
-                    Column(
-                        modifier = Modifier.padding(horizontal = 40.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.logo),
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentDescription = stringResource(R.string.app_name)
-                        )
-
-                        Text(
-                            text = stringResource(R.string.you_need_tag),
-                            textAlign = TextAlign.Center,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                        Form(
-                            uiState.login,
-                            label = stringResource(R.string.tag),
-                            isError = true,
-                            lambda = { vm.updateField("login", it) }
-                        )
-
-                        ErrorAlertDialog(
-                            onDismissRequest = { vm.resetToVkIdle() }
-                        ) {
-                            ErrorDialogContent(
-                                msg = uiState.errorMsg,
-                                action = {
-                                    vm.resetToVkIdle()
-                                },
-                                buttonText = stringResource(R.string.ok),
-                                onClose = {
-                                    vm.resetToVkIdle()
-                                }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        ButtonForm(
-                            modifier = Modifier,
-                            buttonText = stringResource(R.string.register),
-                            navText = stringResource(R.string.have_an_account),
-                            action = { vm.registerVK() },
-                            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
-                        )
-
-                        Spacer(modifier = Modifier.height(25.dp))
-                    }
+                    RegisterVkError(
+                        navController = navController,
+                        vm = vm,
+                        uiState = uiState
+                    )
                 }
 
                 is RegisterUiState.Loading -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    LoadingContent()
                 }
 
                 is RegisterUiState.Success -> {
@@ -335,5 +114,265 @@ fun Register(navController: NavController, vm: RegisterViewModel = viewModel()) 
                 }
             }
         }
+    }
+}
+
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun RegisterIdle(
+    navController: NavController,
+    vm: RegisterViewModel,
+    uiState: RegisterUiState.Idle
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 40.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentDescription = stringResource(R.string.app_name)
+        )
+
+        Form(
+            uiState.login,
+            label = stringResource(R.string.login),
+            isError = false,
+            lambda = { vm.updateField("login", it) }
+        )
+
+        Form(
+            uiState.username,
+            label = stringResource(R.string.username),
+            isError = false,
+            lambda = { vm.updateField("username", it) }
+        )
+
+        PasswordForm(
+            uiState.password,
+            label = stringResource(R.string.password),
+            isError = false,
+            lambda = { vm.updateField("password", it) }
+        )
+
+        PasswordForm(
+            uiState.passwordRepeat,
+            label = stringResource(R.string.password_repeat),
+            isError = false,
+            lambda = { vm.updateField("passwordRepeat", it) }
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        DoubleButton(
+            modifier = Modifier,
+            buttonText = stringResource(R.string.register),
+            navText = stringResource(R.string.have_an_account),
+            action = { vm.register() },
+            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+        )
+
+        Spacer(modifier = Modifier.height(3.dp))
+
+        OneTap(
+            onAuth = { oAuth, token ->
+                val vk = token
+                vm.handleOneTapAuth(vk)
+            },
+            scenario = OneTapTitleScenario.SignUp,
+        )
+
+        Spacer(modifier = Modifier.height(25.dp))
+    }
+}
+
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun RegisterVkIdle(
+    navController: NavController,
+    vm: RegisterViewModel,
+    uiState: RegisterUiState.VKIdle
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 40.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentDescription = stringResource(R.string.app_name)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = stringResource(R.string.you_need_tag),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Form(
+            uiState.login,
+            label = stringResource(R.string.tag),
+            isError = false,
+            lambda = { vm.updateField("login", it) }
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        DoubleButton(
+            modifier = Modifier,
+            buttonText = stringResource(R.string.register),
+            navText = stringResource(R.string.have_an_account),
+            action = { vm.registerVK() },
+            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+        )
+
+        Spacer(modifier = Modifier.height(25.dp))
+    }
+}
+
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun RegisterError(
+    navController: NavController,
+    vm: RegisterViewModel,
+    uiState: RegisterUiState.Error
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 40.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentDescription = stringResource(R.string.app_name)
+        )
+
+        Form(
+            uiState.login,
+            label = stringResource(R.string.login),
+            isError = false,
+            lambda = { vm.updateField("login", it) }
+        )
+
+        Form(
+            uiState.username,
+            label = stringResource(R.string.username),
+            isError = false,
+            lambda = { vm.updateField("username", it) }
+        )
+
+        PasswordForm(
+            uiState.password,
+            label = stringResource(R.string.password),
+            isError = false,
+            lambda = { vm.updateField("password", it) }
+        )
+
+        PasswordForm(
+            uiState.passwordRepeat,
+            label = stringResource(R.string.password_repeat),
+            isError = false,
+            lambda = { vm.updateField("passwordRepeat", it) }
+        )
+
+        ErrorAlertDialog(
+            onDismissRequest = { vm.resetToIdle() }
+        ) {
+            ErrorDialogContent(
+                msg = uiState.errorMsg,
+                action = {
+                    vm.resetToIdle()
+                },
+                buttonText = stringResource(R.string.ok),
+                onClose = {
+                    vm.resetToIdle()
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        DoubleButton(
+            modifier = Modifier,
+            buttonText = stringResource(R.string.register),
+            navText = stringResource(R.string.have_an_account),
+            action = { vm.register() },
+            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+        )
+
+        Spacer(modifier = Modifier.height(3.dp))
+
+        OneTap(
+            onAuth = { oAuth, token ->
+                val vk = token
+                vm.handleOneTapAuth(vk)
+            },
+            scenario = OneTapTitleScenario.SignUp,
+        )
+
+        Spacer(modifier = Modifier.height(25.dp))
+    }
+}
+
+@Suppress("MagicNumber", "LongMethod")
+@Composable
+fun RegisterVkError(
+    navController: NavController,
+    vm: RegisterViewModel,
+    uiState: RegisterUiState.VKError
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 40.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentDescription = stringResource(R.string.app_name)
+        )
+
+        Text(
+            text = stringResource(R.string.you_need_tag),
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        Form(
+            uiState.login,
+            label = stringResource(R.string.tag),
+            isError = true,
+            lambda = { vm.updateField("login", it) }
+        )
+
+        ErrorAlertDialog(
+            onDismissRequest = { vm.resetToVkIdle() }
+        ) {
+            ErrorDialogContent(
+                msg = uiState.errorMsg,
+                action = {
+                    vm.resetToVkIdle()
+                },
+                buttonText = stringResource(R.string.ok),
+                onClose = {
+                    vm.resetToVkIdle()
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        DoubleButton(
+            modifier = Modifier,
+            buttonText = stringResource(R.string.register),
+            navText = stringResource(R.string.have_an_account),
+            action = { vm.registerVK() },
+            navigate = { navController.navigate(Navigation.LOGIN.toString()) }
+        )
+
+        Spacer(modifier = Modifier.height(25.dp))
     }
 }
